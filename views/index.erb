@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    <title>Open Data Kit Form Builder</title>
+
+    <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css"/>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Open Data Kit Form Builder</h1>
+
+      <ul class="toolbar">
+        <li><a id="newLink" href="#new" title="Start a new form">New</a></li>
+        <li><a id="openLink" href="#open" title="Open an existing form">Open</a></li>
+        <li class="separator"></li>
+        <li><a id="helpLink" href="#help" title="Get help on using this tool">Help</a></li>
+      </ul>
+    </div>
+    <div class="subheader">
+      <h2>Untitled Form</h2>
+      <a id="editTitleLink" href="#edit_title" title="Name this form">Edit</a>
+
+      <ul class="toolbar">
+        <li><a id="undoLink" href="#undo" title="Undo your last action">Undo</a></li>
+        <li><a id="redoLink" href="#redo" title="Redo the last undo">Redo</a></li>
+        <li class="separator"></li>
+        <li><a id="saveLink" href="#save" title="Save the changes to this form">Save</a></li>
+        <li><a id="exportLink" href="#export" title="Export this form to XForms XML">Export</a></li>
+      </ul>
+    </div>
+    <div class="toolPalette">
+      <ul>
+        <li><a class="inputText">Text Input</a></li>
+        <li><a class="inputNumeric">Numeric Input</a></li>
+        <li><a class="inputDate">Date Input</a></li>
+        <li><a class="inputSelectOne">Choose One</a></li>
+        <li><a class="inputSelectMany">Select Multiple</a></li>
+      </ul>
+    </div>
+    <div class="workspace"></div>
+    <div class="propertiesPane"></div>
+
+    <script type="text/css" src="/javascripts/jquery-1.3.2.js"></script>
+    <script type="text/css" src="/javascripts/jquery.cloudkit.js"></script>
+    <script type="text/css" src="/javascripts/application.js"></script>
+  </body>
+</html>
