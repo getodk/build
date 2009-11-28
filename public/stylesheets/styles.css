@@ -1,0 +1,267 @@
+/* COMPAT */
+
+/* reset styles to sanity */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em,
+font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var,
+b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    vertical-align: baseline;
+    background: transparent;
+}
+
+/* set 1em to 10px */
+body
+{
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif;
+    font-size: 62.5%;
+    line-height: 1;
+}
+
+/* clearfix */
+.clearfix:after 
+{
+	clear: both;
+	content: ".";
+	display: block;
+	height: 0;
+	visibility: hidden;
+}
+.clearfix 
+{ 
+	display: inline-block; 
+}
+.clearfix 
+{ 
+	display: block; 
+}
+* html .clearfix 
+{ 
+	height: 1%; 
+}
+
+
+/* GENERAL */
+
+a
+{
+	border-bottom: 1px dotted #fff;
+	text-decoration: none;
+}
+
+.toolbar
+{
+	float: right;
+}
+.toolbar li
+{
+	display: inline-block;
+	margin-left: 1.5em;
+}
+.toolbar li.separator
+{
+	width: 1em;
+}
+.toolbar li a /* TODO:SPRITE */
+{
+	background-repeat: no-repeat;
+	border: none;
+	display: block;
+	height: 16px;
+	line-height: 16px;
+}
+
+/* LAYOUT */
+
+body
+{
+	background-color: #148;
+	overflow: hidden;
+}
+
+.header
+{
+	background: #148; /* TODO:IMG */
+	color: #fff;
+	height: 2em;
+	padding: 3em;
+}
+.header h1
+{
+	float: left;
+	text-shadow: #000 0 0 0.4em;
+}
+.header .toolbar
+{
+	margin-top: 0.3em;
+}
+.header .toolbar li a
+{
+	color: #fff;
+	font-weight: bold;
+	padding-left: 24px;
+	text-transform: lowercase;
+}
+.header .toolbar li a:hover
+{
+	color: #ccc;
+}
+.header .toolbar li #newLink { background-image: url(/images/page_add.png); }
+.header .toolbar li #openLink { background-image: url(/images/folder_page.png); }
+.header .toolbar li #helpLink { background-image: url(/images/help.png); }
+
+.subheader
+{
+	background-color: #ddd;
+	border: 1px solid #026;
+	height: 1.6em;
+	margin: 0 1em;
+	padding: 0.5em 1em;
+}
+.subheader h2
+{
+	float: left;
+	font-size: 1.5em;
+	line-height: 16px;
+}
+.subheader #editTitleLink
+{
+	background: transparent url(/images/page_white_edit.png) no-repeat;
+	border: none;
+	color: #444;
+	display: block;
+	float: left;
+	height: 16px;
+	line-height: 16px;
+	margin-left: 1em;
+	padding-left: 24px;
+	text-indent: -9999px;
+	text-transform: lowercase;
+}
+.subheader #editTitleLink:hover
+{
+	text-indent: 0;
+}
+.subheader .toolbar li a
+{
+	color: #444;
+	padding-left: 24px;
+	text-transform: lowercase;
+}
+.subheader .toolbar li a:hover
+{
+	color: #000;
+}
+.subheader .toolbar li #undoLink { background-image: url(/images/arrow_rotate_clockwise.png); }
+.subheader .toolbar li #redoLink { background-image: url(/images/arrow_rotate_anticlockwise.png); }
+.subheader .toolbar li #saveLink { background-image: url(/images/disk.png); }
+.subheader .toolbar li #exportLink { background-image: url(/images/page_white_go.png); }
+
+.mainWrapper
+{
+	border: 1px solid #026;
+	border-top: none;
+	bottom: 1em;
+	left: 1em;
+	position: absolute;
+	right: 1em;
+	top: 10.7em;
+}
+.mainWrapper h3
+{
+	background-color: #46a;
+	color: #fff;
+	padding: 0.4em;
+}
+
+.toolPalette
+{
+	background-color: #aaa;
+	border: 3px solid #ddd;
+	border-top: none;
+	bottom: 0;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 12em;
+}
+.toolPalette ul
+{
+	padding: 0.5em;
+}
+.toolPalette li
+{
+	list-style-type: none;
+	margin-bottom: 1em;
+}
+.toolPalette li.separator
+{
+	border-bottom: 1px dotted #888;
+}
+.toolButton
+{
+	background: #bbb;
+	border: 1px solid #888;
+	cursor: move;
+	display: block;
+	padding: 1em;
+}
+.toolButton.ui-draggable-dragging
+{
+	-moz-box-shadow: 0 0 0.5em #000;
+	-webkit-box-shadow: 0 0 0.5em #000;
+	width: 10em;
+	z-index: 100;
+}
+
+.propertiesPane
+{
+	background-color: #aaa;
+	bottom: 0;
+	border: 3px solid #ddd;
+	border-top: none;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 20em;
+}
+
+.workspaceScrollArea
+{
+	background-color: #333;
+	border-bottom: 3px solid #ddd;
+	bottom: 0;
+	left: 12.6em;
+	overflow: auto;
+	position: absolute;
+	right: 20.6em;
+	top: 0;
+}
+
+.workspaceWrapper
+{
+	-moz-box-shadow: 0 0 1em #000;
+	-webkit-box-shadow: 0 0 1em #000;
+	background-color: #eee;
+	margin: 2em;
+	padding-bottom: 5em;
+	padding-top: 1em;
+}
+
+.workspace
+{
+	margin: 2em;
+	min-height: 50em;
+}
+.workspace .placeholder
+{
+	background-color: #fad68e;
+	border: 1px solid #f2a324;
+	padding: 2em;
+	text-align: center;
+}

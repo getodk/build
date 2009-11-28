@@ -8,6 +8,7 @@
     <title>Open Data Kit Form Builder</title>
 
     <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css"/>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui-1.7.2.custom.css"/>
   </head>
   <body>
     <div class="header">
@@ -20,9 +21,9 @@
         <li><a id="helpLink" href="#help" title="Get help on using this tool">Help</a></li>
       </ul>
     </div>
-    <div class="subheader">
+    <div class="subheader clearfix">
       <h2>Untitled Form</h2>
-      <a id="editTitleLink" href="#edit_title" title="Name this form">Edit</a>
+      <a id="editTitleLink" href="#edit_title" title="Rename this form">Rename</a>
 
       <ul class="toolbar">
         <li><a id="undoLink" href="#undo" title="Undo your last action">Undo</a></li>
@@ -32,20 +33,42 @@
         <li><a id="exportLink" href="#export" title="Export this form to XForms XML">Export</a></li>
       </ul>
     </div>
-    <div class="toolPalette">
-      <ul>
-        <li><a class="inputText">Text Input</a></li>
-        <li><a class="inputNumeric">Numeric Input</a></li>
-        <li><a class="inputDate">Date Input</a></li>
-        <li><a class="inputSelectOne">Choose One</a></li>
-        <li><a class="inputSelectMany">Select Multiple</a></li>
-      </ul>
+    <div class="mainWrapper">
+      <div class="toolPalette">
+        <h3>Tools</h3>
+        <ul>
+          <li><a rel="inputText" class="toolButton">Text</a></li>
+          <li><a rel="inputNumeric" class="toolButton">Numeric</a></li>
+          <li><a rel="inputDate" class="toolButton">Date</a></li>
+          <li><a rel="inputSelectOne" class="toolButton">Choose One</a></li>
+          <li><a rel="inputSelectMany" class="toolButton">Select Multiple</a></li>
+          <li class="separator"></li>
+          <li><a rel="inputGroup" class="toolButton">Group</a></li>
+          <li><a rel="inputBranch" class="toolButton">Branch</a></li>
+        </ul>
+      </div>
+      <div class="workspaceScrollArea">
+        <div class="workspaceWrapper">
+          <div class="workspace"></div>
+        </div>
+      </div>
+      <div class="propertiesPane">
+        <h3>Properties</h3>
+      </div>
     </div>
-    <div class="workspace"></div>
-    <div class="propertiesPane"></div>
 
-    <script type="text/css" src="/javascripts/jquery-1.3.2.js"></script>
-    <script type="text/css" src="/javascripts/jquery.cloudkit.js"></script>
-    <script type="text/css" src="/javascripts/application.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-1.3.2.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-ui-1.7.2.custom.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.cloudkit.js"></script>
+    <script type="text/javascript" src="/javascripts/control.js"></script>
+    <script type="text/javascript" src="/javascripts/toolbutton.js"></script>
+    <script type="text/javascript" src="/javascripts/application.js"></script>
+    <div id="templates">
+      <div class="control">
+        <h4 class="controlName"></h4>
+        <ul class="controlProperties"></ul>
+        <div class="controlNextArrow"></div>
+      </div>
+    </div>
   </body>
 </html>
