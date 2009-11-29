@@ -50,6 +50,7 @@
 	var generatePlaceholder = function(displayText)
 	{
 		$('.workspace .placeholder')
+			.addClass('closing')
 			.slideUp('normal', function()
 			{
 				$(this).remove();
@@ -145,7 +146,7 @@
 				{
 					clearInterval(scrollTimer);
 
-					var $placeholder = $('.workspace .placeholder');
+					var $placeholder = $('.workspace .placeholder:not(.closing)');
 					if ($placeholder.length > 0)
 						$placeholder.replaceWith(
 							$('#templates .control')

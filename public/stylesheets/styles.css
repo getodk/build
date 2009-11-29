@@ -277,9 +277,14 @@ body
 	font-size: 1.2em;
 	padding: 0.5em;
 }
-.workspace .control .controlProperties
+.workspace .control .controlPreview
 {
 	margin: 1em;
+}
+.workspace .control .controlProperties
+{
+	background-color: #ccc;
+	padding: 1em;
 }
 .workspace .control .controlProperties dt
 {
@@ -289,9 +294,26 @@ body
 	margin-bottom: 0.2em;
 	margin-right: 1.5em;
 	text-align: right;
-	width: 12em;
+	width: 8em;
 }
 .workspace .control .controlProperties dd
 {
-	
+	margin-bottom: 0.2em;
+}
+.workspace .control .controlPreview .controlLabel
+{
+	display: block;
+	font-size: 1.4em;
+	font-weight: bold;
+}
+.workspace .control .controlPreview .controlHint
+{
+	color: #333;
+	font-weight: bold;
+}
+.workspace .control .controlPreview .controlOptionsEmpty
+{
+	color: #666;
+	font-style: italic;
+	margin: 0.5em;
 }

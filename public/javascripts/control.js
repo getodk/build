@@ -11,19 +11,28 @@
 ;(function($)
 {
 	// Private methods
+	var getProperty = function(properties, name)
+	{
+		return $.grep(properties, function(property) { return property.name === name; })[0].value;
+	};
+
 	var refreshFromProperties = function($this, type, config, properties)
 	{
-		$this.find('.controlName').text(
-			$.grep(properties, function(property) { return property.name === 'Name'; })[0].value)
+		$this.find('.controlName').text(getProperty(properties, 'Name'));
+
+		$this.find('.controlPreview')
+			 .empty()
+			 .append($.fn.odkControl.controlRenderers[type](properties));
 
 		var $propertyList = $this.find('.controlProperties');
 		$propertyList.empty();
-
 		$.each(properties, function()
 		{
-			// TODO: renderers
+			if (this.summary === false)
+				return;
+
 			$propertyList.append(
-				$('<dt>' + this.name + '</dt><dd>' + (this.value || '') + '</dd>')
+				$('<dt>' + this.name + '</dt><dd>' + $.displayText(this.value) + '</dd>')
 			);
 		});
 	};
@@ -71,60 +80,124 @@
 		  description: 'The data name of this field in the final exported XML.',
 		  limit: [ 'nosymbols', 'lowercase', 'unique' ],
 		  required: true,
-		  value: 'Untitled' },
+		  value: 'Untitled',
+		  summary: false },
 		{ name: 'Label',
 		  type: 'uiText',
 		  description: 'The name of this field as it is presented to the user.',
-		  required: true },
+		  required: true,
+		  value: 'Untitled',
+		  summary: false },
 		{ name: 'Hint',
 		  type: 'uiText',
-		  description: 'Additional help for this question.'},
+		  description: 'Additional help for this question.',
+		  value: '',
+		  summary: false },
 		{ name: 'Read Only',
 		  type: 'bool',
-		  description: 'Whether this field can be edited by the end user on not.' },
+		  description: 'Whether this field can be edited by the end user on not.',
+		  value: false,
+		  summary: true },
 		{ name: 'Required',
 		  type: 'bool',
-		  description: 'Whether this field must be filled in before continuing.' },
+		  description: 'Whether this field must be filled in before continuing.',
+		  value: false,
+		  summary: true },
 		{ name: 'Relevance',
 		  type: 'text',
 		  description: 'Specify a custom expression to evaluate to determine if this field is shown.',
-		  advanced: true },
+		  value: '',
+		  advanced: true,
+		  summary: false },
 		{ name: 'Constraint',
 		  type: 'text',
 		  description: 'Specify a custom expression to validate the user input.',
-		  advanced: true },
+		  value: '',
+		  advanced: true,
+		  summary: false },
 		{ name: 'Instance Destination',
 		  type: 'text',
 		  description: 'Specify a custom XPath expression at which to store the result.',
-		  advanced: true }
+		  value: '',
+		  advanced: true,
+		  summary: false }
 	];
 
 	// Property fields per control type
 	$.fn.odkControl.controlProperties = {
 		inputText: [
 		  { name: 'Length',
-		    type: 'numericRange' } ],
+		    type: 'numericRange',
+			value: false,
+		 	summary: false } ],
 		inputNumeric: [
 		  { name: 'Range',
-			type: 'numericRange' },
+			type: 'numericRange',
+			value: false,
+			summary: false },
 		  { name: 'Type',
 		    type: 'enum',
 		  	options: [ 'Integer',
-					   'Decimal' ] } ],
+					   'Decimal' ],
+			value: 'Integer',
+			summary: true } ],
 		inputDate: [
 		  { name: 'Range',
-		    type: 'dateRange' } ],
+		    type: 'dateRange',
+		 	value: false,
+			summary: false } ],
 		inputSelectOne: [
 		  { name: 'Options',
-			type: 'optionsEditor'} ],
+			type: 'optionsEditor',
+			value: [],
+			summary: false } ],
 		inputSelectMany: [
 		  { name: 'Options',
-			type: 'optionsEditor'},
-		  { name: 'Mutually Exclusive',
-			type: 'exclusivityEditor' },
+			type: 'optionsEditor',
+			value: [],
+			summary: false },
 		  { name: 'Select count range',
-			type: 'numericRange' } ]
+			type: 'numericRange',
+			value: false,
+			summary: false } ]
 	};
 
-	
+	// Preview renderers
+	var generateLabels = function(label, hint)
+	{
+		var result = '<label class="controlLabel">' + label + '</label>';
+		if (hint !== '')
+			result += '<label class="controlHint">' + hint + '</label>';
+		return result;
+	};
+	var generateTextPreview = function(properties)
+	{
+		return $(generateLabels(getProperty(properties, 'Label'), getProperty(properties, 'Hint')) +
+				 '<input type="text" class="controlPreview"/>');
+	};
+	var generateSelectPreview = function(properties, type)
+	{
+		var result = generateLabels(getProperty(properties, 'Label'), getProperty(properties, 'Hint'));
+		var options = getProperty(properties, 'Options');
+		var name = getProperty(properties, 'Name') || Math.random();
+
+		if ((options !== undefined) && (options !== null) && (options.length > 0))
+			$.each(options, function(option)
+			{
+				result += '<input type="' + type + '" name=' + name + '/>' +
+						  '<label class="controlOptionLabel">' + option.label + '</label>';
+			});
+		else
+			result += '<div class="controlOptionsEmpty">No options yet.</div>';
+
+		return $(result);
+	};
+
+	$.fn.odkControl.controlRenderers = {
+		inputText: generateTextPreview,
+		inputNumeric: generateTextPreview,
+		inputDate: generateTextPreview,
+		inputSelectOne:  function(properties) { return generateSelectPreview(properties, 'radio'); },
+		inputSelectMany: function(properties) { return generateSelectPreview(properties, 'checkbox'); }
+	};
 })(jQuery);
