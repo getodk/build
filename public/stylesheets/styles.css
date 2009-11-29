@@ -265,3 +265,33 @@ body
 	padding: 2em;
 	text-align: center;
 }
+.workspace .control
+{
+	background-color: #ddd;
+	border: 3px solid #555;
+}
+.workspace .control .controlName
+{
+	background-color: #555;
+	color: #fff;
+	font-size: 1.2em;
+	padding: 0.5em;
+}
+.workspace .control .controlProperties
+{
+	margin: 1em;
+}
+.workspace .control .controlProperties dt
+{
+	clear: left;
+	font-weight: bold;
+	float: left;
+	margin-bottom: 0.2em;
+	margin-right: 1.5em;
+	text-align: right;
+	width: 12em;
+}
+.workspace .control .controlProperties dd
+{
+	
+}
