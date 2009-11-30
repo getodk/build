@@ -18,7 +18,7 @@
 
 	var refreshFromProperties = function($this, type, config, properties)
 	{
-		$this.find('.controlName').text(getProperty(properties, 'Name'));
+		$this.find('.controlName .text').text(getProperty(properties, 'Name'));
 
 		$this.find('.controlPreview')
 			 .empty()
@@ -60,7 +60,7 @@
 		});
 
 		// now do advanced properties
-		$('<li class="advanced"><a class="toggle" href="#advanced">Advanced</a>' +
+		$('<li class="advanced"><a class="toggle" href="#advanced"><div class="icon"></div>Advanced</a>' +
 		    '<ul class="advancedProperties toggleContainer"></ul></li>').appendTo($propertyList);
 		var $advancedList = $propertyList.find('.advancedProperties');
 		$.each(properties, function()

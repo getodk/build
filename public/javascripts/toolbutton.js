@@ -129,6 +129,9 @@
 			// Support the metadata plugin
             var config = $.meta ? $.extend({}, options, $this.data()) : options;
 
+			// HACK: add icons.
+			$this.prepend($('<div class="icon"></div>'));
+
 			$this.draggable({
 				addClass: false,
 				appendTo: 'body',

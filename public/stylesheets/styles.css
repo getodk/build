@@ -67,9 +67,9 @@ a
 {
 	width: 1em;
 }
-.toolbar li a /* TODO:SPRITE */
+.toolbar li a
 {
-	background-repeat: no-repeat;
+	background: transparent url(/images/icons.png) no-repeat;
 	border: none;
 	display: block;
 	height: 16px;
@@ -111,9 +111,9 @@ body
 {
 	color: #ccc;
 }
-.header .toolbar li #newLink { background-image: url(/images/page_add.png); }
-.header .toolbar li #openLink { background-image: url(/images/folder_page.png); }
-.header .toolbar li #helpLink { background-image: url(/images/help.png); }
+.header .toolbar li #newLink { background-position: 0 0; }
+.header .toolbar li #openLink { background-position: 0 -16px; }
+.header .toolbar li #helpLink { background-position: 0 -32px; }
 
 .subheader
 {
@@ -131,7 +131,7 @@ body
 }
 .subheader #editTitleLink
 {
-	background: transparent url(/images/page_white_edit.png) no-repeat;
+	background: transparent url(/images/icons.png) no-repeat 0 -48px;
 	border: none;
 	color: #444;
 	display: block;
@@ -157,10 +157,10 @@ body
 {
 	color: #000;
 }
-.subheader .toolbar li #undoLink { background-image: url(/images/arrow_rotate_clockwise.png); }
-.subheader .toolbar li #redoLink { background-image: url(/images/arrow_rotate_anticlockwise.png); }
-.subheader .toolbar li #saveLink { background-image: url(/images/disk.png); }
-.subheader .toolbar li #exportLink { background-image: url(/images/page_white_go.png); }
+.subheader .toolbar li #undoLink { background-position: 0 -64px; }
+.subheader .toolbar li #redoLink { background-position: 0 -80px; }
+.subheader .toolbar li #saveLink { background-position: 0 -96px; }
+.subheader .toolbar li #exportLink { background-position: 0 -112px; }
 
 .mainWrapper
 {
@@ -205,11 +205,20 @@ body
 }
 .toolButton
 {
-	background: #bbb;
+	background-color: #bbb;
 	border: 1px solid #888;
 	cursor: move;
 	display: block;
-	padding: 1em;
+	padding: 1em 1em 1.2em 0.5em;
+}
+.toolButton .icon
+{
+	background: transparent url(/images/icons.png) no-repeat;
+	display: inline-block;
+	height: 16px;
+	margin-bottom: -0.4em;
+	margin-right: 0.5em;
+	width: 16px;
 }
 .toolButton.ui-draggable-dragging
 {
@@ -272,13 +281,26 @@ body
 }
 .propertiesPane .propertyList li.advanced a.toggle
 {
-	background-color: #888;
+	background: #888;
 	border: none;
 	color: #fff;
 	display: block;
 	font-size: 1.2em;
 	font-weight: bold;
 	padding: 0.5em;
+}
+
+.propertiesPane .propertyList li.advanced a.toggle .icon
+{
+	background: transparent url(/images/icons.png) no-repeat 0 -256px;
+	float: right;
+	height: 16px;
+	margin-top: -0.2em;
+	width: 16px;
+}
+.propertiesPane .propertyList li.advanced a.toggle.expanded .icon
+{
+	background-position: 0 -240px;
 }
 
 /* WORKSPACE */
@@ -321,13 +343,26 @@ body
 {
 	background-color: #ddd;
 	border: 3px solid #555;
+	margin-bottom: 1em;
 }
 .workspace .control .controlName
 {
 	background-color: #555;
 	color: #fff;
 	font-size: 1.2em;
+	height: 16px;
+	line-height: 16px;
 	padding: 0.5em;
+	padding-bottom: 0.7em;
+}
+.workspace .control .controlName .icon
+{
+	background-image: url(/images/icons.png);
+	display: inline-block;
+	height: 16px;
+	margin-bottom: -0.3em;
+	margin-right: 0.5em;
+	width: 16px;
 }
 .workspace .control .controlPreview
 {
@@ -392,3 +427,12 @@ body
 {
 	background-color: #ccccd2;
 }
+
+/* ICONS */
+.inputText .icon { background-position: 0 -128px; }
+.inputNumeric .icon { background-position: 0 -144px; }
+.inputDate .icon { background-position: 0 -160px; }
+.inputSelectOne .icon { background-position: 0 -176px; }
+.inputSelectMany .icon { background-position: 0 -192px; }
+.inputGroup .icon { background-position: 0 -208px; }
+.inputBranch .icon { background-position: 0 -224px; }

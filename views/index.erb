@@ -37,14 +37,14 @@
       <div class="toolPalette">
         <h3>Tools</h3>
         <ul>
-          <li><a rel="inputText" class="toolButton">Text</a></li>
-          <li><a rel="inputNumeric" class="toolButton">Numeric</a></li>
-          <li><a rel="inputDate" class="toolButton">Date</a></li>
-          <li><a rel="inputSelectOne" class="toolButton">Choose One</a></li>
-          <li><a rel="inputSelectMany" class="toolButton">Select Multiple</a></li>
+          <li><a class="toolButton inputText" rel="inputText">Text</a></li>
+          <li><a class="toolButton inputNumeric" rel="inputNumeric">Numeric</a></li>
+          <li><a class="toolButton inputDate" rel="inputDate">Date</a></li>
+          <li><a class="toolButton inputSelectOne" rel="inputSelectOne">Choose One</a></li>
+          <li><a class="toolButton inputSelectMany" rel="inputSelectMany">Select Multiple</a></li>
           <li class="separator"></li>
-          <li><a rel="inputGroup" class="toolButton">Group</a></li>
-          <li><a rel="inputBranch" class="toolButton">Branch</a></li>
+          <li><a class="toolButton inputGroup" rel="inputGroup">Group</a></li>
+          <li><a class="toolButton inputBranch" rel="inputBranch">Branch</a></li>
         </ul>
       </div>
       <div class="workspaceScrollArea">
@@ -69,7 +69,10 @@
     <script type="text/javascript" src="/javascripts/application.js"></script>
     <div id="templates">
       <div class="control">
-        <h4 class="controlName"></h4>
+        <h4 class="controlName">
+          <div class="icon"></div>
+          <span class="text"></span>
+        </h4>
         <div class="controlPreview"></div>
         <dl class="controlProperties clearfix"></dl>
         <div class="controlNextArrow"></div>
