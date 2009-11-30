@@ -57,6 +57,7 @@
 			});
 		return $('<div class="placeholder"></div>')
 			    .text(displayText)
+				.append('<div class="flowArrow"></div>')
 			    .slideDown('normal');
 	};
 

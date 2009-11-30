@@ -336,14 +336,30 @@ body
 {
 	background-color: #fad68e;
 	border: 1px solid #f2a324;
+	margin-bottom: 1.5em;
 	padding: 2em;
+	position: relative;
 	text-align: center;
+}
+.workspace .placeholder:last-child .flowArrow
+{
+	display: none;
+}
+.workspace .placeholder .flowArrow
+{
+	background: transparent url(/images/flows.png) no-repeat 0 -96px;
+	bottom: -32px;
+	height: 32px;
+	left: 50%;
+	margin-left: -18px;
+	position: absolute;
+	width: 36px;
 }
 .workspace .control
 {
 	background-color: #ddd;
 	border: 3px solid #555;
-	margin-bottom: 1em;
+	margin-bottom: 1.5em;
 }
 .workspace .control .controlName
 {
@@ -404,6 +420,19 @@ body
 	font-style: italic;
 	margin: 0.5em;
 }
+.workspace .control .controlFlowArrow
+{
+	background: transparent url(/images/flows.png) no-repeat 0 0;
+	height: 32px;
+	left: 50%;
+	margin-left: -18px;
+	position: absolute;
+	width: 36px;
+}
+.workspace .control:last-child .controlFlowArrow
+{
+	display: none;
+}
 
 .workspace .control:hover
 {
@@ -412,6 +441,10 @@ body
 .workspace .control:hover .controlName
 {
 	background-color: #333;
+}
+.workspace .control:hover .controlFlowArrow
+{
+	background-position: 0 -32px;
 }
 
 .workspace .control.selected
@@ -426,6 +459,10 @@ body
 .workspace .control.selected .controlProperties
 {
 	background-color: #ccccd2;
+}
+.workspace .control.selected .controlFlowArrow
+{
+	background-position: 0 -64px;
 }
 
 /* ICONS */
