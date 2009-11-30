@@ -76,6 +76,11 @@ a
 	line-height: 16px;
 }
 
+#templates
+{
+	display: none;
+}
+
 /* LAYOUT */
 
 body

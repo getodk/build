@@ -9,88 +9,64 @@
 ;(function($)
 {
 	// Constructor
-	$.fn.propertyEditor = function(property, options)
+	$.fn.propertyEditor = function(property, $parent)
 	{
-		var options = $.extend({}, $.fn.propertyEditor.defaults, options);
-
 		return this.each(function()
 		{
-			var $this = $(this);
+			var $editor = $('#templates .editors .' + property.type).clone();
+			$(this).empty().append($editor);
 
-			// Support the metadata plugin
-            var config = $.meta ? $.extend({}, options, $this.data()) : options;
-
-			$this.empty().append($.fn.propertyEditor.editors[property.type].render(property));
+			$.fn.propertyEditor.editors[property.type](property, $editor, $parent)
 		});
 	};
 
 	$.fn.propertyEditor.defaults = {
 	};
 
-	// Configurations for different editor types
+	// Initializers for different editor types
 	$.fn.propertyEditor.editors = {
-		text: {
-			render: function(property) {
-				var $result = $('<h4>' + property.name + '</h4><p>' + property.description + '</p>' +
-					'<input id="' + property.name + '" type="text" class=".editorTextfield" value="' +
-					(property.value || '') + '"/>');
-				// TODO: validation goes here.
-				return $result;
-			},
-			value: function($this) {
-				return $this.find('.editorTextfield').val();
-			}
+		text: function(property, $editor, $parent) {
+			$editor.find('h4').text(property.name);
+			$editor.find('p').text(property.description);
+			$editor.find('.editorTextfield')
+				.attr('id', 'property_' + property.name)
+				.val(property.value || '')
+				.keyup(function(event)
+				{
+					property.value = $(this).val();
+					$parent.trigger('odkControl-propertiesUpdated');
+				});
+			// TODO: validation goes here.
 		},
-		uiText: {
-			render: function(property) {
-				
-			},
-			value: function($this) {
-				
-			}
+		uiText: function(property, $editor, $parent) {
+			
 		},
-		bool: {
-			render: function(property) {
-				return $('<input id="property_' + property.name + '" type="checkbox" class=".editorCheckbox"' + 
-					((property.value === true) ? ' checked="checked"' : '') + '"/>' +
-					'<label for="property_' + property.name + '">' + property.name + '</label>' +
-					'<p>' + property.description + '</p>');
-			},
-			value: function($this) {
-				return $this.find('.editorCheckbox:checked').length === 1;
-			}
+		bool: function(property, $editor, $parent) {
+			$editor.find('.editorCheckbox')
+				.attr('id', 'property_' + property.name)
+				.attr('checked', property.value === true)
+				.click(function(event)
+				{
+					property.value = $(this).is(':checked');
+					$parent.trigger('odkControl-propertiesUpdated');
+				});
+			$editor.find('label')
+				.attr('for', 'property_' + property.name)
+				.text(property.name);
+			$editor.find('p')
+				.text(property.description);
 		},
-		numericRange: {
-			render: function(property) {
-				
-			},
-			value: function($this) {
-				
-			}
+		numericRange: function(property, $editor, $parent) {
+			
 		},
-		enum: {
-			render: function(property) {
-				
-			},
-			value: function($this) {
-				
-			}
+		enum: function(property, $editor, $parent) {
+			
 		},
-		dateRange: {
-			render: function(property) {
-				
-			},
-			value: function($this) {
-				
-			}
+		dateRange: function(property, $editor, $parent) {
+			
 		},
-		optionsEditor: {
-			render: function(property) {
-				
-			},
-			value: function($this) {
-				
-			}
+		optionsEditor: function(property, $editor, $parent) {
+			
 		}
 	}
 })(jQuery);

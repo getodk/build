@@ -54,7 +54,7 @@
 
 			$('<li/>')
 				.toggleClass('even', (i % 2) == 0)
-				.propertyEditor(this)
+				.propertyEditor(this, $this)
 				.appendTo($propertyList);
 			i++;
 		});
@@ -70,7 +70,7 @@
 
 			$('<li/>')
 				.toggleClass('even', (i % 2) == 0)
-				.propertyEditor(this)
+				.propertyEditor(this, $this)
 				.appendTo($advancedList);
 			i++;
 		});
@@ -124,13 +124,13 @@
 		  description: 'The data name of this field in the final exported XML.',
 		  limit: [ 'nosymbols', 'lowercase', 'unique' ],
 		  required: true,
-		  value: 'Untitled',
+		  value: 'untitled',
 		  summary: false },
 		{ name: 'Label',
 		  type: 'uiText',
 		  description: 'The name of this field as it is presented to the user.',
 		  required: true,
-		  value: 'Untitled',
+		  value: 'No label',
 		  summary: false },
 		{ name: 'Hint',
 		  type: 'uiText',
