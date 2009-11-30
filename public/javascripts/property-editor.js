@@ -20,8 +20,6 @@
 			// Support the metadata plugin
             var config = $.meta ? $.extend({}, options, $this.data()) : options;
 
-			console.log(property.name);
-			console.log(property.type);
 			$this.empty().append($.fn.propertyEditor.editors[property.type].render(property));
 		});
 	};
@@ -34,7 +32,8 @@
 		text: {
 			render: function(property) {
 				var $result = $('<h4>' + property.name + '</h4><p>' + property.description + '</p>' +
-					'<input type="text" class=".editorTextfield" value="' + (property.value || '') + '"/>');
+					'<input id="' + property.name + '" type="text" class=".editorTextfield" value="' +
+					(property.value || '') + '"/>');
 				// TODO: validation goes here.
 				return $result;
 			},
