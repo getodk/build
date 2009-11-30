@@ -37,6 +37,45 @@
 		});
 	};
 
+	var selectControl = function($this, type, config, properties)
+	{
+		$('.workspace .control').removeClass('selected');
+		$this.addClass('selected');
+
+		var $propertyList = $('.propertyList');
+		$propertyList.empty();
+
+		var i = 0;
+		// iterate through non-advanced properties
+		$.each(properties, function()
+		{
+			if (this.advanced === true)
+				return;
+
+			$('<li/>')
+				.toggleClass('even', (i % 2) == 0)
+				.propertyEditor(this)
+				.appendTo($propertyList);
+			i++;
+		});
+
+		// now do advanced properties
+		$('<li class="advanced"><a class="toggle" href="#advanced">Advanced</a>' +
+		    '<ul class="advancedProperties toggleContainer"></ul></li>').appendTo($propertyList);
+		var $advancedList = $propertyList.find('.advancedProperties');
+		$.each(properties, function()
+		{
+			if (this.advanced !== true)
+				return;
+
+			$('<li/>')
+				.toggleClass('even', (i % 2) == 0)
+				.propertyEditor(this)
+				.appendTo($advancedList);
+			i++;
+		});
+	};
+
 	// Constructor
 	$.fn.odkControl = function(type, options, defaultProperties)
 	{
@@ -66,6 +105,11 @@
 				refreshFromProperties($this, type, config, properties);
 			});
 			$this.trigger('odkControl-propertiesUpdated');
+
+			$this.click(function(event) {
+				selectControl($this, type, config, properties);
+			});
+			selectControl($this, type, config, properties);
 		});
 	};
 
@@ -95,7 +139,7 @@
 		  summary: false },
 		{ name: 'Read Only',
 		  type: 'bool',
-		  description: 'Whether this field can be edited by the end user on not.',
+		  description: 'Whether this field can be edited by the end user or not.',
 		  value: false,
 		  summary: true },
 		{ name: 'Required',

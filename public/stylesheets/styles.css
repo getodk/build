@@ -219,6 +219,8 @@ body
 	z-index: 100;
 }
 
+/* PROPERTY PANE */
+
 .propertiesPane
 {
 	background-color: #aaa;
@@ -226,10 +228,60 @@ body
 	border: 3px solid #ddd;
 	border-top: none;
 	position: absolute;
+	overflow: auto;
 	right: 0;
 	top: 0;
 	width: 20em;
 }
+
+.propertiesPane .propertyList li
+{
+	font-size: 1.2em;
+	padding: 0.5em;
+	list-style-type: none;
+}
+.propertiesPane .propertyList li.even
+{
+	background-color: #bbb;
+}
+.propertiesPane .propertyList li h4
+{
+	margin-bottom: 0.3em;
+}
+.propertiesPane .propertyList li p
+{
+	color: #666;
+	font-size: 0.8em;
+	font-style: italic;
+	padding: 0.3em 1em;
+}
+.propertiesPane .propertyList li label
+{
+	font-weight: bold;
+	margin-left: 0.5em;
+}
+.propertiesPane .propertyList li input[type="text"]
+{
+	margin-left: 1em;
+}
+
+.propertiesPane .propertyList li.advanced
+{
+	font-size: 1em;
+	padding: 0;
+}
+.propertiesPane .propertyList li.advanced a.toggle
+{
+	background-color: #888;
+	border: none;
+	color: #fff;
+	display: block;
+	font-size: 1.2em;
+	font-weight: bold;
+	padding: 0.5em;
+}
+
+/* WORKSPACE */
 
 .workspaceScrollArea
 {
@@ -316,4 +368,27 @@ body
 	color: #666;
 	font-style: italic;
 	margin: 0.5em;
+}
+
+.workspace .control:hover
+{
+	border: 3px solid #333;
+}
+.workspace .control:hover .controlName
+{
+	background-color: #333;
+}
+
+.workspace .control.selected
+{
+	background-color: #dddde3;
+	border: 3px solid #225;
+}
+.workspace .control.selected .controlName
+{
+	background-color: #225;
+}
+.workspace .control.selected .controlProperties
+{
+	background-color: #ccccd2;
 }

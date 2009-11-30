@@ -15,4 +15,14 @@
 		else
 			return value || '&nbsp;'
 	};
+
+	$.live = function(selector, type, callback)
+	{
+		var obj = $([]);
+	    obj.selector = selector;
+	    if (type && callback) {
+	        obj.live(type, callback);
+	    }
+	    return obj;
+	};
 })(jQuery);
