@@ -356,6 +356,7 @@ body
 	padding: 2em;
 	position: relative;
 	text-align: center;
+	z-index: 0;
 }
 .workspace .placeholder:last-child .flowArrow
 {
@@ -444,6 +445,7 @@ body
 	margin-left: -18px;
 	position: absolute;
 	width: 36px;
+	z-index: 10;
 }
 .workspace .control:last-child .controlFlowArrow
 {
