@@ -262,6 +262,10 @@ body
 {
 	margin-bottom: 0.3em;
 }
+.propertiesPane .propertyList li h5
+{
+	margin: 0.3em 1em;
+}
 .propertiesPane .propertyList li p
 {
 	color: #666;
@@ -274,9 +278,16 @@ body
 	font-weight: bold;
 	margin-left: 0.5em;
 }
-.propertiesPane .propertyList li input[type="text"]
+.propertiesPane .propertyList li input[type="text"],
+.propertiesPane .propertyList li select
 {
 	margin-left: 1em;
+	width: 85%;
+}
+
+.propertiesPane .propertyList li input[type="text"][disabled="disabled"]
+{
+	background-color: #eee;
 }
 
 .propertiesPane .propertyList li.advanced

@@ -68,6 +68,7 @@
     <script type="text/javascript" src="/javascripts/toolbutton.js"></script>
     <script type="text/javascript" src="/javascripts/application.js"></script>
     <div id="templates">
+
       <div class="control">
         <h4 class="controlName">
           <div class="icon"></div>
@@ -77,16 +78,47 @@
         <dl class="controlProperties clearfix"></dl>
         <div class="controlFlowArrow"></div>
       </div>
+
       <div class="editors">
         <div class="text">
           <h4></h4>
           <p></p>
           <input type="text" class="editorTextfield"/>
         </div>
+
         <div class="bool">
           <input type="checkbox" class="editorCheckbox"/>
           <label></label>
           <p></p>
+        </div>
+
+        <div class="numericRange dateRange">
+          <h4></h4>
+          <p></p>
+          <input id="property_range_enabled" type="checkbox" class="editorCheckbox"/>
+          <label for="property_range_enabled">Enable</label>
+          <h5>Minimum</h5>
+          <input type="text" class="editorTextfield min"/>
+          <h5>Maximum</h5>
+          <input type="text" class="editorTextfield max"/>
+        </div>
+
+        <div class="uiText">
+          <h4></h4>
+          <p></p>
+          <ul class="translations"></ul>
+          <a class="addTranslation" href="#addTranslation">Add Translation</a>
+        </div>
+          <li class="uiText-translation">
+            <a class="removeTranslation" href="#removeTranslation">Remove Translation</a>
+            <h5></h5>
+            <input type="text" class="editorTextfield"/>
+          </li>
+
+        <div class="enum">
+          <h4></h4>
+          <p></p>
+          <select class="editorSelect"></select>
         </div>
       </div>
     </div>

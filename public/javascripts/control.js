@@ -172,15 +172,18 @@
 		inputText: [
 		  { name: 'Length',
 		    type: 'numericRange',
+			description: 'Valid lengths for this user input of this control.',
 			value: false,
 		 	summary: false } ],
 		inputNumeric: [
 		  { name: 'Range',
 			type: 'numericRange',
+			description: 'Valid range for the user input of this control.',
 			value: false,
 			summary: false },
 		  { name: 'Type',
 		    type: 'enum',
+			description: 'Type of number accepted.',
 		  	options: [ 'Integer',
 					   'Decimal' ],
 			value: 'Integer',
