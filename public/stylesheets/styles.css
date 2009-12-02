@@ -358,6 +358,10 @@ body
 	text-align: center;
 	z-index: 0;
 }
+.workspace .placeholder.hide
+{
+	visibility: hidden;
+}
 .workspace .placeholder:last-child .flowArrow
 {
 	display: none;
@@ -431,7 +435,11 @@ body
 	color: #333;
 	font-weight: bold;
 }
-.workspace .control .controlPreview .controlOptionsEmpty
+.workspace .control .controlPreview .controlOptionsList li
+{
+	list-style-type: none;
+}
+.workspace .control .controlPreview .controlOptionsList .controlOptionsEmpty
 {
 	color: #666;
 	font-style: italic;

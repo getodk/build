@@ -228,16 +228,18 @@
 		var options = getProperty(properties, 'Options');
 		var name = getProperty(properties, 'Name') || Math.random();
 
+		result += '<ul class="controlOptionsList">'
 		if ((options !== undefined) && (options !== null) && (options.length > 0))
 			$.each(options, function(option)
 			{
-				result += '<input type="' + type + '" name=' + name + '/>' +
-						  '<label class="controlOptionLabel">' + option.label + '</label>';
+				result += '<li><input type="' + type + '" id="preview_' + name + '"/>' +
+						  '<label for="preview_' + name + '" class="controlOptionLabel">' +
+						  option.label + '</label></li>';
 			});
 		else
-			result += '<div class="controlOptionsEmpty">No options yet.</div>';
+			result += '<li class="controlOptionsEmpty">No options yet.</li>';
 
-		return $(result);
+		return $(result + '</li>');
 	};
 
 	$.fn.odkControl.controlRenderers = {
