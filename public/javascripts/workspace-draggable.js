@@ -47,21 +47,6 @@
 		}
 	};
 
-	var generatePlaceholder = function(displayText, config)
-	{
-		$('.workspace .placeholder')
-			.addClass('closing')
-			.slideUp('normal', function()
-			{
-				$(this).remove();
-			});
-		return $('<div class="placeholder"></div>')
-			    .text(displayText)
-				.toggleClass('hide', !config.insertPlaceHolder)
-				.append('<div class="flowArrow"></div>')
-			    .slideDown('normal');
-	};
-
 	var checkHover = function($this, position, config)
 	{
 		// Check bounds
@@ -78,7 +63,7 @@
 		if ($workspace.children(':not(.placeholder)').length === 0)
 		{
 			if ($('.workspace .placeholder').length === 0)
-				$workspace.append(generatePlaceholder($this.text(), config));
+				config.dragCallback($workspace, 0);
 		}
 		else
 		{
@@ -102,7 +87,7 @@
 				if (position.top < (stackHeight + threshold))
 				{
 					if (! $control.prev().is('.placeholder'))
-						$control.before(generatePlaceholder($this.text(), config));
+						config.dragCallback($control, -1);
 					return false;
 				}
 
@@ -112,7 +97,7 @@
 					(position.top < stackHeight))
 				{
 					if (! $control.next().is('.placeholder'))
-						$control.after(generatePlaceholder($this.text(), config));
+						config.dragCallback($control, 1);
 					return false;
 				}
 			});
@@ -147,22 +132,17 @@
 				{
 					clearInterval(scrollTimer);
 
-					var $placeholder = $('.workspace .placeholder:not(.closing)');
-					if ($placeholder.length > 0)
-						$placeholder.replaceWith(
-							$('#templates .control')
-								.clone()
-								.addClass($this.attr('rel'))
-								.odkControl($this.attr('rel'))
-								.trigger('odkControl-select'));
+					config.dropCallback();
 				}
 			}, options.draggableOptions));
 		});
 	};
 
 	$.fn.workspaceDraggable.defaults = {
+		dragCallback: function($control, direction) {},
 		draggableOptions: {},
-		insertPlaceHolder: true,
+		dropCallback: function() {},
+		insertCallback: function() {},
 		scrollInterval: 10,
 		scrollMargin: 40,
 		scrollSpeed: 10

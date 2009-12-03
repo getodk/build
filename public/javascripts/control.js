@@ -110,6 +110,15 @@
 				selectControl($this, type, config, properties);
 			});
 			selectControl($this, type, config, properties);
+
+			$this.workspaceDraggable({
+				draggableOptions: {
+					containment: '.workspaceScrollArea',
+					handle: '.controlName',
+					helper: 'original'
+				},
+				insertPlaceholder: false
+			});
 		});
 	};
 

@@ -358,10 +358,6 @@ body
 	text-align: center;
 	z-index: 0;
 }
-.workspace .placeholder.hide
-{
-	visibility: hidden;
-}
 .workspace .placeholder:last-child .flowArrow
 {
 	display: none;
