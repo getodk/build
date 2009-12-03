@@ -18,7 +18,7 @@ table, caption, tbody, tfoot, thead, tr, th, td
 /* set 1em to 10px */
 body
 {
-	font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif;
     font-size: 62.5%;
     line-height: 1;
 }
@@ -26,23 +26,23 @@ body
 /* clearfix */
 .clearfix:after 
 {
-	clear: both;
-	content: ".";
-	display: block;
-	height: 0;
-	visibility: hidden;
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
 }
 .clearfix 
 { 
-	display: inline-block; 
+    display: inline-block;
 }
 .clearfix 
 { 
-	display: block; 
+    display: block;
 }
 * html .clearfix 
 { 
-	height: 1%; 
+    height: 1%;
 }
 
 
@@ -50,71 +50,71 @@ body
 
 a
 {
-	border-bottom: 1px dotted #fff;
-	text-decoration: none;
+    border-bottom: 1px dotted #fff;
+    text-decoration: none;
 }
 
 .toolbar
 {
-	float: right;
+    float: right;
 }
 .toolbar li
 {
-	display: inline-block;
-	margin-left: 1.5em;
+    display: inline-block;
+    margin-left: 1.5em;
 }
 .toolbar li.separator
 {
-	width: 1em;
+    width: 1em;
 }
 .toolbar li a
 {
-	background: transparent url(/images/icons.png) no-repeat;
-	border: none;
-	display: block;
-	height: 16px;
-	line-height: 16px;
+    background: transparent url(/images/icons.png) no-repeat;
+    border: none;
+    display: block;
+    height: 16px;
+    line-height: 16px;
 }
 
 #templates
 {
-	display: none;
+    display: none;
 }
 
 /* LAYOUT */
 
 body
 {
-	background-color: #148;
-	overflow: hidden;
+    background-color: #148;
+    overflow: hidden;
 }
 
 .header
 {
-	background: #148; /* TODO:IMG */
-	color: #fff;
-	height: 2em;
-	padding: 3em;
+    background: #148; /* TODO:IMG */
+    color: #fff;
+    height: 2em;
+    padding: 3em;
 }
 .header h1
 {
-	float: left;
-	text-shadow: #000 0 0 0.4em;
+    float: left;
+    text-shadow: #000 0 0 0.4em;
 }
 .header .toolbar
 {
-	margin-top: 0.3em;
+    margin-top: 0.3em;
 }
 .header .toolbar li a
 {
-	color: #fff;
-	font-weight: bold;
-	padding-left: 24px;
-	text-transform: lowercase;
+    color: #fff;
+    font-weight: bold;
+    padding-left: 24px;
+    text-transform: lowercase;
 }
 .header .toolbar li a:hover
 {
-	color: #ccc;
+    color: #ccc;
 }
 .header .toolbar li #newLink { background-position: 0 0; }
 .header .toolbar li #openLink { background-position: 0 -16px; }
@@ -122,45 +122,45 @@ body
 
 .subheader
 {
-	background-color: #ddd;
-	border: 1px solid #026;
-	height: 1.6em;
-	margin: 0 1em;
-	padding: 0.5em 1em;
+    background-color: #ddd;
+    border: 1px solid #026;
+    height: 1.6em;
+    margin: 0 1em;
+    padding: 0.5em 1em;
 }
 .subheader h2
 {
-	float: left;
-	font-size: 1.5em;
-	line-height: 16px;
+    float: left;
+    font-size: 1.5em;
+    line-height: 16px;
 }
 .subheader #editTitleLink
 {
-	background: transparent url(/images/icons.png) no-repeat 0 -48px;
-	border: none;
-	color: #444;
-	display: block;
-	float: left;
-	height: 16px;
-	line-height: 16px;
-	margin-left: 1em;
-	padding-left: 24px;
-	text-indent: -9999px;
-	text-transform: lowercase;
+    background: transparent url(/images/icons.png) no-repeat 0 -48px;
+    border: none;
+    color: #444;
+    display: block;
+    float: left;
+    height: 16px;
+    line-height: 16px;
+    margin-left: 1em;
+    padding-left: 24px;
+    text-indent: -9999px;
+    text-transform: lowercase;
 }
 .subheader #editTitleLink:hover
 {
-	text-indent: 0;
+    text-indent: 0;
 }
 .subheader .toolbar li a
 {
-	color: #444;
-	padding-left: 24px;
-	text-transform: lowercase;
+    color: #444;
+    padding-left: 24px;
+    text-transform: lowercase;
 }
 .subheader .toolbar li a:hover
 {
-	color: #000;
+    color: #000;
 }
 .subheader .toolbar li #undoLink { background-position: 0 -64px; }
 .subheader .toolbar li #redoLink { background-position: 0 -80px; }
@@ -169,322 +169,322 @@ body
 
 .mainWrapper
 {
-	border: 1px solid #026;
-	border-top: none;
-	bottom: 1em;
-	left: 1em;
-	position: absolute;
-	right: 1em;
-	top: 10.7em;
+    border: 1px solid #026;
+    border-top: none;
+    bottom: 1em;
+    left: 1em;
+    position: absolute;
+    right: 1em;
+    top: 10.7em;
 }
 .mainWrapper h3
 {
-	background-color: #46a;
-	color: #fff;
-	padding: 0.4em;
+    background-color: #46a;
+    color: #fff;
+    padding: 0.4em;
 }
 
 .toolPalette
 {
-	background-color: #aaa;
-	border: 3px solid #ddd;
-	border-top: none;
-	bottom: 0;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 12em;
+    background-color: #aaa;
+    border: 3px solid #ddd;
+    border-top: none;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 12em;
 }
 .toolPalette ul
 {
-	padding: 0.5em;
+    padding: 0.5em;
 }
 .toolPalette li
 {
-	list-style-type: none;
-	margin-bottom: 1em;
+    list-style-type: none;
+    margin-bottom: 1em;
 }
 .toolPalette li.separator
 {
-	border-bottom: 1px dotted #888;
+    border-bottom: 1px dotted #888;
 }
 .toolButton
 {
-	background-color: #bbb;
-	border: 1px solid #888;
-	cursor: move;
-	display: block;
-	padding: 1em 1em 1.2em 0.5em;
+    background-color: #bbb;
+    border: 1px solid #888;
+    cursor: move;
+    display: block;
+    padding: 1em 1em 1.2em 0.5em;
 }
 .toolButton .icon
 {
-	background: transparent url(/images/icons.png) no-repeat;
-	display: inline-block;
-	height: 16px;
-	margin-bottom: -0.4em;
-	margin-right: 0.5em;
-	width: 16px;
+    background: transparent url(/images/icons.png) no-repeat;
+    display: inline-block;
+    height: 16px;
+    margin-bottom: -0.4em;
+    margin-right: 0.5em;
+    width: 16px;
 }
 .toolButton.ui-draggable-dragging
 {
-	-moz-box-shadow: 0 0 0.5em #000;
-	-webkit-box-shadow: 0 0 0.5em #000;
-	width: 10em;
-	z-index: 100;
+    -moz-box-shadow: 0 0 0.5em #000;
+    -webkit-box-shadow: 0 0 0.5em #000;
+    width: 10em;
+    z-index: 100;
 }
 
 /* PROPERTY PANE */
 
 .propertiesPane
 {
-	background-color: #aaa;
-	bottom: 0;
-	border: 3px solid #ddd;
-	border-top: none;
-	position: absolute;
-	overflow: auto;
-	right: 0;
-	top: 0;
-	width: 20em;
+    background-color: #aaa;
+    bottom: 0;
+    border: 3px solid #ddd;
+    border-top: none;
+    position: absolute;
+    overflow: auto;
+    right: 0;
+    top: 0;
+    width: 20em;
 }
 
 .propertiesPane .propertyList li
 {
-	font-size: 1.2em;
-	padding: 0.5em;
-	list-style-type: none;
+    font-size: 1.2em;
+    padding: 0.5em;
+    list-style-type: none;
 }
 .propertiesPane .propertyList li.even
 {
-	background-color: #bbb;
+    background-color: #bbb;
 }
 .propertiesPane .propertyList li h4
 {
-	margin-bottom: 0.3em;
+    margin-bottom: 0.3em;
 }
 .propertiesPane .propertyList li h5
 {
-	margin: 0.3em 1em;
+    margin: 0.3em 1em;
 }
 .propertiesPane .propertyList li p
 {
-	color: #666;
-	font-size: 0.8em;
-	font-style: italic;
-	padding: 0.3em 1em;
+    color: #666;
+    font-size: 0.8em;
+    font-style: italic;
+    padding: 0.3em 1em;
 }
 .propertiesPane .propertyList li label
 {
-	font-weight: bold;
-	margin-left: 0.5em;
+    font-weight: bold;
+    margin-left: 0.5em;
 }
 .propertiesPane .propertyList li input[type="text"],
 .propertiesPane .propertyList li select
 {
-	margin-left: 1em;
-	width: 85%;
+    margin-left: 1em;
+    width: 85%;
 }
 
 .propertiesPane .propertyList li input[type="text"][disabled="disabled"]
 {
-	background-color: #eee;
+    background-color: #eee;
 }
 
 .propertiesPane .propertyList li.advanced
 {
-	font-size: 1em;
-	padding: 0;
+    font-size: 1em;
+    padding: 0;
 }
 .propertiesPane .propertyList li.advanced a.toggle
 {
-	background: #888;
-	border: none;
-	color: #fff;
-	display: block;
-	font-size: 1.2em;
-	font-weight: bold;
-	padding: 0.5em;
+    background: #888;
+    border: none;
+    color: #fff;
+    display: block;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0.5em;
 }
 
 .propertiesPane .propertyList li.advanced a.toggle .icon
 {
-	background: transparent url(/images/icons.png) no-repeat 0 -256px;
-	float: right;
-	height: 16px;
-	margin-top: -0.2em;
-	width: 16px;
+    background: transparent url(/images/icons.png) no-repeat 0 -256px;
+    float: right;
+    height: 16px;
+    margin-top: -0.2em;
+    width: 16px;
 }
 .propertiesPane .propertyList li.advanced a.toggle.expanded .icon
 {
-	background-position: 0 -240px;
+    background-position: 0 -240px;
 }
 
 /* WORKSPACE */
 
 .workspaceScrollArea
 {
-	background-color: #333;
-	border-bottom: 3px solid #ddd;
-	bottom: 0;
-	left: 12.6em;
-	overflow: auto;
-	position: absolute;
-	right: 20.6em;
-	top: 0;
+    background-color: #333;
+    border-bottom: 3px solid #ddd;
+    bottom: 0;
+    left: 12.6em;
+    overflow: auto;
+    position: absolute;
+    right: 20.6em;
+    top: 0;
 }
 
 .workspaceWrapper
 {
-	-moz-box-shadow: 0 0 1em #000;
-	-webkit-box-shadow: 0 0 1em #000;
-	background-color: #eee;
-	margin: 2em;
-	padding-bottom: 5em;
-	padding-top: 1em;
+    -moz-box-shadow: 0 0 1em #000;
+    -webkit-box-shadow: 0 0 1em #000;
+    background-color: #eee;
+    margin: 2em;
+    padding-bottom: 5em;
+    padding-top: 1em;
 }
 
 .workspace
 {
-	margin: 2em;
-	min-height: 50em;
+    margin: 2em;
+    min-height: 50em;
 }
 .workspace .placeholder
 {
-	background-color: #fad68e;
-	border: 1px solid #f2a324;
-	margin-bottom: 1.5em;
-	padding: 2em;
-	position: relative;
-	text-align: center;
-	z-index: 0;
+    background-color: #fad68e;
+    border: 1px solid #f2a324;
+    margin-bottom: 1.5em;
+    padding: 2em;
+    position: relative;
+    text-align: center;
+    z-index: 0;
 }
 .workspace .placeholder:last-child .flowArrow
 {
-	display: none;
+    display: none;
 }
 .workspace .placeholder .flowArrow
 {
-	background: transparent url(/images/flows.png) no-repeat 0 -96px;
-	bottom: -32px;
-	height: 32px;
-	left: 50%;
-	margin-left: -18px;
-	position: absolute;
-	width: 36px;
+    background: transparent url(/images/flows.png) no-repeat 0 -96px;
+    bottom: -32px;
+    height: 32px;
+    left: 50%;
+    margin-left: -18px;
+    position: absolute;
+    width: 36px;
 }
 .workspace .control
 {
-	background-color: #ddd;
-	border: 3px solid #555;
-	margin-bottom: 1.5em;
+    background-color: #ddd;
+    border: 3px solid #555;
+    margin-bottom: 1.5em;
 }
 .workspace .control .controlName
 {
-	background-color: #555;
-	color: #fff;
-	font-size: 1.2em;
-	height: 16px;
-	line-height: 16px;
-	padding: 0.5em;
-	padding-bottom: 0.7em;
+    background-color: #555;
+    color: #fff;
+    font-size: 1.2em;
+    height: 16px;
+    line-height: 16px;
+    padding: 0.5em;
+    padding-bottom: 0.7em;
 }
 .workspace .control .controlName .icon
 {
-	background-image: url(/images/icons.png);
-	display: inline-block;
-	height: 16px;
-	margin-bottom: -0.3em;
-	margin-right: 0.5em;
-	width: 16px;
+    background-image: url(/images/icons.png);
+    display: inline-block;
+    height: 16px;
+    margin-bottom: -0.3em;
+    margin-right: 0.5em;
+    width: 16px;
 }
 .workspace .control .controlPreview
 {
-	margin: 1em;
+    margin: 1em;
 }
 .workspace .control .controlProperties
 {
-	background-color: #ccc;
-	padding: 1em;
+    background-color: #ccc;
+    padding: 1em;
 }
 .workspace .control .controlProperties dt
 {
-	clear: left;
-	font-weight: bold;
-	float: left;
-	margin-bottom: 0.2em;
-	margin-right: 1.5em;
-	text-align: right;
-	width: 8em;
+    clear: left;
+    font-weight: bold;
+    float: left;
+    margin-bottom: 0.2em;
+    margin-right: 1.5em;
+    text-align: right;
+    width: 8em;
 }
 .workspace .control .controlProperties dd
 {
-	margin-bottom: 0.2em;
+    margin-bottom: 0.2em;
 }
 .workspace .control .controlPreview .controlLabel
 {
-	display: block;
-	font-size: 1.4em;
-	font-weight: bold;
+    display: block;
+    font-size: 1.4em;
+    font-weight: bold;
 }
 .workspace .control .controlPreview .controlHint
 {
-	color: #333;
-	font-weight: bold;
+    color: #333;
+    font-weight: bold;
 }
 .workspace .control .controlPreview .controlOptionsList li
 {
-	list-style-type: none;
+    list-style-type: none;
 }
 .workspace .control .controlPreview .controlOptionsList .controlOptionsEmpty
 {
-	color: #666;
-	font-style: italic;
-	margin: 0.5em;
+    color: #666;
+    font-style: italic;
+    margin: 0.5em;
 }
 .workspace .control .controlFlowArrow
 {
-	background: transparent url(/images/flows.png) no-repeat 0 0;
-	height: 32px;
-	left: 50%;
-	margin-left: -18px;
-	position: absolute;
-	width: 36px;
-	z-index: 10;
+    background: transparent url(/images/flows.png) no-repeat 0 0;
+    height: 32px;
+    left: 50%;
+    margin-left: -18px;
+    position: absolute;
+    width: 36px;
+    z-index: 10;
 }
 .workspace .control:last-child .controlFlowArrow
 {
-	display: none;
+    display: none;
 }
 
 .workspace .control:hover
 {
-	border: 3px solid #333;
+    border: 3px solid #333;
 }
 .workspace .control:hover .controlName
 {
-	background-color: #333;
+    background-color: #333;
 }
 .workspace .control:hover .controlFlowArrow
 {
-	background-position: 0 -32px;
+    background-position: 0 -32px;
 }
 
 .workspace .control.selected
 {
-	background-color: #dddde3;
-	border: 3px solid #225;
+    background-color: #dddde3;
+    border: 3px solid #225;
 }
 .workspace .control.selected .controlName
 {
-	background-color: #225;
+    background-color: #225;
 }
 .workspace .control.selected .controlProperties
 {
-	background-color: #ccccd2;
+    background-color: #ccccd2;
 }
 .workspace .control.selected .controlFlowArrow
 {
-	background-position: 0 -64px;
+    background-position: 0 -64px;
 }
 
 /* ICONS */

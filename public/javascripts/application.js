@@ -8,24 +8,24 @@ var applicationNS = {};
 
 applicationNS.newForm = function()
 {
-	$('.workspace').empty();
+    $('.workspace').empty();
 };
 
 $(function()
 {
-	// Wire up toolpane
-	$('.toolPalette a').toolButton();
+    // Wire up toolpane
+    $('.toolPalette a').toolButton();
 
-	// Kick off a new form by default
-	applicationNS.newForm();
+    // Kick off a new form by default
+    applicationNS.newForm();
 
-	// Toggles
-	$.live('a.toggle', 'click', function(event)
-	{
-		event.preventDefault();
-		$(this)
-			.toggleClass('expanded')
-			.siblings('.toggleContainer')
-				.slideToggle('normal');
-	});
+    // Toggles
+    $.live('a.toggle', 'click', function(event)
+    {
+        event.preventDefault();
+        $(this)
+            .toggleClass('expanded')
+            .siblings('.toggleContainer')
+                .slideToggle('normal');
+    });
 });
