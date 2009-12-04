@@ -5,7 +5,6 @@
  *    is managed by the DOM.
  */
 
-// jr:itext for translation
 // <output value="xpath"/> for substitution inside question text
 
 ;(function($)
@@ -111,11 +110,52 @@
             });
             selectControl($this, type, config, properties);
 
+            var cachedHeight = 0;
             $this.workspaceDraggable({
                 draggableOptions: {
-                    containment: '.workspaceScrollArea',
                     handle: '.controlName',
-                    helper: 'original'
+                    start: function(event, ui)
+                    {
+                        ui.helper.width($this.width());
+                        cachedHeight = $this.outerHeight(true);
+                        $this
+                            .after(
+                                $('<div class="placeholder hidden"></div>')
+                                    .css('height', cachedHeight + 'px'))
+                            .hide()
+                            .appendTo($('body'));
+                    }
+                },
+                dragCallback: function($control, direction)
+                {
+                    $('.workspace .placeholder.hidden')
+                        .addClass('closing')
+                        .slideUp('normal', function()
+                        {
+                            $(this).remove();
+                        });
+
+                    $('.control.ui-draggable-dragging')
+                        .toggleClass('last', $control.is(':last-child') && (direction > 0))
+
+                    var $placeholder = $('<div class="placeholder hidden"></div>')
+                                        .css('height', cachedHeight + 'px')
+                                        .slideDown('normal');
+                    if (direction < 0)
+                        $control.before($placeholder);
+                    else if (direction == 0)
+                        $control.append($placeholder);
+                    else if (direction > 0)
+                        $control.after($placeholder);
+                },
+                dropCallback: function($helper)
+                {
+                    var $target = $('.workspace .placeholder:not(.closing)');
+                    if ($target.length == 1)
+                        $target.replaceWith($this);
+                    else
+                        $this.appendTo('.workspace');
+                    $this.show();
                 },
                 insertPlaceholder: false
             });

@@ -372,23 +372,31 @@ body
     position: absolute;
     width: 36px;
 }
-.workspace .control
+.workspace .placeholder.hidden
+{
+    background-color: transparent;
+    border: none;
+    margin-bottom: 0;
+    padding: 0;
+}
+.control
 {
     background-color: #ddd;
     border: 3px solid #555;
     margin-bottom: 1.5em;
 }
-.workspace .control .controlName
+.control .controlName
 {
     background-color: #555;
     color: #fff;
+    cursor: move;
     font-size: 1.2em;
     height: 16px;
     line-height: 16px;
     padding: 0.5em;
     padding-bottom: 0.7em;
 }
-.workspace .control .controlName .icon
+.control .controlName .icon
 {
     background-image: url(/images/icons.png);
     display: inline-block;
@@ -397,16 +405,16 @@ body
     margin-right: 0.5em;
     width: 16px;
 }
-.workspace .control .controlPreview
+.control .controlPreview
 {
     margin: 1em;
 }
-.workspace .control .controlProperties
+.control .controlProperties
 {
     background-color: #ccc;
     padding: 1em;
 }
-.workspace .control .controlProperties dt
+.control .controlProperties dt
 {
     clear: left;
     font-weight: bold;
@@ -416,32 +424,32 @@ body
     text-align: right;
     width: 8em;
 }
-.workspace .control .controlProperties dd
+.control .controlProperties dd
 {
     margin-bottom: 0.2em;
 }
-.workspace .control .controlPreview .controlLabel
+.control .controlPreview .controlLabel
 {
     display: block;
     font-size: 1.4em;
     font-weight: bold;
 }
-.workspace .control .controlPreview .controlHint
+.control .controlPreview .controlHint
 {
     color: #333;
     font-weight: bold;
 }
-.workspace .control .controlPreview .controlOptionsList li
+.control .controlPreview .controlOptionsList li
 {
     list-style-type: none;
 }
-.workspace .control .controlPreview .controlOptionsList .controlOptionsEmpty
+.control .controlPreview .controlOptionsList .controlOptionsEmpty
 {
     color: #666;
     font-style: italic;
     margin: 0.5em;
 }
-.workspace .control .controlFlowArrow
+.control .controlFlowArrow
 {
     background: transparent url(/images/flows.png) no-repeat 0 0;
     height: 32px;
@@ -451,38 +459,44 @@ body
     width: 36px;
     z-index: 10;
 }
-.workspace .control:last-child .controlFlowArrow
+body > .control.last .controlFlowArrow,
+.control:last-child .controlFlowArrow
 {
     display: none;
 }
 
-.workspace .control:hover
+body > .control
+{
+    z-index: 400;
+}
+
+.control:hover
 {
     border: 3px solid #333;
 }
-.workspace .control:hover .controlName
+.control:hover .controlName
 {
     background-color: #333;
 }
-.workspace .control:hover .controlFlowArrow
+.control:hover .controlFlowArrow
 {
     background-position: 0 -32px;
 }
 
-.workspace .control.selected
+.control.selected
 {
     background-color: #dddde3;
     border: 3px solid #225;
 }
-.workspace .control.selected .controlName
+.control.selected .controlName
 {
     background-color: #225;
 }
-.workspace .control.selected .controlProperties
+.control.selected .controlProperties
 {
     background-color: #ccccd2;
 }
-.workspace .control.selected .controlFlowArrow
+.control.selected .controlFlowArrow
 {
     background-position: 0 -64px;
 }

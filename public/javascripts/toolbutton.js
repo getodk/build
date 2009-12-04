@@ -9,16 +9,10 @@
     // Constructor
     $.fn.toolButton = function(options)
     {
-        var options = $.extend({}, $.fn.toolButton.defaults, options);
-
         return this.each(function()
         {
             var $this = $(this);
 
-            // Support the metadata plugin
-            var config = $.meta ? $.extend({}, options, $this.data()) : options;
-
-            // HACK: add icons.
             $this.prepend($('<div class="icon"></div>'));
 
             $this.workspaceDraggable({
@@ -55,10 +49,6 @@
                 }
             });
         });
-    };
-
-    // Plugin Defaults
-    $.fn.toolButton.defaults = {
     };
 
 })(jQuery);

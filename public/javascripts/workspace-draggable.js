@@ -93,8 +93,13 @@
 
                 // Add the height
                 stackHeight += $control.outerHeight(true);
-                if ((position.top > (stackHeight - threshold)) &&
-                    (position.top < stackHeight))
+
+                // Check the bottom of the current block
+                // Fallback: if we haven't matched any of the above cases
+                // we're at the end of the line just add after here.
+                if (((position.top > (stackHeight - threshold)) &&
+                     (position.top < stackHeight)) ||
+                     ($control.is(':last-child')))
                 {
                     if (! $control.next().is('.placeholder'))
                         config.dragCallback($control, 1);
@@ -132,7 +137,7 @@
                 {
                     clearInterval(scrollTimer);
 
-                    config.dropCallback();
+                    config.dropCallback(ui.helper);
                 }
             }, options.draggableOptions));
         });
