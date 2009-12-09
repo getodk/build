@@ -100,11 +100,16 @@
                 $.extend(true, [], $.fn.odkControl.controlProperties[type]));
             $this.data('odkControl-properties', properties);
 
-            $this.bind('odkControl-propertiesUpdated', function(event) {
+            $this.bind('odkControl-propertiesUpdated', function(event)
+            {
                 refreshFromProperties($this, type, config, properties);
             });
             $this.trigger('odkControl-propertiesUpdated');
 
+            $this.bind('odkControl-reloadProperties', function(event)
+            {
+                selectControl($this, type, config, properties);
+            });
             $this.click(function(event) {
                 selectControl($this, type, config, properties);
             });
@@ -179,12 +184,12 @@
           type: 'uiText',
           description: 'The name of this field as it is presented to the user.',
           required: true,
-          value: 'No label',
+          value: {},
           summary: false },
         { name: 'Hint',
           type: 'uiText',
           description: 'Additional help for this question.',
-          value: '',
+          value: {},
           summary: false },
         { name: 'Read Only',
           type: 'bool',
@@ -261,9 +266,9 @@
     // Preview renderers
     var generateLabels = function(label, hint)
     {
-        var result = '<label class="controlLabel">' + label + '</label>';
+        var result = '<label class="controlLabel">' + (label.eng || 'no label') + '</label>';
         if (hint !== '')
-            result += '<label class="controlHint">' + hint + '</label>';
+            result += '<label class="controlHint">' + (hint.eng || '') + '</label>';
         return result;
     };
     var generateTextPreview = function(properties)

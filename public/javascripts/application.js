@@ -28,4 +28,14 @@ $(function()
             .siblings('.toggleContainer')
                 .slideToggle('normal');
     });
+
+    // Init modals
+    $('.modal').jqm({
+        modal: true
+    });
+    $.live('a[rel=modal]', 'click', function(event)
+    {
+        event.preventDefault();
+        $('.' + $(this).attr('href').replace(/#/, '')).jqmShow();
+    });
 });

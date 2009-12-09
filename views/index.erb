@@ -59,10 +59,30 @@
       </div>
     </div>
 
+    <div class="modal translationsDialog">
+      <h3>Translations</h3>
+      <div class="modalContents">
+        <h4>Active languages</h4>
+        <p class="translationNone">(none)</p>
+        <ul class="translationList"></ul>
+
+        <h4>Add a new language</h4>
+        <select class="translationSelect"></select>
+        <a class="addTranslation" href="#addTranslation">Add Translation</a>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton jqmClose" href="#close">Done</a>
+      </div>
+    </div>
+
     <script type="text/javascript" src="/javascripts/jquery-1.3.2.js"></script>
     <script type="text/javascript" src="/javascripts/jquery-ui-1.7.2.custom.min.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.cloudkit.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.jqmodal.min.js"></script>
+    <script type="text/javascript" src="/javascripts/namespace.js"></script>
     <script type="text/javascript" src="/javascripts/util.js"></script>
+    <script type="text/javascript" src="/javascripts/data.js"></script>
+    <script type="text/javascript" src="/javascripts/i18n.js"></script>
     <script type="text/javascript" src="/javascripts/property-editor.js"></script>
     <script type="text/javascript" src="/javascripts/workspace-draggable.js"></script>
     <script type="text/javascript" src="/javascripts/control.js"></script>
@@ -108,10 +128,9 @@
           <h4></h4>
           <p></p>
           <ul class="translations"></ul>
-          <a class="addTranslation" href="#addTranslation">Add Translation</a>
+          <a class="manageTranslations" href="#translationsDialog" rel="modal">Manage Translations</a>
         </div>
           <li class="uiText-translation">
-            <a class="removeTranslation" href="#removeTranslation">Remove Translation</a>
             <h5></h5>
             <input type="text" class="editorTextfield"/>
           </li>

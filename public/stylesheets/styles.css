@@ -81,6 +81,70 @@ a
     display: none;
 }
 
+.modal
+{
+    background-color: #fff;
+    border: 0.3em solid #333;
+    -moz-box-shadow: 0 0 1em #222;
+    -webkit-box-shadow: 0 0 1em #222;
+    color: #333;
+    display: none;
+    left: 50%;
+    margin-left: -30em;
+    position: fixed;
+    top: 17%;
+    width: 60em;
+}
+.modal h3
+{
+    background-color: #333;
+    color: #fff;
+    padding: 0.3em 0.5em 0.6em;
+}
+.modal .modalContents
+{
+    padding: 2em;
+}
+.modal .modalButtonContainer
+{
+    background-color: #eee;
+    padding: 2em;
+    text-align: right;
+}
+.modal .modalButton
+{
+    background-color: #555;
+    border: 0.2em solid #333;
+    color: #fff;
+    padding: 0.4em 1em;
+}
+.modal .modalButton:hover
+{
+    background-color: #666;
+}
+.modal h4
+{
+    font-size: 1.1em;
+    margin: 0.3em 0;
+}
+
+/* jqm */
+.jqmOverlay { background-color: #000; }
+
+/* Background iframe styling for IE6. Prevents ActiveX bleed-through (<select> form elements, etc.) */
+* iframe.jqm {position:absolute;top:0;left:0;z-index:-1;
+	width: expression(this.parentNode.offsetWidth+'px');
+	height: expression(this.parentNode.offsetHeight+'px');
+}
+
+/* Fixed posistioning emulation for IE6
+     Star selector used to hide definition from browsers other than IE6
+     For valid CSS, use a conditional include instead */
+* html .jqmWindow {
+     position: absolute;
+     top: expression((document.documentElement.scrollTop || document.body.scrollTop) + Math.round(17 * (document.documentElement.offsetHeight || document.body.clientHeight) / 100) + 'px');
+}
+
 /* LAYOUT */
 
 body
@@ -290,6 +354,24 @@ body
     background-color: #eee;
 }
 
+.propertiesPane .propertyList li .manageTranslations
+{
+    background: transparent url(/images/icons.png) no-repeat 0 -48px;
+    border: none;
+    color: #333;
+    display: block;
+    font-size: 0.8em;
+    height: 16px;
+    margin: 0.5em;
+    margin-left: 1em;
+    line-height: 16px;
+    padding-left: 2em;
+}
+.propertiesPane .propertyList li .manageTranslations:hover
+{
+    color: #666;
+}
+
 .propertiesPane .propertyList li.advanced
 {
     font-size: 1em;
@@ -436,8 +518,10 @@ body
 }
 .control .controlPreview .controlHint
 {
-    color: #333;
-    font-weight: bold;
+    color: #444;
+    display: block;
+    font-style: italic;
+    margin: 0.3em;
 }
 .control .controlPreview .controlOptionsList li
 {
@@ -499,6 +583,52 @@ body > .control
 .control.selected .controlFlowArrow
 {
     background-position: 0 -64px;
+}
+
+/* MODALS */
+.translationsDialog
+{
+    margin-left: -15em;
+    width: 30em;
+}
+.translationsDialog .addTranslation
+{
+    background: transparent url(/images/icons.png) no-repeat 0 -272px;
+    border: none;
+    display: inline-block;
+    height: 16px;
+    margin-left: 0.5em;
+    position: relative;
+    text-indent: -9999px;
+    top: -0.4em;
+    width: 16px;
+}
+.translationsDialog .removeTranslation
+{
+    background: transparent url(/images/icons.png) no-repeat 0 -288px;
+    border: none;
+    display: inline-block;
+    float: right;
+    height: 16px;
+    text-indent: -9999px;
+    width: 16px;
+}
+.translationsDialog .translationList
+{
+    margin: 0.3em 0.5em 1em;
+}
+.translationsDialog .translationList li
+{
+    height: 16px;
+    line-height: 16px;
+    list-style-type: none;
+    width: 20em;
+}
+.translationsDialog .translationNone
+{
+    color: #666;
+    font-style: italic;
+    margin-bottom: 1em;
 }
 
 /* ICONS */

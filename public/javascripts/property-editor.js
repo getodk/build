@@ -41,6 +41,23 @@
         uiText: function(property, $editor, $parent) {
             $editor.find('h4').text(property.name);
             $editor.find('p').text(property.description);
+
+            var $translationsList = $editor.find('.translations');
+            $.each(odkmaker.i18n.activeLanguages(), function()
+            {
+                var languageKey = this;
+
+                var $newRow = $('#templates .editors .uiText-translation').clone();
+                $newRow.find('h5').text(odkmaker.i18n.getFriendlyName(languageKey));
+                $newRow.find('.editorTextfield')
+                    .val(property.value[languageKey] || '')
+                    .keyup(function(event)
+                    {
+                        property.value[languageKey] = $(this).val();
+                        $parent.trigger('odkControl-propertiesUpdated');
+                    });
+                $translationsList.append($newRow);
+            });
         },
         bool: function(property, $editor, $parent) {
             $editor.find('.editorCheckbox')
