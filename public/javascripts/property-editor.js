@@ -148,32 +148,49 @@
                 if (this.text === undefined || this.text === null)
                     this.text = {};
 
-                $optionsList.append(newOptionRow(this, i, $parent));
+                $optionsList.append(newOptionRow(property, this, i, $parent));
+                
             });
             $editor.find('.addOption').click(function(event)
             {
                 event.preventDefault();
                 var newOption = {text: {}};
                 property.value.push(newOption);
-                $optionsList.append(newOptionRow(newOption, $optionsList.children().length, $parent));
+                $optionsList.append(newOptionRow(property, newOption, $optionsList.children().length, $parent));
                 $parent.trigger('odkControl-propertiesUpdated');
             });
         }
     };
 
-    var newOptionRow = function(data, index, $parent)
+    var newOptionRow = function(property, data, index, $parent)
     {
+        var $removeLink = $('<a href="#removeOption" class="removeOption">Remove Option</a>')
+        $removeLink.click(function(event)
+        {
+            event.preventDefault();
+            $.removeFromArray(data, property.value);
+
+            var $optionsList = $(this).closest('.optionsList');
+            $(this).closest('li').remove();
+            $optionsList.children().each(function(i)
+            {
+                $(this)
+                    .toggleClass('even', (i % 2) == 0)
+                    .find('h4').text('Option ' + (i + 1));
+            });
+
+            $parent.trigger('odkControl-propertiesUpdated');
+        });
         return $('<li></li>')
-                .data('odkmaker-optionData', data)
                 .toggleClass('even', (index % 2) == 0)
                 .append(
                     $('#templates .editors .uiText')
                         .clone()
                         .propertyEditor({
-                            name: 'option ' + (index + 1),
+                            name: 'Option ' + (index + 1),
                             type: 'uiText',
                             value: data.text
                         }, $parent)
-                        .prepend('<a href="#removeOption" class="removeOption">Remove Option</a>'));
+                        .prepend($removeLink));
     };
 })(jQuery);

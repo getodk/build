@@ -290,7 +290,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
                          '? All existing translations for this language will be lost!'))
                 return;
 
-            active.splice($.inArray(languageKey, active), 1);
+            $.removeFromArray(languageKey,active);
 
             // update dialog ui
             $('.translationSelect').append($('<option value="' + languageKey + '">' + languages[languageKey] + '</option>'));

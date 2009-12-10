@@ -25,4 +25,9 @@
         }
         return obj;
     };
+
+    $.removeFromArray = function(elem, array)
+    {
+        array.splice($.inArray(elem, array), 1);
+    };
 })(jQuery);

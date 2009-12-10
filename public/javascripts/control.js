@@ -276,6 +276,7 @@
         return $(generateLabels(getProperty(properties, 'Label'), getProperty(properties, 'Hint')) +
                  '<input type="text" class="controlPreview"/>');
     };
+    var previewIdx = 0;
     var generateSelectPreview = function(properties, type)
     {
         var result = generateLabels(getProperty(properties, 'Label'), getProperty(properties, 'Hint'));
@@ -286,13 +287,14 @@
         if ((options !== undefined) && (options !== null) && (options.length > 0))
             $.each(options, function()
             {
-                result += '<li><input type="' + type + '" id="preview_' + name + '"/>' +
-                          '<label for="preview_' + name + '" class="controlOptionLabel">' +
+                result += '<li><input type="' + type + '" name="preview_' + name + previewIdx +
+                          '"/><label for="preview_' + name + '" class="controlOptionLabel">' +
                           (this.text.eng || 'no label') + '</label></li>';
             });
         else
             result += '<li class="controlOptionsEmpty">No options yet.</li>';
 
+        previewIdx++;
         return $(result + '</li>');
     };
 
