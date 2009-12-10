@@ -115,6 +115,17 @@
             });
             selectControl($this, type, config, properties);
 
+            $this.find('.deleteControl').click(function(event)
+            {
+                event.preventDefault();
+                $this.slideUp('normal', function()
+                {
+                    if ($this.is('.selected'))
+                        $('.propertyList').empty();
+                    $this.remove();
+                });
+            });
+
             var cachedHeight = 0;
             $this.workspaceDraggable({
                 draggableOptions: {

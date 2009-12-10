@@ -519,6 +519,16 @@ body
     margin-right: 0.5em;
     width: 16px;
 }
+.control .controlName .deleteControl
+{
+    background: transparent url(/images/icons.png) no-repeat 0 -288px;
+    border: none;
+    display: block;
+    float: right;
+    height: 16px;
+    text-indent: -9999px;
+    width: 16px;
+}
 .control .controlPreview
 {
     margin: 1em;
