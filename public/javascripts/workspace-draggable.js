@@ -99,7 +99,7 @@
                 // we're at the end of the line just add after here.
                 if (((position.top > (stackHeight - threshold)) &&
                      (position.top < stackHeight)) ||
-                     ($control.is(':last-child')))
+                     $control.is(':last-child'))
                 {
                     if (! $control.next().is('.placeholder'))
                         config.dragCallback($control, 1);
