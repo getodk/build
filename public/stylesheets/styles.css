@@ -322,6 +322,10 @@ body
 {
     background-color: #bbb;
 }
+.propertiesPane .propertyList li li
+{
+    font-size: 1em;
+}
 .propertiesPane .propertyList li h4
 {
     margin-bottom: 0.3em;
@@ -370,6 +374,34 @@ body
 .propertiesPane .propertyList li .manageTranslations:hover
 {
     color: #666;
+}
+.propertiesPane .propertyList li .addOption
+{
+    background: transparent url(/images/icons.png) no-repeat 0 -272px;
+    border: none;
+    color: #333;
+    display: block;
+    font-size: 0.8em;
+    height: 16px;
+    margin: 0.5em;
+    margin-left: 1em;
+    line-height: 16px;
+    padding-left: 2em;
+}
+.propertiesPane .propertyList li .removeOption
+{
+    background: transparent url(/images/icons.png) no-repeat 0 -288px;
+    border: none;
+    display: block;
+    float: right;
+    height: 16px;
+    text-indent: -9999px;
+    width: 16px;
+}
+.propertiesPane .propertyList .optionsList li p,
+.propertiesPane .propertyList .optionsList li .manageTranslations
+{
+    display: none;
 }
 
 .propertiesPane .propertyList li.advanced

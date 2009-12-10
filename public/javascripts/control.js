@@ -284,11 +284,11 @@
 
         result += '<ul class="controlOptionsList">'
         if ((options !== undefined) && (options !== null) && (options.length > 0))
-            $.each(options, function(option)
+            $.each(options, function()
             {
                 result += '<li><input type="' + type + '" id="preview_' + name + '"/>' +
                           '<label for="preview_' + name + '" class="controlOptionLabel">' +
-                          option.label + '</label></li>';
+                          (this.text.eng || 'no label') + '</label></li>';
             });
         else
             result += '<li class="controlOptionsEmpty">No options yet.</li>';

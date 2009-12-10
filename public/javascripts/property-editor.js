@@ -139,7 +139,41 @@
             $editor.find('.editorTextfield').datepicker();
         },
         optionsEditor: function(property, $editor, $parent) {
-            
+            $editor.find('h4').text(property.name);
+            $editor.find('p').text(property.description);
+
+            var $optionsList = $editor.find('.optionsList');
+            $.each(property.value, function(i)
+            {
+                if (this.text === undefined || this.text === null)
+                    this.text = {};
+
+                $optionsList.append(newOptionRow(this, i, $parent));
+            });
+            $editor.find('.addOption').click(function(event)
+            {
+                event.preventDefault();
+                var newOption = {text: {}};
+                property.value.push(newOption);
+                $optionsList.append(newOptionRow(newOption, $optionsList.children().length, $parent));
+                $parent.trigger('odkControl-propertiesUpdated');
+            });
         }
-    }
+    };
+
+    var newOptionRow = function(data, index, $parent)
+    {
+        return $('<li></li>')
+                .data('odkmaker-optionData', data)
+                .toggleClass('even', (index % 2) == 0)
+                .append(
+                    $('#templates .editors .uiText')
+                        .clone()
+                        .propertyEditor({
+                            name: 'option ' + (index + 1),
+                            type: 'uiText',
+                            value: data.text
+                        }, $parent)
+                        .prepend('<a href="#removeOption" class="removeOption">Remove Option</a>'));
+    };
 })(jQuery);
