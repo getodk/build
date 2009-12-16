@@ -585,8 +585,42 @@ body
     width: 36px;
     z-index: 10;
 }
+.control.group
+{
+    border-color: #665;
+}
+.control.group.selected
+{
+    border-color: #ff7e00;
+}
+.control.group > .controlName
+{
+    background-color: #665;
+}
+.control.group.selected > .controlName
+{
+    background-color: #ff7e00;
+}
+.control.group .workspaceInnerWrapper
+{
+    background-color: #fff;
+    border: 3px solid #555;
+    margin: 1em;
+    min-height: 5em;
+    padding: 1em;
+    padding-bottom: 0;
+}
+.control.group:hover .workspaceInnerWrapper
+{
+    border-color: #333;
+}
+.control.group.selected .workspaceInnerWrapper
+{
+    border-color: #ff7e00;
+}
+
 body > .control.last .controlFlowArrow,
-.control:last-child .controlFlowArrow
+.workspace > .control:last-child > .controlFlowArrow
 {
     display: none;
 }
@@ -600,11 +634,11 @@ body > .control
 {
     border: 3px solid #333;
 }
-.control:hover .controlName
+.control:hover > .controlName
 {
     background-color: #333;
 }
-.control:hover .controlFlowArrow
+.control:hover > .controlFlowArrow
 {
     background-position: 0 -32px;
 }
@@ -614,15 +648,15 @@ body > .control
     background-color: #dddde3;
     border: 3px solid #225;
 }
-.control.selected .controlName
+.control.selected > .controlName
 {
     background-color: #225;
 }
-.control.selected .controlProperties
+.control.selected > .controlProperties
 {
     background-color: #ccccd2;
 }
-.control.selected .controlFlowArrow
+.control.selected > .controlFlowArrow
 {
     background-position: 0 -64px;
 }
@@ -674,10 +708,10 @@ body > .control
 }
 
 /* ICONS */
+.group .icon { background-position: 0 -208px; }
+.branch .icon { background-position: 0 -224px; }
 .inputText .icon { background-position: 0 -128px; }
 .inputNumeric .icon { background-position: 0 -144px; }
 .inputDate .icon { background-position: 0 -160px; }
 .inputSelectOne .icon { background-position: 0 -176px; }
 .inputSelectMany .icon { background-position: 0 -192px; }
-.inputGroup .icon { background-position: 0 -208px; }
-.inputBranch .icon { background-position: 0 -224px; }

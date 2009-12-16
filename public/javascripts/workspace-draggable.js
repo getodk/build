@@ -47,6 +47,81 @@
         }
     };
 
+    var checkElemHover = function($elem, position, config, $container)
+    {
+        // if element is clearly beyond our scope, clear placeholders and abort
+        if (position.top > $elem.innerHeight())
+        {
+            $elem.find('.placeholder')
+                .addClass('closing')
+                .slideUp('normal', function()
+                {
+                    $(this).remove();
+                });
+           return false;
+        }
+
+        // set $container to self if not defined
+        if (($container === undefined) || ($container === null))
+            $container = $elem;
+
+        // otherwise, if there are no controls in the container, add a
+        // placeholder and return as found
+        if ($container.children(':not(.placeholder)').length === 0)
+        {
+            if ($container.find('.placeholder').length === 0)
+                config.dragCallback($container, 0);
+            return true;
+        }
+
+        var stackHeight = $container.offset().top - $elem.offset().top;
+        var found = false;
+
+        $container.children().each(function()
+        {
+            var $control = $(this);
+
+            // Skip the placeholder; special case for groups/branches
+            if ($control.is('.placeholder'))
+            {
+                stackHeight += $control.outerHeight(true);
+                return;
+            }
+            else if ($control.is('.group'))
+            {
+                var $groupContainer = $control.children('.workspaceInnerWrapper').children('.workspaceInner');
+                found = checkElemHover($control, position.top - stackHeight, config, $groupContainer);
+                if (found)
+                    return false;
+            }
+
+            var threshold = $control.innerHeight() / 3;
+
+            // Check the top of the current block
+            if (position.top < (stackHeight + threshold))
+            {
+                if (! $control.prev().is('.placeholder'))
+                    config.dragCallback($control, -1);
+                found = true;
+                return false;
+            }
+
+            // Add the height
+            stackHeight += $control.outerHeight(true);
+
+            // Check the bottom of the current block
+            if ((position.top > (stackHeight - threshold)) &&
+                (position.top < stackHeight))
+            {
+                if (! $control.next().is('.placeholder'))
+                    config.dragCallback($control, 1);
+                found = true;
+                return false;
+            }
+        });
+        return found;
+    };
+
     var checkHover = function($this, position, config)
     {
         // Check bounds
@@ -60,53 +135,14 @@
 
         // Append as necessary
         var $workspace = $('.workspace');
-        if ($workspace.children(':not(.placeholder)').length === 0)
-        {
-            if ($('.workspace .placeholder').length === 0)
-                config.dragCallback($workspace, 0);
-        }
-        else
-        {
-            var stackHeight = workspaceOffset.top - $workspaceScrollArea.scrollTop() +
-                              $workspaceScrollArea.spacingTop() + $workspace.spacingTop();
+        var stackHeight = workspaceOffset.top - $workspaceScrollArea.scrollTop() +
+                          $workspaceScrollArea.spacingTop() + $workspace.spacingTop();
+        position.top -= stackHeight;
 
-            $workspace.children().each(function()
-            {
-                var $control = $(this);
-
-                // Skip the placeholder
-                if ($control.is('.placeholder'))
-                {
-                    stackHeight += $control.outerHeight(true);
-                    return;
-                }
-
-                var threshold = $control.innerHeight() / 3;
-
-                // Check the top of the current block
-                if (position.top < (stackHeight + threshold))
-                {
-                    if (! $control.prev().is('.placeholder'))
-                        config.dragCallback($control, -1);
-                    return false;
-                }
-
-                // Add the height
-                stackHeight += $control.outerHeight(true);
-
-                // Check the bottom of the current block
-                // Fallback: if we haven't matched any of the above cases
-                // we're at the end of the line just add after here.
-                if (((position.top > (stackHeight - threshold)) &&
-                     (position.top < stackHeight)) ||
-                     $control.is(':last-child'))
-                {
-                    if (! $control.next().is('.placeholder'))
-                        config.dragCallback($control, 1);
-                    return false;
-                }
-            });
-        }
+        // Fallback: if we haven't matched any of the above cases
+        // we're at the end of the line just add after here.
+        if((!checkElemHover($workspace, position, config)) && ($workspace.children(':last-child').is(':not(.placeholder)')))
+            config.dragCallback($workspace.children(':last-child'), 1);
     };
 
     $.fn.workspaceDraggable = function(options)

@@ -95,9 +95,13 @@
             $this.data('odkControl-type', type);
 
             // Deep clone the properties if relevant
-            var properties = defaultProperties ||
-                $.extend(true, [], $.fn.odkControl.defaultProperties).concat(
-                $.extend(true, [], $.fn.odkControl.controlProperties[type]));
+            var properties = null;
+            if ((type == 'group') || (type == 'branch'))
+                properties = defaultProperties || $.extend(true, [], $.fn.odkControl.controlProperties[type]);
+            else
+                properties = defaultProperties ||
+                    $.extend(true, [], $.fn.odkControl.defaultProperties).concat(
+                    $.extend(true, [], $.fn.odkControl.controlProperties[type]));
             $this.data('odkControl-properties', properties);
 
             $this.bind('odkControl-propertiesUpdated', function(event)
@@ -115,6 +119,12 @@
             });
             selectControl($this, type, config, properties);
 
+            // special treatment for groups and branches
+            if (type == 'group')
+                $this.find('.controlPreview')
+                     .replaceWith('<div class="workspaceInnerWrapper"><div class="workspaceInner"></div></div>');
+
+            // event wireup
             $this.find('.deleteControl').click(function(event)
             {
                 event.preventDefault();
@@ -271,7 +281,27 @@
           { name: 'Select count range',
             type: 'numericRange',
             value: false,
-            summary: false } ]
+            summary: false } ],
+        group: [
+          { name: 'Name',
+            type: 'text',
+            description: 'The data name of this group in the final exported XML.',
+            limit: [ 'nosymbols', 'lowercase', 'unique' ],
+            required: true,
+            value: 'untitled',
+            summary: false },
+          { name: 'Loop',
+            type: 'loopEditor',
+            description: 'Loop options over this group.',
+            value: false,
+            summary: true } ],
+        branch: [
+          { name: 'Rules',
+            type: 'logicEditor',
+            description: 'Specify the rules that decide how the form will branch.',
+            value: [],
+            summary: false }
+        ]
     };
 
     // Preview renderers
@@ -314,6 +344,8 @@
         inputNumeric: generateTextPreview,
         inputDate: generateTextPreview,
         inputSelectOne:  function(properties) { return generateSelectPreview(properties, 'radio'); },
-        inputSelectMany: function(properties) { return generateSelectPreview(properties, 'checkbox'); }
+        inputSelectMany: function(properties) { return generateSelectPreview(properties, 'checkbox'); },
+        group:  function(properties) { return; },
+        branch: function(properties) { return; }
     };
 })(jQuery);
