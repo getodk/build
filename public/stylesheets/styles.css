@@ -403,6 +403,10 @@ body
 {
     display: none;
 }
+.propertiesPane .propertyList .optionsList .optionsEditorValueField
+{
+    padding: 0.5em;
+}
 
 .propertiesPane .propertyList li.advanced
 {

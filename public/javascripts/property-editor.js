@@ -149,7 +149,6 @@
                     this.text = {};
 
                 $optionsList.append(newOptionRow(property, this, i, $parent));
-                
             });
             $editor.find('.addOption').click(function(event)
             {
@@ -186,6 +185,15 @@
 
             $parent.trigger('odkControl-propertiesUpdated');
         });
+        var $underlyingValueEdit = $('#templates .editors .optionsEditorValueField').clone();
+        $underlyingValueEdit
+            .val(data.val || '')
+            .find('.editorTextfield')
+                .keyup(function(event)
+                {
+                    data.val = $(this).val();
+                    $parent.trigger('odkControl-propertiesUpdated');
+                });
         return $('<li></li>')
                 .toggleClass('even', (index % 2) == 0)
                 .append(
@@ -196,6 +204,7 @@
                             type: 'uiText',
                             value: data.text
                         }, $parent)
-                        .prepend($removeLink));
+                        .prepend($removeLink)
+                        .append($underlyingValueEdit));
     };
 })(jQuery);
