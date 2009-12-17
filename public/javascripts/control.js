@@ -114,7 +114,9 @@
             {
                 selectControl($this, type, config, properties);
             });
-            $this.click(function(event) {
+            $this.click(function(event)
+            {
+                event.stopPropagation();
                 selectControl($this, type, config, properties);
             });
             selectControl($this, type, config, properties);

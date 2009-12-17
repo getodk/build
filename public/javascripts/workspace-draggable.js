@@ -90,7 +90,7 @@
             else if ($control.is('.group'))
             {
                 var $groupContainer = $control.children('.workspaceInnerWrapper').children('.workspaceInner');
-                found = checkElemHover($control, position.top - stackHeight, config, $groupContainer);
+                found = checkElemHover($control, { top: position.top - stackHeight, left: position.left }, config, $groupContainer);
                 if (found)
                     return false;
             }

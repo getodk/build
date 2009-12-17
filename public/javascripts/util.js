@@ -30,4 +30,18 @@
     {
         array.splice($.inArray(elem, array), 1);
     };
+
+    $.fn.debugName = function()
+    {
+        var $this = $(this);
+        var result = $this.get(0).tagName.toLowerCase();
+        if ($this.attr('id') !== '')
+            result += '#' + $this.attr('id');
+        else if ($this.attr('class') !== '')
+            result += '.' + $this.attr('class').split(/ +/).join('.');
+
+        if ($this.get(0).tagName !== 'BODY')
+            result = $this.parent().debugName() + ' ' + result;
+        return result;
+    };
 })(jQuery);
