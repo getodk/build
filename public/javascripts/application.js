@@ -38,4 +38,11 @@ $(function()
         event.preventDefault();
         $('.' + $(this).attr('href').replace(/#/, '')).jqmShow();
     });
+
+    // Toolbar
+    $('#exportLink').click(function(event)
+    {
+        event.preventDefault();
+        $('.exportCodeContainer pre').text(odkmaker.data.serialize());
+    });
 });

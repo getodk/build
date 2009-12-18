@@ -30,7 +30,7 @@
         <li><a id="redoLink" href="#redo" title="Redo the last undo">Redo</a></li>
         <li class="separator"></li>
         <li><a id="saveLink" href="#save" title="Save the changes to this form">Save</a></li>
-        <li><a id="exportLink" href="#export" title="Export this form to XForms XML">Export</a></li>
+        <li><a id="exportLink" href="#exportDialog" rel="modal" title="Export this form to XForms XML">Export</a></li>
       </ul>
     </div>
     <div class="mainWrapper">
@@ -69,6 +69,19 @@
         <h4>Add a new language</h4>
         <select class="translationSelect"></select>
         <a class="addTranslation" href="#addTranslation">Add Translation</a>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton jqmClose" href="#close">Done</a>
+      </div>
+    </div>
+
+    <div class="modal exportDialog">
+      <h3>Export</h3>
+      <div class="modalContents">
+        <h4>Output XML</h4>
+        <div class="exportCodeContainer">
+          <pre></pre>
+        </div>
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton jqmClose" href="#close">Done</a>

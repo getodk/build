@@ -258,11 +258,11 @@
             description: 'Valid range for the user input of this control.',
             value: false,
             summary: false },
-          { name: 'Type',
+          { name: 'Kind',
             type: 'enum',
             description: 'Type of number accepted.',
               options: [ 'Integer',
-                       'Decimal' ],
+                         'Decimal' ],
             value: 'Integer',
             summary: true } ],
         inputDate: [

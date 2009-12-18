@@ -711,6 +711,16 @@ body > .control
     margin-bottom: 1em;
 }
 
+.exportDialog .exportCodeContainer
+{
+    border: 1px solid #eee;
+    height: 40em;
+    margin: 0.5em;
+    overflow: auto;
+    overflow-x: hidden;
+    padding: 0.5em;
+}
+
 /* ICONS */
 .group .icon { background-position: 0 -208px; }
 .branch .icon { background-position: 0 -224px; }

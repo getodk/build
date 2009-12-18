@@ -35,7 +35,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             {
                 data.children = extractRecurse($this.children('.workspaceInner'));
             }
-            else if (data.type = 'branch')
+            else if (data.type == 'branch')
             {
                 data.branches = [];
                 $this.find('.workspaceInner').each(function()
@@ -60,7 +60,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
     
     // massages the output JSON into a structure representing an XForm
-    controlTypes = {
+    var controlTypes = {
         inputText: 'input',
         inputNumeric: 'input',
         inputDate: 'input',
@@ -83,7 +83,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             });
         })
     };
-    var parseControl = function(control, xpath, instance, translations, model, body)
+    var parseControl = function(control, xpath, relpath, instance, translations, model, body, relevanceString)
     {
         // TODO: grouping
         instance.children.push({
@@ -94,21 +94,67 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var bodyTag = {
             name: controlTypes[control.type],
             attrs: {
-                'ref': xpath + control.Name
+                'ref': (control['Instance Destination'] === '') ? (relpath + control.Name) : control['Instance Destination']
             },
             children: []
         };
 
-        // deal with properties
+        // binding
+        var binding = {
+            name: 'bind',
+            attrs: {
+                'nodeset': (control['Instance Destination'] === '') ? (xpath + control.Name) : control['Instance Destination']
+            }
+        }
+
+        // relevance string
+        if (relevanceString === undefined)
+            relevanceString = '';
+
+        // constraint string
+        var constraintString = '';
+
+        // deal with input type:
+        if (control.type == 'inputText')
+            binding.attrs.type = 'string';
+        else if (control.type == 'inputNumeric')
+            if (control.Kind == 'Integer')
+                binding.attrs.type = 'int';
+            else if (control.Kind == 'Decimal')
+                binding.attrs.type = 'decimal';
+        else if (control.type == 'inputDate')
+            binding.attrs.type = 'date';
+
+        // deal with properties:
 
         // label
         bodyTag.children.push({
             name: 'label',
             attrs: {
-                ref: "jr:itext('" + xpath + control.Name + ":label')"
+                'ref': "jr:itext('" + xpath + control.Name + ":label')"
             }
         });
         addTranslation(control.Label, xpath + control.Name + ':label', translations);
+
+        // hint
+        if (control.Hint !== undefined)
+        {
+            bodyTag.children.push({
+                name: 'hint'
+                attrs: {
+                    'ref': "jr:itext('" + xpath + control.Name + ":hint')"
+                }
+            });
+            addTranslation(control.Hint, xpath + control.Name + ':hint', translations);
+        }
+
+        // read only
+        if (control['Read Only'] === true)
+            binding.attrs.readonly = 'true()';
+
+        // required
+        if (control.Required === true)
+            binding.attrs.required = 'true()';
 
         // options
         if (control.Options !== undefined)
@@ -131,13 +177,32 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             });
 
         body.children.push(bodyTag);
+
+        // advanced relevance
+        if (control.Relevance !== '')
+            if (relevanceString === '')
+                relevanceString = control.Relevance;
+            else
+                relevanceString = '(' + relevanceString + ') and (' + control.Relevance + ')';
+        // advanced constraint
+        if (control.Constraint !== '')
+            if (constraintString === '')
+                constraintString = control.Constraint;
+            else
+                constraintString = '(' + constraintString + ') and (' + control.Constraint + ')';
     };
     var internalToXForm = function(internal)
     {
         // basic structure
+        // TODO: user-config of instanceHead
+        var instanceHead = {
+            name: 'data',
+            children: []
+        };
+
         var instance = {
             name: 'instance',
-            children: []
+            children: [ instanceHead ]
         };
         var translations = {
             name: 'itext',
@@ -182,7 +247,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             });
         });
 
-        $.each(internal.controls, function() { parseControl(this, '/', instance, translations, model, body); });
+        $.each(internal.controls, function() { parseControl(this, '/data/', '', instanceHead, translations, model, body); });
 
         return root;
     };
