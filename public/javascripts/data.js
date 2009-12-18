@@ -98,6 +98,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             },
             children: []
         };
+        body.children.push(bodyTag);
 
         // binding
         var binding = {
@@ -106,6 +107,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 'nodeset': (control['Instance Destination'] === '') ? (xpath + control.Name) : control['Instance Destination']
             }
         }
+        model.children.push(binding);
 
         // relevance string
         if (relevanceString === undefined)
@@ -140,7 +142,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if (control.Hint !== undefined)
         {
             bodyTag.children.push({
-                name: 'hint'
+                name: 'hint',
                 attrs: {
                     'ref': "jr:itext('" + xpath + control.Name + ":hint')"
                 }
@@ -161,7 +163,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             $.each(control.Options, function(i)
             {
                 var itextPath = xpath + control.Name + ':option' + i;
-                addTranslation(this, itextPath, translations);
+                addTranslation(this.text, itextPath, translations);
 
                 bodyTag.children.push({
                     name: 'item',
@@ -175,8 +177,6 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     ]
                 });
             });
-
-        body.children.push(bodyTag);
 
         // advanced relevance
         if (control.Relevance !== '')
