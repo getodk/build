@@ -83,7 +83,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             });
         })
     };
-    var parseControl = function(control, xpath, relpath, instance, translations, model, body, relevanceString)
+    var parseControl = function(control, xpath, relpath, instance, translations, model, body, relevance)
     {
         // TODO: grouping
         instance.children.push({
@@ -110,11 +110,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         model.children.push(binding);
 
         // relevance string
-        if (relevanceString === undefined)
-            relevanceString = '';
+        if (relevance === undefined)
+            relevance = [];
 
         // constraint string
-        var constraintString = '';
+        var constraint = [];
 
         // deal with input type:
         if (control.type == 'inputText')
@@ -158,6 +158,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if (control.Required === true)
             binding.attrs.required = 'true()';
 
+        // text length
+        if ((control.Length !== undefined) && (control.Length !== false))
+            constraint.push('. &gt; ' + control.Length.min + ' and . &lt; ' + control.Length.max);
+
+        // text length
+        if ((control.Range !== undefined) && (control.Range !== false))
+            constraint.push('. &gt; ' + control.Range.min + ' and . &lt; ' + control.Range.max);
+
         // options
         if (control.Options !== undefined)
             $.each(control.Options, function(i)
@@ -180,16 +188,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         // advanced relevance
         if (control.Relevance !== '')
-            if (relevanceString === '')
-                relevanceString = control.Relevance;
-            else
-                relevanceString = '(' + relevanceString + ') and (' + control.Relevance + ')';
+            relevance.push(control.Relevance);
         // advanced constraint
         if (control.Constraint !== '')
-            if (constraintString === '')
-                constraintString = control.Constraint;
-            else
-                constraintString = '(' + constraintString + ') and (' + control.Constraint + ')';
+            constraint.push(control.Constraint);
+
+        if (relevance.length > 0)
+            binding.attrs.relevant = '(' + relevance.join(') and (') + ')';
+        if (constraint.length > 0)
+            binding.attrs.constraint = '(' + constraint.join(') and (') + ')';
     };
     var internalToXForm = function(internal)
     {

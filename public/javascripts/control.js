@@ -268,7 +268,7 @@
         inputDate: [
           { name: 'Range',
             type: 'dateRange',
-             value: false,
+            value: false,
             summary: false } ],
         inputSelectOne: [
           { name: 'Options',
