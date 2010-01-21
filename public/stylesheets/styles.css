@@ -157,8 +157,8 @@ body
 {
     background: #148; /* TODO:IMG */
     color: #fff;
-    height: 2em;
-    padding: 3em;
+    height: 1em;
+    padding: 1.5em 3em 2.5em;
 }
 .header h1
 {
@@ -239,7 +239,7 @@ body
     left: 1em;
     position: absolute;
     right: 1em;
-    top: 10.7em;
+    top: 7.7em;
 }
 .mainWrapper h3
 {
@@ -608,7 +608,7 @@ body
 .control.group .workspaceInnerWrapper
 {
     background-color: #fff;
-    border: 3px solid #555;
+    border: 1px solid #555;
     margin: 1em;
     min-height: 5em;
     padding: 1em;
