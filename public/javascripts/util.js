@@ -20,6 +20,7 @@
     {
         var obj = $([]);
         obj.selector = selector;
+        obj.context = document;
         if (type && callback) {
             obj.live(type, callback);
         }
