@@ -17,13 +17,13 @@
 
     var refreshFromProperties = function($this, type, config, properties)
     {
-        $this.find('.controlName .text').text(getProperty(properties, 'Name'));
+        $this.children('.controlName').children('.text').text(getProperty(properties, 'Name'));
 
-        $this.find('.controlPreview')
+        $this.children('.controlPreview')
              .empty()
              .append($.fn.odkControl.controlRenderers[type](properties));
 
-        var $propertyList = $this.find('.controlProperties');
+        var $propertyList = $this.children('.controlProperties');
         $propertyList.empty();
         $.each(properties, function()
         {
@@ -106,6 +106,7 @@
 
             $this.bind('odkControl-propertiesUpdated', function(event)
             {
+                event.stopPropagation();
                 refreshFromProperties($this, type, config, properties);
             });
             $this.trigger('odkControl-propertiesUpdated');
@@ -291,6 +292,12 @@
             limit: [ 'nosymbols', 'lowercase', 'unique' ],
             required: true,
             value: 'untitled',
+            summary: false },
+          { name: 'Label',
+            type: 'uiText',
+            description: 'Give the group a label to give a visual hint to the user.',
+            required: true,
+            value: {},
             summary: false },
           { name: 'Loop',
             type: 'loopEditor',
