@@ -33,7 +33,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
             if (data.type == 'group')
             {
-                data.children = extractRecurse($this.children('.workspaceInner'));
+                data.children = extractRecurse($this.children('.workspaceInnerWrapper').children('.workspaceInner'));
             }
             else if (data.type == 'branch')
             {
@@ -85,7 +85,39 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
     var parseControl = function(control, xpath, relpath, instance, translations, model, body, relevance)
     {
-        // TODO: grouping
+        // groups are special
+        if (control.type == 'group')
+        {
+            var instanceTag = {
+                name: control.Name,
+                children: []
+            };
+            instance.children.push(instanceTag);
+            var bodyTag = {
+                name: 'group',
+                children: []
+            };
+            body.children.push(bodyTag);
+
+            if ((control.Label !== undefined) && (control.Label !== ''))
+            {
+                bodyTag.children.push({
+                    name: 'label',
+                    attrs: {
+                        'ref': "jr:itext('" + xpath + control.Name + ":label')"
+                    }
+                });
+                addTranslation(control.Label, xpath + control.Name + ':label', translations);
+            }
+
+            $.each(control.children, function()
+            { 
+                parseControl(this, xpath + control.Name + '/', relpath + control.Name + '/',
+                             instanceTag, translations, model, bodyTag, relevance);
+            });
+            return;
+        }
+
         instance.children.push({
             name: control.Name
         });
@@ -94,7 +126,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var bodyTag = {
             name: controlTypes[control.type],
             attrs: {
-                'ref': (control['Instance Destination'] === '') ? (relpath + control.Name) : control['Instance Destination']
+                'ref': control['Instance Destination'] || (relpath + control.Name)
             },
             children: []
         };
@@ -104,7 +136,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var binding = {
             name: 'bind',
             attrs: {
-                'nodeset': (control['Instance Destination'] === '') ? (xpath + control.Name) : control['Instance Destination']
+                'nodeset': control['Instance Destination'] || (xpath + control.Name)
             }
         }
         model.children.push(binding);
@@ -130,16 +162,19 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // deal with properties:
 
         // label
-        bodyTag.children.push({
-            name: 'label',
-            attrs: {
-                'ref': "jr:itext('" + xpath + control.Name + ":label')"
-            }
-        });
-        addTranslation(control.Label, xpath + control.Name + ':label', translations);
+        if ((control.Label !== undefined) && (control.Label !== ''))
+        {
+            bodyTag.children.push({
+                name: 'label',
+                attrs: {
+                    'ref': "jr:itext('" + xpath + control.Name + ":label')"
+                }
+            });
+            addTranslation(control.Label, xpath + control.Name + ':label', translations);
+        }
 
         // hint
-        if (control.Hint !== undefined)
+        if ((control.Hint !== undefined) && (control.Hint !== ''))
         {
             bodyTag.children.push({
                 name: 'hint',
