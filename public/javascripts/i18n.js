@@ -216,10 +216,10 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
         var result = [];
         $('.workspace .control').each(function()
         {
-            $.each($(this).data('odkControl-properties'), function()
+            _.each($(this).data('odkControl-properties'), function(property)
             {
                 if (this.type == 'uiText')
-                    result.push(this);
+                    result.push(property);
             });
         });
         return result;
@@ -231,14 +231,14 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
         $dialog.find('.translationNone').show();
 
         var $list = $dialog.find('.translationList').empty();
-        $.each(active, function()
+        _.each(active, function(language)
         {
             $dialog.find('.translationNone').hide();
-            $list.append(createTranslationRow(this, languages[this]));
+            $list.append(createTranslationRow(language, languages[language]));
         });
 
         var $select = $dialog.find('.translationSelect').empty();
-        $.each(languages, function(code, name)
+        _.each(languages, function(code, name)
         {
             if ($.inArray(code, active) < 0)
                 $select.append('<option value="' + code + '">' + name + '</option>');
@@ -269,7 +269,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             $('.translationsDialog .translationNone').hide();
 
             // update underlying data and visible property ui
-            $.each(getTranslateProperties(), function()
+            _.each(getTranslateProperties(), function()
             {
                 this.value[languageKey] = '';
             });
@@ -297,9 +297,9 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             $this.closest('li').remove();
 
             // update underlying data and visible property ui
-            $.each(getTranslateProperties(), function()
+            _.each(getTranslateProperties(), function(property)
             {
-                delete this.value[languageKey];
+                delete property.value[languageKey];
             });
             // TODO: someday make this more efficient
             $('.workspace .control.selected').trigger('odkControl-reloadProperties');

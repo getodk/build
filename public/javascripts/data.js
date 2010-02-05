@@ -13,9 +13,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     var getDataRepresentation = function($control)
     {
         var data = {};
-        $.each($control.data('odkControl-properties'), function()
+        _.each($control.data('odkControl-properties'), function(property)
         {
-            data[this.name] = this.value;
+            data[property.name] = property.value;
         });
         data.type = $control.data('odkControl-type');
         return data;
@@ -69,16 +69,16 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
     var addTranslation = function(obj, itextPath, translations)
     {
-        $.each(translations.children, function()
+        _.each(translations.children, function(translation)
         {
-            this.children.push({
+            translation.children.push({
                 name: 'text',
                 attrs: {
                     'id': itextPath
                 },
                 children: [
                     { name: 'value',
-                      val: obj[this.attrs.lang] }
+                      val: obj[translation.attrs.lang] }
                 ]
             });
         })
@@ -110,9 +110,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 addTranslation(control.Label, xpath + control.Name + ':label', translations);
             }
 
-            $.each(control.children, function()
+            _.each(control.children, function(child)
             { 
-                parseControl(this, xpath + control.Name + '/', relpath + control.Name + '/',
+                parseControl(child, xpath + control.Name + '/', relpath + control.Name + '/',
                              instanceTag, translations, model, bodyTag, relevance);
             });
             return;
@@ -203,10 +203,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         // options
         if (control.Options !== undefined)
-            $.each(control.Options, function(i)
+            _.each(control.Options, function(option, i)
             {
                 var itextPath = xpath + control.Name + ':option' + i;
-                addTranslation(this.text, itextPath, translations);
+                addTranslation(option.text, itextPath, translations);
 
                 bodyTag.children.push({
                     name: 'item',
@@ -216,7 +216,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                                 'ref': itextPath
                             } },
                         {   name: 'value',
-                            val: this.val }
+                            val: option.val }
                     ]
                 });
             });
@@ -278,18 +278,21 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             ]
         };
 
-        $.each(odkmaker.i18n.activeLanguages(), function()
+        _.each(odkmaker.i18n.activeLanguages(), function(language)
         {
             translations.children.push({
                 name: 'translation',
                 attrs: {
-                    'lang': this
+                    'lang': language
                 },
                 children: []
             });
         });
 
-        $.each(internal.controls, function() { parseControl(this, '/data/', '', instanceHead, translations, model, body); });
+        _.each(internal.controls, function(control)
+        {
+            parseControl(control, '/data/', '', instanceHead, translations, model, body);
+        });
 
         return root;
     };
@@ -311,7 +314,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         result += '<' + obj.name;
 
         if (obj.attrs !== undefined)
-            $.each(obj.attrs, function(key, value)
+            _.each(obj.attrs, function(key, value)
             {
                 result += ' ' + key + '="' + value + '"';
             });
@@ -323,9 +326,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         else if (obj.children !== undefined)
         {
             result += '>\n';
-            $.each(obj.children, function()
+            _.each(obj.children, function(child)
             {
-                result += JSONtoXML(this, indentLevel + 1);
+                result += JSONtoXML(child, indentLevel + 1);
             });
             result += generateIndent(indentLevel) + '</' + obj.name + '>\n';
         }

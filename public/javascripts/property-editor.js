@@ -43,9 +43,9 @@
             $editor.find('p').text(property.description);
 
             var $translationsList = $editor.find('.translations');
-            $.each(odkmaker.i18n.activeLanguages(), function()
+            _.each(odkmaker.i18n.activeLanguages(), function(language)
             {
-                var languageKey = this;
+                var languageKey = language;
 
                 var $newRow = $('#templates .editors .uiText-translation').clone();
                 $newRow.find('h5').text(odkmaker.i18n.getFriendlyName(languageKey));
@@ -123,9 +123,9 @@
             $editor.find('p').text(property.description);
 
             var $select = $editor.find('.editorSelect');
-            $.each(property.options, function()
+            _.each(property.options, function(option)
             {
-                $select.append($('<option>' + this + '</option>'));
+                $select.append($('<option>' + option + '</option>'));
             });
             $select.change(function(event)
             {
@@ -143,10 +143,10 @@
             $editor.find('p').text(property.description);
 
             var $optionsList = $editor.find('.optionsList');
-            $.each(property.value, function(i)
+            _.each(property.value, function(val, i)
             {
-                if (this.text === undefined || this.text === null)
-                    this.text = {};
+                if (val.text === undefined || val.text === null)
+                    val.text = {};
 
                 $optionsList.append(newOptionRow(property, this, i, $parent));
             });

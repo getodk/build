@@ -25,13 +25,13 @@
 
         var $propertyList = $this.children('.controlProperties');
         $propertyList.empty();
-        $.each(properties, function()
+        _.each(properties, function(property)
         {
-            if (this.summary === false)
+            if (property.summary === false)
                 return;
 
             $propertyList.append(
-                $('<dt>' + this.name + '</dt><dd>' + $.displayText(this.value) + '</dd>')
+                $('<dt>' + property.name + '</dt><dd>' + $.displayText(property.value) + '</dd>')
             );
         });
     };
@@ -46,14 +46,14 @@
 
         var i = 0;
         // iterate through non-advanced properties
-        $.each(properties, function()
+        _.each(properties, function(property)
         {
-            if (this.advanced === true)
+            if (property.advanced === true)
                 return;
 
             $('<li/>')
                 .toggleClass('even', (i % 2) == 0)
-                .propertyEditor(this, $this)
+                .propertyEditor(property, $this)
                 .appendTo($propertyList);
             i++;
         });
@@ -62,14 +62,14 @@
         $('<li class="advanced"><a class="toggle" href="#advanced"><div class="icon"></div>Advanced</a>' +
             '<ul class="advancedProperties toggleContainer"></ul></li>').appendTo($propertyList);
         var $advancedList = $propertyList.find('.advancedProperties');
-        $.each(properties, function()
+        _.each(properties, function(property)
         {
-            if (this.advanced !== true)
+            if (property.advanced !== true)
                 return;
 
             $('<li/>')
                 .toggleClass('even', (i % 2) == 0)
-                .propertyEditor(this, $this)
+                .propertyEditor(property, $this)
                 .appendTo($advancedList);
             i++;
         });
@@ -335,11 +335,11 @@
 
         result += '<ul class="controlOptionsList">'
         if ((options !== undefined) && (options !== null) && (options.length > 0))
-            $.each(options, function()
+            _.each(options, function(option)
             {
                 result += '<li><input type="' + type + '" name="preview_' + name + previewIdx +
                           '"/><label for="preview_' + name + '" class="controlOptionLabel">' +
-                          (this.text.eng || 'no label') + '</label></li>';
+                          (option.text.eng || 'no label') + '</label></li>';
             });
         else
             result += '<li class="controlOptionsEmpty">No options yet.</li>';
