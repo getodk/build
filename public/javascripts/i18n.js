@@ -218,7 +218,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
         {
             _.each($(this).data('odkControl-properties'), function(property)
             {
-                if (this.type == 'uiText')
+                if (property.type == 'uiText')
                     result.push(property);
             });
         });
@@ -231,14 +231,14 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
         $dialog.find('.translationNone').show();
 
         var $list = $dialog.find('.translationList').empty();
-        _.each(active, function(language)
+        _.each(active, function(code)
         {
             $dialog.find('.translationNone').hide();
-            $list.append(createTranslationRow(language, languages[language]));
+            $list.append(createTranslationRow(code, languages[code]));
         });
 
         var $select = $dialog.find('.translationSelect').empty();
-        _.each(languages, function(code, name)
+        _.each(languages, function(name, code)
         {
             if ($.inArray(code, active) < 0)
                 $select.append('<option value="' + code + '">' + name + '</option>');
@@ -269,9 +269,9 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             $('.translationsDialog .translationNone').hide();
 
             // update underlying data and visible property ui
-            _.each(getTranslateProperties(), function()
+            _.each(getTranslateProperties(), function(property)
             {
-                this.value[languageKey] = '';
+                property.value[languageKey] = '';
             });
             // TODO: someday make this more efficient
             $('.workspace .control.selected').trigger('odkControl-reloadProperties');
