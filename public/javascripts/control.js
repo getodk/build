@@ -271,6 +271,7 @@
             type: 'dateRange',
             value: false,
             summary: false } ],
+        inputLocation: [],
         inputSelectOne: [
           { name: 'Options',
             type: 'optionsEditor',
@@ -352,6 +353,7 @@
         inputText: generateTextPreview,
         inputNumeric: generateTextPreview,
         inputDate: generateTextPreview,
+        inputLocation:  function(properties) { return; },
         inputSelectOne:  function(properties) { return generateSelectPreview(properties, 'radio'); },
         inputSelectMany: function(properties) { return generateSelectPreview(properties, 'checkbox'); },
         group:  function(properties) { return; },

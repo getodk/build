@@ -64,6 +64,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         inputText: 'input',
         inputNumeric: 'input',
         inputDate: 'input',
+        inputLocation: 'input',
         inputSelectOne: 'select1',
         inputSelectMany: 'select'
     };
@@ -152,12 +153,16 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if (control.type == 'inputText')
             binding.attrs.type = 'string';
         else if (control.type == 'inputNumeric')
+        {
             if (control.Kind == 'Integer')
                 binding.attrs.type = 'int';
             else if (control.Kind == 'Decimal')
                 binding.attrs.type = 'decimal';
+        }
         else if (control.type == 'inputDate')
             binding.attrs.type = 'date';
+        else if (control.type == 'inputLocation')
+            binding.attrs.type = 'geopoint';
 
         // deal with properties:
 
