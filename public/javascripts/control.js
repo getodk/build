@@ -252,7 +252,7 @@
             type: 'numericRange',
             description: 'Valid lengths for this user input of this control.',
             value: false,
-             summary: false } ],
+            summary: false } ],
         inputNumeric: [
           { name: 'Range',
             type: 'numericRange',
@@ -262,8 +262,8 @@
           { name: 'Kind',
             type: 'enum',
             description: 'Type of number accepted.',
-              options: [ 'Integer',
-                         'Decimal' ],
+            options: [ 'Integer',
+                       'Decimal' ],
             value: 'Integer',
             summary: true } ],
         inputDate: [
@@ -272,6 +272,13 @@
             value: false,
             summary: false } ],
         inputLocation: [],
+        inputMedia: [
+          { name: 'Kind',
+            type: 'enum',
+            description: 'Type of media to upload.',
+            options: [ 'Image',
+                       'Audio',
+                       'Video' ] } ],
         inputSelectOne: [
           { name: 'Options',
             type: 'optionsEditor',
@@ -354,6 +361,7 @@
         inputNumeric: generateTextPreview,
         inputDate: generateTextPreview,
         inputLocation:  function(properties) { return; },
+        inputMedia:  function(properties) { return; },
         inputSelectOne:  function(properties) { return generateSelectPreview(properties, 'radio'); },
         inputSelectMany: function(properties) { return generateSelectPreview(properties, 'checkbox'); },
         group:  function(properties) { return; },

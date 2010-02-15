@@ -163,6 +163,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             binding.attrs.type = 'date';
         else if (control.type == 'inputLocation')
             binding.attrs.type = 'geopoint';
+        else if (control.type == 'inputMedia')
+            binding.attrs.type = 'binary';
 
         // deal with properties:
 
@@ -205,6 +207,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // text length
         if ((control.Range !== undefined) && (control.Range !== false))
             constraint.push('. &gt; ' + control.Range.min + ' and . &lt; ' + control.Range.max);
+
+        // media kind
+        if (control.type == 'inputMedia')
+            bodyTag.attrs.mediatype = control.Kind.toLowerCase() + '/*';
 
         // options
         if (control.Options !== undefined)
