@@ -314,7 +314,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         result += '<' + obj.name;
 
         if (obj.attrs !== undefined)
-            _.each(obj.attrs, function(key, value)
+            _.each(obj.attrs, function(value, key)
             {
                 result += ' ' + key + '="' + value + '"';
             });
