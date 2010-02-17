@@ -1,4 +1,6 @@
-/* COMPAT */
+/**********
+ * COMPAT *
+ **********/
 
 /* reset styles to sanity */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
@@ -18,7 +20,7 @@ table, caption, tbody, tfoot, thead, tr, th, td
 /* set 1em to 10px */
 body
 {
-    font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Helvetica, Arial, sans-serif;
     font-size: 62.5%;
     line-height: 1;
 }
@@ -45,88 +47,9 @@ body
     height: 1%;
 }
 
-
-/* GENERAL */
-
-a
-{
-    border-bottom: 1px dotted #fff;
-    text-decoration: none;
-}
-
-.toolbar
-{
-    float: right;
-}
-.toolbar li
-{
-    display: inline-block;
-    margin-left: 1.5em;
-}
-.toolbar li.separator
-{
-    width: 1em;
-}
-.toolbar li a
-{
-    background: transparent url(/images/icons.png) no-repeat;
-    border: none;
-    display: block;
-    height: 16px;
-    line-height: 16px;
-}
-
-#templates
-{
-    display: none;
-}
-
-.modal
-{
-    background-color: #fff;
-    border: 0.3em solid #333;
-    -moz-box-shadow: 0 0 1em #222;
-    -webkit-box-shadow: 0 0 1em #222;
-    color: #333;
-    display: none;
-    left: 50%;
-    margin-left: -30em;
-    position: fixed;
-    top: 17%;
-    width: 60em;
-}
-.modal h3
-{
-    background-color: #333;
-    color: #fff;
-    padding: 0.3em 0.5em 0.6em;
-}
-.modal .modalContents
-{
-    padding: 2em;
-}
-.modal .modalButtonContainer
-{
-    background-color: #eee;
-    padding: 2em;
-    text-align: right;
-}
-.modal .modalButton
-{
-    background-color: #555;
-    border: 0.2em solid #333;
-    color: #fff;
-    padding: 0.4em 1em;
-}
-.modal .modalButton:hover
-{
-    background-color: #666;
-}
-.modal h4
-{
-    font-size: 1.1em;
-    margin: 0.3em 0;
-}
+/***********
+ * WIDGETS *
+ ***********/
 
 /* jqm */
 .jqmOverlay { background-color: #000; }
@@ -145,587 +68,162 @@ a
      top: expression((document.documentElement.scrollTop || document.body.scrollTop) + Math.round(17 * (document.documentElement.offsetHeight || document.body.clientHeight) / 100) + 'px');
 }
 
-/* LAYOUT */
+.modal
+{
+    background-color: #fff;
+    -moz-box-shadow: 0 0 1em #222;
+    -webkit-box-shadow: 0 0 1em #222;
+    color: #333;
+    display: none;
+    left: 50%;
+    margin-left: -30em;
+    position: fixed;
+    top: 17%;
+    width: 60em;
+}
+
+#templates
+{
+    display: none;
+}
+
+/***********
+ * GENERAL *
+ ***********/
+
+h1, h2, h3, h4, h5, h6
+{
+    color: #444;
+    font-weight: normal;
+    letter-spacing: -0.04em;
+}
+
+a
+{
+    color: #4e647b;
+    text-decoration: none;
+}
+
+/**********
+ * LAYOUT *
+ **********/
 
 body
 {
-    background-color: #148;
+    background: #f3f3f3 url(/images/bg_slice.png) repeat-x top;
     overflow: hidden;
 }
 
 .header
 {
-    background: #148; /* TODO:IMG */
-    color: #fff;
-    height: 1em;
-    padding: 1.5em 3em 2.5em;
+    padding: 2em;
 }
 .header h1
 {
-    float: left;
-    text-shadow: #000 0 0 0.4em;
+    display: inline-block;
 }
-.header .toolbar
+.header #editTitleLink
 {
-    margin-top: 0.3em;
-}
-.header .toolbar li a
-{
-    color: #fff;
-    font-weight: bold;
-    padding-left: 24px;
+    color: #666;
     text-transform: lowercase;
 }
-.header .toolbar li a:hover
+.header ul.menu
 {
-    color: #ccc;
+    background: transparent url(/images/vert_bar.png) no-repeat left top;
+    display: inline-block;
+    margin-left: 2em;
+    padding-left: 0.5em;
 }
-.header .toolbar li #newLink { background-position: 0 0; }
-.header .toolbar li #openLink { background-position: 0 -16px; }
-.header .toolbar li #helpLink { background-position: 0 -32px; }
-
-.subheader
+.header ul.menu li
 {
-    background-color: #ddd;
-    border: 1px solid #026;
-    height: 1.6em;
-    margin: 0 1em;
-    padding: 0.5em 1em;
-}
-.subheader h2
-{
-    float: left;
-    font-size: 1.5em;
-    line-height: 16px;
-}
-.subheader #editTitleLink
-{
-    background: transparent url(/images/icons.png) no-repeat 0 -48px;
-    border: none;
-    color: #444;
-    display: block;
-    float: left;
-    height: 16px;
-    line-height: 16px;
+    color: #666;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.4em;
+    letter-spacing: -0.04em;
     margin-left: 1em;
-    padding-left: 24px;
-    text-indent: -9999px;
-    text-transform: lowercase;
+    padding: 0.5em;
 }
-.subheader #editTitleLink:hover
+.header ul.menu li:hover
 {
-    text-indent: 0;
+    background-color: #f0f0f0;
 }
-.subheader .toolbar li a
+.header .accountStatus
 {
-    color: #444;
-    padding-left: 24px;
-    text-transform: lowercase;
-}
-.subheader .toolbar li a:hover
-{
-    color: #000;
-}
-.subheader .toolbar li #undoLink { background-position: 0 -64px; }
-.subheader .toolbar li #redoLink { background-position: 0 -80px; }
-.subheader .toolbar li #saveLink { background-position: 0 -96px; }
-.subheader .toolbar li #exportLink { background-position: 0 -112px; }
-
-.mainWrapper
-{
-    border: 1px solid #026;
-    border-top: none;
-    bottom: 1em;
-    left: 1em;
+    font-size: 1.4em;
+    letter-spacing: -0.04em;
     position: absolute;
-    right: 1em;
-    top: 7.7em;
+    right: 2em;
+    top: 2em;
 }
-.mainWrapper h3
+
+.workspaceScrollArea
 {
-    background-color: #46a;
-    color: #fff;
-    padding: 0.4em;
+    background-color: #e8e8e8;
+    bottom: 3em;
+    left: 0.5em;
+    position: absolute;
+    right: 30em;
+    top: 6em;
+}
+.workspace
+{
+    min-height: 40em;
 }
 
 .toolPalette
 {
-    background-color: #aaa;
-    border: 3px solid #ddd;
-    border-top: none;
-    bottom: 0;
-    left: 0;
+    bottom: 1em;
+    left: 1em;
     position: absolute;
-    top: 0;
-    width: 12em;
+}
+.toolPalette h3
+{
+    background: transparent url(/images/add_new.png) no-repeat;
+    display: inline-block;
+    font-size: 1.4em;
+    margin-right: 0.5em;
+    padding-left: 18px;
 }
 .toolPalette ul
 {
+    display: inline-block;
+}
+.toolPalette ul li
+{
+    display: inline-block;
+    font-size: 1.1em;
+    letter-spacing: -1px;
+    margin-left: 1em;
+}
+.toolPalette ul li a
+{
+    cursor: pointer;
     padding: 0.5em;
 }
-.toolPalette li
+.toolPalette ul li a:hover
 {
-    list-style-type: none;
-    margin-bottom: 1em;
-}
-.toolPalette li.separator
-{
-    border-bottom: 1px dotted #888;
-}
-.toolButton
-{
-    background-color: #bbb;
-    border: 1px solid #888;
-    cursor: move;
-    display: block;
-    padding: 1em 1em 1.2em 0.5em;
-}
-.toolButton .icon
-{
-    background: transparent url(/images/icons.png) no-repeat;
-    display: inline-block;
-    height: 16px;
-    margin-bottom: -0.4em;
-    margin-right: 0.5em;
-    width: 16px;
+    background-color: #4e647b;
+    color: #f3f3f3;
 }
 .toolButton.ui-draggable-dragging
 {
-    -moz-box-shadow: 0 0 0.5em #000;
-    -webkit-box-shadow: 0 0 0.5em #000;
-    width: 10em;
-    z-index: 100;
-}
-
-/* PROPERTY PANE */
-
-.propertiesPane
-{
-    background-color: #aaa;
-    bottom: 0;
-    border: 3px solid #ddd;
-    border-top: none;
-    position: absolute;
-    overflow: auto;
-    right: 0;
-    top: 0;
-    width: 20em;
-}
-
-.propertiesPane .propertyList li
-{
-    font-size: 1.2em;
-    padding: 0.5em;
-    list-style-type: none;
-}
-.propertiesPane .propertyList li.even
-{
-    background-color: #bbb;
-}
-.propertiesPane .propertyList li .translations li
-{
-    font-size: 1em;
-}
-.propertiesPane .propertyList li h4
-{
-    margin-bottom: 0.3em;
-}
-.propertiesPane .propertyList li h5
-{
-    margin: 0.3em 1em;
-}
-.propertiesPane .propertyList li p
-{
-    color: #666;
-    font-size: 0.8em;
-    font-style: italic;
-    padding: 0.3em 1em;
-}
-.propertiesPane .propertyList li label
-{
-    font-weight: bold;
-    margin-left: 0.5em;
-}
-.propertiesPane .propertyList li input[type="text"],
-.propertiesPane .propertyList li select
-{
-    margin-left: 1em;
-    width: 85%;
-}
-
-.propertiesPane .propertyList li input[type="text"][disabled="disabled"]
-{
-    background-color: #eee;
-}
-
-.propertiesPane .propertyList li .manageTranslations
-{
-    background: transparent url(/images/icons.png) no-repeat 0 -48px;
-    border: none;
-    color: #333;
     display: block;
-    font-size: 0.8em;
-    height: 16px;
-    margin: 0.5em;
-    margin-left: 1em;
-    line-height: 16px;
-    padding-left: 2em;
-}
-.propertiesPane .propertyList li .manageTranslations:hover
-{
-    color: #666;
-}
-.propertiesPane .propertyList li .addOption
-{
-    background: transparent url(/images/icons.png) no-repeat 0 -272px;
-    border: none;
-    color: #333;
-    display: block;
-    font-size: 0.8em;
-    height: 16px;
-    margin: 0.5em;
-    margin-left: 1em;
-    line-height: 16px;
-    padding-left: 2em;
-}
-.propertiesPane .propertyList li .removeOption
-{
-    background: transparent url(/images/icons.png) no-repeat 0 -288px;
-    border: none;
-    display: block;
-    float: right;
-    height: 16px;
     text-indent: -9999px;
-    width: 16px;
-}
-.propertiesPane .propertyList .optionsList li p,
-.propertiesPane .propertyList .optionsList li .manageTranslations
-{
-    display: none;
-}
-.propertiesPane .propertyList .optionsList .optionsEditorValueField
-{
-    padding: 0.5em;
 }
 
-.propertiesPane .propertyList li.advanced
+.toolButton .typeIcon
 {
-    font-size: 1em;
-    padding: 0;
+    background: transparent url(/images/type_icons.png) no-repeat;
+    height: 64px;
+    width: 64px;
 }
-.propertiesPane .propertyList li.advanced a.toggle
-{
-    background: #888;
-    border: none;
-    color: #fff;
-    display: block;
-    font-size: 1.2em;
-    font-weight: bold;
-    padding: 0.5em;
-}
-
-.propertiesPane .propertyList li.advanced a.toggle .icon
-{
-    background: transparent url(/images/icons.png) no-repeat 0 -256px;
-    float: right;
-    height: 16px;
-    margin-top: -0.2em;
-    width: 16px;
-}
-.propertiesPane .propertyList li.advanced a.toggle.expanded .icon
-{
-    background-position: 0 -240px;
-}
-
-/* WORKSPACE */
-
-.workspaceScrollArea
-{
-    background-color: #333;
-    border-bottom: 3px solid #ddd;
-    bottom: 0;
-    left: 12.6em;
-    overflow: auto;
-    position: absolute;
-    right: 20.6em;
-    top: 0;
-}
-
-.workspaceWrapper
-{
-    -moz-box-shadow: 0 0 1em #000;
-    -webkit-box-shadow: 0 0 1em #000;
-    background-color: #eee;
-    margin: 2em;
-    padding-bottom: 5em;
-    padding-top: 1em;
-}
-
-.workspace
-{
-    margin: 2em;
-    min-height: 50em;
-}
-.workspace .placeholder
-{
-    background-color: #fad68e;
-    border: 1px solid #f2a324;
-    margin-bottom: 1.5em;
-    padding: 2em;
-    position: relative;
-    text-align: center;
-    z-index: 0;
-}
-.workspace .placeholder:last-child .flowArrow
-{
-    display: none;
-}
-.workspace .placeholder .flowArrow
-{
-    background: transparent url(/images/flows.png) no-repeat 0 -96px;
-    bottom: -32px;
-    height: 32px;
-    left: 50%;
-    margin-left: -18px;
-    position: absolute;
-    width: 36px;
-}
-.workspace .placeholder.hidden
-{
-    background-color: transparent;
-    border: none;
-    margin-bottom: 0;
-    padding: 0;
-}
-.control
-{
-    background-color: #ddd;
-    border: 3px solid #555;
-    margin-bottom: 1.5em;
-}
-.control .controlName
-{
-    background-color: #555;
-    color: #fff;
-    cursor: move;
-    font-size: 1.2em;
-    height: 16px;
-    line-height: 16px;
-    padding: 0.5em;
-    padding-bottom: 0.7em;
-}
-.control .controlName .icon
-{
-    background-image: url(/images/icons.png);
-    display: inline-block;
-    height: 16px;
-    margin-bottom: -0.3em;
-    margin-right: 0.5em;
-    width: 16px;
-}
-.control .controlName .deleteControl
-{
-    background: transparent url(/images/icons.png) no-repeat 0 -288px;
-    border: none;
-    display: block;
-    float: right;
-    height: 16px;
-    text-indent: -9999px;
-    width: 16px;
-}
-.control .controlPreview
-{
-    margin: 1em;
-}
-.control .controlProperties
-{
-    background-color: #ccc;
-    padding: 1em;
-}
-.control .controlProperties dt
-{
-    clear: left;
-    font-weight: bold;
-    float: left;
-    margin-bottom: 0.2em;
-    margin-right: 1.5em;
-    text-align: right;
-    width: 8em;
-}
-.control .controlProperties dd
-{
-    margin-bottom: 0.2em;
-}
-.control .controlPreview .controlLabel
-{
-    display: block;
-    font-size: 1.4em;
-    font-weight: bold;
-}
-.control .controlPreview .controlHint
-{
-    color: #444;
-    display: block;
-    font-style: italic;
-    margin: 0.3em;
-}
-.control .controlPreview .controlOptionsList li
-{
-    list-style-type: none;
-}
-.control .controlPreview .controlOptionsList .controlOptionsEmpty
-{
-    color: #666;
-    font-style: italic;
-    margin: 0.5em;
-}
-.control .controlFlowArrow
-{
-    background: transparent url(/images/flows.png) no-repeat 0 0;
-    height: 32px;
-    left: 50%;
-    margin-left: -18px;
-    position: absolute;
-    width: 36px;
-    z-index: 10;
-}
-.control.group
-{
-    border-color: #665;
-}
-.control.group.selected
-{
-    border-color: #ff7e00;
-}
-.control.group > .controlName
-{
-    background-color: #665;
-}
-.control.group.selected > .controlName
-{
-    background-color: #ff7e00;
-}
-.control.group .workspaceInnerWrapper
-{
-    background-color: #fff;
-    border: 1px solid #555;
-    margin: 1em;
-    min-height: 5em;
-    padding: 1em;
-    padding-bottom: 0;
-}
-.control.group:hover .workspaceInnerWrapper
-{
-    border-color: #333;
-}
-.control.group.selected .workspaceInnerWrapper
-{
-    border-color: #ff7e00;
-}
-
-body > .control.last .controlFlowArrow,
-.workspace > .control:last-child > .controlFlowArrow
-{
-    display: none;
-}
-
-body > .control
-{
-    z-index: 400;
-}
-
-.control:hover
-{
-    border: 3px solid #333;
-}
-.control:hover > .controlName
-{
-    background-color: #333;
-}
-.control:hover > .controlFlowArrow
-{
-    background-position: 0 -32px;
-}
-
-.control.selected
-{
-    background-color: #dddde3;
-    border: 3px solid #225;
-}
-.control.selected > .controlName
-{
-    background-color: #225;
-}
-.control.selected > .controlProperties
-{
-    background-color: #ccccd2;
-}
-.control.selected > .controlFlowArrow
-{
-    background-position: 0 -64px;
-}
-
-/* MODALS */
-.translationsDialog
-{
-    margin-left: -15em;
-    width: 30em;
-}
-.translationsDialog .addTranslation
-{
-    background: transparent url(/images/icons.png) no-repeat 0 -272px;
-    border: none;
-    display: inline-block;
-    height: 16px;
-    margin-left: 0.5em;
-    position: relative;
-    text-indent: -9999px;
-    top: -0.4em;
-    width: 16px;
-}
-.translationsDialog .removeTranslation
-{
-    background: transparent url(/images/icons.png) no-repeat 0 -288px;
-    border: none;
-    display: inline-block;
-    float: right;
-    height: 16px;
-    text-indent: -9999px;
-    width: 16px;
-}
-.translationsDialog .translationList
-{
-    margin: 0.3em 0.5em 1em;
-}
-.translationsDialog .translationList li
-{
-    height: 16px;
-    line-height: 16px;
-    list-style-type: none;
-    width: 20em;
-}
-.translationsDialog .translationNone
-{
-    color: #666;
-    font-style: italic;
-    margin-bottom: 1em;
-}
-
-.exportDialog .exportCodeContainer
-{
-    border: 1px solid #eee;
-    height: 40em;
-    margin: 0.5em;
-    overflow: auto;
-    overflow-x: hidden;
-    padding: 0.5em;
-}
-
-/* ICONS */
-.group .icon { background-position: 0 -208px; }
-.branch .icon { background-position: 0 -224px; }
-.inputText .icon { background-position: 0 -128px; }
-.inputNumeric .icon { background-position: 0 -144px; }
-.inputDate .icon { background-position: 0 -160px; }
-.inputSelectOne .icon { background-position: 0 -176px; }
-.inputSelectMany .icon { background-position: 0 -192px; }
+.toolButton.inputText .typeIcon       { background-position: 0 0px; }
+.toolButton.inputNumeric .typeIcon    { background-position: 0 -64px; }
+.toolButton.inputDate .typeIcon       { background-position: 0 -128px; }
+.toolButton.inputLocation .typeIcon   { background-position: 0 -192px; }
+.toolButton.inputMedia .typeIcon      { background-position: 0 -256px; }
+.toolButton.inputSelectOne .typeIcon  { background-position: 0 -320px; }
+.toolButton.inputSelectMany .typeIcon { background-position: 0 -384px; }
+.toolButton.group .typeIcon           { background-position: 0 -448px; }
+.toolButton.branch .typeIcon          { background-position: 0 -512px; }

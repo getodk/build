@@ -13,8 +13,6 @@
         {
             var $this = $(this);
 
-            $this.prepend($('<div class="icon"></div>'));
-
             $this.workspaceDraggable({
                 dragCallback: function($control, direction)
                 {
@@ -46,6 +44,14 @@
                                 .addClass($this.attr('rel'))
                                 .odkControl($this.attr('rel'))
                                 .trigger('odkControl-select'));
+                },
+                draggableOptions: {
+                    start: function(event, ui)
+                    {
+                        $(ui.helper)
+                            .empty()
+                            .append($('<div class="typeIcon></div>"'));
+                    }
                 }
             });
         });

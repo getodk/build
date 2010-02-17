@@ -140,7 +140,7 @@
         position.top -= stackHeight;
 
         // Fallback: if we haven't matched any of the above cases
-        // we're at the end of the line just add after here.
+        // we're at the end of the line, so just add it after here.
         if((!checkElemHover($workspace, position, config)) && ($workspace.children(':last-child').is(':not(.placeholder)')))
             config.dragCallback($workspace.children(':last-child'), 1);
     };
