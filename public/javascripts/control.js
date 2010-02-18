@@ -17,13 +17,9 @@
 
     var refreshFromProperties = function($this, type, config, properties)
     {
-        $this.children('.controlName').children('.text').text(getProperty(properties, 'Name'));
+        $this.children('.controlName').text(getProperty(properties, 'Name'));
 
-        $this.children('.controlPreview')
-             .empty()
-             .append($.fn.odkControl.controlRenderers[type](properties));
-
-        var $propertyList = $this.children('.controlProperties');
+        /*var $propertyList = $this.children('.controlProperties');
         $propertyList.empty();
         _.each(properties, function(property)
         {
@@ -33,7 +29,7 @@
             $propertyList.append(
                 $('<dt>' + property.name + '</dt><dd>' + $.displayText(property.value) + '</dd>')
             );
-        });
+        });*/
     };
 
     var selectControl = function($this, type, config, properties)
@@ -142,7 +138,6 @@
             var cachedHeight = 0;
             $this.workspaceDraggable({
                 draggableOptions: {
-                    handle: '.controlName',
                     start: function(event, ui)
                     {
                         ui.helper.width($this.width());
@@ -159,7 +154,7 @@
                 {
                     $('.workspace .placeholder.hidden')
                         .addClass('closing')
-                        .slideUp('normal', function()
+                        .slideUp('fast', function()
                         {
                             $(this).remove();
                         });
@@ -169,7 +164,7 @@
 
                     var $placeholder = $('<div class="placeholder hidden"></div>')
                                         .css('height', cachedHeight + 'px')
-                                        .slideDown('normal');
+                                        .slideDown('fast');
                     if (direction < 0)
                         $control.before($placeholder);
                     else if (direction == 0)
@@ -319,52 +314,5 @@
             value: [],
             summary: false }
         ]
-    };
-
-    // Preview renderers
-    var generateLabels = function(label, hint)
-    {
-        var result = '<label class="controlLabel">' + (label.eng || 'no label') + '</label>';
-        if (hint !== '')
-            result += '<label class="controlHint">' + (hint.eng || '') + '</label>';
-        return result;
-    };
-    var generateTextPreview = function(properties)
-    {
-        return $(generateLabels(getProperty(properties, 'Label'), getProperty(properties, 'Hint')) +
-                 '<input type="text" class="controlPreview"/>');
-    };
-    var previewIdx = 0;
-    var generateSelectPreview = function(properties, type)
-    {
-        var result = generateLabels(getProperty(properties, 'Label'), getProperty(properties, 'Hint'));
-        var options = getProperty(properties, 'Options');
-        var name = getProperty(properties, 'Name') || Math.random();
-
-        result += '<ul class="controlOptionsList">'
-        if ((options !== undefined) && (options !== null) && (options.length > 0))
-            _.each(options, function(option)
-            {
-                result += '<li><input type="' + type + '" name="preview_' + name + previewIdx +
-                          '"/><label for="preview_' + name + '" class="controlOptionLabel">' +
-                          (option.text.eng || 'no label') + '</label></li>';
-            });
-        else
-            result += '<li class="controlOptionsEmpty">No options yet.</li>';
-
-        previewIdx++;
-        return $(result + '</li>');
-    };
-
-    $.fn.odkControl.controlRenderers = {
-        inputText: generateTextPreview,
-        inputNumeric: generateTextPreview,
-        inputDate: generateTextPreview,
-        inputLocation:  function(properties) { return; },
-        inputMedia:  function(properties) { return; },
-        inputSelectOne:  function(properties) { return generateSelectPreview(properties, 'radio'); },
-        inputSelectMany: function(properties) { return generateSelectPreview(properties, 'checkbox'); },
-        group:  function(properties) { return; },
-        branch: function(properties) { return; }
     };
 })(jQuery);
