@@ -166,8 +166,8 @@
                 scroll: false,
                 drag: function(event, ui)
                 {
-                    checkScroll(ui.absolutePosition, config);
-                    checkHover($this, ui.absolutePosition, config);
+                    checkScroll({ left: ui.position.left, top: ui.position.top }, config);
+                    checkHover($this, { left: ui.position.left, top: ui.position.top }, config);
                 },
                 stop: function(event, ui)
                 {
