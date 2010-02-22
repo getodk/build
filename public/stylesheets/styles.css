@@ -239,7 +239,12 @@ body
 }
 .control .deleteControl
 {
+    background: transparent url(/images/close.png) no-repeat;
     float: right;
+    height: 16px;
+    text-align: left;
+    text-indent: -9999px;
+    width: 16px;
 }
 .control .controlName
 {
@@ -274,7 +279,12 @@ body
 {
     background-position: 0 -56px;
 }
-.workspace > .control:last-child .controlFlowArrow
+.control.ui-draggable-dragging
+{
+    z-index: 5;
+}
+body > .control.last .controlFlowArrow,
+.workspace > .control:last-child > .controlFlowArrow
 {
     display: none;
 }
@@ -303,6 +313,11 @@ body
     display: none;
 }
 
+.placeholder.hidden
+{
+    background: none;
+}
+
 .propertiesPane
 {
     bottom: 0.5em;
@@ -315,7 +330,51 @@ body
 
 .propertiesPane .propertyList li
 {
-    margin-top: 0.4em;
+    margin-top: 0.8em;
+}
+.propertiesPane .propertyList li li
+{
+    margin-left: 0.5em;
+}
+.propertiesPane .propertyList li.advanced
+{
+    border-top: 1px dashed #888;
+    padding-top: 0.5em;
+}
+.propertiesPane .propertyList li h4
+{
+    font-size: 1.3em;
+}
+.propertiesPane .propertyList li p
+{
+    color: #666;
+    font-size: 0.9em;
+    padding: 0.2em 0 0.3em;
+}
+.propertiesPane .propertyList li .bool label
+{
+    color: #444;
+    font-size: 1.3em;
+    letter-spacing: -1px;
+}
+.propertiesPane .propertyList li .bool p
+{
+    padding-left: 2.7em;
+}
+.propertiesPane .propertyList li .numericRange h5,
+.propertiesPane .propertyList li .numericRange input[type="text"]
+{
+    margin-left: 2.2em;
+}
+.propertiesPane .propertyList li h5
+{
+    font-size: 1.1em;
+}
+.propertiesPane .propertyList li.advanced a.toggle
+{
+    color: #444;
+    font-size: 1.4em;
+    letter-spacing: -1px;
 }
 
 /***********
