@@ -16,10 +16,34 @@
       <a id="editTitleLink" href="#edit_title" title="Rename this form">Rename</a>
 
       <ul class="menu">
-        <li>File</li>
-        <li>Edit</li>
-        <li>View</li>
-        <li>Help</li>
+        <li>
+          <span>File</span>
+          <ul class="submenu">
+            <li><a href="#newFormDialog" rel="modal">New Form</a></li>
+            <li><a href="#openFormDialog" rel="modal">Open Form...</a></li>
+            <li class="divider"></li>
+            <li><a href="#closeForm">Close</a></li>
+            <li><a href="#saveForm">Save</a></li>
+            <li><a href="#saveAsFormDialog" rel="modal">Save Form As...</a></li>
+            <li class="divider"></li>
+            <li><a href="#exportDialog" rel="modal">Export to XML...</a></li>
+          </ul>
+        </li>
+        <li>
+          <span>Edit</span>
+          <ul class="submenu">
+            <li><a href="#cut">Cut</a></li>
+            <li><a href="#copy">Copy</a></li>
+            <li><a href="#paste">Paste</a></li>
+            <li class="divider"></li>
+            <li><a href="#undo">Undo</a></li>
+            <li><a href="#redo">Redo</a></li>
+            <li class="divider"></li>
+            <li><a href="#translationsDialog" rel="modal">Manage Translations...</a></li>
+          </ul>
+        </li>
+        <li><span>View</span></li>
+        <li><span>Help</span></li>
       </ul>
 
       <div class="accountStatus">Signed in as <a href="#">Yaw Anokwa</a>.</div>
@@ -95,6 +119,7 @@
     <script type="text/javascript" src="/javascripts/workspace-draggable.js"></script>
     <script type="text/javascript" src="/javascripts/control.js"></script>
     <script type="text/javascript" src="/javascripts/toolbutton.js"></script>
+    <script type="text/javascript" src="/javascripts/dropdown-menu.js"></script>
     <script type="text/javascript" src="/javascripts/application.js"></script>
 
     <div id="templates">

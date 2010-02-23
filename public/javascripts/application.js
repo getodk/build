@@ -13,6 +13,9 @@ applicationNS.newForm = function()
 
 $(function()
 {
+    // Wire up menu
+    $('.header .menu li').dropdownMenu();
+
     // Wire up toolpane
     $('.toolPalette a').toolButton();
 

@@ -146,18 +146,50 @@ body
 }
 .header ul.menu li
 {
+    display: inline-block;
+    margin-left: 1em;
+}
+.header ul.menu li span
+{
     color: #666;
     cursor: pointer;
     display: inline-block;
     font-size: 1.4em;
     letter-spacing: -1px;
-    margin-left: 1em;
     padding: 0.5em;
 }
-.header ul.menu li:hover
+.header ul.menu li:hover,
+.header ul.menu li.open
 {
     background-color: #f0f0f0;
 }
+.header ul.menu li ul.submenu
+{
+    background-color: #f0f0f0;
+    display: none;
+    padding: 0.2em;
+    position: absolute;
+    z-index: 50;
+}
+.header ul.menu li ul.submenu li
+{
+    display: block;
+    margin-bottom: 0.3em;
+    margin-left: 0;
+}
+.header ul.menu li ul.submenu li a
+{
+    color: #444;
+    display: block;
+    font-size: 1.3em;
+    letter-spacing: -1px;
+    padding: 0.6em;
+}
+.header ul.menu li ul.submenu li a:hover
+{
+    background-color: #fff;
+}
+
 .header .accountStatus
 {
     font-size: 1.4em;
