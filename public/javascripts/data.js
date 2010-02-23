@@ -54,7 +54,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     odkmaker.data.extract = function()
     {
         return {
-            title: $('h2').text(),
+            title: $('h1').text(),
             controls: extractRecurse($('.workspace'))
         };
     };

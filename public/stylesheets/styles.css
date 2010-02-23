@@ -77,9 +77,35 @@ body
     display: none;
     left: 50%;
     margin-left: -30em;
+    padding: 2em;
     position: fixed;
     top: 17%;
     width: 60em;
+}
+.modal h3
+{
+    color: #999;
+    font-size: 2.5em;
+    margin-bottom: 0.7em;
+}
+.modal .modalContents
+{
+    margin: 0 1.5em 1em;
+}
+.modal .modalButtonContainer
+{
+    margin-top: 1.5em;
+}
+.modal .modalButtonContainer .modalButton
+{
+    color: #666;
+    font-size: 1.3em;
+    letter-spacing: -1px;
+    padding: 0.5em;
+}
+.modal .modalButtonContainer .modalButton:hover
+{
+    background-color: #f0f0f0;
 }
 
 #templates
@@ -430,6 +456,31 @@ body > .control.last .controlFlowArrow,
 .propertiesPane .propertyList li .removeOption
 {
     float: right;
+}
+
+.translationsDialog h4
+{
+    font-size: 1.3em;
+    margin-top: 1em;
+}
+.translationsDialog .addTranslation
+{
+    margin-left: 0.8em;
+}
+.translationsDialog .translationList li
+{
+    font-size: 1.1em;
+    padding: 0.3em;
+    width: 20em;
+}
+.translationsDialog .translationList li .removeTranslation
+{
+    float: right;
+}
+
+.exportDialog .exportCodeContainer
+{
+    overflow: auto;
 }
 
 /***********
