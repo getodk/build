@@ -42,8 +42,23 @@
             <li><a href="#translationsDialog" class="manageTranslations" rel="modal">Manage Translations...</a></li>
           </ul>
         </li>
-        <li><span>View</span></li>
-        <li><span>Help</span></li>
+        <li>
+          <span>View</span>
+          <ul class="submenu">
+            <li class="infoText">Active Language</li>
+            <li><a href="#" class="activeLanguage" rel="eng">English</a></li>
+            <li class="divider"></li>
+            <li><a href="#toggleCollapsedMode">Collapse Controls</a></li>
+          </ul>
+        </li>
+        <li>
+          <span>Help</span>
+          <ul class="submenu">
+            <li><a href="#toggleHints">Display Hints</a></li>
+            <li><a href="#tutorial">Tutorial</a></li>
+            <li><a href="#about">About ODK Builder...</a></li>
+          </ul>
+        </li>
       </ul>
 
       <div class="accountStatus">Signed in as <a href="#">Yaw Anokwa</a>.</div>
@@ -70,6 +85,7 @@
       <div class="propertiesPane">
         <h3>Properties</h3>
         <ul class="propertyList">
+          <li class="emptyData">First add a control, then select it to view its properties here.</li>
         </ul>
       </div>
     </div>

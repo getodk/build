@@ -16,6 +16,14 @@
             return value || '&nbsp;'
     };
 
+    $.emptyString = function(str, prompt)
+    {
+        if ((str === null) || (str === undefined) || (str === ''))
+            return prompt;
+        else
+            return str;
+    };
+
     $.live = function(selector, type, callback)
     {
         var obj = $([]);

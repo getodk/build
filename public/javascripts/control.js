@@ -9,6 +9,9 @@
 
 ;(function($)
 {
+    // class vars
+    var controlIdx = 1;
+
     // Private methods
     var getProperty = function(properties, name)
     {
@@ -17,7 +20,7 @@
 
     var refreshFromProperties = function($this, type, config, properties)
     {
-        $this.children('.controlName').text(getProperty(properties, 'Name'));
+        $this.children('.controlName').text($.emptyString(getProperty(properties, 'Label').eng, '[question text here]'));
 
         /*var $propertyList = $this.children('.controlProperties');
         $propertyList.empty();
@@ -56,7 +59,8 @@
 
         // now do advanced properties
         $('<li class="advanced"><a class="toggle" href="#advanced"><div class="icon"></div>Advanced</a>' +
-            '<ul class="advancedProperties toggleContainer"></ul></li>').appendTo($propertyList);
+            '<ul class="advancedProperties toggleContainer" style="display:none"></ul></li>')
+            .appendTo($propertyList);
         var $advancedList = $propertyList.find('.advancedProperties');
         _.each(properties, function(property)
         {

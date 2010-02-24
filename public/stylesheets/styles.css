@@ -203,6 +203,17 @@ body
     margin-bottom: 0.3em;
     margin-left: 0;
 }
+.header ul.menu li ul.submenu li.divider
+{
+    border-top: 1px solid #ddd;
+}
+.header ul.menu li ul.submenu li.infoText
+{
+    color: #777;
+    font-size: 1.1em;
+    letter-spacing: -1px;
+    padding: 0.4em;
+}
 .header ul.menu li ul.submenu li a
 {
     color: #444;
@@ -210,6 +221,7 @@ body
     font-size: 1.3em;
     letter-spacing: -1px;
     padding: 0.6em;
+    padding-right: 3em;
 }
 .header ul.menu li ul.submenu li a:hover
 {
@@ -248,6 +260,10 @@ body
     font-size: 1.1em;
     letter-spacing: -1px;
     margin-left: 1em;
+}
+.toolPalette ul li.separator
+{
+    width: 1em;
 }
 .toolPalette ul li a
 {
@@ -298,7 +314,7 @@ body
 }
 .control .deleteControl
 {
-    background: transparent url(/images/close.png) no-repeat;
+    background: transparent url(/images/glyphs.png) no-repeat;
     float: right;
     height: 16px;
     text-align: left;
@@ -406,6 +422,13 @@ body > .control.last .controlFlowArrow,
     border-top: 1px dashed #888;
     padding-top: 0.5em;
 }
+.propertiesPane .propertyList li.emptyData
+{
+    color: #999;
+    font-size: 1.2em;
+    margin-top: 10em;
+    text-align: center;
+}
 .propertiesPane .propertyList li h4
 {
     font-size: 1.3em;
@@ -456,6 +479,18 @@ body > .control.last .controlFlowArrow,
 .propertiesPane .propertyList li .removeOption
 {
     float: right;
+}
+
+.propertiesPane .propertyList li.advanced .icon
+{
+    background: transparent url(/images/glyphs.png) no-repeat 0 -15px;
+    float: right;
+    height: 15px;
+    width: 15px;
+}
+.propertiesPane .propertyList li.advanced .expanded .icon
+{
+    background-position: 0 -30px;
 }
 
 .translationsDialog h4
