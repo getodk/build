@@ -46,7 +46,11 @@
           <span>View</span>
           <ul class="submenu">
             <li class="infoText">Active Language</li>
-            <li><a href="#" class="activeLanguage" rel="eng">English</a></li>
+            <li>
+              <ul class="activeTranslationsMenu">
+                <li><a href="#" class="activeLanguage" rel="eng">English</a></li>
+              </ul>
+            </li>
             <li class="divider"></li>
             <li><a href="#toggleCollapsedMode">Collapse Controls</a></li>
           </ul>
@@ -143,8 +147,9 @@
       <div class="control">
         <div class="typeIcon"></div>
         <a href="#deleteControl" class="deleteControl">Delete</a>
-        <h4 class="controlName"></h4>
-        <h5 class="controlLabel"></h5>
+        <h4 class="controlLabel"></h4>
+        <h5 class="controlHint"></h5>
+        <h5 class="controlName"></h5>
         <ul class="controlProperties"></ul>
         <div class="controlFlowArrow"></div>
       </div>

@@ -20,19 +20,21 @@
 
     var refreshFromProperties = function($this, type, config, properties)
     {
-        $this.children('.controlName').text($.emptyString(getProperty(properties, 'Label').eng, '[question text here]'));
+        $this.children('.controlLabel').text($.emptyString(getProperty(properties, 'Label').eng, '[question text here]'));
+        $this.children('.controlHint').text(getProperty(properties, 'Hint').eng);
+        $this.children('.controlName').text(getProperty(properties, 'Name'));
 
-        /*var $propertyList = $this.children('.controlProperties');
+        var $propertyList = $this.children('.controlProperties');
         $propertyList.empty();
         _.each(properties, function(property)
         {
-            if (property.summary === false)
+            if ((property.summary === false) || (property.value !== true))
                 return;
 
             $propertyList.append(
-                $('<dt>' + property.name + '</dt><dd>' + $.displayText(property.value) + '</dd>')
+                $('<li>' + property.name + '</li>')
             );
-        });*/
+        });
     };
 
     var selectControl = function($this, type, config, properties)

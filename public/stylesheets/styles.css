@@ -321,11 +321,35 @@ body
     text-indent: -9999px;
     width: 16px;
 }
-.control .controlName
+.control .controlLabel
 {
     color: #f3f3f3;
+    display: inline-block;
     font-size: 2em;
     padding-top: 0.4em;
+}
+.control .controlHint
+{
+    color: #bbb;
+    display: inline-block;
+    font-size: 1.4em;
+}
+.control .controlName
+{
+    color: #bbb;
+    font-size: 1.4em;
+}
+.control .controlProperties
+{
+    color: #bbb;
+    font-size: 1.1em;
+    margin-top: 1.4em;
+}
+.control .controlProperties li
+{
+    display: inline-block;
+    margin-right: 1.5em;
+    text-transform: lowercase;
 }
 .control .controlFlowArrow
 {
