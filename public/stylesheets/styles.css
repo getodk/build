@@ -223,9 +223,18 @@ body
     padding: 0.6em;
     padding-right: 3em;
 }
+.header ul.menu li ul.submenu li.disabled a
+{
+    color: #888;
+}
 .header ul.menu li ul.submenu li a:hover
 {
     background-color: #fff;
+}
+.header ul.menu li ul.submenu li.disabled a:hover
+{
+    background-color: transparent;
+    cursor: default;
 }
 
 .header .accountStatus
