@@ -16,6 +16,13 @@ $(function()
     // Wire up menu
     $('.header .menu li').dropdownMenu();
 
+    // Wire up menu actions
+    $.live('.header .menu .displayLanguages a', 'click', function(event)
+    {
+        odkmaker.i18n.displayLanguage($(this).attr('rel'));
+        $('.workspace .control').trigger('odkControl-propertiesUpdated');
+    });
+
     // Wire up toolpane
     $('.toolPalette a').toolButton();
 

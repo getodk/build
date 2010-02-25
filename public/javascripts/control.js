@@ -20,8 +20,8 @@
 
     var refreshFromProperties = function($this, type, config, properties)
     {
-        $this.children('.controlLabel').text($.emptyString(getProperty(properties, 'Label').eng, '[question text here]'));
-        $this.children('.controlHint').text(getProperty(properties, 'Hint').eng);
+        $this.children('.controlLabel').text($.emptyString(getProperty(properties, 'Label')[odkmaker.i18n.displayLanguage()], '[question text here]'));
+        $this.children('.controlHint').text(getProperty(properties, 'Hint')[odkmaker.i18n.displayLanguage()]);
         $this.children('.controlName').text(getProperty(properties, 'Name'));
 
         var $propertyList = $this.children('.controlProperties');
