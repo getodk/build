@@ -132,6 +132,7 @@
                 property.value = $(this).val();
                 $parent.trigger('odkControl-propertiesUpdated');
             });
+            property.value = $select.val();
         },
         dateRange: function(property, $editor, $parent) {
             // derive from numeric range
