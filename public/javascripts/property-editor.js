@@ -136,7 +136,12 @@
         dateRange: function(property, $editor, $parent) {
             // derive from numeric range
             $.fn.propertyEditor.editors.numericRange(property, $editor, $parent);
-            $editor.find('.editorTextfield').datepicker();
+            $editor.find('.editorTextfield').datepicker({
+                onSelect: function(dateText, inst)
+                {
+                    $(inst).trigger('keyup');
+                }
+            });
         },
         optionsEditor: function(property, $editor, $parent) {
             $editor.find('h4').text(property.name);

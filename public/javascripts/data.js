@@ -13,9 +13,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     var getDataRepresentation = function($control)
     {
         var data = {};
-        _.each($control.data('odkControl-properties'), function(property)
+        _.each($control.data('odkControl-properties'), function(property, name)
         {
-            data[property.name] = property.value;
+            data[name] = property.value;
         });
         data.type = $control.data('odkControl-type');
         return data;
@@ -90,7 +90,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if (control.type == 'group')
         {
             var instanceTag = {
-                name: control.Name,
+                name: control.name,
                 children: []
             };
             instance.children.push(instanceTag);
@@ -100,34 +100,34 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             };
             body.children.push(bodyTag);
 
-            if ((control.Label !== undefined) && (control.Label !== ''))
+            if ((control.label !== undefined) && (control.label !== ''))
             {
                 bodyTag.children.push({
                     name: 'label',
                     attrs: {
-                        'ref': "jr:itext('" + xpath + control.Name + ":label')"
+                        'ref': "jr:itext('" + xpath + control.name + ":label')"
                     }
                 });
-                addTranslation(control.Label, xpath + control.Name + ':label', translations);
+                addTranslation(control.label, xpath + control.name + ':label', translations);
             }
 
             _.each(control.children, function(child)
             { 
-                parseControl(child, xpath + control.Name + '/', relpath + control.Name + '/',
+                parseControl(child, xpath + control.name + '/', relpath + control.name + '/',
                              instanceTag, translations, model, bodyTag, relevance);
             });
             return;
         }
 
         instance.children.push({
-            name: control.Name
+            name: control.name
         });
 
         // control markup
         var bodyTag = {
             name: controlTypes[control.type],
             attrs: {
-                'ref': control['Instance Destination'] || (relpath + control.Name)
+                'ref': control.destination || (relpath + control.name)
             },
             children: []
         };
@@ -137,7 +137,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var binding = {
             name: 'bind',
             attrs: {
-                'nodeset': control['Instance Destination'] || (xpath + control.Name)
+                'nodeset': control.destination || (xpath + control.name)
             }
         }
         model.children.push(binding);
@@ -154,9 +154,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             binding.attrs.type = 'string';
         else if (control.type == 'inputNumeric')
         {
-            if (control.Kind == 'Integer')
+            if (control.kind == 'Integer')
                 binding.attrs.type = 'int';
-            else if (control.Kind == 'Decimal')
+            else if (control.kind == 'Decimal')
                 binding.attrs.type = 'decimal';
         }
         else if (control.type == 'inputDate')
@@ -169,54 +169,54 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // deal with properties:
 
         // label
-        if ((control.Label !== undefined) && (control.Label !== ''))
+        if ((control.label !== undefined) && (control.label !== ''))
         {
             bodyTag.children.push({
                 name: 'label',
                 attrs: {
-                    'ref': "jr:itext('" + xpath + control.Name + ":label')"
+                    'ref': "jr:itext('" + xpath + control.name + ":label')"
                 }
             });
-            addTranslation(control.Label, xpath + control.Name + ':label', translations);
+            addTranslation(control.label, xpath + control.name + ':label', translations);
         }
 
         // hint
-        if ((control.Hint !== undefined) && (control.Hint !== ''))
+        if ((control.hint !== undefined) && (control.hint !== ''))
         {
             bodyTag.children.push({
                 name: 'hint',
                 attrs: {
-                    'ref': "jr:itext('" + xpath + control.Name + ":hint')"
+                    'ref': "jr:itext('" + xpath + control.name + ":hint')"
                 }
             });
-            addTranslation(control.Hint, xpath + control.Name + ':hint', translations);
+            addTranslation(control.hint, xpath + control.name + ':hint', translations);
         }
 
         // read only
-        if (control['Read Only'] === true)
+        if (control.readOnly === true)
             binding.attrs.readonly = 'true()';
 
         // required
-        if (control.Required === true)
+        if (control.required === true)
             binding.attrs.required = 'true()';
 
         // text length
-        if ((control.Length !== undefined) && (control.Length !== false))
-            constraint.push('. &gt; ' + control.Length.min + ' and . &lt; ' + control.Length.max);
+        if ((control.length !== undefined) && (control.length !== false))
+            constraint.push('. &gt; ' + control.length.min + ' and . &lt; ' + control.length.max);
 
-        // text length
-        if ((control.Range !== undefined) && (control.Range !== false))
-            constraint.push('. &gt; ' + control.Range.min + ' and . &lt; ' + control.Range.max);
+        // numeric range
+        if ((control.range !== undefined) && (control.range !== false))
+            constraint.push('. &gt; ' + control.range.min + ' and . &lt; ' + control.range.max);
 
         // media kind
         if (control.type == 'inputMedia')
-            bodyTag.attrs.mediatype = control.Kind.toLowerCase() + '/*';
+            bodyTag.attrs.mediatype = control.kind.toLowerCase() + '/*';
 
         // options
-        if (control.Options !== undefined)
-            _.each(control.Options, function(option, i)
+        if (control.options !== undefined)
+            _.each(control.options, function(option, i)
             {
-                var itextPath = xpath + control.Name + ':option' + i;
+                var itextPath = xpath + control.name + ':option' + i;
                 addTranslation(option.text, itextPath, translations);
 
                 bodyTag.children.push({
@@ -233,11 +233,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             });
 
         // advanced relevance
-        if (control.Relevance !== '')
-            relevance.push(control.Relevance);
+        if (control.relevance !== '')
+            relevance.push(control.relevance);
         // advanced constraint
-        if (control.Constraint !== '')
-            constraint.push(control.Constraint);
+        if (control.constraint !== '')
+            constraint.push(control.constraint);
 
         if (relevance.length > 0)
             binding.attrs.relevant = '(' + relevance.join(') and (') + ')';

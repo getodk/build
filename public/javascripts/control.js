@@ -13,16 +13,11 @@
     var controlIdx = 1;
 
     // Private methods
-    var getProperty = function(properties, name)
-    {
-        return $.grep(properties, function(property) { return property.name === name; })[0].value;
-    };
-
     var refreshFromProperties = function($this, type, config, properties)
     {
-        $this.children('.controlLabel').text($.emptyString(getProperty(properties, 'Label')[odkmaker.i18n.displayLanguage()], '[question text here]'));
-        $this.children('.controlHint').text(getProperty(properties, 'Hint')[odkmaker.i18n.displayLanguage()]);
-        $this.children('.controlName').text(getProperty(properties, 'Name'));
+        $this.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[question text here]'));
+        $this.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
+        $this.children('.controlName').text(properties.name.value);
 
         var $propertyList = $this.children('.controlProperties');
         $propertyList.empty();
@@ -99,11 +94,12 @@
             // Deep clone the properties if relevant
             var properties = null;
             if ((type == 'group') || (type == 'branch'))
-                properties = defaultProperties || $.extend(true, [], $.fn.odkControl.controlProperties[type]);
+                properties = defaultProperties || $.extend(true, {}, $.fn.odkControl.controlProperties[type]);
             else
                 properties = defaultProperties ||
-                    $.extend(true, [], $.fn.odkControl.defaultProperties).concat(
-                    $.extend(true, [], $.fn.odkControl.controlProperties[type]));
+                    $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
+                                   $.fn.odkControl.controlProperties[type]);
+            properties.name.value += controlIdx++;
             $this.data('odkControl-properties', properties);
 
             $this.bind('odkControl-propertiesUpdated', function(event)
@@ -197,128 +193,128 @@
     };
 
     // Default property fields
-    $.fn.odkControl.defaultProperties = [
-        { name: 'Name',
-          type: 'text',
-          description: 'The data name of this field in the final exported XML.',
-          limit: [ 'nosymbols', 'lowercase', 'unique' ],
-          required: true,
-          value: 'untitled',
-          summary: false },
-        { name: 'Label',
-          type: 'uiText',
-          description: 'The name of this field as it is presented to the user.',
-          required: true,
-          value: {},
-          summary: false },
-        { name: 'Hint',
-          type: 'uiText',
-          description: 'Additional help for this question.',
-          value: {},
-          summary: false },
-        { name: 'Read Only',
-          type: 'bool',
-          description: 'Whether this field can be edited by the end user or not.',
-          value: false,
-          summary: true },
-        { name: 'Required',
-          type: 'bool',
-          description: 'Whether this field must be filled in before continuing.',
-          value: false,
-          summary: true },
-        { name: 'Relevance',
-          type: 'text',
-          description: 'Specify a custom expression to evaluate to determine if this field is shown.',
-          value: '',
-          advanced: true,
-          summary: false },
-        { name: 'Constraint',
-          type: 'text',
-          description: 'Specify a custom expression to validate the user input.',
-          value: '',
-          advanced: true,
-          summary: false },
-        { name: 'Instance Destination',
-          type: 'text',
-          description: 'Specify a custom XPath expression at which to store the result.',
-          value: '',
-          advanced: true,
-          summary: false }
-    ];
+    $.fn.odkControl.defaultProperties = {
+        name:         { name: 'Data Name',
+                        type: 'text',
+                        description: 'The data name of this field in the final exported XML.',
+                        limit: [ 'nosymbols', 'lowercase', 'unique' ],
+                        required: true,
+                        value: 'untitled',
+                        summary: false },
+        label:        { name: 'Caption Text',
+                        type: 'uiText',
+                        description: 'The name of this field as it is presented to the user.',
+                        required: true,
+                        value: {},
+                        summary: false },
+        hint:         { name: 'Hint',
+                        type: 'uiText',
+                        description: 'Additional help for this question.',
+                        value: {},
+                        summary: false },
+        readOnly:     { name: 'Read Only',
+                        type: 'bool',
+                        description: 'Whether this field can be edited by the end user or not.',
+                        value: false,
+                        summary: true },
+        required:     { name: 'Required',
+                        type: 'bool',
+                        description: 'Whether this field must be filled in before continuing.',
+                        value: false,
+                        summary: true },
+        relevance:    { name: 'Relevance',
+                        type: 'text',
+                        description: 'Specify a custom expression to evaluate to determine if this field is shown.',
+                        value: '',
+                        advanced: true,
+                        summary: false },
+        constraint:   { name: 'Constraint',
+                        type: 'text',
+                        description: 'Specify a custom expression to validate the user input.',
+                        value: '',
+                        advanced: true,
+                        summary: false },
+        destination:  { name: 'Instance Destination',
+                        type: 'text',
+                        description: 'Specify a custom XPath expression at which to store the result.',
+                        value: '',
+                        advanced: true,
+                        summary: false }
+    };
 
     // Property fields per control type
     $.fn.odkControl.controlProperties = {
-        inputText: [
-          { name: 'Length',
-            type: 'numericRange',
-            description: 'Valid lengths for this user input of this control.',
-            value: false,
-            summary: false } ],
-        inputNumeric: [
-          { name: 'Range',
-            type: 'numericRange',
-            description: 'Valid range for the user input of this control.',
-            value: false,
-            summary: false },
-          { name: 'Kind',
-            type: 'enum',
-            description: 'Type of number accepted.',
-            options: [ 'Integer',
-                       'Decimal' ],
-            value: 'Integer',
-            summary: true } ],
-        inputDate: [
-          { name: 'Range',
-            type: 'dateRange',
-            value: false,
-            summary: false } ],
-        inputLocation: [],
-        inputMedia: [
-          { name: 'Kind',
-            type: 'enum',
-            description: 'Type of media to upload.',
-            options: [ 'Image',
-                       'Audio',
-                       'Video' ] } ],
-        inputSelectOne: [
-          { name: 'Options',
-            type: 'optionsEditor',
-            value: [],
-            summary: false } ],
-        inputSelectMany: [
-          { name: 'Options',
-            type: 'optionsEditor',
-            value: [],
-            summary: false },
-          { name: 'Select count range',
-            type: 'numericRange',
-            value: false,
-            summary: false } ],
-        group: [
-          { name: 'Name',
-            type: 'text',
-            description: 'The data name of this group in the final exported XML.',
-            limit: [ 'nosymbols', 'lowercase', 'unique' ],
-            required: true,
-            value: 'untitled',
-            summary: false },
-          { name: 'Label',
-            type: 'uiText',
-            description: 'Give the group a label to give a visual hint to the user.',
-            required: true,
-            value: {},
-            summary: false },
-          { name: 'Loop',
-            type: 'loopEditor',
-            description: 'Loop options over this group.',
-            value: false,
-            summary: true } ],
-        branch: [
-          { name: 'Rules',
-            type: 'logicEditor',
-            description: 'Specify the rules that decide how the form will branch.',
-            value: [],
-            summary: false }
-        ]
+        inputText: {
+          length:     { name: 'Length',
+                        type: 'numericRange',
+                        description: 'Valid lengths for this user input of this control.',
+                        value: false,
+                        summary: false } },
+        inputNumeric: {
+          range:      { name: 'Range',
+                        type: 'numericRange',
+                        description: 'Valid range for the user input of this control.',
+                        value: false,
+                        summary: false },
+          kind:       { name: 'Kind',
+                        type: 'enum',
+                        description: 'Type of number accepted.',
+                        options: [ 'Integer',
+                                   'Decimal' ],
+                        value: 'Integer',
+                        summary: true } },
+        inputDate: {
+          range:      { name: 'Range',
+                        type: 'dateRange',
+                        value: false,
+                        summary: false } },
+        inputLocation: {},
+        inputMedia: {
+          kind:       { name: 'Kind',
+                        type: 'enum',
+                        description: 'Type of media to upload.',
+                        options: [ 'Image',
+                                   'Audio',
+                                   'Video' ] } },
+        inputSelectOne: {
+          options:    { name: 'Options',
+                        type: 'optionsEditor',
+                        value: [],
+                        summary: false } },
+        inputSelectMany: {
+          options:    { name: 'Options',
+                        type: 'optionsEditor',
+                        value: [],
+                        summary: false },
+          countRange: { name: 'Select count range',
+                        type: 'numericRange',
+                        value: false,
+                        summary: false } },
+        group: {
+          name:       { name: 'Name',
+                        type: 'text',
+                        description: 'The data name of this group in the final exported XML.',
+                        limit: [ 'nosymbols', 'lowercase', 'unique' ],
+                        required: true,
+                        value: 'untitled',
+                        summary: false },
+          label:      { name: 'Label',
+                        type: 'uiText',
+                        description: 'Give the group a label to give a visual hint to the user.',
+                        required: true,
+                        value: {},
+                        summary: false },
+          loop:       { name: 'Loop',
+                        type: 'loopEditor',
+                        description: 'Loop options over this group.',
+                        value: false,
+                        summary: true } },
+        branch: {
+          logic:      { name: 'Rules',
+                        type: 'logicEditor',
+                        description: 'Specify the rules that decide how the form will branch.',
+                        value: [],
+                        summary: false }
+        }
     };
 })(jQuery);
