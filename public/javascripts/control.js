@@ -15,9 +15,16 @@
     // Private methods
     var refreshFromProperties = function($this, type, config, properties)
     {
-        $this.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[question text here]'));
-        $this.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
         $this.children('.controlName').text(properties.name.value);
+        if (type == 'group')
+        {
+            $this.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no group caption text yet]'));
+        }
+        else
+        {
+            $this.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no caption text yet]'));
+            $this.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
+        }
 
         var $propertyList = $this.children('.controlProperties');
         $propertyList.empty();

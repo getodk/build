@@ -387,6 +387,22 @@ body
 {
     background-position: 0 -56px;
 }
+.control.group
+{
+    background-position: 0 -352px;
+}
+.control.group .controlFlowArrow
+{
+    background-position: 0 -112px;
+}
+.control.group:hover
+{
+    background-position: 0 -440px;
+}
+.control.group:hover .controlFlowArrow
+{
+    background-position: 0 -140px;
+}
 .control.ui-draggable-dragging
 {
     z-index: 5;
