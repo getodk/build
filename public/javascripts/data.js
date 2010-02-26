@@ -65,6 +65,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         inputNumeric: 'input',
         inputDate: 'input',
         inputLocation: 'input',
+        inputMedia: 'upload',
         inputSelectOne: 'select1',
         inputSelectMany: 'select'
     };
