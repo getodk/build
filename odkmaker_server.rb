@@ -44,14 +44,20 @@ post '/forms' do
   # (check for name)
 end
 
-get '/form/:form_id'
+get '/form/:form_id' do
   # return form for authenticated user
 end
 
-put '/form/:form_id'
+put '/form/:form_id' do
   # update form for authenticated user
 end
 
-delete '/form/:form_id'
+delete '/form/:form_id' do
   # delete form for authenticated user
+end
+
+# Auth methods
+
+post '/login' do
+  # authenticate current user (TODO: consider warden?)
 end
