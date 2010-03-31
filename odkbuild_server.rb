@@ -2,62 +2,88 @@ require 'rubygems'
 require 'sinatra'
 require 'json'
 require 'rufus/tokyo'
+require 'warden'
 
-# Rufus::Tokyo::Table.new 'odkmaker.tdb'
+tokyo_data = Rufus::Tokyo::Table.new 'odkmaker.tdb'
 
-# For dev server purposes, load index via Sinatra. Eventually, just do it
-# with Apache.
-get '/' do
-  erb :index
+Warden::Strategies.add(:password) do
+  def valid?
+    params[:username] || params[:password]
+  end
+
+  def authenticate!
+    
+  end
 end
 
-# Simple RESTful service follows
+class OdkBuild
 
-# Users
-get '/users' do
-  # return 403
-end
+  before do
+    content_type :json
+  end
 
-post '/users' do
-  # create new user
-end
+  # For dev server purposes, load index via Sinatra. Eventually, just do it
+  # with Apache.
+  get '/' do
+    content_type :json
+    erb :index
+  end
 
-get '/user/:user_id' do
-  # return user for given id
-end
+  # Simple RESTful service follows
 
-put '/user/:user_id' do
-  # update user for given id
-end
+  # Users
+  get '/users' do
+    # return 403
+  end
 
-delete '/user/:user_id' do
-  # delete user for given id
-end
+  post '/users' do
+    # create new user
+  end
 
-# Forms
-get '/forms' do
-  # return form summaries for authenticated user
-end
+  get '/user/:user_id' do
+    # return user for given id
+  end
 
-post '/forms' do
-  # save new form for authenticated user
-  # (check for name)
-end
+  put '/user/:user_id' do
+    # update user for given id
+  end
 
-get '/form/:form_id' do
-  # return form for authenticated user
-end
+  delete '/user/:user_id' do
+    # delete user for given id
+  end
 
-put '/form/:form_id' do
-  # update form for authenticated user
-end
+  # Forms
+  get '/forms' do
+    # return form summaries for authenticated user
+  end
 
-delete '/form/:form_id' do
-  # delete form for authenticated user
-end
+  post '/forms' do
+    # save new form for authenticated user
+    # (check for name)
+  end
 
-# Auth methods
+  get '/form/:form_id' do
+    # return form for authenticated user
+  end
 
-post '/login' do
-  # authenticate current user (TODO: consider warden?)
+  put '/form/:form_id' do
+    # update form for authenticated user
+  end
+
+  delete '/form/:form_id' do
+    # delete form for authenticated user
+  end
+
+  # Auth methods
+
+  post '/login' do
+    if env['warden'].authenticated?(:password)
+      return {:user => env['warden'].user}.to_json
+    else
+      return {:user => 'none'}.to_json
+    end
+  end
+
+  get '/logout'
+
 end

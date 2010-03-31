@@ -1,9 +1,13 @@
 require 'rubygems'
-require 'odkmaker_server.rb'
+require 'odkbuild_server'
 
 # middleware
 use Rack::CommonLogger
-use Rack::Session::Pool
+use Rack::Session::Cookie
+use Warden::Manager do |manager|
+  manager.default_strategies = :password
+  manager.failure_app = OdkBuild
+end
 
-# apps
-run Sinatra::Application
+# app
+run OdkBuild
