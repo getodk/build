@@ -30,7 +30,7 @@ class OdkBuild < Sinatra::Default
     # validate input
     if [:username, :password, :email].any?{ |key| !(params.has_key? key.to_s) }
       status 400
-      return { :error => params }.to_json
+      return { :error => 'validation failed' }.to_json
     end
 
     # validate dupe
@@ -47,10 +47,15 @@ class OdkBuild < Sinatra::Default
   end
 
   put '/user/:username' do
-    user = User.find params[:username]
-    unless user == env['warden'].user
+    user = env['warden'].user
+    unless user.username == params[:username]
       status 401
       return { :error => 'permission denied' }.to_json
+    end
+
+    if params[:password].present? and !(user.authenticate? params[:old_password])
+      status 400
+      return { :error => 'validation failed' }
     end
 
     user.update params
@@ -60,8 +65,8 @@ class OdkBuild < Sinatra::Default
   end
 
   delete '/user/:username' do
-    user = User.find params[:username]
-    unless user == env['warden'].user
+    user = env['warden'].user
+    unless user.username == params[:username]
       status 401
       return { :error => 'permission denied' }.to_json
     end
@@ -72,7 +77,7 @@ class OdkBuild < Sinatra::Default
 
   # Forms
   get '/forms' do
-    # return form summaries for authenticated user
+    return { env['warden'].user.forms }.to_json
   end
 
   post '/forms' do
@@ -93,7 +98,6 @@ class OdkBuild < Sinatra::Default
   end
 
   # Auth methods
-
   post '/login' do
     if env['warden'].authenticated?(:password)
       return { :user => env['warden'].user }.to_json
@@ -107,9 +111,9 @@ class OdkBuild < Sinatra::Default
     return { :user => 'none' }.to_json
   end
 
-  post '/unauthenticated' do
+  get '/unauthenticated' do
     status 401
-    return { :error => 'permission denied' }.to_json
+    return { :error => 'unauthenticated' }.to_json
   end
 
 end

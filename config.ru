@@ -4,7 +4,7 @@ require 'odkbuild_server'
 use Rack::CommonLogger
 
 use Rack::Session::Cookie,
-  :secret => 'lr3mp3egv4vrq1r4'
+  :secret => 'configure_me'
 
 use Warden::Manager do |manager|
   manager.default_strategies :odkbuild

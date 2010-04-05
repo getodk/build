@@ -60,10 +60,14 @@ class User
 
   def ==(other)
     return false unless other.is_a? User
-    return other.display_name == self.display_name
+    return other.username == @key
   end
 
 # Fields
+  def username
+    return @key
+  end
+
   def display_name
     return @data['display_name']
   end

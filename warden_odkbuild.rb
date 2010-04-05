@@ -6,12 +6,12 @@ Warden::Manager.before_failure do |env, opts|
   # Sinatra is very sensitive to the request method
   # since authentication could fail on any type of method, we need
   # to set it for the failure app so it is routed to the correct block
-  env['REQUEST_METHOD'] = "POST"
+  env['REQUEST_METHOD'] = "GET"
 end
 
 use Warden::Manager do |manager|
   manager.serialize_into_session do |user|
-    user.nil? ? nil : user[:pk]
+    user.nil? ? nil : user.username
   end
   manager.serialize_from_session do |id|
     id.nil? ? nil : user_table[id]
