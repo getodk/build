@@ -14,7 +14,7 @@ class OdkBuild < Sinatra::Default
   # For dev server purposes, load index via Sinatra. Eventually, just do it
   # with Apache.
   get '/' do
-    content_type :json
+    content_type :html
     erb :index
   end
 
@@ -22,14 +22,15 @@ class OdkBuild < Sinatra::Default
 
   # Users
   get '/users' do
-    # return 403
+    status 403
+    return { :error => 'forbidden' }.to_json
   end
 
   post '/users' do
     # validate input
-    if [:username, :password, :email].any?{ |key| !(params.has_key? key) }
+    if [:username, :password, :email].any?{ |key| !(params.has_key? key.to_s) }
       status 400
-      return { :error => 'validation failed' }.to_json
+      return { :error => params }.to_json
     end
 
     # validate dupe
@@ -42,11 +43,11 @@ class OdkBuild < Sinatra::Default
   end
 
   get '/user/:username' do
-    return (User.find username).data.to_json
+    return (User.find params[:username]).data.to_json
   end
 
   put '/user/:username' do
-    user = User.find username
+    user = User.find params[:username]
     unless user == env['warden'].user
       status 401
       return { :error => 'permission denied' }.to_json
@@ -59,7 +60,7 @@ class OdkBuild < Sinatra::Default
   end
 
   delete '/user/:username' do
-    user = User.find username
+    user = User.find params[:username]
     unless user == env['warden'].user
       status 401
       return { :error => 'permission denied' }.to_json
@@ -104,6 +105,11 @@ class OdkBuild < Sinatra::Default
   get '/logout' do
     env['warden'].logout
     return { :user => 'none' }.to_json
+  end
+
+  post '/unauthenticated' do
+    status 401
+    return { :error => 'permission denied' }.to_json
   end
 
 end

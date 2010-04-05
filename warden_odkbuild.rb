@@ -2,8 +2,21 @@ require 'rubygems'
 require 'warden'
 require 'model/user'
 
-Warden::Manager.serialize_into_session { |user| user.nil? ? nil : user[:pk] }
-Warden::Manager.serialize_from_session { |id| id.nil? ? nil : user_table[id] }
+Warden::Manager.before_failure do |env, opts|
+  # Sinatra is very sensitive to the request method
+  # since authentication could fail on any type of method, we need
+  # to set it for the failure app so it is routed to the correct block
+  env['REQUEST_METHOD'] = "POST"
+end
+
+use Warden::Manager do |manager|
+  manager.serialize_into_session do |user|
+    user.nil? ? nil : user[:pk]
+  end
+  manager.serialize_from_session do |id|
+    id.nil? ? nil : user_table[id]
+  end
+end
 
 Warden::Strategies.add(:odkbuild) do
   def valid?

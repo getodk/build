@@ -1,12 +1,14 @@
 require 'rufus/tokyo'
 require 'digest/sha1'
 
-class User < Model
-  user_table = Rufus::Tokyo::Table.new 'users.tdb'
-
+class User
   def self.find(key)
+    user_table = Rufus::Tokyo::Table.new 'users.tdb'
+
     key = key.to_s.downcase
     data = user_table[key]
+
+    user_table.close
 
     return nil if data.nil?
     return (User.new key, data)
@@ -22,6 +24,8 @@ class User < Model
   end
 
   def self.create(data)
+    user_table = Rufus::Tokyo::Table.new 'users.tdb'
+
     key = data[:username].downcase
     pepper = Time.now.to_f.to_s
 
@@ -29,9 +33,10 @@ class User < Model
       :display_name => data[:username],
       :email => data[:email],
       :pepper => pepper,
-      :password => (User.hash_password data[:password]),
+      :password => (User.hash_password data[:password], pepper),
       :forms => nil
     }
+    user_table.close
 
     return (User.find key)
   end
@@ -42,11 +47,15 @@ class User < Model
   end
 
   def delete!
+    user_table = Rufus::Tokyo::Table.new 'users.tdb'
     user_table[@key] = nil
+    user_table.close
   end
 
   def save
+    user_table = Rufus::Tokyo::Table.new 'users.tdb'
     user_table[key] = @data
+    user_table.close
   end
 
   def ==(other)
@@ -64,7 +73,7 @@ class User < Model
   end
 
   def password=(plaintext)
-    @data['password'] = (User.hash_password plaintext)
+    @data['password'] = (User.hash_password plaintext, @data['pepper'])
   end
 
   def email
@@ -80,7 +89,7 @@ class User < Model
     return (@data['forms'].split ',').map{ |form_id| Form.find(form_id, false) }
   end
 
-  def forms.<<(form)
+  def add_form(form)
     if @data['forms'].nil?
       @data['forms'] = form.id
     elsif !((@data['forms'].split ',').include? form.id)
@@ -90,7 +99,7 @@ class User < Model
 
 # Other
   def authenticate?(plaintext)
-    return ((User.hash_password plaintext) == self.password)
+    return ((User.hash_password plaintext, @data['pepper']) == self.password)
   end
 
 private
@@ -98,7 +107,7 @@ private
     @key, @data = key, data
   end
 
-  def self.hash_password(plaintext)
-    return (Digest::Sha1.hexdigest "--[#{plaintext}]==[#{self['pepper']}]--")
+  def self.hash_password(plaintext, pepper)
+    return (Digest::SHA1.hexdigest "--[#{plaintext}]==[#{pepper}]--")
   end
 end
