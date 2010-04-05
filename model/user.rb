@@ -3,11 +3,10 @@ require 'digest/sha1'
 
 class User
   def self.find(key)
-    user_table = Rufus::Tokyo::Table.new 'users.tdb'
-
     key = key.to_s.downcase
-    data = user_table[key]
 
+    user_table = Rufus::Tokyo::Table.new 'users.tdb'
+    data = user_table[key]
     user_table.close
 
     return nil if data.nil?
@@ -75,7 +74,6 @@ class User
   def password
     return @data['password']
   end
-
   def password=(plaintext)
     @data['password'] = (User.hash_password plaintext, @data['pepper'])
   end
@@ -83,16 +81,14 @@ class User
   def email
     return @data['email']
   end
-
-  def email=(value)
-    @data['email'] = value
+  def email=(email)
+    @data['email'] = email
   end
 
   def forms
     return [] if @data['forms'].nil?
     return (@data['forms'].split ',').map{ |form_id| Form.find(form_id, false) }
   end
-
   def add_form(form)
     if @data['forms'].nil?
       @data['forms'] = form.id

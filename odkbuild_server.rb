@@ -43,7 +43,14 @@ class OdkBuild < Sinatra::Default
   end
 
   get '/user/:username' do
-    return (User.find params[:username]).data.to_json
+    user = User.find params[:username]
+
+    if user.nil?
+      status 404
+      return { :error => 'not found' }.to_json
+    end
+
+    return user.data.to_json
   end
 
   put '/user/:username' do
@@ -81,20 +88,69 @@ class OdkBuild < Sinatra::Default
   end
 
   post '/forms' do
-    # save new form for authenticated user
-    # (check for name)
+    user = env['warden'].user
+
+    # validate input
+    unless params[:title].present?
+      status 400
+      return { :error => 'validation failed' }.to_json
+    end
+
+    return (Form.create params, user).data.to_json
   end
 
   get '/form/:form_id' do
-    # return form for authenticated user
+    user = env['warden'].user
+
+    form = Form.find(params[:form_id], true)
+
+    if form.nil?
+      status 404
+      return { :error => 'not found' }.to_json
+    end
+    if form.owner != user
+      status 401
+      return { :error => 'permission denied' }.to_json
+    end
+    return form.data.to_json
   end
 
   put '/form/:form_id' do
-    # update form for authenticated user
+    user = env['warden'].user
+
+    form = Form.find(params[:form_id], true)
+
+    if form.nil?
+      status 404
+      return { :error => 'not found' }.to_json
+    end
+    if form.owner != user
+      status 401
+      return { :error => 'permission denied' }.to_json
+    end
+
+    form.update params
+    form.save
+
+    return form.data.to_json
   end
 
   delete '/form/:form_id' do
-    # delete form for authenticated user
+    user = env['warden'].user
+
+    form = Form.find(params[:form_id], true)
+
+    if form.nil?
+      status 404
+      return { :error => 'not found' }.to_json
+    end
+    if form.owner != user
+      status 401
+      return { :error => 'permission denied' }.to_json
+    end
+
+    form.delete!
+    return { :success => 'true' }.to_json
   end
 
   # Auth methods
