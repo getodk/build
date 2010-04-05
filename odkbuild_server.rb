@@ -1,22 +1,11 @@
 require 'rubygems'
 require 'sinatra'
 require 'json'
-require 'rufus/tokyo'
-require 'warden'
+require 'warden_odkbuild'
+require 'model/user'
 
-tokyo_data = Rufus::Tokyo::Table.new 'odkmaker.tdb'
-
-Warden::Strategies.add(:password) do
-  def valid?
-    params[:username] || params[:password]
-  end
-
-  def authenticate!
-    
-  end
-end
-
-class OdkBuild
+class OdkBuild < Sinatra::Default
+  disable :run
 
   before do
     content_type :json
@@ -37,19 +26,47 @@ class OdkBuild
   end
 
   post '/users' do
-    # create new user
+    # validate input
+    if [:username, :password, :email].any?{ |key| !(params.has_key? key) }
+      status 400
+      return { :error => 'validation failed' }.to_json
+    end
+
+    # validate dupe
+    if User.find params[:username]
+      status 400
+      return { :error => 'duplicate username' }.to_json
+    end
+
+    return (User.create params).data.to_json
   end
 
-  get '/user/:user_id' do
-    # return user for given id
+  get '/user/:username' do
+    return (User.find username).data.to_json
   end
 
-  put '/user/:user_id' do
-    # update user for given id
+  put '/user/:username' do
+    user = User.find username
+    unless user == env['warden'].user
+      status 401
+      return { :error => 'permission denied' }.to_json
+    end
+
+    user.update params
+    user.save
+
+    return user.data.to_json
   end
 
-  delete '/user/:user_id' do
-    # delete user for given id
+  delete '/user/:username' do
+    user = User.find username
+    unless user == env['warden'].user
+      status 401
+      return { :error => 'permission denied' }.to_json
+    end
+
+    user.delete!
+    return { :success => 'true' }.to_json
   end
 
   # Forms
@@ -78,12 +95,15 @@ class OdkBuild
 
   post '/login' do
     if env['warden'].authenticated?(:password)
-      return {:user => env['warden'].user}.to_json
+      return { :user => env['warden'].user }.to_json
     else
-      return {:user => 'none'}.to_json
+      return { :user => 'none' }.to_json
     end
   end
 
-  get '/logout'
+  get '/logout' do
+    env['warden'].logout
+    return { :user => 'none' }.to_json
+  end
 
 end

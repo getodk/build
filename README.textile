@@ -12,10 +12,9 @@ h2. Dependencies
 
 h2. Required Gems
 
-* cloudkit
 * ffi
-* json
-* rack
 * rufus-tokyo
-* shotgun
+* rack
 * sinatra
+* json
+* warden
