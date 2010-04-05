@@ -27,43 +27,24 @@ class OdkBuild < Sinatra::Default
   end
 
   post '/users' do
-    # validate input
-    if [:username, :password, :email].any?{ |key| !(params.has_key? key.to_s) }
-      status 400
-      return { :error => 'validation failed' }.to_json
-    end
-
-    # validate dupe
-    if User.find params[:username]
-      status 400
-      return { :error => 'duplicate username' }.to_json
-    end
-
+    return error_validation_failed if [:username, :password, :email].
+                                      any?{ |key| !(params.has_key? key.to_s) }
+    return error_validation_failed if User.find params[:username]
     return (User.create params).data.to_json
   end
 
   get '/user/:username' do
     user = User.find params[:username]
 
-    if user.nil?
-      status 404
-      return { :error => 'not found' }.to_json
-    end
-
+    return error_not_found if user.nil?
     return user.data.to_json
   end
 
   put '/user/:username' do
     user = env['warden'].user
-    unless user.username == params[:username]
-      status 401
-      return { :error => 'permission denied' }.to_json
-    end
-
-    if params[:password].present? and !(user.authenticate? params[:old_password])
-      status 400
-      return { :error => 'validation failed' }
-    end
+    return error_permission_denied unless user.username == params[:username]
+    return error_validation_failed if params[:password].present? and
+                                    !(user.authenticate? params[:old_password])
 
     user.update params
     user.save
@@ -73,10 +54,7 @@ class OdkBuild < Sinatra::Default
 
   delete '/user/:username' do
     user = env['warden'].user
-    unless user.username == params[:username]
-      status 401
-      return { :error => 'permission denied' }.to_json
-    end
+    return error_permission_denied unless user.username == params[:username]
 
     user.delete!
     return { :success => 'true' }.to_json
@@ -91,11 +69,7 @@ class OdkBuild < Sinatra::Default
     user = env['warden'].user
 
     # validate input
-    unless params[:title].present?
-      status 400
-      return { :error => 'validation failed' }.to_json
-    end
-
+    return error_validation_failed unless params[:title].present?
     return (Form.create params, user).data.to_json
   end
 
@@ -104,14 +78,8 @@ class OdkBuild < Sinatra::Default
 
     form = Form.find(params[:form_id], true)
 
-    if form.nil?
-      status 404
-      return { :error => 'not found' }.to_json
-    end
-    if form.owner != user
-      status 401
-      return { :error => 'permission denied' }.to_json
-    end
+    return error_not_found if form.nil?
+    return error_permission_denied if form.owner != user
     return form.data.to_json
   end
 
@@ -120,14 +88,8 @@ class OdkBuild < Sinatra::Default
 
     form = Form.find(params[:form_id], true)
 
-    if form.nil?
-      status 404
-      return { :error => 'not found' }.to_json
-    end
-    if form.owner != user
-      status 401
-      return { :error => 'permission denied' }.to_json
-    end
+    return error_not_found if form.nil?
+    return error_permission_denied if form.owner != user
 
     form.update params
     form.save
@@ -140,14 +102,8 @@ class OdkBuild < Sinatra::Default
 
     form = Form.find(params[:form_id], true)
 
-    if form.nil?
-      status 404
-      return { :error => 'not found' }.to_json
-    end
-    if form.owner != user
-      status 401
-      return { :error => 'permission denied' }.to_json
-    end
+    return error_not_found if form.nil?
+    return error_permission_denied if form.owner != user
 
     form.delete!
     return { :success => 'true' }.to_json
@@ -170,6 +126,22 @@ class OdkBuild < Sinatra::Default
   get '/unauthenticated' do
     status 401
     return { :error => 'unauthenticated' }.to_json
+  end
+
+private
+  def error_validation_failed
+    status 400
+    return { :error => 'validation failed' }.to_json
+  end
+
+  def error_permission_denied
+    status 401
+    return { :error => 'permission denied' }.to_json
+  end
+
+  def error_not_found
+    status 404
+    return { :error => 'not found' }.to_json
   end
 
 end
