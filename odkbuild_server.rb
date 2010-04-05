@@ -77,7 +77,7 @@ class OdkBuild < Sinatra::Default
 
   # Forms
   get '/forms' do
-    return { env['warden'].user.forms }.to_json
+    return env['warden'].user.forms.to_json
   end
 
   post '/forms' do
