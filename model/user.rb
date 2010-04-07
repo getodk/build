@@ -1,13 +1,11 @@
-require 'rufus/tokyo'
+require 'model/connection_manager'
 require 'digest/sha1'
 
 class User
   def self.find(key)
     key = key.to_s.downcase
 
-    user_table = Rufus::Tokyo::Table.new 'users.tdb'
-    data = user_table[key]
-    user_table.close
+    data = ConnectionManager.connection[:users][key]
 
     return nil if data.nil?
     return (User.new key, data)
@@ -23,19 +21,16 @@ class User
   end
 
   def self.create(data)
-    user_table = Rufus::Tokyo::Table.new 'users.tdb'
-
     key = data[:username].downcase
     pepper = Time.now.to_f.to_s
 
-    user_table[key] = {
+    ConnectionManager.connection[:users][key] = {
       :display_name => data[:username],
       :email => data[:email],
       :pepper => pepper,
       :password => (User.hash_password data[:password], pepper),
       :forms => nil
     }
-    user_table.close
 
     return (User.find key)
   end
@@ -46,15 +41,11 @@ class User
   end
 
   def delete!
-    user_table = Rufus::Tokyo::Table.new 'users.tdb'
-    user_table[@key] = nil
-    user_table.close
+    ConnectionManager.connection[:users][@key] = nil
   end
 
   def save
-    user_table = Rufus::Tokyo::Table.new 'users.tdb'
-    user_table[key] = @data
-    user_table.close
+    ConnectionManager.connection[:users][key] = @data
   end
 
   def ==(other)

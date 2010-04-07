@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'warden'
 require 'model/user'
 

@@ -1,4 +1,4 @@
-require 'rufus/tokyo'
+require 'model/connection_manager'
 
 class String
   def self.random_chars( length )
@@ -11,17 +11,12 @@ class Form
   def self.find(key, get_form_data = false)
     key = key.to_s
 
-    form_table = Rufus::Tokyo::Table.new 'forms.tdb'
-    data = form_table[key]
-    form_table.close
+    data = ConnectionManager.connection[:forms][key]
 
     return nil if data.nil?
 
     if get_form_data
-      form_data_table = Rufus::Tokyo::Cabinet.new 'form_data.tch'
-      form_data = form_data[key] || ''
-      form_data.close
-
+      form_data = ConnectionManager.connection[:form_data][key] || ''
       return (Form.new key, data, form_data)
     else
       return (Form.new key, data)
@@ -31,23 +26,19 @@ class Form
 # Class
   def data
     result = @data.dup
-    result[:owner] = (User.find result[:owner]).data
     result[:controls] = JSON.parse(@form_data) unless @form_data.nil?
 
     return result
   end
 
   def self.create(data, owner)
-    form_table = Rufus::Tokyo::Table.new 'forms.tdb'
-
     key = (String.random_chars 5) while !form_table[key].nil?
 
-    form_table[key] = {
+    ConnectionManager.connection[:forms][key] = {
       :title => data[:title],
       :description => (data[:description] || ''),
       :owner => owner.username
     }
-    form_table.close
 
     return (User.find key)
   end
@@ -59,25 +50,13 @@ class Form
   end
 
   def delete!
-    form_table = Rufus::Tokyo::Table.new 'forms.tdb'
-    form_table[@key] = nil
-    form_table.close
-
-    form_data_table = Rufus::Tokyo::Cabinet.new 'form_data.tch'
-    form_data[@key] = nil
-    form_data.close
+    ConnectionManager.connection[:forms][@key] = nil
+    ConnectionManager.connection[:form_data][@key] = nil
   end
 
   def save
-    form_table = Rufus::Tokyo::Table.new 'forms.tdb'
-    form_table[key] = @data
-    form_table.close
-
-    unless @form_data.nil?
-      form_data_table = Rufus::Tokyo::Cabinet.new 'form_data.tch'
-      form_data[@key] = @form_data
-      form_data.close
-    end
+    ConnectionManager.connection[:forms][@key] = @data
+    ConnectionManager.connection[:forms][@key] = @form_data unless @form_data.nil?
   end
 
   def ==(other)

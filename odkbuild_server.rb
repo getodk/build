@@ -3,6 +3,7 @@ require 'sinatra'
 require 'json'
 require 'warden_odkbuild'
 require 'model/user'
+require 'model/form'
 
 class OdkBuild < Sinatra::Default
   disable :run
