@@ -22,7 +22,6 @@
             <li class="disabled"><a href="#newFormDialog" rel="modal">New Form</a></li>
             <li class="disabled"><a href="#openFormDialog" rel="modal">Open Form...</a></li>
             <li class="divider"></li>
-            <li class="disabled"><a href="#closeForm">Close</a></li>
             <li class="disabled"><a href="#saveForm">Save</a></li>
             <li class="disabled"><a href="#saveAsFormDialog" rel="modal">Save Form As...</a></li>
             <li class="divider"></li>
@@ -60,12 +59,12 @@
           <ul class="submenu">
             <li class="disabled"><a href="#toggleHints">Display Hints</a></li>
             <li class="disabled"><a href="#tutorial">Tutorial</a></li>
-            <li class="disabled"><a href="#about">About ODK Builder...</a></li>
+            <li><a href="#aboutDialog" rel="modal">About ODK Build...</a></li>
           </ul>
         </li>
       </ul>
 
-      <div class="accountStatus">Signed in as <a href="#">Yaw Anokwa</a>.</div>
+      <div class="accountStatus"></div>
     </div>
     <div class="mainWrapper">
       <div class="toolPalette">
@@ -117,6 +116,30 @@
         <div class="exportCodeContainer">
           <pre></pre>
         </div>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton jqmClose" href="#close">Done</a>
+      </div>
+    </div>
+
+    <div class="modal aboutDialog">
+      <h3>About</h3>
+      <div class="modalContents">
+        <p>
+          ODK Build is part of the <a href="http://opendatakit.org/" rel="external">Open Data
+          Kit</a> suite of tools. It is licensed under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0" rel="external">Apache License 2.0</a>.
+          You can find the source code on
+          <a href="http://github.com/clint-tseng/odkmaker" rel="external">GitHub</a>.
+        </p>
+        <p>
+          Built by <a href="http://change.washington.edu/people/cxlt" rel="external">Clint
+          Tseng</a> in Seattle, Bangalore, Pittsburgh, and 40,000 feet in the air.
+        </p>
+        <p>
+          Found a bug? Have a feature request?
+          <a href="http://github.com/clint-tseng/odkmaker/issues" rel="external">Report it</a>.
+        </p>
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton jqmClose" href="#close">Done</a>

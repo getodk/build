@@ -55,4 +55,18 @@ $(function()
         event.preventDefault();
         $('.exportCodeContainer pre').text(odkmaker.data.serialize());
     });
+
+    // External links should open in a new window
+    $("a[rel$='external']").click(function()
+    {
+        this.target = "_blank";
+    });
+
+    // Set workspace min height
+    $(window).resize(function(event)
+    {
+        $('.workspace').css('min-height', ($('.workspaceScrollArea').innerHeight() - 320) + 'px');
+    }).resize();
+
+    // Init Auth
 });

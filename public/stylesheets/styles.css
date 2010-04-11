@@ -303,8 +303,7 @@ body
 }
 .workspace
 {
-    padding-bottom: 20em;
-    min-height: 100%;
+    padding-bottom: 300px;
 }
 
 .workspaceInnerWrapper
@@ -603,6 +602,17 @@ body > .control.last .controlFlowArrow,
 {
     max-height: 30em;
     overflow: auto;
+}
+
+.aboutDialog
+{
+    margin-left: -20em;
+    width: 40em;
+}
+.aboutDialog p
+{
+    font-size: 1.2em;
+    padding-bottom: 1em;
 }
 
 /***********
