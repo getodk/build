@@ -148,7 +148,7 @@
                 if (val.text === undefined || val.text === null)
                     val.text = {};
 
-                $optionsList.append(newOptionRow(property, this, i, $parent));
+                $optionsList.append(newOptionRow(property, val, i, $parent));
             });
             $editor.find('.addOption').click(function(event)
             {
