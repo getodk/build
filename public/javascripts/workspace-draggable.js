@@ -159,7 +159,6 @@
             $(this).draggable($.extend({}, {
                 addClass: false,
                 appendTo: 'body',
-                containment: 'window',
                 distance: 5,
                 helper: 'clone',
                 opacity: 0.8,
