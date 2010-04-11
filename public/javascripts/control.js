@@ -15,18 +15,19 @@
     // Private methods
     var refreshFromProperties = function($this, type, config, properties)
     {
-        $this.children('.controlName').text(properties.name.value);
+        var $info = $this.children('.controlInfo');
+        $info.children('.controlName').text(properties.name.value);
         if (type == 'group')
         {
-            $this.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no group caption text yet]'));
+            $info.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no group caption text yet]'));
         }
         else
         {
-            $this.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no caption text yet]'));
-            $this.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
+            $info.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no caption text yet]'));
+            $info.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
         }
 
-        var $propertyList = $this.children('.controlProperties');
+        var $propertyList = $info.children('.controlProperties');
         $propertyList.empty();
         _.each(properties, function(property)
         {
@@ -129,8 +130,8 @@
 
             // special treatment for groups and branches
             if (type == 'group')
-                $this.find('.controlPreview')
-                     .replaceWith('<div class="workspaceInnerWrapper"><div class="workspaceInner"></div></div>');
+                $('<div class="workspaceInnerWrapper"><div class="workspaceInner"></div></div><div class="groupFooter"></div>')
+                    .insertAfter($this.children('.controlInfo'));
 
             // event wireup
             $this.find('.deleteControl').click(function(event)

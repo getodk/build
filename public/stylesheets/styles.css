@@ -307,21 +307,35 @@ body
     min-height: 100%;
 }
 
+.workspaceInnerWrapper
+{
+    background: transparent url(/images/group_bg.png);
+    padding: 1em;
+}
+.workspaceInner
+{
+    min-height: 6em;
+    padding-bottom: 3em;
+}
+
 .control
+{
+    margin-bottom: 1.5em;
+    position: relative;
+}
+.control .controlInfo
 {
     background: transparent url(/images/control_slice.png) repeat-x;
     height: 76px;
-    margin-bottom: 1.5em;
     padding: 6px;
-    position: relative;
 }
-.control .typeIcon
+.control .controlInfo .typeIcon
 {
     float: left;
     margin: 0.5em;
     margin-right: 2em;
 }
-.control .deleteControl
+.control .controlInfo .deleteControl
 {
     background: transparent url(/images/glyphs.png) no-repeat;
     float: right;
@@ -330,35 +344,39 @@ body
     text-indent: -9999px;
     width: 16px;
 }
-.control .controlLabel
+.control .controlInfo .controlLabel
 {
     color: #f3f3f3;
     display: inline-block;
     font-size: 2em;
     padding-top: 0.4em;
 }
-.control .controlHint
+.control .controlInfo .controlHint
 {
     color: #bbb;
     display: inline-block;
     font-size: 1.4em;
 }
-.control .controlName
+.control .controlInfo .controlName
 {
     color: #bbb;
     font-size: 1.4em;
 }
-.control .controlProperties
+.control .controlInfo .controlProperties
 {
     color: #bbb;
     font-size: 1.1em;
     margin-top: 1.4em;
 }
-.control .controlProperties li
+.control .controlInfo .controlProperties li
 {
     display: inline-block;
     margin-right: 1.5em;
     text-transform: lowercase;
+}
+.control.group .groupFooter
+{
+    height: 1em;
 }
 .control .controlFlowArrow
 {
@@ -367,48 +385,67 @@ body
     left: 50%;
     margin-left: -16px;
     position: absolute;
-    top: 88px;
     width: 32px;
     z-index: 1;
 }
-.control:hover
+.control:hover > .controlInfo
 {
     background-position: 0 -88px;
 }
-.control:hover .controlFlowArrow
+.control:hover > .controlFlowArrow
 {
     background-position: 0 -28px;
 }
-.control.selected
+.control.selected > .controlInfo
 {
     background-position: 0 -176px;
 }
-.control.selected .controlFlowArrow
+.control.selected > .controlFlowArrow
 {
     background-position: 0 -56px;
 }
-.control.group
+.control.group > .controlInfo
 {
     background-position: 0 -352px;
 }
-.control.group .controlFlowArrow
+.control.group > .controlFlowArrow
 {
     background-position: 0 -112px;
 }
-.control.group:hover
+.control.group > .groupFooter
+{
+    background-color: #445841;
+}
+.control.group:hover > .controlInfo
 {
     background-position: 0 -440px;
 }
-.control.group:hover .controlFlowArrow
+.control.group:hover > .controlFlowArrow
 {
     background-position: 0 -140px;
+}
+.control.group:hover > .groupFooter
+{
+    background-color: #546d51;
+}
+.control.group.selected > .controlInfo
+{
+    background-position: 0 -528px;
+}
+.control.group.selected > .controlFlowArrow
+{
+    background-position: 0 -168px;
+}
+.control.group.selected > .groupFooter
+{
+    background-color: #5b6732;
 }
 .control.ui-draggable-dragging
 {
     z-index: 5;
 }
 body > .control.last .controlFlowArrow,
-.workspace > .control:last-child > .controlFlowArrow
+.workspace .control:last-child > .controlFlowArrow
 {
     display: none;
 }
@@ -579,6 +616,9 @@ body > .control.last .controlFlowArrow,
     height: 64px;
     width: 64px;
 }
+/* grouping/branching go first due to precedence+nesting */
+.group .typeIcon           { background-position: 0 -448px; }
+.branch .typeIcon          { background-position: 0 -512px; }
 .inputText .typeIcon       { background-position: 0 0px; }
 .inputNumeric .typeIcon    { background-position: 0 -64px; }
 .inputDate .typeIcon       { background-position: 0 -128px; }
@@ -586,5 +626,3 @@ body > .control.last .controlFlowArrow,
 .inputMedia .typeIcon      { background-position: 0 -256px; }
 .inputSelectOne .typeIcon  { background-position: 0 -320px; }
 .inputSelectMany .typeIcon { background-position: 0 -384px; }
-.group .typeIcon           { background-position: 0 -448px; }
-.branch .typeIcon          { background-position: 0 -512px; }
