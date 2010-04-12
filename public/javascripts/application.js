@@ -69,4 +69,5 @@ $(function()
     }).resize();
 
     // Init Auth
+    odkmaker.auth.init();
 });

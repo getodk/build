@@ -93,19 +93,20 @@
       </div>
     </div>
 
-    <div class="modal translationsDialog">
-      <h3>Translations</h3>
+    <div class="modal narrowModal signinDialog">
+      <h3>Sign in</h3>
       <div class="modalContents">
-        <h4>Active languages</h4>
-        <p class="translationNone">(none)</p>
-        <ul class="translationList"></ul>
-
-        <h4>Add a new language</h4>
-        <select class="translationSelect"></select>
-        <a class="addTranslation" href="#addTranslation">Add Translation</a>
+        <p>You must have an account in order to create forms on ODK Build.</p>
+        <form action="/users" method="post">
+          <label for="signin_username">Username</label>
+          <input type="text" id="signin_username" name="username" />
+          <label for="signin_password">Password</label>
+          <input type="password" id="signin_username" name="password" />
+        </form>
       </div>
       <div class="modalButtonContainer">
-        <a class="modalButton jqmClose" href="#close">Done</a>
+        <a class="modalButton signinLink" href="#signin">Sign in</a>
+        <a class="modalButton jqmClose" href="#close">Cancel</a>
       </div>
     </div>
 
@@ -122,7 +123,23 @@
       </div>
     </div>
 
-    <div class="modal aboutDialog">
+    <div class="modal narrowModal translationsDialog">
+      <h3>Translations</h3>
+      <div class="modalContents">
+        <h4>Active languages</h4>
+        <p class="translationNone">(none)</p>
+        <ul class="translationList"></ul>
+
+        <h4>Add a new language</h4>
+        <select class="translationSelect"></select>
+        <a class="addTranslation" href="#addTranslation">Add Translation</a>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton jqmClose" href="#close">Done</a>
+      </div>
+    </div>
+
+    <div class="modal narrowModal aboutDialog">
       <h3>About</h3>
       <div class="modalContents">
         <p>
@@ -156,6 +173,7 @@
     <script type="text/javascript" src="/javascripts/jquery.jqmodal.min.js"></script>
     <script type="text/javascript" src="/javascripts/namespace.js"></script>
     <script type="text/javascript" src="/javascripts/util.js"></script>
+    <script type="text/javascript" src="/javascripts/auth.js"></script>
     <script type="text/javascript" src="/javascripts/data.js"></script>
     <script type="text/javascript" src="/javascripts/i18n.js"></script>
     <script type="text/javascript" src="/javascripts/property-editor.js"></script>

@@ -34,6 +34,14 @@ class OdkBuild < Sinatra::Default
     return (User.create params).data.to_json
   end
 
+  # non-RESTful (auth): gets authenticated user
+  get '/user' do
+    user = env['warden'].user
+
+    return error_permission_denied if user.nil?
+    return user.data.to_json
+  end
+
   get '/user/:username' do
     user = User.find params[:username]
 
@@ -112,10 +120,11 @@ class OdkBuild < Sinatra::Default
 
   # Auth methods
   post '/login' do
-    if env['warden'].authenticated?(:password)
-      return { :user => env['warden'].user }.to_json
+    env['warden'].authenticate(:odkbuild)
+    if env['warden'].authenticated?
+      return env['warden'].user.data.to_json
     else
-      return { :user => 'none' }.to_json
+      return error_permission_denied
     end
   end
 

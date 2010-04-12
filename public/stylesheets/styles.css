@@ -88,6 +88,11 @@ body
     font-size: 2.5em;
     margin-bottom: 0.7em;
 }
+.modal p
+{
+    font-size: 1.2em;
+    padding-bottom: 1em;
+}
 .modal .modalContents
 {
     margin: 0 1.5em 1em;
@@ -111,6 +116,20 @@ body
 #templates
 {
     display: none;
+}
+
+form label
+{
+    display: block;
+    height: 25px;
+    font-size: 1.2em;
+    line-height: 25px;
+    margin-bottom: -25px;
+}
+form input
+{
+    margin-bottom: 0.5em;
+    margin-left: 7em;
 }
 
 /***********
@@ -604,15 +623,10 @@ body > .control.last .controlFlowArrow,
     overflow: auto;
 }
 
-.aboutDialog
+.narrowModal
 {
     margin-left: -20em;
     width: 40em;
-}
-.aboutDialog p
-{
-    font-size: 1.2em;
-    padding-bottom: 1em;
 }
 
 /***********

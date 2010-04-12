@@ -19,13 +19,13 @@ end
 
 Warden::Strategies.add(:odkbuild) do
   def valid?
-    params[:username] || params[:password]
+    return params['username'] && params['password']
   end
 
   def authenticate!
-    user = User.find params[:username]
+    user = User.find params['username']
 
-    if user.nil? or !(user.authenticate? params[:password])
+    if user.nil? or !(user.authenticate? params['password'])
       fail! "authentication failed"
     else
       success! user

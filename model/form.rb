@@ -32,7 +32,7 @@ class Form
   end
 
   def self.create(data, owner)
-    key = (String.random_chars 5) while !form_table[key].nil?
+    key = (String.random_chars 6) while !ConnectionManager.connection[:forms][key].nil?
 
     ConnectionManager.connection[:forms][key] = {
       :title => data[:title],
