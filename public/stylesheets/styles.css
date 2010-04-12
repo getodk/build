@@ -597,6 +597,19 @@ body > .control.last .controlFlowArrow,
     background-position: 0 -30px;
 }
 
+/**********
+ * MODALS *
+ **********/
+
+.accountDialog p
+{
+    margin-top: 1em;
+}
+.accountDialog form input
+{
+    margin-left: 14em;
+}
+
 .translationsDialog h4
 {
     font-size: 1.3em;

@@ -97,7 +97,7 @@
       <h3>Sign in</h3>
       <div class="modalContents">
         <p>You must have an account in order to create forms on ODK Build.</p>
-        <form action="/users" method="post">
+        <form>
           <label for="signin_username">Username</label>
           <input type="text" id="signin_username" name="username" />
           <label for="signin_password">Password</label>
@@ -106,6 +106,28 @@
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton signinLink" href="#signin">Sign in</a>
+        <a class="modalButton jqmClose" href="#close">Cancel</a>
+      </div>
+    </div>
+
+    <div class="modal narrowModal accountDialog">
+      <h3>My account</h3>
+      <div class="modalContents">
+        <form>
+          <label for="account_email">Email Address</label>
+          <input type="text" id="account_email" name="email" />
+
+          <p>Fill these out only if you wish to change your password:</p>
+          <label for="account_old_password">Old Password</label>
+          <input type="password" id="account_old_password" name="old_password" />
+          <label for="account_password">New Password</label>
+          <input type="password" id="account_password" name="password" />
+          <label for="account_password_confirm">New Password (confirm)</label>
+          <input type="password" id="account_password_confirm" />
+        </form>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton updateAccountLink" href="#signin">Update</a>
         <a class="modalButton jqmClose" href="#close">Cancel</a>
       </div>
     </div>
@@ -170,12 +192,14 @@
     <script type="text/javascript" src="/javascripts/jquery.ui.draggable.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.validate.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.jqmodal.min.js"></script>
     <script type="text/javascript" src="/javascripts/namespace.js"></script>
     <script type="text/javascript" src="/javascripts/util.js"></script>
     <script type="text/javascript" src="/javascripts/auth.js"></script>
     <script type="text/javascript" src="/javascripts/data.js"></script>
     <script type="text/javascript" src="/javascripts/i18n.js"></script>
+    <script type="text/javascript" src="/javascripts/modals.js"></script>
     <script type="text/javascript" src="/javascripts/property-editor.js"></script>
     <script type="text/javascript" src="/javascripts/workspace-draggable.js"></script>
     <script type="text/javascript" src="/javascripts/control.js"></script>

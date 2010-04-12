@@ -17,7 +17,11 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
             .empty()
             .append('Signed in as <a href="#accountDialog" rel="modal">' +
                      authNS.currentUser.display_name + '</a>.');
-        $('.signinDialog').jqmHide();
+        $('.signinDialog')
+            .find(':input')
+                .val('')
+                .end()
+            .jqmHide();
     };
 
     authNS.init = function()

@@ -4,7 +4,7 @@
  *    Everything but the kitchen sink.
  */
 
-var applicationNS = {};
+var applicationNS = odkmaker.namespace.load('odkmaker.application');
 
 applicationNS.newForm = function()
 {
@@ -39,23 +39,6 @@ $(function()
                 .slideToggle('normal');
     });
 
-    // Init modals
-    $('.modal').jqm({
-        modal: true
-    });
-    $.live('a[rel=modal]', 'click', function(event)
-    {
-        event.preventDefault();
-        $('.' + $(this).attr('href').replace(/#/, '')).jqmShow();
-    });
-
-    // Toolbar
-    $('#exportLink').click(function(event)
-    {
-        event.preventDefault();
-        $('.exportCodeContainer pre').text(odkmaker.data.serialize());
-    });
-
     // External links should open in a new window
     $("a[rel$='external']").click(function()
     {
@@ -68,6 +51,7 @@ $(function()
         $('.workspace').css('min-height', ($('.workspaceScrollArea').innerHeight() - 320) + 'px');
     }).resize();
 
-    // Init Auth
+    // Init Modules
     odkmaker.auth.init();
+    odkmaker.modals.init();
 });
