@@ -14,6 +14,7 @@ class User
 # Class
   def data
     return {
+      :username => @key,
       :display_name => self.display_name,
       :email => self.email,
       :forms => self.forms
@@ -36,8 +37,8 @@ class User
   end
 
   def update(data)
-    self.email = data[:email] if data[:email].present?
-    self.password = data[:password] if data[:password].present?
+    self.email = data[:email] unless data[:email].nil?
+    self.password = data[:password] unless data[:password].nil?
   end
 
   def delete!
@@ -45,7 +46,7 @@ class User
   end
 
   def save
-    ConnectionManager.connection[:users][key] = @data
+    ConnectionManager.connection[:users][@key] = @data
   end
 
   def ==(other)

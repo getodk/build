@@ -642,6 +642,11 @@ body > .control.last .controlFlowArrow,
     width: 40em;
 }
 
+.errorMessage p
+{
+    color: #f00;
+}
+
 /***********
  * SPRITES *
  ***********/

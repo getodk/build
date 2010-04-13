@@ -52,7 +52,7 @@ class OdkBuild < Sinatra::Default
   put '/user/:username' do
     user = env['warden'].user
     return error_permission_denied unless user.username == params[:username]
-    return error_validation_failed if params[:password].present? and
+    return error_validation_failed if params[:password].nil? and
                                     !(user.authenticate? params[:old_password])
 
     user.update params
@@ -78,7 +78,7 @@ class OdkBuild < Sinatra::Default
     user = env['warden'].user
 
     # validate input
-    return error_validation_failed unless params[:title].present?
+    return error_validation_failed if params[:title].nil?
     return (Form.create params, user).data.to_json
   end
 

@@ -44,9 +44,9 @@ class Form
   end
 
   def update(data)
-    self.name = data[:title] if data[:title].present?
-    self.description = data[:description] if data[:description].present?
-    @form_data = data[:controls].to_json if data[:controls].present?
+    self.name = data[:title] unless data[:title].nil?
+    self.description = data[:description] unless data[:description].nil?
+    @form_data = data[:controls].to_json unless data[:controls].nil?
   end
 
   def delete!
