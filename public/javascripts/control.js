@@ -9,9 +9,6 @@
 
 ;(function($)
 {
-    // class vars
-    var controlIdx = 1;
-
     // Private methods
     var refreshFromProperties = function($this, type, config, properties)
     {
@@ -107,7 +104,7 @@
                 properties = defaultProperties ||
                     $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
                                    $.fn.odkControl.controlProperties[type]);
-            properties.name.value += controlIdx++;
+            properties.name.value += (_.uniqueId() + 1);
             $this.data('odkControl-properties', properties);
 
             $this.bind('odkControl-propertiesUpdated', function(event)
