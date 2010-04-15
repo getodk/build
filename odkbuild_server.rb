@@ -71,7 +71,10 @@ class OdkBuild < Sinatra::Default
 
   # Forms
   get '/forms' do
-    return env['warden'].user.forms.to_json
+    user = env['warden'].user
+
+    return error_permission_denied if user.nil?
+    return user.forms.to_json
   end
 
   post '/forms' do
@@ -79,7 +82,10 @@ class OdkBuild < Sinatra::Default
 
     # validate input
     return error_validation_failed if params[:title].nil?
-    return (Form.create params, user).data.to_json
+
+    form = Form.create params, user
+    user.add_form form
+    return form.data.to_json
   end
 
   get '/form/:form_id' do

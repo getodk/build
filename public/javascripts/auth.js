@@ -35,15 +35,31 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
             .fadeIn('slow');
     };
 
-    authNS.init = function()
+    authNS.verify = function()
+    {
+        // Get current user status from server
+        $.ajax({
+            url: '/user',
+            dataType: 'json',
+            type: 'GET',
+            success: signinSuccessful,
+            error: function(request, status, error)
+            {
+                authNS.currentUser = null;
+                noAuthMessage();
+                $('.signinDialog').jqmShow();
+            }
+        });
+    };
+
+    $(function()
     {
         // Signin dialog events
         $('.signinDialog .signinLink').click(function(event)
         {
             event.preventDefault();
 
-            $('.signinDialog .errorMessage')
-                .slideUp();
+            $('.signinDialog .errorMessage').slideUp();
 
             $.ajax({
                 url: '/login',
@@ -88,8 +104,7 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
         {
             event.preventDefault();
 
-            $('.accountDialog .errorMessage')
-                .slideUp();
+            $('.accountDialog .errorMessage').slideUp();
 
             $.ajax({
                 url: '/user/' + authNS.currentUser.username,
@@ -111,22 +126,5 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
         });
 
         authNS.verify();
-    };
-
-    authNS.verify = function()
-    {
-        // Get current user status from server
-        $.ajax({
-            url: '/user',
-            dataType: 'json',
-            type: 'GET',
-            success: signinSuccessful,
-            error: function(request, status, error)
-            {
-                authNS.currentUser = null;
-                noAuthMessage();
-                $('.signinDialog').jqmShow();
-            }
-        });
-    };
+    });
 })(jQuery);

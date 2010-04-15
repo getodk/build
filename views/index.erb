@@ -20,10 +20,10 @@
           <span>File</span>
           <ul class="submenu">
             <li class="disabled"><a href="#newFormDialog" rel="modal">New Form</a></li>
-            <li class="disabled"><a href="#openFormDialog" rel="modal">Open Form...</a></li>
+            <li><a href="#openDialog" rel="modal">Open Form...</a></li>
             <li class="divider"></li>
             <li class="disabled"><a href="#saveForm">Save</a></li>
-            <li class="disabled"><a href="#saveAsFormDialog" rel="modal">Save Form As...</a></li>
+            <li><a href="#saveAsDialog" rel="modal">Save Form As...</a></li>
             <li class="divider"></li>
             <li><a href="#exportDialog" id="exportLink" rel="modal">Export to XML...</a></li>
           </ul>
@@ -117,6 +117,8 @@
       <h3>My account</h3>
       <div class="modalContents">
         <form>
+          <div class="errorMessage"></div>
+
           <label for="account_email">Email Address</label>
           <input type="text" id="account_email" name="email" />
 
@@ -131,6 +133,37 @@
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton updateAccountLink" href="#update">Update</a>
+        <a class="modalButton jqmClose" href="#close">Cancel</a>
+      </div>
+    </div>
+
+    <div class="modal narrowModal openDialog">
+      <h3>Open Form</h3>
+      <div class="modalContents">
+        <form>
+          <div class="errorMessage"></div>
+
+          <ul class="formList"></ul>
+        </form>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton openLink" href="#open">Open</a>
+        <a class="modalButton jqmClose" href="#close">Cancel</a>
+      </div>
+    </div>
+
+    <div class="modal narrowModal saveAsDialog">
+      <h3>Save Form As</h3>
+      <div class="modalContents">
+        <form>
+          <div class="errorMessage"></div>
+
+          <label for="saveAs_name">Form Name</label>
+          <input type="text" id="saveAs_name" name="name" />
+        </form>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton saveAsLink" href="#save">Save</a>
         <a class="modalButton jqmClose" href="#close">Cancel</a>
       </div>
     </div>
@@ -201,6 +234,7 @@
     <script type="text/javascript" src="/javascripts/util.js"></script>
     <script type="text/javascript" src="/javascripts/auth.js"></script>
     <script type="text/javascript" src="/javascripts/data.js"></script>
+    <script type="text/javascript" src="/javascripts/data-ui.js"></script>
     <script type="text/javascript" src="/javascripts/i18n.js"></script>
     <script type="text/javascript" src="/javascripts/modals.js"></script>
     <script type="text/javascript" src="/javascripts/property-editor.js"></script>

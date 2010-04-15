@@ -17,7 +17,7 @@ class User
       :username => @key,
       :display_name => self.display_name,
       :email => self.email,
-      :forms => self.forms
+      :forms => self.forms.map{ |form| form.data }
     }
   end
 

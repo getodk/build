@@ -50,8 +50,4 @@ $(function()
     {
         $('.workspace').css('min-height', ($('.workspaceScrollArea').innerHeight() - 320) + 'px');
     }).resize();
-
-    // Init Modules
-    odkmaker.auth.init();
-    odkmaker.modals.init();
 });

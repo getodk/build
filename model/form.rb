@@ -26,6 +26,7 @@ class Form
 # Class
   def data
     result = @data.dup
+    result[:id] = @key
     result[:controls] = JSON.parse(@form_data) unless @form_data.nil?
 
     return result
@@ -40,7 +41,7 @@ class Form
       :owner => owner.username
     }
 
-    return (User.find key)
+    return (Form.find key)
   end
 
   def update(data)
