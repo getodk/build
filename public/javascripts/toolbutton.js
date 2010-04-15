@@ -6,12 +6,26 @@
 
 ;(function($)
 {
+    var createOdkControl = function(type)
+    {
+        return $('#templates .control')
+                   .clone()
+                   .addClass(type)
+                   .odkControl(type)
+                   .trigger('odkControl-select');
+    };
     // Constructor
     $.fn.toolButton = function(options)
     {
         return this.each(function()
         {
             var $this = $(this);
+
+            $this.click(function(event)
+            {
+                event.preventDefault();
+                $('.workspace').append(createOdkControl($this.attr('rel')));
+            });
 
             $this.workspaceDraggable({
                 dragCallback: function($control, direction)
@@ -38,12 +52,7 @@
                 {
                     var $placeholder = $('.workspace .placeholder:not(.closing)');
                     if ($placeholder.length > 0)
-                        $placeholder.replaceWith(
-                            $('#templates .control')
-                                .clone()
-                                .addClass($this.attr('rel'))
-                                .odkControl($this.attr('rel'))
-                                .trigger('odkControl-select'));
+                        $placeholder.replaceWith(createOdkControl($this.attr('rel')));
                 },
                 draggableOptions: {
                     start: function(event, ui)

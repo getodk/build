@@ -49,7 +49,13 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                     if (jqm.w.hasClass(key))
                         callback(jqm.w, jqm.t);
                 });
-                jqm.w.show();
+                jqm.w.fadeIn('slow');
+                jqm.o.fadeIn('slow');
+            },
+            onHide: function(jqm)
+            {
+                jqm.w.fadeOut('slow');
+                jqm.o.fadeOut('slow');
             }
         });
         $.live('a[rel=modal]', 'click', function(event)
