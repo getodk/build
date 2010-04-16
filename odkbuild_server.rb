@@ -85,6 +85,7 @@ class OdkBuild < Sinatra::Default
 
     form = Form.create params, user
     user.add_form form
+    user.save
     return form.data.to_json
   end
 
