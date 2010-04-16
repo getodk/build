@@ -162,10 +162,11 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
                     authNS.currentUser = null;
                     $('.accountStatus')
                         .fadeOut('slow', noAuthMessage);
+                    $.toast('You have been successfully signed out.');
                 },
                 error: function(request, status, error)
                 {
-                    alert('You could not be signed out at this time. Please try again in a moment.');
+                    $.toast('You could not be signed out at this time. Please try again in a moment.');
                 }
             });
         });

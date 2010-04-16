@@ -132,6 +132,23 @@ form input
     margin-left: 7em;
 }
 
+.toast
+{
+    background-color: #fff;
+    bottom: -15em;
+    -moz-box-shadow: 0 0 1em #222;
+    -webkit-box-shadow: 0 0 1em #222;
+    color: #444;
+    font-size: 1.4em;
+    height: 10em;
+    right: 5em;
+    padding: 2em;
+    position: absolute;
+    text-align: center;
+    width: 15em;
+    z-index: 20;
+}
+
 /***********
  * GENERAL *
  ***********/

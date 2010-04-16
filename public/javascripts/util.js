@@ -40,6 +40,20 @@
         array.splice($.inArray(elem, array), 1);
     };
 
+    $.toast = function(message)
+    {
+        $('.toast')
+            .text(message)
+            .animate({ bottom: '-8em' }, 'slow', function()
+            {
+                var $this = $(this);
+                setTimeout(function()
+                {
+                    $this.animate({ bottom: '-15em' }, 'slow');
+                }, 3000);
+            });
+    };
+
     $.fn.debugName = function()
     {
         var $this = $(this);

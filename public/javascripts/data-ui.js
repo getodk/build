@@ -59,10 +59,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 success: function(response, status)
                 {
                     dataNS.currentForm = response;
+                    $.toast('Form saved!');
                 },
                 error: function(request, status, error)
                 {
-                    alert('oh no!');
+                    $.toast('Your form could not be successfully saved at this time. Please try again in a moment.');
                 }
             });
         });
@@ -107,7 +108,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }),
                 success: function(response, status)
                 {
-                    alert('yay');
+                    $.toast('Your form has been saved as "' + title + '".');
                     dataNS.currentForm = response;
                     $('.saveAsDialog').jqmHide();
                 },
