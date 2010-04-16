@@ -22,6 +22,26 @@ $(function()
         odkmaker.i18n.displayLanguage($(this).attr('rel'));
         $('.workspace .control').trigger('odkControl-propertiesUpdated');
     });
+    $('#editTitleLink').click(function(event)
+    {
+        event.preventDefault();
+
+        var $textField = $('.header #renameFormField');
+        if ($textField.is(':visible'))
+        {
+            $('.header h1')
+                .text($textField.hide().val())
+                .fadeIn();
+            $(this).text('Rename');
+        }
+        else
+        {
+            $textField
+                .val($('.header h1').hide().text())
+                .fadeIn();
+            $(this).text('Done');
+        }
+    });
 
     // Wire up toolpane
     $('.toolPalette a').toolButton();

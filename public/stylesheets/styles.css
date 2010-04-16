@@ -177,6 +177,14 @@ body
 {
     display: inline-block;
 }
+.header #renameFormField
+{
+    color: #444;
+    display: none;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-size: 2em;
+    letter-spacing: -1px;
+}
 .header #editTitleLink
 {
     color: #666;
