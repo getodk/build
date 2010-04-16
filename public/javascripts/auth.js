@@ -41,6 +41,15 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
             url: '/user',
             dataType: 'json',
             type: 'GET',
+            complete: function()
+            {
+                $('.loadingScreen')
+                    .fadeOut('normal', function()
+                    {
+                        $(this).remove();
+                    });
+                $('.preloadImages').remove();
+            },
             success: function(response, status)
             {
                 authNS.currentUser = response;

@@ -50,4 +50,10 @@ $(function()
     {
         $('.workspace').css('min-height', ($('.workspaceScrollArea').innerHeight() - 320) + 'px');
     }).resize();
+
+    // Update loading screen status
+    setTimeout(function()
+    {
+        $('.loadingScreen .status').text('checking who you are...');
+    }, 0);
 });

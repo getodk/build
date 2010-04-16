@@ -610,7 +610,8 @@ body > .control.last .controlFlowArrow,
     margin-left: 14em;
 }
 
-.openDialog .formList li.loading
+.openDialog .formList li.loading,
+.openDialog .formList li.loading:hover
 {
     background: transparent url(/images/loading.gif) no-repeat;
     display: block;
@@ -632,7 +633,7 @@ body > .control.last .controlFlowArrow,
 .openDialog .formList li.selected,
 .openDialog .formList li.selected:hover
 {
-    background-color: #777;
+    background-color: #888;
     color: #fff;
 }
 
@@ -671,6 +672,56 @@ body > .control.last .controlFlowArrow,
 .errorMessage p
 {
     color: #f00;
+}
+
+.loadingScreen
+{
+    background-color: #fff;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 9999;
+}
+.loadingScreen .loadingMessage
+{
+    height: 10em;
+    left: 50%;
+    margin-left: -11em;
+    margin-top: -5em;
+    position: absolute;
+    top: 50%;
+    width: 22em;
+}
+.loadingScreen h1
+{
+    color: #888;
+    padding-left: 0.333em;
+}
+.loadingScreen h1 strong
+{
+    color: #444;
+    font-weight: normal;
+}
+.loadingScreen h1 sup
+{
+    font-size: 0.8em;
+    vertical-align: super;
+}
+.loadingScreen p
+{
+    color: #555;
+    padding-left: 0.8em;
+}
+.loadingScreen .loadingBar
+{
+    background: transparent url(/images/loading.gif) no-repeat;
+    display: block;
+    height: 19px;
+    margin-left: 0.2em;
+    text-indent: -9999px;
+    width: 220px;
 }
 
 /***********
