@@ -10,46 +10,55 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 {
     dataNS.currentForm = null;
 
-    var saveFormAs = function()
-    {
-        var title = $('.saveAsDialog #saveAs_name').val();
-        if (title === '')
-            return false;
-
-        $('.saveAsDialog .errorMessage').slideUp();
-
-        $.ajax({
-            url: '/forms',
-            dataType: 'json',
-            type: 'POST',
-            data: { title: title, controls: odkmaker.data.extract().controls },
-            success: function(response, status)
-            {
-                alert('yay');
-                $('.saveAsDialog').jqmHide();
-            },
-            error: function(request, status, error)
-            {
-                $('.saveAsDialog .errorMessage')
-                    .empty()
-                    .append('<p>Could save the form. Please try again in a moment.</p>')
-                    .slideDown();
-            }
-        });
-    };
-
     $(function()
     {
         // modal events
+        $.live('.openDialog .formList li', 'click', function(event)
+        {
+            event.preventDefault();
+
+            var $this = $(this);
+            $this.siblings('li').removeClass('selected');
+            $this.addClass('selected');
+        });
+        $('.openDialog .openLink').click(function(event)
+        {
+            event.preventDefault();
+            openForm();
+        });
+
         $('.saveAsDialog .saveAsLink').click(function(event)
         {
             event.preventDefault();
-            saveFormAs();
-        });
-        $('.saveAsDialog #saveAs_name').keydown(function(event)
-        {
-            if (event.which == 13)
-                saveFormAs();
+            var title = $('.saveAsDialog #saveAs_name').val();
+            if (title === '')
+                return false;
+
+            $('.saveAsDialog .errorMessage').slideUp();
+
+            $.ajax({
+                url: '/forms',
+                contentType: 'application/json',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    title: title,
+                    controls: odkmaker.data.extract().controls
+                }),
+                success: function(response, status)
+                {
+                    alert('yay');
+                    dataNS.currentForm = response;
+                    $('.saveAsDialog').jqmHide();
+                },
+                error: function(request, status, error)
+                {
+                    $('.saveAsDialog .errorMessage')
+                        .empty()
+                        .append('<p>Could save the form. Please try again in a moment.</p>')
+                        .slideDown();
+                }
+            });
         });
     });
 })(jQuery);

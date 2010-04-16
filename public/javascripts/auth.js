@@ -12,7 +12,6 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
 
     var signinSuccessful = function(response, status)
     {
-        authNS.currentUser = response;
         $('.accountStatus')
             .empty()
             .append('Signed in as <a href="#accountDialog" rel="modal">' +
@@ -35,14 +34,18 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
             .fadeIn('slow');
     };
 
-    authNS.verify = function()
+    authNS.verify = function(callback)
     {
         // Get current user status from server
         $.ajax({
             url: '/user',
             dataType: 'json',
             type: 'GET',
-            success: signinSuccessful,
+            success: function(response, status)
+            {
+                authNS.currentUser = response;
+                (callback || signinSuccessful)(response, status);
+            },
             error: function(request, status, error)
             {
                 authNS.currentUser = null;

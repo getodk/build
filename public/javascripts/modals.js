@@ -21,16 +21,23 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
             var $list = $dialog.find('.formList');
             $list.empty();
 
-            // TODO: do we want to update this array when
-            //       this list is opened? Probably.
-            _.each(odkmaker.auth.currentUser.forms, function(formObj)
+            $list.append('<li class="loading">loading</li>');
+            odkmaker.auth.verify(function()
             {
-                $list.append('<li rel="' + formObj.id + '">' + formObj.title + '</li>');
+                $list.empty();
+                _.each(odkmaker.auth.currentUser.forms, function(formObj)
+                {
+                    $list.append('<li rel="' + formObj.id + '">' + formObj.title + '</li>');
+                });
+                if (odkmaker.auth.currentUser.forms.length === 0)
+                {
+                    $list.append('<li class="noData">You do not appear to have saved any forms just yet.</li>');
+                }
             });
-            if (odkmaker.auth.currentUser.forms.length === 0)
-            {
-                $list.append('<li class="noData">You do not appear to have saved any forms just yet.</li>');
-            }
+        },
+        saveAsDialog: function($dialog)
+        {
+            $dialog.find('#saveAs_name').val($('h1').text());
         },
         exportDialog: function($dialog)
         {
@@ -62,6 +69,13 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
         {
             event.preventDefault();
             $('.' + $(this).attr('href').replace(/#/, '')).jqmShow();
+        });
+        $('.modal form').submit(function(event)
+        {
+            event.preventDefault();
+            $(this).closest('.modal')
+                .find('.acceptLink')
+                    .click();
         });
     });
 })(jQuery);

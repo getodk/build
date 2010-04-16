@@ -77,13 +77,17 @@ class OdkBuild < Sinatra::Default
     return user.forms.to_json
   end
 
+  # only takes JSON!
   post '/forms' do
     user = env['warden'].user
 
-    # validate input
-    return error_validation_failed if params[:title].nil?
+    # pull JSON data out
+    request_data = JSON.parse(request.body.read.to_s)
 
-    form = Form.create params, user
+    # validate input
+    return error_validation_failed if request_data['title'].nil?
+
+    form = Form.create request_data, user
     user.add_form form
     user.save
     return form.data.to_json
@@ -99,15 +103,19 @@ class OdkBuild < Sinatra::Default
     return form.data.to_json
   end
 
+  # only takes JSON!
   put '/form/:form_id' do
     user = env['warden'].user
+
+    # pull JSON data out
+    request_data = JSON.parse(request.body.read.to_s)
 
     form = Form.find(params[:form_id], true)
 
     return error_not_found if form.nil?
     return error_permission_denied if form.owner != user
 
-    form.update params
+    form.update request_data
     form.save
 
     return form.data.to_json

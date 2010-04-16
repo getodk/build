@@ -610,6 +610,37 @@ body > .control.last .controlFlowArrow,
     margin-left: 14em;
 }
 
+.openDialog .formList li.loading
+{
+    background: transparent url(/images/loading.gif) no-repeat;
+    display: block;
+    height: 19px;
+    text-indent: -9999px;
+    width: 220px;
+}
+.openDialog .formList li
+{
+    background-color: #f6f6f6;
+    cursor: pointer;
+    font-size: 1.3em;
+    padding: 0.5em;
+}
+.openDialog .formList li:hover
+{
+    background-color: #ddd;
+}
+.openDialog .formList li.selected,
+.openDialog .formList li.selected:hover
+{
+    background-color: #c3d3e7;
+}
+
+.exportDialog .exportCodeContainer
+{
+    max-height: 30em;
+    overflow: auto;
+}
+
 .translationsDialog h4
 {
     font-size: 1.3em;
@@ -628,12 +659,6 @@ body > .control.last .controlFlowArrow,
 .translationsDialog .translationList li .removeTranslation
 {
     float: right;
-}
-
-.exportDialog .exportCodeContainer
-{
-    max-height: 30em;
-    overflow: auto;
 }
 
 .narrowModal

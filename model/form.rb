@@ -36,18 +36,20 @@ class Form
     key = (String.random_chars 6) while !ConnectionManager.connection[:forms][key].nil?
 
     ConnectionManager.connection[:forms][key] = {
-      :title => data[:title],
-      :description => (data[:description] || ''),
+      :title => data['title'],
+      :description => (data['description'] || ''),
       :owner => owner.username
     }
 
-    return (Form.find key)
+    ConnectionManager.connection[:form_data][key] = data['controls'].to_json
+
+    return (Form.find key, true)
   end
 
   def update(data)
-    self.name = data[:title] unless data[:title].nil?
-    self.description = data[:description] unless data[:description].nil?
-    @form_data = data[:controls].to_json unless data[:controls].nil?
+    self.name = data['title'] unless data['title'].nil?
+    self.description = data['description'] unless data['description'].nil?
+    @form_data = data['controls'].to_json unless data['controls'].nil?
   end
 
   def delete!
