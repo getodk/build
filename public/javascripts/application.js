@@ -51,6 +51,32 @@ $(function()
     // Wire up toolpane
     $('.toolPalette a').toolButton();
 
+    // Set up qTips
+    $('.menu .disabled').qtip({
+        content: 'Feature coming soon.',
+        show: 'mouseover',
+        hide: 'mouseout',
+        position: { corner: { target: 'rightTop',
+                              toolTip: 'leftTop' } },
+        style: {
+            name: 'dark',
+            background: '#000000',
+            border: { radius: 3, width: 3 },
+            tip: 'leftMiddle' }
+    });
+    $('.toolPalette .disabled').qtip({
+        content: 'Feature coming soon.',
+        show: 'mouseover',
+        hide: 'mouseout',
+        position: { corner: { target: 'topMiddle',
+                              toolTip: 'bottomMiddle' } },
+        style: {
+            name: 'dark',
+            background: '#000000',
+            border: { radius: 3, width: 3 },
+            tip: 'bottomMiddle' }
+    });
+
     // Kick off a new form by default
     applicationNS.newForm();
 
