@@ -47,7 +47,7 @@ class Form
   end
 
   def update(data)
-    self.name = data['title'] unless data['title'].nil?
+    self.title = data['title'] unless data['title'].nil?
     self.description = data['description'] unless data['description'].nil?
     @form_data = data['controls'].to_json unless data['controls'].nil?
   end
@@ -59,7 +59,7 @@ class Form
 
   def save
     ConnectionManager.connection[:forms][@key] = @data
-    ConnectionManager.connection[:forms][@key] = @form_data unless @form_data.nil?
+    ConnectionManager.connection[:form_data][@key] = @form_data unless @form_data.nil?
   end
 
   def ==(other)

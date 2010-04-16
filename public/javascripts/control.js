@@ -104,7 +104,8 @@
                 properties = defaultProperties ||
                     $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
                                    $.fn.odkControl.controlProperties[type]);
-            properties.name.value += (_.uniqueId() + 1);
+            if (properties.name.value == 'untitled')
+                properties.name.value += (_.uniqueId() + 1);
             $this.data('odkControl-properties', properties);
 
             $this.bind('odkControl-propertiesUpdated', function(event)

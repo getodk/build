@@ -83,9 +83,8 @@
                 $textfields.attr('disabled', true);
             else
                 $textfields
-                    .filter('.min').val(property.value.min)
-                    .end()
-                    .filter('.max').val(property.value.max)
+                    .filter('.min').val(property.value.min).end()
+                    .filter('.max').val(property.value.max);
             $textfields.keyup(function(event)
             {
                 property.value = {

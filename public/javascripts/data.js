@@ -58,7 +58,40 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             controls: extractRecurse($('.workspace'))
         };
     };
-    
+
+    var loadRecurse = function($root, controls)
+    {
+        _.each(controls, function(control)
+        {
+            var properties = null;
+            if ((control.type == 'group') || (control.type == 'branch'))
+                properties = $.extend(true, {}, $.fn.odkControl.controlProperties[control.type]);
+            else
+                properties = $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
+                                            $.fn.odkControl.controlProperties[control.type]);
+            _.each(properties, function(property, key)
+            {
+                property.value = control[key];
+            });
+
+            var $control = $('#templates .control')
+                               .clone()
+                               .addClass(control.type)
+                               .odkControl(control.type, null, properties)
+                               .appendTo($root);
+
+            if (control.type == 'group')
+                loadRecurse($control.find('.workspaceInner'), control.children);
+        });
+    };
+    odkmaker.data.load = function(formObj)
+    {
+        $('h1').text(formObj.title);
+        $('.workspace').empty(); //TODO
+        loadRecurse($('.workspace'), formObj.controls);
+        $('.workspace .control:first').trigger('odkControl-select');
+    };
+
     // massages the output JSON into a structure representing an XForm
     var controlTypes = {
         inputText: 'input',
