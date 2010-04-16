@@ -68,7 +68,12 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
         $.live('a[rel=modal]', 'click', function(event)
         {
             event.preventDefault();
-            $('.' + $(this).attr('href').replace(/#/, '')).jqmShow();
+            var $this = $(this);
+
+            if ($this.hasClass('authRequired') && (odkmaker.auth.currentUser === null))
+                $('.signinDialog').jqmShow();
+            else
+                $('.' + $this.attr('href').replace(/#/, '')).jqmShow();
         });
         $('.modal form').submit(function(event)
         {

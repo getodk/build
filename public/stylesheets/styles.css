@@ -632,7 +632,8 @@ body > .control.last .controlFlowArrow,
 .openDialog .formList li.selected,
 .openDialog .formList li.selected:hover
 {
-    background-color: #c3d3e7;
+    background-color: #777;
+    color: #fff;
 }
 
 .exportDialog .exportCodeContainer

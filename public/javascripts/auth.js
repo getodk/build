@@ -69,7 +69,11 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
                 dataType: 'json',
                 type: 'POST',
                 data: $('.signinDialog form').find(':input'),
-                success: signinSuccessful,
+                success: function(response, status)
+                {
+                    authNS.currentUser = response;
+                    signinSuccessful(response, status);
+                },
                 error: function(request, status, error)
                 {
                     $('.signinDialog .errorMessage')
