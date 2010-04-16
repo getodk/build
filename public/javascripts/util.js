@@ -42,16 +42,22 @@
 
     $.toast = function(message)
     {
-        $('.toast')
-            .text(message)
-            .animate({ bottom: '-8em' }, 'slow', function()
-            {
-                var $this = $(this);
-                setTimeout(function()
+        var $toast = $('.toast');
+        $toast
+            .empty()
+            .append('<span>' + message + '</span>')
+            .animate(
+                { bottom: '-' + ($toast.outerHeight(true) -
+                                 $toast.find('span').outerHeight(true) -
+                                 20) + 'px' },
+                'slow',
+                function()
                 {
-                    $this.animate({ bottom: '-15em' }, 'slow');
-                }, 3000);
-            });
+                    setTimeout(function()
+                    {
+                        $toast.animate({ bottom: '-15em' }, 'slow');
+                    }, 3000);
+                });
     };
 
     $.fn.debugName = function()

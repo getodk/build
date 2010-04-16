@@ -160,9 +160,10 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
                 success: function(response, status)
                 {
                     authNS.currentUser = null;
+                    odkmaker.data.currentForm = null;
                     $('.accountStatus')
                         .fadeOut('slow', noAuthMessage);
-                    $.toast('You have been successfully signed out.');
+                    $.toast('You have been successfully signed out. You can continue editing this form but you\'ll have to log in to save it.');
                 },
                 error: function(request, status, error)
                 {

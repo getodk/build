@@ -31,7 +31,11 @@ class OdkBuild < Sinatra::Default
     return error_validation_failed if [:username, :password, :email].
                                       any?{ |key| !(params.has_key? key.to_s) }
     return error_validation_failed if User.find params[:username]
-    return (User.create params).data.to_json
+
+    user = User.create params
+    env['warden'].authenticate(:odkbuild)
+
+    return user.data.to_json
   end
 
   # non-RESTful (auth): gets authenticated user
