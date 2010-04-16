@@ -35,6 +35,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     $(function()
     {
         // menu events
+        $('.menu .newLink').click(function(event)
+        {
+            event.preventDefault();
+            if (confirm('Are you sure? You will lose unsaved changes to the current form.'))
+                odkmaker.application.newForm();
+        });
         $('.menu .saveLink').click(function(event)
         {
             event.preventDefault();

@@ -76,9 +76,17 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
             var $this = $(this);
 
             if ($this.hasClass('authRequired') && (odkmaker.auth.currentUser === null))
+            {
                 $('.signinDialog').jqmShow();
-            else
-                $('.' + $this.attr('href').replace(/#/, '')).jqmShow();
+                return;
+            }
+            else if ($this.hasClass('destructive'))
+            {
+                if (!confirm('Are you sure? You will lose unsaved changes to the current form.'))
+                    return;
+            }
+
+            $('.' + $this.attr('href').replace(/#/, '')).jqmShow();
         });
         $('.modal form').submit(function(event)
         {
