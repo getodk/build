@@ -601,6 +601,17 @@ body > .control.last .controlFlowArrow,
  * MODALS *
  **********/
 
+.signinDialog .signupLink.hide,
+.signinDialog .signinLink.hide,
+.signinDialog .signup_section
+{
+    display: none;
+}
+.signinDialog form input
+{
+    margin-left: 12em;
+}
+
 .accountDialog p
 {
     margin-top: 1em;

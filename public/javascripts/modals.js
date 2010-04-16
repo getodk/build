@@ -10,7 +10,12 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
     var handlers = {
         signinDialog: function($dialog)
         {
-            $dialog.find(':input').val('');
+            $dialog
+                .find(':input').val('').end()
+                .find('h3').text('Sign in').end()
+                .find('.signinLink').removeClass('hide').end()
+                .find('.signupLink').addClass('hide').end()
+                .find('.signup_section').hide();
         },
         accountDialog: function($dialog)
         {

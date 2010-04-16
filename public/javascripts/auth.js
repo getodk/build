@@ -43,12 +43,15 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
             type: 'GET',
             complete: function()
             {
-                $('.loadingScreen')
-                    .fadeOut('normal', function()
-                    {
-                        $(this).remove();
-                    });
-                $('.preloadImages').remove();
+                setTimeout(function()
+                {
+                    $('.loadingScreen')
+                        .fadeOut('normal', function()
+                        {
+                            $(this).remove();
+                        });
+                    $('.preloadImages').remove();
+                }, 200); // give a bit of extra time in case the load was instantaneous
             },
             success: function(response, status)
             {
@@ -67,6 +70,23 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
     $(function()
     {
         // Signin dialog events
+        $('.signinDialog .toggleSignupLink').click(function(event)
+        {
+            event.preventDefault();
+            // TODO: this code sucks.
+            $('.signinDialog .signup_section').slideToggle();
+            $('.signinDialog .signinLink, .signinDialog .signupLink').toggleClass('hide');
+            if ($('.modalButton.signinLink').hasClass('hide'))
+            {
+                $(this).text('Never mind, I have an account.');
+                $('.signinDialog h3').text('Sign up');
+            }
+            else
+            {
+                $(this).text('Don\'t yet have an account?');
+                $('.signinDialog h3').text('Sign in');
+            }
+        });
         $('.signinDialog .signinLink').click(function(event)
         {
             event.preventDefault();
@@ -75,6 +95,41 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
 
             $.ajax({
                 url: '/login',
+                dataType: 'json',
+                type: 'POST',
+                data: $('.signinDialog form').find(':input:visible'),
+                success: function(response, status)
+                {
+                    authNS.currentUser = response;
+                    signinSuccessful(response, status);
+                },
+                error: function(request, status, error)
+                {
+                    $('.signinDialog .errorMessage')
+                        .empty()
+                        .append('<p>Could not log you in with those credentials. Please try again.</p>')
+                        .slideDown();
+                }
+            });
+        });
+        $('.signinDialog .signupLink').click(function(event)
+        {
+            event.preventDefault();
+
+            $('.signinDialog .errorMessage').slideUp();
+
+            if ($('.signinDialog form #signin_password').val() !==
+                $('.signinDialog form #signup_password_confirm').val())
+            {
+                $('.signinDialog .errorMessage')
+                    .empty()
+                    .append('<p>The passwords you typed do not match.</p>')
+                    .slideDown();
+                return;
+            }
+
+            $.ajax({
+                url: '/users',
                 dataType: 'json',
                 type: 'POST',
                 data: $('.signinDialog form').find(':input'),
@@ -87,7 +142,7 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
                 {
                     $('.signinDialog .errorMessage')
                         .empty()
-                        .append('<p>Could not log you in with those credentials. Please try again.</p>')
+                        .append('<p>Could not create an account with those credentials. Please try again.</p>')
                         .slideDown();
                 }
             });
