@@ -1,6 +1,8 @@
 require 'rubygems'
+gem 'sinatra','<1.0'
 require 'sinatra'
 require 'json'
+require 'pony'
 require 'warden_odkbuild'
 require 'model/user'
 require 'model/form'
@@ -155,6 +157,18 @@ class OdkBuild < Sinatra::Default
   get '/unauthenticated' do
     status 401
     return { :error => 'unauthenticated' }.to_json
+  end
+
+  post '/reset_password' do
+    user = User.find params[:username]
+    new_password = user.reset_password!
+    user.save
+
+    (Pony.mail :to => user.email, :from => 'support@opendatakit.org',
+               :subject => 'Your new ODK Build password.',
+               :body => "Your ODK Build password has been reset. The new password is #{new_password}.\n\nThanks,\nThe ODK Build Team")
+
+    return { :success => 'true' }.to_json
   end
 
 private

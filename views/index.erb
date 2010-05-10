@@ -119,20 +119,24 @@
         <form>
           <label for="signin_username">Username</label>
           <input type="text" id="signin_username" name="username" />
-          <label for="signin_password">Password</label>
-          <input type="password" id="signin_password" name="password" />
+          <div class="signin_section">
+            <label for="signin_password">Password</label>
+            <input type="password" id="signin_password" name="password" />
+          </div>
           <div class="signup_section">
             <label for="signup_password_confirm">Password (confirm)</label>
             <input type="password" id="signup_password_confirm" name="password_confirm" />
             <label for="signup_email">Email</label>
             <input type="text" id="signup_email" name="email" />
           </div>
+          <p><a href="#forgotPassword" class="togglePasswordLink">Forgot your password?</a></p>
           <p><a href="#signUp" class="toggleSignupLink">Don't yet have an account?</a></p>
         </form>
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton signinLink" href="#signin">Sign in</a>
         <a class="modalButton signupLink hide" href="#signin">Sign up</a>
+        <a class="modalButton passwordLink hide" href="#signin">Reset password</a>
         <a class="modalButton jqmClose" href="#close">Cancel</a>
       </div>
     </div>

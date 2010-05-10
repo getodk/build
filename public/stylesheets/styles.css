@@ -1,4 +1,4 @@
-/**********
+/*public/stylesheets/styles.css
  * COMPAT *
  **********/
 
@@ -629,6 +629,7 @@ body > .control.last .controlFlowArrow,
 
 .signinDialog .signupLink.hide,
 .signinDialog .signinLink.hide,
+.signinDialog .passwordLink.hide,
 .signinDialog .signup_section
 {
     display: none;

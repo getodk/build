@@ -1,6 +1,13 @@
 require 'model/connection_manager'
 require 'digest/sha1'
 
+class String
+  def self.random_chars( length )
+    chars = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
+    return (0...length).map{ chars[Kernel.rand(chars.length)] }.join
+  end
+end
+
 class User
   def self.find(key)
     key = key.to_s.downcase
@@ -94,6 +101,12 @@ class User
     return ((User.hash_password plaintext, @data['pepper']) == self.password)
   end
 
+  def reset_password!
+    new_password = (String.random_chars 10)
+    self.password = new_password
+    return new_password
+  end
+
 private
   def initialize(key, data)
     @key, @data = key, data
@@ -103,3 +116,4 @@ private
     return (Digest::SHA1.hexdigest "--[#{plaintext}]==[#{pepper}]--")
   end
 end
+

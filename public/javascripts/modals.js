@@ -15,6 +15,10 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                 .find('h3').text('Sign in').end()
                 .find('.signinLink').removeClass('hide').end()
                 .find('.signupLink').addClass('hide').end()
+                .find('.toggleSignupLink').text('Don\'t yet have an account?').closest('p').show().end().end()
+                .find('.passwordLink').addClass('hide').end()
+                .find('.togglePasswordLink').text('Forgot your password?').closest('p').show().end().end()
+                .find('.signin_section').show().end()
                 .find('.signup_section').hide();
         },
         accountDialog: function($dialog)

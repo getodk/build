@@ -74,7 +74,7 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
         {
             event.preventDefault();
             // TODO: this code sucks.
-            $('.signinDialog .signup_section').slideToggle();
+            $('.signinDialog .signup_section, p:has(.togglePasswordLink)').slideToggle();
             $('.signinDialog .signinLink, .signinDialog .signupLink').toggleClass('hide');
             if ($('.modalButton.signinLink').hasClass('hide'))
             {
@@ -84,6 +84,23 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
             else
             {
                 $(this).text('Don\'t yet have an account?');
+                $('.signinDialog h3').text('Sign in');
+            }
+        });
+        $('.signinDialog .togglePasswordLink').click(function(event)
+        {
+            event.preventDefault();
+            // TODO: this code still sucks.
+            $('.signinDialog .signin_section, p:has(.toggleSignupLink)').slideToggle();
+            $('.signinDialog .signinLink, .signinDialog .passwordLink').toggleClass('hide');
+            if ($('.modalButton.signinLink').hasClass('hide'))
+            {
+                $(this).text('Never mind, I remembered it.');
+                $('.signinDialog h3').text('Reset password');
+            }
+            else
+            {
+                $(this).text('Forgot your password?');
                 $('.signinDialog h3').text('Sign in');
             }
         });
@@ -111,6 +128,35 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
                         .slideDown();
                 }
             });
+        });
+        $('.signinDialog .passwordLink').click(function(event)
+        {
+            event.preventDefault();
+
+            $('.signinDialog .errorMessage').slideUp();
+
+            $.ajax({
+                url: '/reset_password',
+                dataType: 'json',
+                type: 'POST',
+                data: { username: $('.signinDialog form #signin_username').val() },
+                success: function(response, status)
+                {
+                    $('.signinDialog')
+                        .find(':input')
+                            .val('')
+                            .end()
+                        .jqmHide();
+                    $.toast('Your password has reset, and the new password has been emailed to you. Please check your inbox in a minute.');
+                },
+                error: function(request, status, error)
+                {
+                    $('.signinDialog .errorMessage')
+                        .empty()
+                        .append('<p>We couldn\'t reset your password for some reason. Please check that your user name is correct, and try again in a bit.')
+                        .slideDown();
+                }
+            })
         });
         $('.signinDialog .signupLink').click(function(event)
         {
@@ -187,6 +233,7 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
                 success: function(response, status)
                 {
                     $('.accountDialog').jqmHide();
+                    $.toast('Your account information has been successfully updated.');
                 },
                 error: function(request, status, error)
                 {
