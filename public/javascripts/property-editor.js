@@ -185,7 +185,8 @@
             {
                 $(this)
                     .toggleClass('even', (i % 2) == 0)
-                    .find('h4').text('Option ' + (i + 1));
+                    .find('h4')
+                    .text('Option ' + (i + 1));
             });
 
             $parent.trigger('odkControl-propertiesUpdated');

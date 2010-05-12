@@ -608,7 +608,18 @@ body > .control.last .controlFlowArrow,
 }
 .propertiesPane .propertyList li .removeOption
 {
+    background: url(/images/glyphs.png) no-repeat scroll 0 -45px transparent;
+    display: inline-block;
     float: right;
+    height: 16px;
+    margin-left: 0.6em;
+    text-align: left;
+    text-indent: -9999px;
+    width: 16px;
+}
+.propertiesPane .propertyList li .uiText:hover .removeOption
+{
+    background-position: 0 -60px;
 }
 
 .propertiesPane .propertyList li.advanced .icon
