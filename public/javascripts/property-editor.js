@@ -117,7 +117,7 @@
                     }
                 });
         },
-        enum: function(property, $editor, $parent) {
+        'enum': function(property, $editor, $parent) {
             $editor.find('h4').text(property.name);
             $editor.find('p').text(property.description);
 

@@ -153,9 +153,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             return;
         }
 
-        instance.children.push({
-            name: control.name
-        });
+        var instanceTag = {
+            name: control.name,
+            children: []
+        };
+        instance.children.push(instanceTag);
 
         // control markup
         var bodyTag = {
@@ -226,6 +228,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             addTranslation(control.hint, xpath + control.name + ':hint', translations);
         }
 
+        // default value
+        if (control.defaultValue !== undefined)
+            instanceTag.children.push(control.defaultValue);
+
         // read only
         if (control.readOnly === true)
             binding.attrs.readonly = 'true()';
@@ -258,7 +264,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     children: [
                         {   name: 'label',
                             attrs: {
-                                'ref': itextPath
+                                'ref': "jr:itext('" + itextPath + "')"
                             } },
                         {   name: 'value',
                             val: option.val }
@@ -355,6 +361,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if (indentLevel === undefined)
             indentLevel = 0;
         var result = generateIndent(indentLevel);
+
+        if (_.isString(obj))
+            return result + obj + '\n';
 
         result += '<' + obj.name;
 
