@@ -154,8 +154,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
 
         var instanceTag = {
-            name: control.name,
-            children: []
+            name: control.name
         };
         instance.children.push(instanceTag);
 
@@ -229,8 +228,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
 
         // default value
-        if (control.defaultValue !== undefined)
-            instanceTag.children.push(control.defaultValue);
+        if ((control.defaultValue !== undefined) && (control.defaultValue !== ''))
+            instanceTag.children = [ control.defaultValue ];
 
         // read only
         if (control.readOnly === true)
