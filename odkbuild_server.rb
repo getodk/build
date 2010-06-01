@@ -171,6 +171,15 @@ class OdkBuild < Sinatra::Default
     return { :success => 'true' }.to_json
   end
 
+  # Util methods
+
+  # bounce a payload off the server to trigger a download
+  post '/download' do
+    content_type :xml
+    attachment params[:filename]
+    return params[:payload]
+  end
+
 private
   def error_validation_failed
     status 400

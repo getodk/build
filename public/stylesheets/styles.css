@@ -697,6 +697,12 @@ body > .control.last .controlFlowArrow,
     max-height: 30em;
     overflow: auto;
 }
+.exportDialog #downloadFrame
+{
+    height: 1px;
+    overflow: hidden;
+    width: 1px;
+}
 
 .translationsDialog h4
 {

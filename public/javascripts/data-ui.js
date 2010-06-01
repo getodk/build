@@ -127,5 +127,17 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }
             });
         });
+
+        $('.exportDialog .downloadLink').click(function(event)
+        {
+            event.preventDefault();
+
+            var $form = $('<form action="/download" method="post" target="downloadFrame" />');
+            $form
+                .append($('<input type="hidden" name="payload"/>').val(dataNS.serialize()))
+                .append($('<input type="hidden" name="filename"/>').val($('h1').text() + '.xml'));
+            $form.appendTo($('body'));
+            $form.submit();
+        });
     });
 })(jQuery);
