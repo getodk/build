@@ -1,4 +1,4 @@
-/*public/stylesheets/styles.css
+/**********
  * COMPAT *
  **********/
 
@@ -295,6 +295,9 @@ body
 {
     bottom: 1em;
     left: 1em;
+    user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
     position: absolute;
 }
 .toolPalette h3
@@ -348,6 +351,9 @@ body
 }
 .workspace
 {
+    user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
     padding-bottom: 300px;
 }
 
