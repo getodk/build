@@ -1,3 +1,9 @@
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require
+
+require 'warden_odkbuild'
+
 require 'model/connection_manager'
 require 'odkbuild_server'
 
@@ -16,3 +22,4 @@ end
 
 # app
 run OdkBuild
+

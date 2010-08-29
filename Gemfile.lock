@@ -1,0 +1,39 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activesupport (2.3.8)
+    ffi (0.6.3)
+      rake (>= 0.8.7)
+    json (1.4.6)
+    mail (2.2.5)
+      activesupport (>= 2.3.6)
+      mime-types
+      treetop (>= 1.4.5)
+    mime-types (1.16)
+    polyglot (0.3.1)
+    pony (1.0)
+      mail (> 2.0)
+    rack (1.2.1)
+    rake (0.8.7)
+    rufus-tokyo (1.0.7)
+    shotgun (0.8)
+      rack (>= 1.0)
+    sinatra (1.0)
+      rack (>= 1.0)
+    treetop (1.4.8)
+      polyglot (>= 0.3.1)
+    warden (0.10.7)
+      rack (>= 1.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  ffi (= 0.6.3)
+  json (= 1.4.6)
+  pony (= 1.0)
+  rack (= 1.2.1)
+  rufus-tokyo (= 1.0.7)
+  shotgun
+  sinatra (= 1.0)
+  warden (= 0.10.7)

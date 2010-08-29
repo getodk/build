@@ -1,4 +1,3 @@
-require 'warden'
 require 'model/user'
 
 Warden::Manager.before_failure do |env, opts|
@@ -13,7 +12,7 @@ use Warden::Manager do |manager|
     user.nil? ? nil : user.username
   end
   manager.serialize_from_session do |id|
-    id.nil? ? nil : user_table[id]
+    id.nil? ? nil : (User.find id)
   end
 end
 

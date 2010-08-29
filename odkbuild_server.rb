@@ -1,14 +1,9 @@
-require 'rubygems'
-gem 'sinatra','<1.0'
-require 'sinatra'
-require 'json'
-require 'pony'
-require 'warden_odkbuild'
 require 'model/user'
 require 'model/form'
 
-class OdkBuild < Sinatra::Default
+class OdkBuild < Sinatra::Application
   disable :run
+  set :views, File.dirname(__FILE__) + '/views' # required for dev env
 
   before do
     content_type :json
