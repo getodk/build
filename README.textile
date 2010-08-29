@@ -1,25 +1,16 @@
-h1. odkmaker — wysiwyg web-based xforms editor for the odk subset
+h1. odkbuild — wysiwyg web-based xforms editor for the odk subset
 
 h2. Usage
 
-Go to http://build.opendatakit.org/ to give odkmaker a spin.
+odkbuild (formerly odkmaker) is a web-based service. Unless you mean to do development on it, just go to http://build.opendatakit.org to give it a try.
 
-h2. Running
+h2. Development
 
-odkmaker is built on the Ruby Rack server stack, so look up how to run Rack servers, and apply that to config.ru. Phusion Passenger works.
+odkbuild is a Ruby Rack-based application. Everything it needs is kicked off by the config.ru Rackup file. We use @shotgun@ for local development and Phusion Passenger for production deployment.
 
-For a quickstart type local dev run, get the @shotgun@ gem, make sure you have all the required stuff, as well as a webserver gem such as @mongrel@, and then type @shotgun config.ru@.
+h3. Dependencies
 
-h2. Dependencies
+The project has one native dependency: Tokyo Cabinet. We use this as our datastore. You'll have to build it natively for any system you want to run the server on. See http://fallabs.com/tokyocabinet/ for details.
 
-* Ruby 1.8.6+
-* Tokyo Cabinet (install from source)
+Once you have that, all Rubygem dependencies are managed by Ruby Bundler. Make sure you have at least version 1.0.0 of Bundler installed (@gem update --system && gem install bundler@ if you don't have it already), and then simply run @bundle install@ in the application root to resolve and install the appropriate dependencies.
 
-h2. Required Gems
-
-* ffi
-* rufus-tokyo
-* rack
-* sinatra
-* json
-* warden
