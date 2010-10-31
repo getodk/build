@@ -24,6 +24,11 @@
             return str;
     };
 
+    $.sanitizeString = function(str)
+    {
+        return str.replace(/([^a-z0-9]+)/ig, '-');
+    };
+
     $.live = function(selector, type, callback)
     {
         var obj = $([]);

@@ -319,7 +319,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 'xmlns:ev': 'http://www.w3.org/2001/xml-events',
                 'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
                 'xmlns:jr': 'http://openrosa.org/javarosa',
-                'id': 'build_' + (dataNS.currentForm ? dataNS.currentForm.id : 'temp') +
+                'id': 'build_' + $.sanitizeString($('.header h1').text()) +
                       '_' + Math.round((new Date()).getTime() / 1000)
             },
             children: [
