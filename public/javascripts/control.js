@@ -287,6 +287,7 @@
                         options: [ 'Image',
                                    'Audio',
                                    'Video' ] } },
+        inputBarcode: {},
         inputSelectOne: {
           options:    { name: 'Options',
                         type: 'optionsEditor',

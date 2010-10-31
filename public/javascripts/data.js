@@ -99,6 +99,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         inputDate: 'input',
         inputLocation: 'input',
         inputMedia: 'upload',
+        inputBarcode: 'input',
         inputSelectOne: 'select1',
         inputSelectMany: 'select'
     };
@@ -200,6 +201,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             binding.attrs.type = 'geopoint';
         else if (control.type == 'inputMedia')
             binding.attrs.type = 'binary';
+        else if (control.type == 'inputBarcode')
+            binding.attrs.type = 'barcode';
 
         // deal with properties:
 
