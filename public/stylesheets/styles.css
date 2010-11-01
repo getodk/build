@@ -806,5 +806,5 @@ body > .control.last .controlFlowArrow,
 .inputMedia .typeIcon      { background-position: 0 -256px; }
 .inputSelectOne .typeIcon  { background-position: 0 -320px; }
 .inputSelectMany .typeIcon { background-position: 0 -384px; }
-.inputBarcode .typeIcon { background-position: 0 -576px; }
+.inputBarcode .typeIcon    { background-position: 0 -576px; }
 

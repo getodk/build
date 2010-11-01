@@ -87,7 +87,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     odkmaker.data.load = function(formObj)
     {
         $('h1').text(formObj.title);
-        $('.workspace').empty(); //TODO
+        $('.workspace').empty();
         loadRecurse($('.workspace'), formObj.controls);
         $('.workspace .control:first').trigger('odkControl-select');
     };
@@ -126,6 +126,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         {
             var instanceTag = {
                 name: control.name,
+                attrs: {},
                 children: []
             };
             instance.children.push(instanceTag);
@@ -144,6 +145,20 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     }
                 });
                 addTranslation(control.label, xpath + control.name + ':label', translations);
+            }
+
+            if (control.loop === true)
+            {
+                instanceTag.attrs['jr:template'] = '';
+                var loopBodyTag = {
+                    name: 'repeat',
+                    attrs: {
+                        nodeset: xpath + control.name,
+                    },
+                    children: []
+                };
+                bodyTag.children.push(loopBodyTag);
+                bodyTag = loopBodyTag;
             }
 
             _.each(control.children, function(child)

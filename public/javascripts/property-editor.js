@@ -163,10 +163,6 @@
                 $optionsList.append(newOptionRow(property, newOption, $optionsList.children().length, $parent));
                 $parent.trigger('odkControl-propertiesUpdated');
             });
-        },
-        loopEditor: function(property, $editor, $parent) {
-            $editor.find('h4').text(property.name);
-            $editor.find('p').text(property.description);
         }
     };
 
