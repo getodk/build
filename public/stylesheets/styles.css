@@ -375,48 +375,55 @@ body
 }
 .control .controlInfo
 {
-    background: transparent url(/images/control_slice.png) repeat-x;
-    height: 76px;
+    background: #777 url(/images/control_slice.png) repeat-x bottom;
+    min-height: 76px;
     padding: 6px;
 }
 .control .controlInfo .typeIcon
 {
-    float: left;
     margin: 0.5em;
     margin-right: 2em;
+    position: absolute;
 }
 .control .controlInfo .deleteControl
 {
     background: transparent url(/images/glyphs.png) no-repeat;
-    float: right;
     height: 16px;
+    position: absolute;
     text-align: left;
     text-indent: -9999px;
+    right: 0.4em;
     width: 16px;
+}
+.control .controlInfo .controlHeadline
+{
+    margin-left: 80px;
 }
 .control .controlInfo .controlLabel
 {
     color: #f3f3f3;
-    display: inline-block;
+    display: inline;
     font-size: 2em;
     padding-top: 0.4em;
 }
 .control .controlInfo .controlHint
 {
     color: #bbb;
-    display: inline-block;
+    display: inline;
     font-size: 1.4em;
 }
 .control .controlInfo .controlName
 {
     color: #bbb;
     font-size: 1.4em;
+    margin-left: 80px;
 }
 .control .controlInfo .controlProperties
 {
     color: #bbb;
     font-size: 1.1em;
     margin-top: 1.4em;
+    margin-left: 80px;
 }
 .control .controlInfo .controlProperties li
 {
@@ -440,7 +447,7 @@ body
 }
 .control:hover > .controlInfo
 {
-    background-position: 0 -88px;
+    background-color: #888;
 }
 .control:hover > .controlFlowArrow
 {
@@ -448,7 +455,7 @@ body
 }
 .control.selected > .controlInfo
 {
-    background-position: 0 -176px;
+    background-color: #ab842c;
 }
 .control.selected > .controlFlowArrow
 {
@@ -456,7 +463,7 @@ body
 }
 .control.group > .controlInfo
 {
-    background-position: 0 -352px;
+    background-color: #607a60;
 }
 .control.group > .controlFlowArrow
 {
@@ -464,11 +471,11 @@ body
 }
 .control.group > .groupFooter
 {
-    background-color: #445841;
+    background-color: #506650;
 }
 .control.group:hover > .controlInfo
 {
-    background-position: 0 -440px;
+    background-color: #6f8d6e;
 }
 .control.group:hover > .controlFlowArrow
 {
@@ -476,11 +483,11 @@ body
 }
 .control.group:hover > .groupFooter
 {
-    background-color: #546d51;
+    background-color: #5d765c;
 }
 .control.group.selected > .controlInfo
 {
-    background-position: 0 -528px;
+    background-color: #73823f;
 }
 .control.group.selected > .controlFlowArrow
 {
@@ -488,7 +495,7 @@ body
 }
 .control.group.selected > .groupFooter
 {
-    background-color: #5b6732;
+    background-color: #606d34;
 }
 .control.ui-draggable-dragging
 {
@@ -502,9 +509,12 @@ body > .control.last .controlFlowArrow,
 
 .placeholder
 {
-    background: transparent url(/images/control_slice.png) repeat-x 0 -264px;
+    background: #777;
     height: 88px;
     margin-bottom: 1.5em;
+    opacity: 0.4;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)"; /* thank you msft */
+    filter: alpha(opacity=40);
     position: relative;
     text-indent: -9999px;
 }

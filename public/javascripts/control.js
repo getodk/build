@@ -13,15 +13,17 @@
     var refreshFromProperties = function($this, type, config, properties)
     {
         var $info = $this.children('.controlInfo');
+        var $headline = $info.children('.controlHeadline');
+
         $info.children('.controlName').text(properties.name.value);
         if (type == 'group')
         {
-            $info.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no group caption text yet]'));
+            $headline.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no group caption text yet]'));
         }
         else
         {
-            $info.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no caption text yet]'));
-            $info.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
+            $headline.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no caption text yet]'));
+            $headline.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
         }
 
         var $propertyList = $info.children('.controlProperties');
