@@ -189,8 +189,8 @@
         });
         var $underlyingValueEdit = $('#templates .editors .optionsEditorValueField').clone();
         $underlyingValueEdit
-            .val(data.val || '')
             .find('.editorTextfield')
+                .val(data.val || '')
                 .keyup(function(event)
                 {
                     data.val = $(this).val();
