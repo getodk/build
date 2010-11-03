@@ -1,22 +1,78 @@
 /**
  *  property-editor.js - keys and values
- *    Versatile editor block for editing properties. Value can be
- *    retrieved later by calling value().
+ *    Versatile editor block for editing properties. Properties
+ *    are automatically saved back to their parent control.
  *    Property Types: text, uiText, bool, numericRange, enum,
  *                    dateRange, optionsEditor
  */
 
 ;(function($)
 {
+    var validationMessages = {
+        required: 'This property is required.',
+        alphanumeric: 'Only letters and numbers are allowed.'
+    };
+    // private methods
+    var validateProperty = function($this, property)
+    {
+        if (_.isUndefined(property.limit))
+            return;
+
+        var validationErrors = [];
+
+        _.each(property.limit, function(limit)
+        {
+            switch (limit)
+            {
+                case 'required':
+                    if ((property.value == null) || (property.value === '')) // douglas cries, but I do mean null/undef here.
+                        validationErrors.push(limit);
+                    break;
+                case 'alphanumeric':
+                    if (!_.isString(property.value) || property.value.match(/[^0-9a-z]/i))
+                        validationErrors.push(limit);
+                    break;
+            }
+        });
+
+        $this.children('.errorList').remove();
+
+        if (validationErrors.length > 0)
+        {
+            property.validationErrors = validationErrors;
+            $this.addClass('error');
+
+            $('<ul/>')
+                .addClass('errorList')
+                .append(
+                    _.map(validationErrors, function(error)
+                    {
+                        return '<li>' + validationMessages[error] + '</li>';
+                    }).join(''))
+                .appendTo($this);
+        }
+        else
+        {
+            delete property.validationErrors;
+            $this.removeClass('error');
+        }
+    };
     // Constructor
     $.fn.propertyEditor = function(property, $parent)
     {
         return this.each(function()
         {
+            var $this = $(this);
             var $editor = $('#templates .editors .' + property.type).clone();
-            $(this).empty().append($editor);
+            $this.empty().append($editor);
 
             $.fn.propertyEditor.editors[property.type](property, $editor, $parent)
+
+            $this.bind('odkProperty-validate', function()
+            {
+                validateProperty($this, property);
+            });
+            validateProperty($this, property);
         });
     };
 

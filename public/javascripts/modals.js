@@ -50,6 +50,11 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
         },
         exportDialog: function($dialog)
         {
+            if ($('.workspace .control.error:first').length > 0)
+                $dialog.find('.validationWarningMessage').show();
+            else
+                $dialog.find('.validationWarningMessage').hide();
+
             $dialog.find('.exportCodeContainer pre').text(odkmaker.data.serialize());
         }
     };

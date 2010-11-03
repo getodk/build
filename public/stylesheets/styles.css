@@ -497,6 +497,22 @@ body
 {
     background-color: #606d34;
 }
+.control.error > .controlInfo
+{
+    background-color: #a20f0f;
+}
+.control.error > .controlFlowArrow
+{
+    background-position: 0 -196px;
+}
+.control.error:hover > .controlInfo
+{
+    background-color: #c34141;
+}
+.control.error:hover > .controlFlowArrow
+{
+    background-position: 0 -224px;
+}
 .control.ui-draggable-dragging
 {
     z-index: 5;
@@ -557,6 +573,14 @@ body > .control.last .controlFlowArrow,
 .propertiesPane .propertyList li:hover
 {
     background-color: #eee;
+}
+.propertiesPane .propertyList li.error
+{
+    background-color: #fbeeee;
+}
+.propertiesPane .propertyList li.error h4
+{
+    color: #a20f0f;
 }
 .propertiesPane .propertyList li li,
 .propertiesPane .propertyList .optionsEditorValueField
@@ -637,6 +661,10 @@ body > .control.last .controlFlowArrow,
 {
     background-position: 0 -60px;
 }
+.propertiesPane .propertyList li .errorList li
+{
+    color: #a20f0f;
+}
 
 .propertiesPane .propertyList li.advanced .icon
 {
@@ -653,6 +681,14 @@ body > .control.last .controlFlowArrow,
 /**********
  * MODALS *
  **********/
+
+.modal .warningMessage
+{
+    color: #a20f0f;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0.3em
+}
 
 .signinDialog .signupLink.hide,
 .signinDialog .signinLink.hide,

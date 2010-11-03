@@ -37,6 +37,13 @@
                 $('<li>' + property.name + '</li>')
             );
         });
+
+        if ($this.hasClass('selected'))
+            $('.propertyList > li, .advancedProperties > li').trigger('odkProperty-validate');
+
+        if (_.any(properties, function(property) { return _.isArray(property.validationErrors) &&
+                                                          (property.validationErrors.length > 0); }))
+            $this.addClass('error');
     };
 
     var selectControl = function($this, type, config, properties)
@@ -205,7 +212,7 @@
         name:         { name: 'Data Name',
                         type: 'text',
                         description: 'The data name of this field in the final exported XML.',
-                        limit: [ 'nosymbols', 'lowercase', 'unique' ],
+                        limit: [ 'required', 'alphanumeric' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
