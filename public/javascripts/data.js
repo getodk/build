@@ -307,6 +307,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // TODO: user-config of instanceHead
         var instanceHead = {
             name: 'data',
+            attrs: {
+              'id': 'build_' + $.sanitizeString($('.header h1').text()) +
+                    '_' + Math.round((new Date()).getTime() / 1000)
+            },
             children: []
         };
 
@@ -333,9 +337,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 'xmlns:h': 'http://www.w3.org/1999/xhtml',
                 'xmlns:ev': 'http://www.w3.org/2001/xml-events',
                 'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
-                'xmlns:jr': 'http://openrosa.org/javarosa',
-                'id': 'build_' + $.sanitizeString($('.header h1').text()) +
-                      '_' + Math.round((new Date()).getTime() / 1000)
+                'xmlns:jr': 'http://openrosa.org/javarosa'
             },
             children: [
                 {   name: 'h:head',
