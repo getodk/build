@@ -139,5 +139,17 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             $form.appendTo($('body'));
             $form.submit();
         });
+
+        $('.aggregateDialog .aggregateExportButton').click(function(event)
+        {
+            event.preventDefault();
+
+            var $form = $('<form action="/aggregate/post" method="post" target="blank" />');
+            $form
+                .append($('<input type="hidden" name="payload"/>').val(dataNS.serialize()))
+                .append($('<input type="hidden" name="aggregate_instance_name"/>').val($('.aggregateInstanceName').val()));
+            $form.appendTo($('body'));
+            $form.submit();
+        });
     });
 })(jQuery);

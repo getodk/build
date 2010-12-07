@@ -41,6 +41,7 @@
             <li><a href="#saveForm" class="authRequired saveLink">Save</a></li>
             <li><a href="#saveAsDialog" rel="modal" class="authRequired">Save Form As...</a></li>
             <li class="divider"></li>
+            <li><a href="#aggregateDialog" id="aggregateLink" rel="modal">Export to Aggregate...</a></li>
             <li><a href="#exportDialog" id="exportLink" rel="modal">Export to XML...</a></li>
           </ul>
         </li>
@@ -229,6 +230,21 @@
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton jqmClose" href="#close">Done</a>
+      </div>
+    </div>
+
+    <div class="modal narrowModal aggregateDialog">
+      <h3>Export</h3>
+      <div class="modalContents">
+        <p>You will be asked to authenticate with the Aggregate instance in order to
+           be able to export the form there.</p>
+
+        <h4>Aggregate Instance URI</h4>
+        <p>http://<input type="text" class="aggregateInstanceName"/>.appspot.com/</p>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton aggregateExportButton" href="#export">Export</a>
+        <a class="modalButton jqmClose" href="#close">Cancel</a>
       </div>
     </div>
 

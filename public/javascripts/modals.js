@@ -56,6 +56,10 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                 $dialog.find('.validationWarningMessage').hide();
 
             $dialog.find('.exportCodeContainer pre').text(odkmaker.data.serialize());
+        },
+        aggregateDialog: function($dialog)
+        {
+            $dialog.removeClass('exporting');
         }
     };
 
