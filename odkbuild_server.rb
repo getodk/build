@@ -1,5 +1,3 @@
-require 'net/http'
-
 require 'lib/multipart'
 
 require 'model/user'
@@ -219,10 +217,8 @@ class OdkBuild < Sinatra::Application
     access_token = request_token.get_access_token :oauth_verifier => params[:oauth_verifier]
 
     # fire off our request
-    body, headers = Multipart::Post.prepare_query 'form_def_file' => { :filename => 'form.xml', :contents => aggregate_request['payload'] }
-    result = Net::HTTP.start "#{aggregate_request['instance_name']}.appspot.com", 80 do |http|
-      http.post '/upload', body, headers
-    end
+    body, headers = Multipart::Post.prepare_query 'form_def_file' => { :filename => 'form.xml', :content => aggregate_request['payload'] }
+    result = access_token.post '/upload', body, headers
 
     # look at the bloody remains
     if !result.is_a? Net::HTTPSuccess
@@ -231,7 +227,11 @@ class OdkBuild < Sinatra::Application
       return { :error => 'Something went wrong when trying to post to Aggregate: ' + result.body }.to_json
     end
 
-    return { :success => true }.to_json
+    content_type :html
+    return body + '<br/>' + headers.inspect + '<br/>' + result.body
+
+    content_type :html
+    return 'Success! You may now close this window.'
   end
 
 private
