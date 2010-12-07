@@ -218,20 +218,18 @@ class OdkBuild < Sinatra::Application
 
     # fire off our request
     body, headers = Multipart::Post.prepare_query 'form_def_file' => { :filename => 'form.xml', :content => aggregate_request['payload'] }
-    result = access_token.post '/upload', body, headers
+    result = access_token.post '/upload?auth=oauth', body, headers
 
     # look at the bloody remains
-    if !result.is_a? Net::HTTPSuccess
+    unless (result.is_a? Net::HTTPSuccess) || (result.is_a? Net::HTTPFound) # aggregate is really weird.
       # something went wrong
       status 400
-      return { :error => 'Something went wrong when trying to post to Aggregate: ' + result.body }.to_json
+      return { :error => 'Something went wrong when trying to post to Aggregate.' }.to_json
     end
 
     content_type :html
-    return body + '<br/>' + headers.inspect + '<br/>' + result.body
-
-    content_type :html
-    return 'Success! You may now close this window.'
+    @aggregate_instance_uri = aggregate_request['site']
+    erb :aggregate_success
   end
 
 private

@@ -82,6 +82,11 @@ body
     top: 17%;
     width: 60em;
 }
+.modal.shown
+{
+    display: block;
+    z-index: 3000;
+}
 .modal h3
 {
     color: #999;
