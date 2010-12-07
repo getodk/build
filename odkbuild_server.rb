@@ -1,5 +1,7 @@
 require 'net/http'
 
+require 'lib/multipart'
+
 require 'model/user'
 require 'model/form'
 require 'model/connection_manager'
@@ -191,36 +193,35 @@ class OdkBuild < Sinatra::Application
 
     # oauth
     instance_uri = "https://#{params[:aggregate_instance_name]}.appspot.com"
-    consumer = get_oauth_consumer instance_uri, oauth_callback
-    request_token = consumer.get_request_token
+    consumer = get_oauth_consumer instance_uri
+    request_token = consumer.get_request_token :oauth_callback => oauth_callback
 
     # store off stuff we'll need later
     ConnectionManager.connection[:aggregate_requests][local_token] = {
-      :site => instance_uri,
-      :instance_name => params[:aggregate_instance_name],
-      :token => request_token.token,
-      :secret => request_token.secret,
-      :payload => params[:payload]
+      'site' => instance_uri,
+      'instance_name' => params[:aggregate_instance_name],
+      'token' => request_token.token,
+      'secret' => request_token.secret,
+      'payload' => params[:payload]
     }
 
     # send the user to the right place
     redirect request_token.authorize_url :oauth_callback => oauth_callback
   end
 
-  post '/aggregate/return/:local_token' do
+  get '/aggregate/return/:local_token' do
     # get our info back
     aggregate_request = ConnectionManager.connection[:aggregate_requests][params[:local_token]]
 
     # oauth
-    consumer = get_oauth_consumer aggregate_request[:site]
-    request_token = OAuth::RequestToken.new consumer, aggregate_request[:token], aggregate_request[:secret]
+    consumer = get_oauth_consumer aggregate_request['site']
+    request_token = OAuth::RequestToken.new consumer, aggregate_request['token'], aggregate_request['secret']
     access_token = request_token.get_access_token :oauth_verifier => params[:oauth_verifier]
 
     # fire off our request
-    data, headers = Multipart::Post.prepare_query 'form_def_file' => { :filename => 'form.xml', :contents => aggregate_request[:payload] }
-    request = Net::HTTP::Post.new "#{aggregate_request[:site]}/upload", data, headers
-    result = Net::HTTP.start "#{aggregate_request[:instance_name]}.appspot.com", 80 do |http|
-      http.request request
+    body, headers = Multipart::Post.prepare_query 'form_def_file' => { :filename => 'form.xml', :contents => aggregate_request['payload'] }
+    result = Net::HTTP.start "#{aggregate_request['instance_name']}.appspot.com", 80 do |http|
+      http.post '/upload', body, headers
     end
 
     # look at the bloody remains
@@ -249,13 +250,12 @@ private
     return { :error => 'not found' }.to_json
   end
 
-  def get_oauth_consumer(site, oauth_callback)
+  def get_oauth_consumer(site)
     OAuth::Consumer.new 'anonymous', 'anonymous',
       { :site => site,
         :request_token_path => '/_ah/OAuthGetRequestToken',
         :authorize_path => '/_ah/OAuthAuthorizeToken',
-        :access_token_path => '/_ah/OAuthGetAccessToken',
-        :oauth_callback => oauth_callback }
+        :access_token_path => '/_ah/OAuthGetAccessToken' }
   end
 
 end
