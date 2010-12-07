@@ -185,13 +185,16 @@ class OdkBuild < Sinatra::Application
     return error_permission_denied unless user
     return error_validation_failed unless params[:payload]
 
+    # generate some local ids
+    local_token = "#{Time.now.to_i}_#{user.username}"
+    oauth_callback = "http://#{request.host_with_port}/aggregate/return/#{local_token}"
+
     # oauth
     instance_uri = "https://#{params[:aggregate_instance_name]}.appspot.com"
-    consumer = get_oauth_consumer instance_uri
+    consumer = get_oauth_consumer instance_uri, oauth_callback
     request_token = consumer.get_request_token
 
     # store off stuff we'll need later
-    local_token = "#{Time.now.to_i}_#{user.username}"
     ConnectionManager.connection[:aggregate_requests][local_token] = {
       :site => instance_uri,
       :instance_name => params[:aggregate_instance_name],
@@ -201,7 +204,7 @@ class OdkBuild < Sinatra::Application
     }
 
     # send the user to the right place
-    redirect request_token.authorize_url :oauth_callback => "http://#{request.host_with_port}/aggregate/return/#{local_token}"
+    redirect request_token.authorize_url :oauth_callback => oauth_callback
   end
 
   post '/aggregate/return/:local_token' do
@@ -246,12 +249,13 @@ private
     return { :error => 'not found' }.to_json
   end
 
-  def get_oauth_consumer(site)
+  def get_oauth_consumer(site, oauth_callback)
     OAuth::Consumer.new 'anonymous', 'anonymous',
       { :site => site,
         :request_token_path => '/_ah/OAuthGetRequestToken',
         :authorize_path => '/_ah/OAuthAuthorizeToken',
-        :access_token_path => '/_ah/OAuthGetAccessToken' }
+        :access_token_path => '/_ah/OAuthGetAccessToken',
+        :oauth_callback => oauth_callback }
   end
 
 end
