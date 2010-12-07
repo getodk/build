@@ -10,6 +10,7 @@ GEM
       mime-types
       treetop (>= 1.4.5)
     mime-types (1.16)
+    oauth (0.4.4)
     polyglot (0.3.1)
     pony (1.0)
       mail (> 2.0)
@@ -31,6 +32,7 @@ PLATFORMS
 DEPENDENCIES
   ffi (= 0.6.3)
   json (= 1.4.6)
+  oauth (= 0.4.4)
   pony (= 1.0)
   rack (= 1.2.1)
   rufus-tokyo (= 1.0.7)

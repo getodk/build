@@ -7,6 +7,7 @@ gem 'sinatra', '1.0'
 gem 'json', '1.4.6'
 gem 'pony', '1.0'
 gem 'warden', '0.10.7'
+gem 'oauth', '0.4.4'
 
 group :development do
   gem 'shotgun'

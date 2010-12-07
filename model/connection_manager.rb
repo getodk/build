@@ -18,9 +18,13 @@ class ConnectionManager
     self.class.connection ||= begin
       add_finalizer_hook!
       {
+        # permanent stores
         :users => (Rufus::Tokyo::Table.new 'users.tdb'),
         :forms => (Rufus::Tokyo::Table.new 'forms.tdb'),
-        :form_data => (Rufus::Tokyo::Cabinet.new 'form_data.tch')
+        :form_data => (Rufus::Tokyo::Cabinet.new 'form_data.tch'),
+
+        # temporary stores
+        :aggregate_requests => (Rufus::Tokyo::Table.new 'aggregate_requests.tdb')
       }
     end
   end
