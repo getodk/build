@@ -41,9 +41,8 @@
         if ($this.hasClass('selected'))
             $('.propertyList > li, .advancedProperties > li').trigger('odkProperty-validate');
 
-        if (_.any(properties, function(property) { return _.isArray(property.validationErrors) &&
-                                                          (property.validationErrors.length > 0); }))
-            $this.addClass('error');
+        $this.toggleClass('error', _.any(properties, function(property) { return _.isArray(property.validationErrors) &&
+                                                                                 (property.validationErrors.length > 0); }));
     };
 
     var selectControl = function($this, type, config, properties)
