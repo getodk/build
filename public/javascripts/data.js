@@ -119,7 +119,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             });
         })
     };
-    var parseControl = function(control, xpath, relpath, instance, translations, model, body, relevance)
+    var parseControl = function(control, xpath, instance, translations, model, body, relevance)
     {
         // groups are special
         if (control.type == 'group')
@@ -163,8 +163,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
             _.each(control.children, function(child)
             { 
-                parseControl(child, xpath + control.name + '/', relpath + control.name + '/',
-                             instanceTag, translations, model, bodyTag, relevance);
+                parseControl(child, xpath + control.name + '/', instanceTag, translations, model, bodyTag, relevance);
             });
             return;
         }
@@ -178,7 +177,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var bodyTag = {
             name: controlTypes[control.type],
             attrs: {
-                'ref': control.destination || (relpath + control.name)
+                'ref': control.destination || (xpath + control.name)
             },
             children: []
         };
@@ -363,7 +362,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         _.each(internal.controls, function(control)
         {
-            parseControl(control, '/data/', '', instanceHead, translations, model, body);
+            parseControl(control, '/data/', instanceHead, translations, model, body);
         });
 
         return root;
