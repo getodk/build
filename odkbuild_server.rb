@@ -249,7 +249,7 @@ private
   end
 
   def get_oauth_consumer(site)
-    OAuth::Consumer.new 'anonymous', 'anonymous',
+    OAuth::Consumer.new ConfigManager['oauth_key'], ConfigManager['oauth_secret'],
       { :site => site,
         :request_token_path => '/_ah/OAuthGetRequestToken',
         :authorize_path => '/_ah/OAuthAuthorizeToken',

@@ -5,13 +5,17 @@ Bundler.require
 require 'warden_odkbuild'
 
 require 'model/connection_manager'
+require 'config_manager'
 require 'odkbuild_server'
+
+# load configuration
+ConfigManager.load
 
 # middleware
 use Rack::CommonLogger
 
 use Rack::Session::Cookie,
-  :secret => 'configure_me'
+  :secret => ConfigManager['cookie_secret']
 
 use ConnectionManager
 

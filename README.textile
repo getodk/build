@@ -6,11 +6,15 @@ odkbuild (formerly odkmaker) is a web-based service. Unless you mean to do devel
 
 h2. Development
 
-odkbuild is a Ruby Rack-based application. Everything it needs is kicked off by the config.ru Rackup file. We use @shotgun@ for local development and Phusion Passenger for production deployment.
+odkbuild is a Ruby Rack-based application. Everything it needs is kicked off by the config.ru Rackup file. We use @shotgun@ for local development and Phusion Passenger for staging and production deployment.
 
 h3. Dependencies
 
 The project has one native dependency: Tokyo Cabinet. We use this as our datastore. You'll have to build it natively for any system you want to run the server on. See http://fallabs.com/tokyocabinet/ for details.
 
 Once you have that, all Rubygem dependencies are managed by Ruby Bundler. Make sure you have at least version 1.0.0 of Bundler installed (@gem update --system && gem install bundler@ if you don't have it already), and then simply run @bundle install@ in the application root to resolve and install the appropriate dependencies.
+
+h3. Setup and Execution
+
+Now that you have resolved all the appropriate dependencies, you'll need to set up the configuration by copying @config.yml.sample@ to @config.yml@. This file contains a number of secret keys and tokens, so be sure not to check it into source control once you put your own keys into it. Finally, you'll want to run @rackup config.ru@ to start the server, or @shotgun config.ru@ if you want the application to automatically detect your changes to source code and load them up when you refresh the app in your web browser.
 

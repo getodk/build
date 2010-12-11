@@ -1,0 +1,15 @@
+development:
+  cookie_secret: sample
+  oauth_key: anonymous
+  oauth_secret: anonymous
+
+staging:
+  cookie_secret: sample
+  oauth_key: anonymous
+  oauth_secret: anonymous
+
+production:
+  cookie_secret: sample
+  oauth_key: anonymous
+  oauth_secret: anonymous
+
