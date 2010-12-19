@@ -24,6 +24,7 @@ $(function()
     // Wire up menu actions
     $.live('.header .menu .displayLanguages a', 'click', function(event)
     {
+        event.preventDefault();
         odkmaker.i18n.displayLanguage($(this).attr('rel'));
         $('.workspace .control').trigger('odkControl-propertiesUpdated');
     });
@@ -108,3 +109,4 @@ $(function()
         $('.loadingScreen .status').text('checking who you are...');
     }, 0);
 });
+

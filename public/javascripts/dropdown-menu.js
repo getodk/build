@@ -5,7 +5,6 @@
 
 ;(function($)
 {
-    var eventCounter = 0;
     $.fn.dropdownMenu = function(options)
     {
         return this.each(function()
@@ -16,12 +15,24 @@
             {
                 $this.children('.submenu').slideDown('fast');
                 $this.addClass('open');
-                var curEventCounter = eventCounter++;
+                var curEventCounter = _.uniqueId();
                 $(document).bind('click.menu_' + curEventCounter, function(event)
                 {
-                    if ($(event.target).parents().index($this[0]) < 0 ||
-                        $(event.target).is('a'))
+                    var $item = $(event.target);
+                    if ($item.parents().index($this[0]) < 0 ||
+                        $item.is('a'))
                     {
+                        var $line = $item.closest('li');
+                        if ($line.hasClass('checkbox'))
+                        {
+                            $line.toggleClass('selected');
+                        }
+                        else if ($line.hasClass('radio'))
+                        {
+                            $line.siblings().removeClass('selected');
+                            $line.addClass('selected');
+                        }
+
                         $(document).unbind('click.menu_' + curEventCounter);
                         $this.removeClass('open');
                         $this.children('.submenu').slideUp('fast');
@@ -31,3 +42,4 @@
         });
     };
 })(jQuery);
+

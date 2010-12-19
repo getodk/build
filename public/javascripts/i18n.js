@@ -278,7 +278,8 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             $('.translationsDialog .translationNone').hide();
 
             // update active translations menu
-            $('.displayLanguages').append('<li><a href="#" rel="' + languageKey + '">' + languages[languageKey] + '</a></li>');
+            $('.displayLanguages').append('<li class="radio"><a href="#" rel="' + languageKey + '"><span class="icon"></span>' +
+                languages[languageKey] + '</a></li>');
 
             // update underlying data and visible property ui
             _.each(getTranslateProperties(), function(property)
@@ -319,3 +320,4 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
         });
     });
 })(jQuery);
+

@@ -225,7 +225,7 @@ body
     display: inline-block;
     margin-left: 1em;
 }
-.header ul.menu li span
+.header ul.menu > li > span
 {
     color: #666;
     cursor: pointer;
@@ -285,6 +285,21 @@ body
 {
     background-color: transparent;
     cursor: default;
+}
+.header ul.menu li ul.submenu li.checkbox span.icon,
+.header ul.menu li ul.submenu li.radio span.icon
+{
+    display: inline-block;
+    height: 15px;
+    margin-right: 0.5em;
+    position: relative;
+    top: 0.2em;
+    width: 15px;
+}
+.header ul.menu li ul.submenu li.checkbox.selected a span.icon,
+.header ul.menu li ul.submenu li.radio.selected a span.icon
+{
+    background: transparent url(/images/glyphs.png) 0 -75px;
 }
 
 .header .accountStatus
