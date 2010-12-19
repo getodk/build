@@ -12,4 +12,5 @@ production:
   cookie_secret: sample
   oauth_key: anonymous
   oauth_secret: anonymous
+  google_analytics_id: UA-12345678-9
 
