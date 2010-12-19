@@ -2,3 +2,5 @@
 *.tch
 .DS_Store
 *.swp
+.bundle/config
+vendor
