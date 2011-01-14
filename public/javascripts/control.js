@@ -314,7 +314,7 @@
           name:       { name: 'Name',
                         type: 'text',
                         description: 'The data name of this group in the final exported XML.',
-                        limit: [ 'nosymbols', 'lowercase', 'unique' ],
+                        limit: [ 'required', 'alphanumeric' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
