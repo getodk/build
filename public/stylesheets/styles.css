@@ -525,6 +525,10 @@ body
 {
     background-position: 0 -196px;
 }
+.control.error > .groupFooter
+{
+    background-color: #a20f0f;
+}
 .control.error:hover > .controlInfo
 {
     background-color: #c34141;
@@ -532,6 +536,10 @@ body
 .control.error:hover > .controlFlowArrow
 {
     background-position: 0 -224px;
+}
+.control.error:hover > .groupFooter
+{
+    background-color: #c34141;
 }
 .control.ui-draggable-dragging
 {
