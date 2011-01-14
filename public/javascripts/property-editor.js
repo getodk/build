@@ -29,7 +29,7 @@
                         validationErrors.push(limit);
                     break;
                 case 'alphanumeric':
-                    if (!_.isString(property.value) || property.value.match(/[^0-9a-z]/i))
+                    if (!_.isString(property.value) || property.value.match(/[^0-9a-z_]/i))
                         validationErrors.push(limit);
                     break;
             }
