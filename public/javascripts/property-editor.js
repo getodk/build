@@ -182,6 +182,8 @@
             {
                 $select.append($('<option>' + option + '</option>'));
             });
+            $select.val(property.value);
+
             $select.change(function(event)
             {
                 property.value = $(this).val();
