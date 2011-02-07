@@ -28,6 +28,12 @@ $(function()
         odkmaker.i18n.displayLanguage($(this).attr('rel'));
         $('.workspace .control').trigger('odkControl-propertiesUpdated');
     });
+    $('.header .menu .toggleCollapsed').click(function(event)
+    {
+        event.preventDefault();
+        $('.workspace').toggleClass('collapsed');
+        $('.controlFlowArrow').empty().triangle();
+    });
     $('#editTitleLink').click(function(event)
     {
         event.preventDefault();

@@ -393,17 +393,30 @@ body
     margin-bottom: 1.5em;
     position: relative;
 }
+.collapsed .control
+{
+    margin-bottom: 0.8em;
+}
 .control .controlInfo
 {
     background: #777 url(/images/control_slice.png) repeat-x bottom;
     min-height: 76px;
     padding: 6px;
 }
+.collapsed .control .controlInfo
+{
+    min-height: 24px;
+}
 .control .controlInfo .typeIcon
 {
     margin: 0.5em;
     margin-right: 2em;
     position: absolute;
+}
+.collapsed .control .controlInfo .typeIcon
+{
+    margin: 0;
+    margin-right: 1.5em;
 }
 .control .controlInfo .deleteControl
 {
@@ -418,6 +431,16 @@ body
 .control .controlInfo .controlHeadline
 {
     margin-left: 80px;
+}
+.collapsed .control .controlInfo .controlHeadline
+{
+    display: inline;
+    margin-left: 35px;
+    padding-top: 1.3em;
+}
+.collapsed .control .controlInfo .controlHeadline h4
+{
+    font-size: 1.7em;
 }
 .control .controlInfo .controlLabel
 {
@@ -438,6 +461,10 @@ body
     font-size: 1.4em;
     margin-left: 80px;
 }
+.collapsed .control .controlInfo .controlName
+{
+    display: none;
+}
 .control .controlInfo .controlProperties
 {
     color: #bbb;
@@ -451,92 +478,70 @@ body
     margin-right: 1.5em;
     text-transform: lowercase;
 }
+.collapsed .control .controlInfo .controlProperties
+{
+    display: none;
+}
 .control.group .groupFooter
 {
+    background: transparent url(/images/control_arrow_tint.png);
     height: 1em;
 }
 .control .controlFlowArrow
 {
-    background: transparent url(/images/control_arrows.png) no-repeat;
     height: 28px;
     left: 50%;
-    margin-left: -16px;
+    margin-left: -14px;
     position: absolute;
-    width: 32px;
+    width: 28px;
     z-index: 1;
 }
-.control:hover > .controlInfo
+.collapsed .control .controlFlowArrow
+{
+    height: 16px;
+    margin-left: -8px;
+    width: 16px;
+}
+.control .controlFlowArrow .slice
+{
+    background: #777 url(/images/control_arrow_tint.png) repeat-x;
+}
+.control:hover > .controlInfo,
+.control:hover > .controlFlowArrow .slice
 {
     background-color: #888;
 }
-.control:hover > .controlFlowArrow
-{
-    background-position: 0 -28px;
-}
-.control.selected > .controlInfo
+.control.selected > .controlInfo,
+.control.selected > .controlFlowArrow .slice
 {
     background-color: #ab842c;
 }
-.control.selected > .controlFlowArrow
-{
-    background-position: 0 -56px;
-}
-.control.group > .controlInfo
+.control.group > .controlInfo,
+.control.group > .controlFlowArrow .slice,
+.control.group > .groupFooter
 {
     background-color: #607a60;
 }
-.control.group > .controlFlowArrow
-{
-    background-position: 0 -112px;
-}
-.control.group > .groupFooter
-{
-    background-color: #506650;
-}
-.control.group:hover > .controlInfo
+.control.group:hover > .controlInfo,
+.control.group:hover > .controlFlowArrow .slice,
+.control.group:hover > .groupFooter
 {
     background-color: #6f8d6e;
 }
-.control.group:hover > .controlFlowArrow
-{
-    background-position: 0 -140px;
-}
-.control.group:hover > .groupFooter
-{
-    background-color: #5d765c;
-}
-.control.group.selected > .controlInfo
+.control.group.selected > .controlInfo,
+.control.group.selected > .controlFlowArrow .slice,
+.control.group.selected > .groupFooter
 {
     background-color: #73823f;
 }
-.control.group.selected > .controlFlowArrow
-{
-    background-position: 0 -168px;
-}
-.control.group.selected > .groupFooter
-{
-    background-color: #606d34;
-}
-.control.error > .controlInfo
-{
-    background-color: #a20f0f;
-}
-.control.error > .controlFlowArrow
-{
-    background-position: 0 -196px;
-}
+.control.error > .controlInfo,
+.control.error > .controlFlowArrow .slice,
 .control.error > .groupFooter
 {
     background-color: #a20f0f;
 }
-.control.error:hover > .controlInfo
-{
-    background-color: #c34141;
-}
-.control.error:hover > .controlFlowArrow
-{
-    background-position: 0 -224px;
-}
+.control.error:hover > .controlInfo,
+.control.error:hover > .controlFlowArrow .slice,
 .control.error:hover > .groupFooter
 {
     background-color: #c34141;
@@ -881,4 +886,21 @@ body > .control.last .controlFlowArrow,
 .inputSelectOne .typeIcon  { background-position: 0 -320px; }
 .inputSelectMany .typeIcon { background-position: 0 -384px; }
 .inputBarcode .typeIcon    { background-position: 0 -576px; }
+
+.collapsed .control .controlInfo .typeIcon
+{
+    background-image: url(/images/type_icons_small.png?1);
+    height: 24px;
+    width: 24px;
+}
+.collapsed .group .typeIcon           { background-position: 0 -168px; }
+.collapsed .branch .typeIcon          { background-position: 0 -192px; }
+.collapsed .inputText .typeIcon       { background-position: 0 0px; }
+.collapsed .inputNumeric .typeIcon    { background-position: 0 -24px; }
+.collapsed .inputDate .typeIcon       { background-position: 0 -48px; }
+.collapsed .inputLocation .typeIcon   { background-position: 0 -72px; }
+.collapsed .inputMedia .typeIcon      { background-position: 0 -96px; }
+.collapsed .inputSelectOne .typeIcon  { background-position: 0 -120px; }
+.collapsed .inputSelectMany .typeIcon { background-position: 0 -144px; }
+.collapsed .inputBarcode .typeIcon    { background-position: 0 -216px; }
 

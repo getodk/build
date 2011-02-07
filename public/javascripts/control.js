@@ -199,6 +199,9 @@
                 },
                 insertPlaceholder: false
             });
+
+            // fill in the flow arrow
+            _.defer(function() { $this.find('.controlFlowArrow').triangle(); });
         });
     };
 
