@@ -8,7 +8,7 @@
     <title>ODK Build</title>
 
     <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css"/>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui-1.7.2.custom.css"/>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui-1.8.9.custom.css"/>
 
   <% unless ConfigManager['google_analytics_id'].nil? %>
     <script type="text/javascript">
@@ -35,9 +35,9 @@
     </div>
     <div class="preloadImages">
       <img src="/images/control_slice.png"/>
-      <img src="/images/control_arrows.png"/>
       <img src="/images/group_bg.png"/>
       <img src="/images/type_icons.png"/>
+      <img src="/images/type_icons_small.png"/>
     </div>
     <div class="toast"></div>
     <div class="header">
@@ -286,14 +286,16 @@
       </div>
     </div>
 
-    <script type="text/javascript" src="/javascripts/jquery-1.4.2.js"></script>
+    <% if ENV['RACK_ENV'] == 'development' %>
+      <script type="text/javascript" src="/javascripts/jquery-1.4.4.js"></script>
+      <script type="text/javascript" src="/javascripts/jquery-ui-1.8.9.custom.js"></script>
+    <% else %>
+      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+      <script type="text/javascript" src="/javascripts/jquery-ui-1.8.9.custom.min.js"></script>
+    <% end %>
+
     <script type="text/javascript" src="/javascripts/underscore.min.js"></script>
     <script type="text/javascript" src="/javascripts/json2.js"></script>
-    <script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
-    <script type="text/javascript" src="/javascripts/jquery.ui.core.js"></script>
-    <script type="text/javascript" src="/javascripts/jquery.ui.draggable.js"></script>
-    <script type="text/javascript" src="/javascripts/jquery.ui.mouse.js"></script>
-    <script type="text/javascript" src="/javascripts/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.jqmodal.min.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.qtip-1.0.0-rc3.min.js"></script>
     <script type="text/javascript" src="/javascripts/namespace.js"></script>

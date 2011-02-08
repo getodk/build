@@ -434,9 +434,8 @@ body
 }
 .collapsed .control .controlInfo .controlHeadline
 {
-    display: inline;
     margin-left: 35px;
-    padding-top: 1.3em;
+    padding-top: 0.2em;
 }
 .collapsed .control .controlInfo .controlHeadline h4
 {
@@ -569,14 +568,17 @@ body > .control.last .controlFlowArrow,
 }
 .placeholder .flowArrow
 {
-    background: transparent url(/images/control_arrows.png) no-repeat 0 -84px;
     height: 28px;
     left: 50%;
-    margin-left: -16px;
+    margin-left: -14px;
     position: absolute;
     top: 88px;
-    width: 32px;
+    width: 28px;
     z-index: 1;
+}
+.placeholder .flowArrow .slice
+{
+    background-color: #777;
 }
 .workspace > .placeholder:last-child .flowArrow
 {
