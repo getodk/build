@@ -38,5 +38,16 @@ class ConnectionManager
       end
     end
   end
+
+  # Returns a handle to ConnectionManager's databases.
+  # This is called from the Rakefile to create a fake Rack instance
+  # and returns the connection object.
+  def self.rackless_connection
+    app = FakeRack.new
+    ConnectionManager.new(app).call({})
+    return ConnectionManager.connection
+  end
 end
+
+class FakeRack; def call(env); end end
 
