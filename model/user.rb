@@ -84,9 +84,9 @@ class User
     @data['email'] = email
   end
 
-  def forms
+  def forms(get_form_data = false)
     return [] if @data['forms'].nil?
-    return (@data['forms'].split ',').map{ |form_id| Form.find(form_id, false) }
+    return (@data['forms'].split ',').map{ |form_id| Form.find(form_id, get_form_data) }
   end
   def add_form(form)
     if @data['forms'].nil? || @data['forms'].empty?
