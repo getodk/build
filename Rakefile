@@ -46,15 +46,11 @@ namespace :analytics do
 
   desc "Print totals of each control type"
   task :control_counts do
-    control_counts = {}
+    control_counts = Hash.new(0)
     @db[:form_data].each do |form_id, form_data|
       form_controls = JSON.parse(form_data)
       form_controls.each do |control|
-        if control_counts.has_key? control["type"]
-          control_counts[control["type"]] += 1
-        else
-          control_counts[control["type"]] = 1
-        end
+        control_counts[control["type"]] += 1
       end
     end
     control_counts_ordered = control_counts.to_a.sort { |one, two| two[1] <=> one[1] }
