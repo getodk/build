@@ -8,6 +8,8 @@ gem 'json', '1.4.6'
 gem 'pony', '1.0'
 gem 'warden', '0.10.7'
 gem 'oauth', '0.4.4'
+gem 'riot', '0.12.1'
+gem 'mocha', '0.9.12'
 
 group :development do
   gem 'shotgun'

@@ -10,17 +10,23 @@ GEM
       mime-types
       treetop (>= 1.4.5)
     mime-types (1.16)
+    mocha (0.9.12)
     oauth (0.4.4)
     polyglot (0.3.1)
     pony (1.0)
       mail (> 2.0)
     rack (1.2.1)
     rake (0.8.7)
+    riot (0.12.1)
+      rr
+      term-ansicolor
+    rr (1.0.2)
     rufus-tokyo (1.0.7)
     shotgun (0.8)
       rack (>= 1.0)
     sinatra (1.0)
       rack (>= 1.0)
+    term-ansicolor (1.0.5)
     treetop (1.4.8)
       polyglot (>= 0.3.1)
     warden (0.10.7)
@@ -32,9 +38,11 @@ PLATFORMS
 DEPENDENCIES
   ffi (= 0.6.3)
   json (= 1.4.6)
+  mocha (= 0.9.12)
   oauth (= 0.4.4)
   pony (= 1.0)
   rack (= 1.2.1)
+  riot (= 0.12.1)
   rufus-tokyo (= 1.0.7)
   shotgun
   sinatra (= 1.0)
