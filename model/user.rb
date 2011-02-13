@@ -89,7 +89,7 @@ class User
     return (@data['forms'].split ',').map{ |form_id| Form.find(form_id, false) }
   end
   def add_form(form)
-    if @data['forms'].nil?
+    if @data['forms'].nil? || @data['forms'].empty?
       @data['forms'] = form.id
     elsif !((@data['forms'].split ',').include? form.id)
       @data['forms'] += ",#{form.id}"
