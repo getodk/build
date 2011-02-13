@@ -1,5 +1,6 @@
 require "json"
 require "rufus/tokyo"
+require "rake/testtask"
 require 'model/user'
 require 'model/form'
 require "model/connection_manager"
@@ -91,6 +92,15 @@ namespace :admin do
     end
     puts "users with admin privileges:"
     admins.each { |admin| puts "#{admin["display_name"]} (#{admin["email"]})" }
+  end
+end
+
+desc "Run all tests"
+task :test do
+  Rake::TestTask.new do |t|
+    t.libs << "test"
+    t.pattern = "test/**/*_test.rb"
+    t.verbose = false
   end
 end
 
