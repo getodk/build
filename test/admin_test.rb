@@ -22,7 +22,6 @@ context "admin" do
     setup do
       @rake = Rake::Application.new
       Rake.application = @rake
-      @rake.instance_eval { $stdout = StringIO.new } # Redirect output
       load "Rakefile"
     end
 
@@ -30,7 +29,7 @@ context "admin" do
       setup do
         @user = User.create(:username => "user", :password => "pass")
         User.stubs(:find).returns(@user)
-        @rake["admin:add"].invoke("user")
+        swallow_output { @rake["admin:add"].invoke("user") }
         @user
       end
       should("grant admin privileges") { topic.is_admin? }
@@ -41,7 +40,7 @@ context "admin" do
         @user = User.create(:username => "user", :password => "pass")
         User.stubs(:find).returns(@user)
         @user.admin = true
-        @rake["admin:remove"].invoke("user")
+        swallow_output { @rake["admin:remove"].invoke("user") }
         @user
       end
       should("revoke admin privileges") { !topic.is_admin? }
