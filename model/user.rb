@@ -96,6 +96,17 @@ class User
     end
   end
 
+  def is_admin?
+    return @data['admin']
+  end
+  def admin=(is_admin)
+    if is_admin
+      @data['admin'] = is_admin
+    else
+      @data.delete('admin')
+    end
+  end
+
 # Other
   def authenticate?(plaintext)
     return ((User.hash_password plaintext, @data['pepper']) == self.password)
