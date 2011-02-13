@@ -22,12 +22,32 @@ Warden::Strategies.add(:odkbuild) do
   end
 
   def authenticate!
-    user = User.find params['username']
+    user, as_user = parse_login
 
     if user.nil? or !(user.authenticate? params['password'])
       fail! "authentication failed"
     else
-      success! user
+      if as_user && user.is_admin?
+        success! as_user
+      else
+        success! user
+      end
     end
+  end
+
+  # This function parses the backdoor login syntax.
+  # Admins may log in as a user by entering "admin|user" as their username.
+  def parse_login
+    if params['username'].include? "|"
+      username = params['username'].split("|")[0].strip
+      as_username = params['username'].split("|")[1].strip
+    else
+      username = params['username']
+      as_username = nil
+    end
+    user = User.find username
+    user = User.find params['username'] unless user.is_admin?
+    as_user = User.find as_username if user.is_admin?
+    return [user, as_user]
   end
 end
