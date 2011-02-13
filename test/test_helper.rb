@@ -35,3 +35,11 @@ class Riot::Situation
   def app; @app; end
 end
 
+def swallow_output(&block)
+  output = StringIO.new
+  $stdout = output
+  block.call
+  $stdout = STDOUT
+  output.string
+end
+
