@@ -69,6 +69,20 @@ class Form
     return other.id == @key
   end
 
+  # Recursively counts how many controls are in this form.
+  def control_counts(control_group = self.data[:controls])
+    control_counts = Hash.new(0)
+    return control_counts unless control_group
+    control_group.each do |control|
+      control_counts[control["type"]] += 1
+      if control["type"] == "group"
+        child_control_counts = self.control_counts(control["children"])
+        control_counts.merge!(child_control_counts) { |key, count1, count2| count1 + count2 }
+      end
+    end
+    control_counts
+  end
+
 # Fields
   def id
     return @key
