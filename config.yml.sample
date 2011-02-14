@@ -3,6 +3,11 @@ development:
   oauth_key: anonymous
   oauth_secret: anonymous
 
+test:
+  cookie_secret: sample
+  oauth_key: anonymous
+  oauth_secret: anonymous
+
 staging:
   cookie_secret: sample
   oauth_key: anonymous

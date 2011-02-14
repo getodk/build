@@ -4,3 +4,4 @@
 *.swp
 .bundle/config
 vendor
+config.yml
