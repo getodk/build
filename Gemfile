@@ -10,7 +10,7 @@ gem 'warden', '0.10.7'
 gem 'oauth', '0.4.4'
 gem 'riot', '0.12.1'
 gem 'mocha', '0.9.12'
-gem 'rack-test'
+gem 'rack-test', '0.5.7'
 
 group :development do
   gem 'shotgun'

@@ -44,7 +44,7 @@ DEPENDENCIES
   oauth (= 0.4.4)
   pony (= 1.0)
   rack (= 1.2.1)
-  rack-test
+  rack-test (= 0.5.7)
   riot (= 0.12.1)
   rufus-tokyo (= 1.0.7)
   shotgun
