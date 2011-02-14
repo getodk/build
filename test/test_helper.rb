@@ -23,7 +23,7 @@ use Rack::Session::Cookie,
   :secret => ConfigManager['cookie_secret']
 
 use ConnectionManager
-ConnectionManager.stubs(:connection).returns({ :users => {} })
+ConnectionManager.stubs(:connection).returns( { :users => {}, :forms => {}, :form_data => {} })
 
 use Warden::Manager do |manager|
   manager.default_strategies :odkbuild
