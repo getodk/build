@@ -217,6 +217,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             binding.attrs.type = 'binary';
         else if (control.type == 'inputBarcode')
             binding.attrs.type = 'barcode';
+        else if (control.type == 'inputSelectOne')
+            binding.attrs.type = 'string';
+        else if (control.type == 'inputSelectMany')
+            binding.attrs.type = 'string';
 
         // deal with properties:
 
