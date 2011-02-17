@@ -108,10 +108,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 contentType: 'application/json',
                 dataType: 'json',
                 type: 'POST',
-                data: JSON.stringify({
-                    title: title,
-                    controls: odkmaker.data.extract().controls
-                }),
+                data: JSON.stringify($.extend({}, odkmaker.data.extract(), { title: title })),
                 success: function(response, status)
                 {
                     $.toast('Your form has been saved as "' + title + '".');

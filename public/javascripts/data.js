@@ -55,7 +55,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     {
         return {
             title: $('h1').text(),
-            controls: extractRecurse($('.workspace'))
+            controls: extractRecurse($('.workspace')),
+            metadata: {
+                activeLanguages: odkmaker.i18n.activeLanguages()
+            }
         };
     };
 
@@ -88,6 +91,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     {
         $('h1').text(formObj.title);
         $('.workspace').empty();
+        odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         loadRecurse($('.workspace'), formObj.controls);
         $('.workspace .control:first').trigger('odkControl-select');
     };

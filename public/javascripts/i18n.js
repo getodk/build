@@ -200,6 +200,10 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
     {
         return active;
     };
+    i18nNS.setActiveLanguages = function(newActive)
+    {
+        active = newActive || ['eng'];
+    };
 
     var display = 'eng';
     i18nNS.displayLanguage = function(value)
