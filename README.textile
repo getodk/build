@@ -18,3 +18,5 @@ h3. Setup and Execution
 
 Now that you have resolved all the appropriate dependencies, you'll need to set up the configuration by copying @config.yml.sample@ to @config.yml@. This file contains a number of secret keys and tokens, so be sure not to check it into source control once you put your own keys into it. Finally, you'll want to run @rackup config.ru@ to start the server, or @shotgun config.ru@ if you want the application to automatically detect your changes to source code and load them up when you refresh the app in your web browser.
 
+If you're running Build in a production environment, there are a couple of things that the application needs to build before it will run. Before first-run, and after each time you update with a new version, you'll want to run @rake deploy:build@. This will bundle all the assets the application needs for speed an ease of deployment.
+
