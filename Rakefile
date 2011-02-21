@@ -1,3 +1,6 @@
+require 'rubygems'
+require 'bundler/setup'
+
 require 'yaml'
 require 'yui/compressor'
 require 'json'
@@ -13,7 +16,7 @@ require 'model/connection_manager'
 
 namespace :deploy do
   desc 'Compile and bundle assets for the application'
-  task :bundle do
+  task :build do
     root = File.dirname __FILE__
     assets = YAML.load_file("#{root}/assets.yml")
     out = File.open "#{root}/public/javascripts/build.js", 'w'
