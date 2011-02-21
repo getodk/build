@@ -1,11 +1,40 @@
-require "json"
-require "rufus/tokyo"
-require "rake/testtask"
+require 'yaml'
+require 'yui/compressor'
+require 'json'
+
+require 'rufus/tokyo'
+require 'rake/testtask'
+
 require 'model/user'
 require 'model/form'
-require "model/connection_manager"
+require 'model/connection_manager'
 
 @db = ConnectionManager.rackless_connection
+
+namespace :deploy do
+  desc 'Compile and bundle assets for the application'
+  task :bundle do
+    root = File.dirname __FILE__
+    assets = YAML.load_file("#{root}/assets.yml")
+    out = File.open "#{root}/public/javascripts/build.js", 'w'
+
+    # javascript
+    puts 'bundling JS...'
+    compressor = YUI::JavaScriptCompressor.new :munge => true
+    assets['javascripts'].each do |filename|
+      out.puts "/* #{filename}.js */"
+      out.puts compressor.compress( File.open "#{root}/public/javascripts/#{filename}.js", 'r' )
+      puts "...#{filename}.js [ok]"
+    end
+
+    # asset build timestamp
+    puts 'writing build time...'
+    File.open( "#{root}/.build_time", 'w' ) { |f| f.write Time.new.to_i }
+
+    # fin
+    puts 'done!'
+  end
+end
 
 namespace :analytics do
   desc "Print form count metrics"

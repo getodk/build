@@ -1,7 +1,10 @@
-*.tdb
-*.tch
 .DS_Store
 *.swp
+*.swo
+*.tdb
+*.tch
 .bundle/config
 vendor
 config.yml
+.build_time
+public/javascripts/build.js

@@ -289,29 +289,16 @@
     <% if ENV['RACK_ENV'] == 'development' %>
       <script type="text/javascript" src="/javascripts/jquery-1.4.4.js"></script>
       <script type="text/javascript" src="/javascripts/jquery-ui-1.8.9.custom.js"></script>
+
+      <% AssetManager.javascripts.each do |file| %>
+        <script type="text/javascript" src="/javascripts/<%= file %>.js"></script>
+      <% end %>
     <% else %>
       <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
       <script type="text/javascript" src="/javascripts/jquery-ui-1.8.9.custom.min.js"></script>
-    <% end %>
 
-    <script type="text/javascript" src="/javascripts/underscore.min.js"></script>
-    <script type="text/javascript" src="/javascripts/json2.js"></script>
-    <script type="text/javascript" src="/javascripts/jquery.jqmodal.min.js"></script>
-    <script type="text/javascript" src="/javascripts/jquery.qtip-1.0.0-rc3.min.js"></script>
-    <script type="text/javascript" src="/javascripts/namespace.js"></script>
-    <script type="text/javascript" src="/javascripts/util.js"></script>
-    <script type="text/javascript" src="/javascripts/triangle.js"></script>
-    <script type="text/javascript" src="/javascripts/auth.js"></script>
-    <script type="text/javascript" src="/javascripts/data.js"></script>
-    <script type="text/javascript" src="/javascripts/data-ui.js"></script>
-    <script type="text/javascript" src="/javascripts/i18n.js"></script>
-    <script type="text/javascript" src="/javascripts/modals.js"></script>
-    <script type="text/javascript" src="/javascripts/property-editor.js"></script>
-    <script type="text/javascript" src="/javascripts/workspace-draggable.js"></script>
-    <script type="text/javascript" src="/javascripts/control.js"></script>
-    <script type="text/javascript" src="/javascripts/toolbutton.js"></script>
-    <script type="text/javascript" src="/javascripts/dropdown-menu.js"></script>
-    <script type="text/javascript" src="/javascripts/application.js"></script>
+      <script type="text/javascript" src="/javascripts/build.js?<%= AssetManager.build_time %>"></script>
+    <% end %>
 
     <div id="templates">
 

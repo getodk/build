@@ -65,7 +65,6 @@ class Form
   def save
     ConnectionManager.connection[:forms][@key] = @data
     ConnectionManager.connection[:form_data][@key] = @form_data unless @form_data.nil?
-    puts @data.inspect
   end
 
   def ==(other)

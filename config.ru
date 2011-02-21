@@ -6,10 +6,13 @@ require 'warden_odkbuild'
 
 require 'model/connection_manager'
 require 'config_manager'
+require 'asset_manager'
+
 require 'odkbuild_server'
 
-# load configuration
+# load configuration files
 ConfigManager.load
+AssetManager.load
 
 # middleware
 use Rack::CommonLogger

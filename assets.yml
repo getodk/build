@@ -1,0 +1,19 @@
+javascripts:
+- underscore.min
+- json2
+- jquery.jqmodal.min
+- namespace
+- util
+- triangle
+- auth
+- data
+- data-ui
+- i18n
+- modals
+- property-editor
+- workspace-draggable
+- control
+- toolbutton
+- dropdown-menu
+- application
+
