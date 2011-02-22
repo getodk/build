@@ -10,10 +10,11 @@
 {
     var validationMessages = {
         required: 'This property is required.',
-        alphanumeric: 'Only letters and numbers are allowed.'
+        alphanumeric: 'Only letters and numbers are allowed.',
+        unique: 'This property must be unique; there is another control that conflicts with it.'
     };
     // private methods
-    var validateProperty = function($this, property)
+    var validateProperty = function($this, property, name, $parent)
     {
         if (_.isUndefined(property.limit))
             return;
@@ -28,8 +29,22 @@
                     if ((property.value == null) || (property.value === '')) // douglas cries, but I do mean null/undef here.
                         validationErrors.push(limit);
                     break;
+
                 case 'alphanumeric':
                     if (!_.isString(property.value) || property.value.match(/[^0-9a-z_]/i))
+                        validationErrors.push(limit);
+                    break;
+
+                case 'unique':
+                    if ($parent.parent().length === 0)
+                        break; // we have not been inserted yet.
+
+                    var okay = true;
+                    $parent.siblings().each(function()
+                    {
+                        okay = okay && ($(this).data('odkControl-properties')[name].value != property.value);
+                    });
+                    if (!okay)
                         validationErrors.push(limit);
                     break;
             }
@@ -58,7 +73,7 @@
         }
     };
     // Constructor
-    $.fn.propertyEditor = function(property, $parent)
+    $.fn.propertyEditor = function(property, name, $parent)
     {
         return this.each(function()
         {
@@ -70,9 +85,9 @@
 
             $this.bind('odkProperty-validate', function()
             {
-                validateProperty($this, property);
+                validateProperty($this, property, name, $parent);
             });
-            validateProperty($this, property);
+            validateProperty($this, property, name, $parent);
         });
     };
 
@@ -92,7 +107,6 @@
                     property.value = $(this).val();
                     $parent.trigger('odkControl-propertiesUpdated');
                 });
-            // TODO: validation goes here.
         },
         uiText: function(property, $editor, $parent) {
             $editor.find('h4').text(property.name);
@@ -149,7 +163,6 @@
                 };
                 $parent.trigger('odkControl-propertiesUpdated');
             });
-            // TODO: validation goes here
 
             $editor.find('.editorCheckbox')
                 .attr('checked', property.value !== false)

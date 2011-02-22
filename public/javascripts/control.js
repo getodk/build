@@ -53,18 +53,15 @@
         var $propertyList = $('.propertyList');
         $propertyList.empty();
 
-        var i = 0;
         // iterate through non-advanced properties
-        _.each(properties, function(property)
+        _.each(properties, function(property, name)
         {
             if (property.advanced === true)
                 return;
 
             $('<li/>')
-                .toggleClass('even', (i % 2) == 0)
-                .propertyEditor(property, $this)
+                .propertyEditor(property, name, $this)
                 .appendTo($propertyList);
-            i++;
         });
 
         // now do advanced properties
@@ -72,16 +69,14 @@
             '<ul class="advancedProperties toggleContainer" style="display:none"></ul></li>')
             .appendTo($propertyList);
         var $advancedList = $propertyList.find('.advancedProperties');
-        _.each(properties, function(property)
+        _.each(properties, function(property, name)
         {
             if (property.advanced !== true)
                 return;
 
             $('<li/>')
-                .toggleClass('even', (i % 2) == 0)
-                .propertyEditor(property, $this)
+                .propertyEditor(property, name, $this)
                 .appendTo($advancedList);
-            i++;
         });
     };
 
@@ -214,7 +209,7 @@
         name:         { name: 'Data Name',
                         type: 'text',
                         description: 'The data name of this field in the final exported XML.',
-                        limit: [ 'required', 'alphanumeric' ],
+                        limit: [ 'required', 'alphanumeric', 'unique' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
@@ -317,7 +312,7 @@
           name:       { name: 'Name',
                         type: 'text',
                         description: 'The data name of this group in the final exported XML.',
-                        limit: [ 'required', 'alphanumeric' ],
+                        limit: [ 'required', 'alphanumeric', 'unique' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
