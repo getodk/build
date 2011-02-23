@@ -42,7 +42,7 @@ class Form
       :title => data['title'],
       :description => (data['description'] || ''),
       :owner => owner.username,
-      :metadata => data['metadata']
+      :metadata => (data['metadata'].is_a? String) ? data['metadata'] : data['metadata'].to_json
     }
 
     ConnectionManager.connection[:form_data][key] = data['controls'].to_json
@@ -117,12 +117,17 @@ class Form
   end
 
   def metadata
-    return (JSON.parse @data['metadata']) unless @data['metadata'].nil? || (@data['metadata'] == '')
+    begin
+      return (JSON.parse @data['metadata']) unless @data['metadata'].nil? || (@data['metadata'] == '')
+    rescue JSON::ParserError => e
+      return {}
+    end
+
     return {}
   end
   def metadata=(metadata)
-    metadata = metadata.to_json unless metadata.is_a? String
-    @data['metadata'] = metadata
+    metadata_serialized = metadata.to_json unless metadata.is_a? String
+    @data['metadata'] = metadata_serialized
   end
 
 private
