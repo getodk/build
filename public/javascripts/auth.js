@@ -122,9 +122,14 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
                 },
                 error: function(request, status, error)
                 {
+                    var message = 'Could not log you in with those credentials. Please try again.';
+
+                    if (request.status == 500)
+                        message = 'Something has gone wrong. Please try again in a bit, and report the issue if it persists.';
+
                     $('.signinDialog .errorMessage')
                         .empty()
-                        .append('<p>Could not log you in with those credentials. Please try again.</p>')
+                        .append('<p>' + message + '</p>')
                         .slideDown();
                 }
             });
