@@ -9,7 +9,11 @@ class AssetManager
 
   def self.load
     @@assets = YAML.load_file('assets.yml') || {}
-    @@build_time = File.read '.build_time'
+    begin
+      @@build_time = File.read '.build_time'
+    rescue Errno::ENOENT
+      @@build_time = Time.new.to_i.to_s
+    end
   end
 end
 
