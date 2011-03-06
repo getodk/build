@@ -398,12 +398,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if (obj.attrs !== undefined)
             _.each(obj.attrs, function(value, key)
             {
-                result += ' ' + key + '="' + value + '"';
+                result += ' ' + key + '="' + xmlEncode(value) + '"';
             });
 
         if (obj.val !== undefined)
         {
-            result += '>' + obj.val + '</' + obj.name + '>\n';
+            result += '>' + xmlEncode(obj.val) + '</' + obj.name + '>\n';
         }
         else if (obj.children !== undefined)
         {
@@ -420,6 +420,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
 
         return result;
+    };
+    var xmlEncode = function(value)
+    {
+        return value.replace(/"/g, '&quot;')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
     };
 
     // Kick it off
