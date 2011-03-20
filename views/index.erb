@@ -8,7 +8,7 @@
     <title>ODK Build</title>
 
     <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css"/>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui-1.8.9.custom.css"/>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui-1.8.11.custom.css"/>
 
   <% unless ConfigManager['google_analytics_id'].nil? %>
     <script type="text/javascript">
@@ -287,15 +287,15 @@
     </div>
 
     <% if ENV['RACK_ENV'] == 'development' %>
-      <script type="text/javascript" src="/javascripts/jquery-1.4.4.js"></script>
-      <script type="text/javascript" src="/javascripts/jquery-ui-1.8.9.custom.js"></script>
+      <script type="text/javascript" src="/javascripts/jquery-1.5.1.js"></script>
+      <script type="text/javascript" src="/javascripts/jquery-ui-1.8.11.custom.js"></script>
 
       <% AssetManager.javascripts.each do |file| %>
         <script type="text/javascript" src="/javascripts/<%= file %>.js"></script>
       <% end %>
     <% else %>
-      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-      <script type="text/javascript" src="/javascripts/jquery-ui-1.8.9.custom.min.js"></script>
+      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+      <script type="text/javascript" src="/javascripts/jquery-ui-1.8.11.custom.min.js"></script>
 
       <script type="text/javascript" src="/javascripts/build.js?<%= AssetManager.build_time %>"></script>
     <% end %>
