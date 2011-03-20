@@ -33,7 +33,7 @@ GEM
     term-ansicolor (1.0.5)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
-    warden (0.10.7)
+    warden (1.0.3)
       rack (>= 1.0.0)
     yui-compressor (0.9.3)
 
@@ -51,5 +51,5 @@ DEPENDENCIES
   rufus-tokyo (= 1.0.7)
   shotgun
   sinatra (= 1.0)
-  warden (= 0.10.7)
+  warden (= 1.0.3)
   yui-compressor (= 0.9.3)
