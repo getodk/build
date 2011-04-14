@@ -165,6 +165,7 @@
                 {
                     $('.workspace .placeholder.hidden')
                         .addClass('closing')
+                        .stop()
                         .slideUp('fast', function()
                         {
                             $(this).remove();

@@ -1,4 +1,4 @@
-require 'model/connection_manager'
+require './model/connection_manager'
 
 class String
   def self.random_chars( length )

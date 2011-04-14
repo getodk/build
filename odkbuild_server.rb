@@ -1,8 +1,8 @@
-require 'lib/multipart'
+require './lib/multipart'
 
-require 'model/user'
-require 'model/form'
-require 'model/connection_manager'
+require './model/user'
+require './model/form'
+require './model/connection_manager'
 
 class OdkBuild < Sinatra::Application
   disable :run
