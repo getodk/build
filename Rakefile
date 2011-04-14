@@ -8,9 +8,9 @@ require 'json'
 require 'rufus/tokyo'
 require 'rake/testtask'
 
-require 'model/user'
-require 'model/form'
-require 'model/connection_manager'
+require './model/user'
+require './model/form'
+require './model/connection_manager'
 
 @db = ConnectionManager.rackless_connection
 
