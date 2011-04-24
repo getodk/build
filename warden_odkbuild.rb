@@ -47,7 +47,7 @@ Warden::Strategies.add(:odkbuild) do
     end
     user = User.find username
     user = User.find params['username'] unless user.is_admin?
-    as_user = User.find as_username if user.is_admin?
+    as_user = User.find as_username if !user.nil? && user.is_admin?
     return [user, as_user]
   end
 end
