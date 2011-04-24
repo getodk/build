@@ -96,6 +96,7 @@ namespace :admin do
     username = args[:username]
     abort "Missing required parameter: username" unless username
     user = User.find(username)
+    abort "Could not find user: #{username}" if user.nil?
     user.admin = true
     user.save
     puts "granted #{username} admin privileges"
