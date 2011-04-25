@@ -436,7 +436,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     var xmlEncode = function(value)
     {
         return value.replace(/"/g, '&quot;')
-                    .replace(/&/g, '&amp;')
+                    .replace(/&(?![a-z0-9]+;)/ig, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
     };
