@@ -148,39 +148,46 @@
             $editor.find('h4').text(property.name);
             $editor.find('p').text(property.description);
 
-            var $textfields = $editor.find('.editorTextfield');
-            if (property.value === false)
-                $textfields.attr('disabled', true);
-            else
-                $textfields
-                    .filter('.min').val(property.value.min).end()
-                    .filter('.max').val(property.value.max);
-            $textfields.keyup(function(event)
+            var $inputs = $editor.find('.editorTextfield, .inclusive');
+
+            var getPropertyValue = function()
             {
-                property.value = {
-                    min: $textfields.filter('.min').val(),
-                    max: $textfields.filter('.max').val()
+                return {
+                    min: $inputs.filter('.min').val(),
+                    max: $inputs.filter('.max').val(),
+                    minInclusive: $inputs.filter('.minInclusive').is(':checked'),
+                    maxInclusive: $inputs.filter('.maxInclusive').is(':checked')
                 };
+            };
+
+            if (property.value === false)
+                $inputs.attr('disabled', true);
+            else
+                $inputs
+                    .filter('.min').val(property.value.min).end()
+                    .filter('.max').val(property.value.max).end()
+                    .filter('.minInclusive').attr('checked', property.value.minInclusive).end()
+                    .filter('.maxInclusive').attr('checked', property.value.maxInclusive).end();
+
+            $inputs.bind('change keyup', function(event)
+            {
+                property.value = getPropertyValue();
                 $parent.trigger('odkControl-propertiesUpdated');
             });
 
-            $editor.find('.editorCheckbox')
+            $editor.find('.editorEnabled')
                 .attr('checked', property.value !== false)
                 .click(function(event)
                 {
-                    var $this = $(this);
-                    if ($this.is(':checked'))
+                    if ($(this).is(':checked'))
                     {
-                        $textfields.attr('disabled', false);
-                        property.value = {
-                            min: $textfields.filter('.min').val(),
-                            max: $textfields.filter('.max').val()
-                        };
+                        $inputs.attr('disabled', false);
+                        property.value = getPropertyValue();
                         $parent.trigger('odkControl-propertiesUpdated');
                     }
                     else
                     {
-                        $textfields.attr('disabled', true);
+                        $inputs.attr('disabled', true);
                         property.value = false;
                         $parent.trigger('odkControl-propertiesUpdated');
                     }
@@ -205,7 +212,7 @@
             property.value = $select.val();
         },
         dateRange: function(property, $editor, $parent) {
-            // derive from numeric range
+            // "derive" from numeric range
             $.fn.propertyEditor.editors.numericRange(property, $editor, $parent);
             $editor.find('.editorTextfield').datepicker({
                 onSelect: function(dateText, inst)

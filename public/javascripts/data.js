@@ -173,7 +173,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             // field-list
             if (control.fieldList === true)
             {
-                bodyTag.attrs['appearance'] = 'field-list';
+                bodyTag.attrs.appearance = 'field-list';
             }
 
             // deal with children
@@ -278,11 +278,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         // text length
         if ((control.length !== undefined) && (control.length !== false))
-            constraint.push('. &gt; ' + control.length.min + ' and . &lt; ' + control.length.max);
+            constraint.push('. &gte; ' + control.length.min + ' and . &lte; ' + control.length.max);
 
-        // numeric range
+        // numeric/date range
         if ((control.range !== undefined) && (control.range !== false))
-            constraint.push('. &gt; ' + control.range.min + ' and . &lt; ' + control.range.max);
+            constraint.push('. ' +
+                (control.range.minInclusive ? '&gte;' : '&gt;') + ' ' +
+                control.range.min + ' and . ' +
+                (control.range.maxInclusive ? '&lte;' : '&lt;') + ' ' +
+                control.range.max);
 
         // media kind
         if (control.type == 'inputMedia')
@@ -436,7 +440,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     var xmlEncode = function(value)
     {
         return value.replace(/"/g, '&quot;')
-                    .replace(/&(?![a-z0-9]+;)/ig, '&amp;')
+                    .replace(/&(?!(?:[a-z0-9]{1,6}|#[a-f0-9]{4});)/ig, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
     };
@@ -447,3 +451,4 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         return JSONtoXML(internalToXForm(odkmaker.data.extract()));
     };
 })(jQuery);
+

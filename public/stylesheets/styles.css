@@ -659,7 +659,8 @@ body > .control.last .controlFlowArrow,
     padding-left: 2.7em;
 }
 .propertiesPane .propertyList li .numericRange h5,
-.propertiesPane .propertyList li .numericRange input[type="text"]
+.propertiesPane .propertyList li .numericRange input[type="text"],
+.propertiesPane .propertyList li .numericRange .inclusive
 {
     margin-left: 2.2em;
 }
