@@ -1,11 +1,7 @@
-require './model/connection_manager'
+# encoding: UTF-8
 
-class String
-  def self.random_chars( length )
-    chars = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
-    return (0...length).map{ chars[Kernel.rand(chars.length)] }.join
-  end
-end
+require './model/connection_manager'
+require './lib/extensions'
 
 class Form
   def self.find(key, get_form_data = false)
@@ -30,7 +26,7 @@ class Form
     result['controls'] = (JSON.parse @form_data) unless @form_data.nil?
     result['metadata'] = self.metadata
 
-    return result
+    return result.force_encoding!
   end
 
   def self.create(data, owner)

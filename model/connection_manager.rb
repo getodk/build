@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class ConnectionManager
   class << self
     attr_accessor :connection

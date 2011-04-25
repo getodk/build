@@ -1,12 +1,8 @@
-require './model/connection_manager'
-require 'digest/sha1'
+# encoding: UTF-8
 
-class String
-  def self.random_chars( length )
-    chars = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
-    return (0...length).map{ chars[Kernel.rand(chars.length)] }.join
-  end
-end
+require './model/connection_manager'
+require './lib/extensions'
+require 'digest/sha1'
 
 class User
   def self.find(key)
@@ -20,12 +16,14 @@ class User
 
 # Class
   def data
-    return {
+    result = {
       :username => @key,
       :display_name => self.display_name,
       :email => self.email,
       :forms => self.forms.map{ |form| form.data }
     }
+
+    return result.force_encoding!
   end
 
   def self.create(data)
