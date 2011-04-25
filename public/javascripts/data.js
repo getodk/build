@@ -136,10 +136,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             instance.children.push(instanceTag);
             var bodyTag = {
                 name: 'group',
+                attrs: {},
                 children: []
             };
             body.children.push(bodyTag);
 
+            // deal with properties:
+
+            // label
             if ((control.label !== undefined) && (control.label !== ''))
             {
                 bodyTag.children.push({
@@ -151,6 +155,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 addTranslation(control.label, xpath + control.name + ':label', translations);
             }
 
+            // loop
             if (control.loop === true)
             {
                 instanceTag.attrs['jr:template'] = '';
@@ -165,6 +170,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 bodyTag = loopBodyTag;
             }
 
+            // field-list
+            if (control.fieldList === true)
+            {
+                bodyTag.attrs['appearance'] = 'field-list';
+            }
+
+            // deal with children
             _.each(control.children, function(child)
             { 
                 parseControl(child, xpath + control.name + '/', instanceTag, translations, model, bodyTag, relevance);

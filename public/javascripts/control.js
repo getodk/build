@@ -284,6 +284,7 @@
         inputDate: {
           range:      { name: 'Range',
                         type: 'dateRange',
+                        description: 'Valid range for the user input of this control.',
                         value: false,
                         summary: false } },
         inputLocation: {},
@@ -326,6 +327,10 @@
           loop:       { name: 'Looped',
                         type: 'bool',
                         description: 'Whether or not to allow this group to loop.',
+                        value: false },
+          fieldList:  { name: 'Display On One Screen',
+                        type: 'bool',
+                        description: 'Display all the controls in this group on one screen',
                         value: false } },
         branch: {
           logic:      { name: 'Rules',
