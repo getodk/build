@@ -73,7 +73,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }
             });
         });
-        $('.header .menu #saveLocallyLink').click(function(event)
+        $('.header .menu .saveLocallyLink').click(function(event)
         {
             event.preventDefault();
 
@@ -157,7 +157,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
                 // we've loaded a file, but we don't want it to be canonical
                 // they'll have to save it to get it upstream.
-                dataNS.currentForm = undefined;
+                dataNS.currentForm = null;
                 odkmaker.data.load(response);
 
                 $.toast($.h(fileName) + ' has been loaded, but it is unsaved. Please go to ' +
