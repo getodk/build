@@ -48,6 +48,11 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
         {
             $dialog.find('#saveAs_name').val($('h1').text());
         },
+        loadLocallyDialog: function($dialog)
+        {
+            $dialog.find('.errorMessage').hide();
+            $dialog.find('#loadFile_name').val('');
+        },
         exportDialog: function($dialog)
         {
             if ($('.workspace .control.error:first').length > 0)

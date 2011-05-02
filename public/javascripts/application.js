@@ -34,6 +34,8 @@ $(function()
         $('.workspace').toggleClass('collapsed');
         $('.controlFlowArrow').empty().triangle();
     });
+
+    // wire up header actions
     $('#editTitleLink').click(function(event)
     {
         event.preventDefault();

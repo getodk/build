@@ -180,6 +180,23 @@ class OdkBuild < Sinatra::Application
     return params[:payload]
   end
 
+  # bounce a payload off the server and serialize it for native download
+  post '/binary/save' do
+    content_type 'application/octet-stream'
+    attachment params[:filename]
+    return Marshal.dump JSON.parse params[:payload]
+  end
+
+  # bounce a file off the server and deserialize it for native upload
+  post '/binary/load' do
+    # read up whatever file we got, dump it right back to client
+    begin
+      return (Marshal.load params[:file][:tempfile]).to_json
+    rescue
+      return { :error => true }.to_json
+    end
+  end
+
   # bounce a payload through the server to aggregate
   post '/aggregate/post' do
     # make sure we're good to go

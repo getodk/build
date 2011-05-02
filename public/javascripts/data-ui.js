@@ -73,6 +73,17 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }
             });
         });
+        $('.header .menu #saveLocallyLink').click(function(event)
+        {
+            event.preventDefault();
+
+            var $form = $('<form action="/binary/save" method="post" target="downloadFrame" />');
+            $form
+                .append($('<input type="hidden" name="payload"/>').val(JSON.stringify(odkmaker.data.extract())))
+                .append($('<input type="hidden" name="filename"/>').val($('h1').text() + '.odkbuild'));
+            $form.appendTo($('body'));
+            $form.submit();
+        });
 
         // modal events
         $.live('.openDialog .formList li', 'click', function(event)
@@ -123,6 +134,41 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                         .slideDown();
                 }
             });
+        });
+
+        var loadFileValid = false;
+        var loadFileUploader = new AjaxUpload('loadFileChooseLink', {
+            action: '/binary/load',
+            name: 'file',
+            autoSubmit: false,
+            responseType: 'json',
+            onChange: function(fileName, ext)
+            {
+                $('#loadFile_name').val(fileName);
+                loadFileValid = !!(_.isString(ext) && ext.match(/^odkbuild$/i));
+                $('.loadLocallyDialog .errorMessage')
+                    .text('You must choose an ODK Build form (.odkbuild) file!')
+                    .toggle(!loadFileValid);
+            },
+            onSubmit: function() { return loadFileValid; },
+            onComplete: function(fileName, response)
+            {
+                $('#loadFile_name').val('');
+
+                // we've loaded a file, but we don't want it to be canonical
+                // they'll have to save it to get it upstream.
+                dataNS.currentForm = undefined;
+                odkmaker.data.load(response);
+
+                $.toast($.h(fileName) + ' has been loaded, but it is unsaved. Please go to ' +
+                                        'File &raquo; Save if you wish to save it.');
+                $('.loadLocallyDialog').jqmHide();
+            }
+        });
+        $('.loadLocallyDialog .loadFileLink').click(function(event)
+        {
+            event.preventDefault();
+            loadFileUploader.submit();
         });
 
         $('.exportDialog .downloadLink').click(function(event)

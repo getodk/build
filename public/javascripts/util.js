@@ -24,6 +24,17 @@
             return str;
     };
 
+    $.h = function(str)
+    {
+        if ((str === null) || (str === undefined))
+            return '';
+        else
+            return str.replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/&/g, '&amp;');
+    };
+
     $.sanitizeString = function(str)
     {
         return str.replace(/([^a-z0-9]+)/ig, '-');

@@ -2,6 +2,7 @@ javascripts:
 - underscore.min
 - json2
 - jquery.jqmodal.min
+- ajaxupload
 - namespace
 - util
 - triangle
