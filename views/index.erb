@@ -267,6 +267,32 @@
       </div>
     </div>
 
+    <div class="modal optionsEditorDialog">
+      <h3>Options Editor</h3>
+      <div class="modalContents">
+        <h4>Presets</h4>
+        <label class="presetsLabel" for="optionsPresetsSelect">Choose a Preset:</label>
+        <select id="optionsPresetsSelect" class="presetsSelect"></select>
+        <div class="presetsButtonContainer">
+          <a class="modalButton loadPreset" href="#load">Load Preset</a>
+          <a class="modalButton deletePreset" href="#delete">Delete Preset</a>
+          <a class="modalButton savePreset" href="#save">Save to Preset...</a>
+        </div>
+
+        <h4>Options</h4>
+        <div class="optionsHeaderContainer">
+          <ul class="optionsHeader clearfix"></ul>
+        </div>
+        <div class="optionsContainer clearfix">
+          <ul class="optionsBody clearfix"></ul>
+        </div>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton applyOptions" href="#apply">Apply</a>
+        <a class="modalButton jqmClose" href="#cancel">Cancel</a>
+      </div>
+    </div>
+
     <div class="modal narrowModal aggregateDialog">
       <h3>Export</h3>
       <div class="modalContents">
@@ -381,6 +407,7 @@
         </div>
 
         <div class="optionsEditor">
+          <a href="#optionsEditorDialog" rel="modal" class="optionsEditorLink">Bulk Edit</a>
           <h4></h4>
           <p></p>
           <ul class="optionsList"></ul>

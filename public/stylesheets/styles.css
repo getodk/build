@@ -87,12 +87,27 @@ body
     display: block;
     z-index: 3000;
 }
+
 .modal h3
 {
     color: #999;
     font-size: 2.5em;
     margin-bottom: 0.7em;
 }
+.modal h4
+{
+    font-size: 1.3em;
+    margin-top: 1em;
+}
+
+.modal .warningMessage
+{
+    color: #a20f0f;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0.3em
+}
+
 .modal p
 {
     font-size: 1.2em;
@@ -106,14 +121,14 @@ body
 {
     margin-top: 1.5em;
 }
-.modal .modalButtonContainer .modalButton
+.modal .modalButton
 {
     color: #666;
     font-size: 1.3em;
     letter-spacing: -1px;
     padding: 0.5em;
 }
-.modal .modalButtonContainer .modalButton:hover
+.modal .modalButton:hover
 {
     background-color: #f0f0f0;
 }
@@ -638,6 +653,12 @@ body > .control.last .controlFlowArrow,
 {
     font-size: 1.3em;
 }
+.propertiesPane .propertyList li a.optionsEditorLink
+{
+    float: right;
+    padding: 0.2em;
+    text-transform: lowercase;
+}
 .propertiesPane .propertyList li p
 {
     color: #666;
@@ -718,14 +739,6 @@ body > .control.last .controlFlowArrow,
  * MODALS *
  **********/
 
-.modal .warningMessage
-{
-    color: #a20f0f;
-    font-size: 1.1em;
-    font-weight: bold;
-    margin: 0.3em
-}
-
 .signinDialog .signupLink.hide,
 .signinDialog .signinLink.hide,
 .signinDialog .passwordLink.hide,
@@ -786,11 +799,68 @@ body > .control.last .controlFlowArrow,
     width: 1px;
 }
 
-.translationsDialog h4
+.optionsEditorDialog .presetsLabel
 {
-    font-size: 1.3em;
-    margin-top: 1em;
+    font-size: 1.2em;
 }
+.optionsEditorDialog .presetsButtonContainer
+{
+    display: inline-block;
+    margin: 0.4em;
+}
+.optionsEditorDialog .optionsHeaderContainer
+{
+    overflow: hidden;
+    height: 1.3em;
+    margin-top: 0.3em;
+}
+.optionsEditorDialog .optionsHeader li
+{
+    display: block;
+    float: left;
+    font-size: 1.1em;
+    font-weight: bold;
+    width: 13.636em;
+}
+.optionsEditorDialog .optionsContainer
+{
+    margin-top: 0.2em;
+    min-height: 5em;
+    max-height: 30em;
+    overflow-x: auto;
+    overflow-y: auto;
+    padding-bottom: 1.2em;
+}
+.optionsEditorDialog .optionsBody
+{
+    background: transparent url(/images/alternating_rows.png);
+    border-top: 1px solid #c7c7c7;
+    border-left: 1px solid #c7c7c7;
+    margin-top: 0.2em;
+}
+.optionsEditorDialog .optionsBody li
+{
+    display: block;
+    float: left;
+    width: 15em;
+}
+.optionsEditorDialog .optionsBody li input
+{
+    background: transparent;
+    border: none;
+    display: block;
+    font-size: 1.2em;
+    line-height: 16px;
+    margin-bottom: 4px;
+    outline: none;
+    padding: 0;
+    width: 12.5em;
+}
+.optionsEditorDialog .optionsBody li input:last-child
+{
+    margin-bottom: 2px;
+}
+
 .translationsDialog .addTranslation
 {
     margin-left: 0.8em;

@@ -57,7 +57,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             title: $('h1').text(),
             controls: extractRecurse($('.workspace')),
             metadata: {
-                activeLanguages: odkmaker.i18n.activeLanguages()
+                activeLanguages: odkmaker.i18n.activeLanguages(),
+                optionsPresets: odkmaker.options.presets
             }
         };
     };
@@ -92,6 +93,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('h1').text(formObj.title);
         $('.workspace').empty();
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
+        odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadRecurse($('.workspace'), formObj.controls);
         $('.workspace .control:first').trigger('odkControl-select');
     };

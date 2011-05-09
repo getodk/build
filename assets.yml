@@ -10,6 +10,7 @@ javascripts:
 - data
 - data-ui
 - i18n
+- options-editor
 - modals
 - property-editor
 - workspace-draggable

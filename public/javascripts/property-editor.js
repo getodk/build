@@ -79,9 +79,10 @@
         {
             var $this = $(this);
             var $editor = $('#templates .editors .' + property.type).clone();
+            $editor.attr('data-name', name);
             $this.empty().append($editor);
 
-            $.fn.propertyEditor.editors[property.type](property, $editor, $parent)
+            $.fn.propertyEditor.editors[property.type](property, $editor, $parent, name);
 
             $this.bind('odkProperty-validate', function()
             {
@@ -240,6 +241,20 @@
                 property.value.push(newOption);
                 $optionsList.append(newOptionRow(property, newOption, $optionsList.children().length, $parent));
                 $parent.trigger('odkControl-propertiesUpdated');
+            });
+
+            $editor.find('.optionsEditorLink').click(function(event)
+            {
+                odkmaker.options.currentProperty = property.value;
+                odkmaker.options.optionsUpdated = function(options)
+                {
+                    property.value = options;
+                    $parent.trigger('odkControl-propertiesUpdated');
+
+                    // recycle the editor to update text
+                    var $newEditor = $('<li/>').propertyEditor(property, $editor.attr('data-name'), $parent);
+                    $editor.closest('li').replaceWith($newEditor);
+                };
             });
         }
     };

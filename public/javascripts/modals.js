@@ -65,7 +65,8 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
         aggregateDialog: function($dialog)
         {
             $dialog.removeClass('exporting');
-        }
+        },
+        optionsEditorDialog: odkmaker.options.modalHandler
     };
 
     $(function()
@@ -104,7 +105,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                     return;
             }
 
-            $('.' + $this.attr('href').replace(/#/, '')).jqmShow();
+            $('.modal.' + $this.attr('href').replace(/#/, '')).jqmShow();
         });
         $('.modal form').submit(function(event)
         {

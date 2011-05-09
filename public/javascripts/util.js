@@ -35,6 +35,11 @@
                       .replace(/&/g, '&amp;');
     };
 
+    String.prototype.trim = function()
+    {
+        return this.replace(/^\s+|\s+$/g, '');
+    };
+
     $.sanitizeString = function(str)
     {
         return str.replace(/([^a-z0-9]+)/ig, '-');
