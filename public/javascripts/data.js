@@ -280,14 +280,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         // text length
         if ((control.length !== undefined) && (control.length !== false))
-            constraint.push('. &gte; ' + control.length.min + ' and . &lte; ' + control.length.max);
+            constraint.push('regex(., "^.{' + control.length.min + ',' + control.length.max + '}$")');
 
         // numeric/date range
         if ((control.range !== undefined) && (control.range !== false))
             constraint.push('. ' +
-                (control.range.minInclusive ? '&gte;' : '&gt;') + ' ' +
+                (control.range.minInclusive ? '&gt;=' : '&gt;') + ' ' +
                 control.range.min + ' and . ' +
-                (control.range.maxInclusive ? '&lte;' : '&lt;') + ' ' +
+                (control.range.maxInclusive ? '&lt;=' : '&lt;') + ' ' +
                 control.range.max);
 
         // media kind
