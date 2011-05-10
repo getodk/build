@@ -20,7 +20,7 @@ class User
       :username => @key,
       :display_name => self.display_name,
       :email => self.email,
-      :forms => self.forms.map{ |form| form.data }
+      :forms => self.forms.map{ |form| form.data true }
     }
 
     return result.force_encoding!
@@ -91,6 +91,11 @@ class User
       @data['forms'] = form.id
     elsif !((@data['forms'].split ',').include? form.id)
       @data['forms'] += ",#{form.id}"
+    end
+  end
+  def remove_form(form)
+    unless @data['forms'].nil? || @data['forms'].empty?
+      @data['forms'] = (@data['forms'].split ',').reject{ |id| id == form.id }.join(',')
     end
   end
 

@@ -20,11 +20,11 @@ class Form
   end
 
 # Class
-  def data
+  def data(summary = false)
     result = @data.dup
     result['id'] = @key
     result['controls'] = (JSON.parse @form_data) unless @form_data.nil?
-    result['metadata'] = self.metadata
+    result['metadata'] = self.metadata unless summary
 
     return result.force_encoding!
   end
@@ -54,8 +54,10 @@ class Form
   end
 
   def delete!
-    ConnectionManager.connection[:forms][@key] = nil
-    ConnectionManager.connection[:form_data][@key] = nil
+    # delete the reference instead of the actual form, just in case
+    owner = self.owner
+    owner.remove_form self
+    owner.save
   end
 
   def save

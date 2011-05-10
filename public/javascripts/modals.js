@@ -30,13 +30,17 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
             var $list = $dialog.find('.formList');
             $list.empty();
 
-            $list.append('<li class="loading">loading</li>');
+            $dialog.find('.errorMessage').empty();
+            $dialog.find('.modalLoadingOverlay').fadeIn();
+
             odkmaker.auth.verify(function()
             {
-                $list.empty();
+                $dialog.find('.modalLoadingOverlay').stop().fadeOut();
+
                 _.each(odkmaker.auth.currentUser.forms, function(formObj)
                 {
-                    $list.append('<li rel="' + formObj.id + '">' + formObj.title + '</li>');
+                    $list.append('<li rel="' + formObj.id + '">' + $.h(formObj.title) +
+                      '<a href="#delete" class="deleteFormLink">delete</a></li>');
                 });
                 if (odkmaker.auth.currentUser.forms.length === 0)
                 {
@@ -88,7 +92,8 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                 jqm.w.fadeOut('slow');
                 jqm.o.fadeOut('slow');
             }
-        });
+        }).append('<div class="modalLoadingOverlay"><div class="loadingSpinner"></div></div>');
+
         $.live('a[rel=modal]', 'click', function(event)
         {
             event.preventDefault();
@@ -107,6 +112,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
 
             $('.modal.' + $this.attr('href').replace(/#/, '')).jqmShow();
         });
+
         $('.modal form').submit(function(event)
         {
             event.preventDefault();

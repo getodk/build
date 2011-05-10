@@ -133,6 +133,31 @@ body
     background-color: #f0f0f0;
 }
 
+.modal .modalLoadingOverlay
+{
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.7);
+    bottom: 0;
+    display: none;
+    left: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.modal .modalLoadingOverlay .loadingSpinner
+{
+    background: transparent url(/images/loading.gif) no-repeat;
+    display: block;
+    height: 19px;
+    left: 50%;
+    margin-left: -110px;
+    margin-top: -10px;
+    position: relative;
+    text-indent: -9999px;
+    top: 8em;
+    width: 220px;
+}
+
 #templates
 {
     display: none;
@@ -775,6 +800,7 @@ body > .control.last .controlFlowArrow,
     cursor: pointer;
     font-size: 1.3em;
     padding: 0.5em;
+    position: relative;
 }
 .openDialog .formList li:hover
 {
@@ -785,6 +811,23 @@ body > .control.last .controlFlowArrow,
 {
     background-color: #888;
     color: #fff;
+}
+.openDialog .formList li a.deleteFormLink
+{
+    background: transparent url(/images/glyphs.png) no-repeat scroll 0 -45px;
+    display: block;
+    height: 16px;
+    position: absolute;
+    right: 0.3em;
+    text-align: left;
+    text-indent: -9999px;
+    top: 0.4em;
+    width: 16px;
+}
+.openDialog .formList li.selected a.deleteFormLink,
+.openDialog .formList li.selected:hover a.deleteFormLink
+{
+    background-position: 0 -60px;
 }
 
 .exportDialog .exportCodeContainer

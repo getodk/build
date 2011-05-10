@@ -12,6 +12,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
     var openForm = function()
     {
+        $('.openDialog .modalLoadingOverlay').fadeIn();
         $.ajax({
             url: '/form/' + $('.openDialog .formList li.selected').attr('rel'),
             dataType: 'json',
@@ -86,7 +87,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         });
 
         // modal events
-        $.live('.openDialog .formList li', 'click', function(event)
+        var $openDialog = $('.openDialog');
+        $openDialog.delegate('.formList li', 'click', function(event)
         {
             event.preventDefault();
 
@@ -94,15 +96,48 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             $this.siblings('li').removeClass('selected');
             $this.addClass('selected');
         });
-        $('.openDialog .openLink').click(function(event)
+        $openDialog.find('.openLink').click(function(event)
         {
             event.preventDefault();
             openForm();
         });
-        $.live('.openDialog .formList li', 'dblclick', function(event)
+        $openDialog.delegate('.formList li', 'dblclick', function(event)
         {
             event.preventDefault();
             openForm();
+        });
+        $openDialog.delegate('.formList li a.deleteFormLink', 'click', function(event)
+        {
+            event.preventDefault();
+
+            if (!confirm('Are you absolutely sure you want to delete this form? This cannot be undone.'))
+                return;
+
+            $openDialog.find('.modalLoadingOverlay').fadeIn();
+
+            var $listItem = $(this).closest('li');
+            $.ajax({
+                url: '/form/' + $listItem.attr('rel'),
+                dataType: 'json',
+                type: 'DELETE',
+                success: function(response, status)
+                {
+                    $openDialog.find('.modalLoadingOverlay').stop().fadeOut();
+
+                    odkmaker.auth.currentUser.forms = _.reject(odkmaker.auth.currentUser.forms, function(form)
+                    {
+                        form.id = $listItem.attr('rel');
+                    });
+                    $listItem.remove();
+
+                    $('.openDialog .errorMessage').empty();
+                },
+                error: function()
+                {
+                    $('.openDialog .errorMessage').empty().append('<p>Something went wrong when trying to delete ' +
+                        'that form. Please try again later.');
+                }
+            });
         });
 
         $('.saveAsDialog .saveAsLink').click(function(event)
@@ -145,7 +180,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             onChange: function(fileName, ext)
             {
                 $('#loadFile_name').val(fileName);
-                loadFileValid = !!(_.isString(ext) && ext.match(/^odkbuild$/i));
+                loadFileValid = _.isString(ext) && !!ext.match(/^odkbuild$/i);
                 $('.loadLocallyDialog .errorMessage')
                     .text('You must choose an ODK Build form (.odkbuild) file!')
                     .toggle(!loadFileValid);
