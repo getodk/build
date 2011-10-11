@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+require 'tokyo_tyrant'
+
 class ConnectionManager
   class << self
     attr_accessor :connection
@@ -10,25 +12,31 @@ class ConnectionManager
   end
 
   def call(env)
-    open_connection_if_necessary!
+    open_connections_if_necessary!
     @app.call(env)
   end
 
   protected
 
-  def open_connection_if_necessary!
+  def open_connections_if_necessary!
     self.class.connection ||= begin
       add_finalizer_hook!
       {
         # permanent stores
-        :users => (Rufus::Tokyo::Table.new 'users.tdb'),
-        :forms => (Rufus::Tokyo::Table.new 'forms.tdb'),
-        :form_data => (Rufus::Tokyo::Cabinet.new 'form_data.tch'),
+        :users => open_connection(:users),
+        :forms => open_connection(:forms),
+        :form_data => open_connection(:form_data),
 
         # temporary stores
-        :aggregate_requests => (Rufus::Tokyo::Table.new 'aggregate_requests.tdb')
+        :aggregate_requests => open_connection(:aggregate_requests)
       }
     end
+  end
+
+  def open_connection(db_name)
+    TokyoTyrant.const_get(ConfigManager['database'][db_name.to_s]['type']).new(
+      ConfigManager['database'][db_name.to_s]['host'],
+      ConfigManager['database'][db_name.to_s]['port'])
   end
 
   def add_finalizer_hook!

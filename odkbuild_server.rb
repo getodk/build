@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+require 'sinatra'
+
 require './lib/multipart'
 
 require './model/user'

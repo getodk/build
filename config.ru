@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
-Bundler.require
+
+require 'rack'
 
 require './warden_odkbuild'
 
@@ -25,6 +26,12 @@ use ConnectionManager
 use Warden::Manager do |manager|
   manager.default_strategies :odkbuild
   manager.failure_app = OdkBuild
+  manager.serialize_into_session do |user|
+    user.nil? ? nil : user.username
+  end
+  manager.serialize_from_session do |id|
+    id.nil? ? nil : (User.find id)
+  end
 end
 
 # app

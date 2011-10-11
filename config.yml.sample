@@ -2,6 +2,23 @@ development:
   cookie_secret: sample
   oauth_key: anonymous
   oauth_secret: anonymous
+  database:
+    users:
+      host: localhost
+      port: 4200
+      type: DB
+    forms:
+      host: localhost
+      port: 4201
+      type: DB
+    form_data:
+      host: localhost
+      port: 4202
+      type: Table
+    aggregate_requests:
+      host: localhost
+      port: 4203
+      type: DB
 
 test:
   cookie_secret: sample
@@ -12,10 +29,44 @@ staging:
   cookie_secret: sample
   oauth_key: anonymous
   oauth_secret: anonymous
+  database:
+    users:
+      host: localhost
+      port: 4100
+      type: DB
+    forms:
+      host: localhost
+      port: 4101
+      type: DB
+    form_data:
+      host: localhost
+      port: 4102
+      type: Table
+    aggregate_requests:
+      host: localhost
+      port: 4203
+      type: DB
 
 production:
   cookie_secret: sample
   oauth_key: anonymous
   oauth_secret: anonymous
   google_analytics_id: UA-12345678-9
+  database:
+    users:
+      host: localhost
+      port: 4000
+      type: DB
+    forms:
+      host: localhost
+      port: 4001
+      type: DB
+    form_data:
+      host: localhost
+      port: 4002
+      type: Table
+    aggregate_requests:
+      host: localhost
+      port: 4003
+      type: DB
 

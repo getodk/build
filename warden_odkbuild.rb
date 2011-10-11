@@ -1,3 +1,5 @@
+require 'warden'
+
 require './model/user'
 
 Warden::Manager.before_failure do |env, opts|
@@ -5,15 +7,6 @@ Warden::Manager.before_failure do |env, opts|
   # since authentication could fail on any type of method, we need
   # to set it for the failure app so it is routed to the correct block
   env['REQUEST_METHOD'] = "GET"
-end
-
-use Warden::Manager do |manager|
-  manager.serialize_into_session do |user|
-    user.nil? ? nil : user.username
-  end
-  manager.serialize_from_session do |id|
-    id.nil? ? nil : (User.find id)
-  end
 end
 
 Warden::Strategies.add(:odkbuild) do
@@ -45,9 +38,13 @@ Warden::Strategies.add(:odkbuild) do
       username = params['username']
       as_username = nil
     end
+
     user = User.find username
+    return nil, nil if user.nil?
+
     user = User.find params['username'] unless user.is_admin?
     as_user = User.find as_username if !user.nil? && user.is_admin?
-    return [user, as_user]
+    return user, as_user
   end
 end
+

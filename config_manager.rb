@@ -5,6 +5,8 @@ class ConfigManager
 
   def self.load
     @@config = (YAML.load_file('config.yml') || {})[ENV['RACK_ENV']]
+
+    throw Exception.new "No valid RACK_ENV supplied for you config! I see: #{ENV['RACK_ENV']}" if @@config.nil?
   end
 end
 

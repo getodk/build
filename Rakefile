@@ -5,14 +5,16 @@ require 'yaml'
 require 'yui/compressor'
 require 'json'
 
-require 'rufus/tokyo'
+require 'tokyo_tyrant'
 require 'rake/testtask'
+
+require './config_manager'
 
 require './model/user'
 require './model/form'
 require './model/connection_manager'
 
-@db = ConnectionManager.rackless_connection
+ConfigManager.load
 
 namespace :deploy do
   desc 'Compile and bundle assets for the application'
@@ -39,11 +41,54 @@ namespace :deploy do
   end
 end
 
+namespace :dev do
+  desc 'Start development databases'
+  task :start_db do
+    root = File.dirname __FILE__
+
+    # make tmp dir if not existent
+    tmp = File.join root, 'tmp'
+    Dir.mkdir tmp unless File.directory? tmp
+
+    # start db's
+    DB_EXT = {
+        'DB' => 'tch',
+        'Table' => 'tct'
+    }
+    ConfigManager['database'].each do |name, config|
+      command = "ttserver -dmn -port #{config['port']} -pid #{File.join tmp, name}.pid #{name}.#{DB_EXT[config['type']]}"
+      puts "starting #{config['name']} on #{config['port']}:\n#{command}"
+      `#{command}`
+    end
+  end
+
+  task :stop_db do
+    root = File.dirname __FILE__
+
+    # don't worry about if no tmp dir exists
+    tmp = File.join root, 'tmp'
+    exit unless File.directory? tmp
+
+    # sigterm all pid's in here
+    Dir.foreach tmp do |filename|
+      next unless filename =~ /\.pid$/i
+
+      pid = (File.read (File.join tmp, filename))
+
+      command = "kill -s term #{pid}"
+      puts "stopping server at #{pid}#{command}"
+      `#{command}`
+    end
+  end
+end
+
 namespace :analytics do
   desc "Print form count metrics"
   task :form_counts do
+    db = ConnectionManager.rackless_connection
+
     total_forms = max_forms = 0
-    users = @db[:users].keys.sort
+    users = db[:users].keys.sort
     users.each do |username|
       user = User.find username
       num_forms = user.forms.count
@@ -61,13 +106,15 @@ namespace :analytics do
 
   desc "Print form length metrics"
   task :form_lengths do
+    db = ConnectionManager.rackless_connection
+
     total_length = max_length = 0
-    @db[:form_data].each do |form_id, form_data|
+    db[:form_data].each do |form_id, form_data|
       form_length = JSON.parse(form_data).length
       total_length += form_length
       max_length = [max_length, form_length].max
     end
-    num_forms = @db[:form_data].size
+    num_forms = db[:form_data].size
     if num_forms > 0
       puts "Avg form length: #{total_length / num_forms}"
       puts "Max form length: #{max_length}"
@@ -78,8 +125,10 @@ namespace :analytics do
 
   desc "Print totals of each control type"
   task :control_counts do
+    db = ConnectionManager.rackless_connection
+
     control_counts = Hash.new(0)
-    @db[:forms].each do |form_id, form_data|
+    db[:forms].each do |form_id, form_data|
       form = Form.find(form_id, true)
       control_counts.merge!(form.control_counts) { |key, count1, count2| count1 + count2 }
     end
@@ -93,6 +142,8 @@ end
 namespace :admin do
   desc "Grant a user admin privileges"
   task :add, :username do |t, args|
+    db = ConnectionManager.rackless_connection
+
     username = args[:username]
     abort "Missing required parameter: username" unless username
     user = User.find(username)
@@ -104,6 +155,8 @@ namespace :admin do
 
   desc "Revoke a user's admin privileges"
   task :remove, :username do |t, args|
+    db = ConnectionManager.rackless_connection
+
     username = args[:username]
     abort "Missing required parameter: username" unless username
     user = User.find(username)
@@ -114,7 +167,9 @@ namespace :admin do
 
   desc "List all users with admin priviliges"
   task :list do
-    admins = @db[:users].query do |q|
+    db = ConnectionManager.rackless_connection
+
+    admins = db[:users].query do |q|
       q.add "admin", :equals, true
     end
     puts "users with admin privileges:"
