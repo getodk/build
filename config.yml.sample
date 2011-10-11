@@ -6,19 +6,19 @@ development:
     users:
       host: localhost
       port: 4200
-      type: DB
+      type: Table
     forms:
       host: localhost
       port: 4201
-      type: DB
+      type: Table
     form_data:
       host: localhost
       port: 4202
-      type: Table
+      type: DB
     aggregate_requests:
       host: localhost
       port: 4203
-      type: DB
+      type: Table
 
 test:
   cookie_secret: sample
@@ -33,19 +33,19 @@ staging:
     users:
       host: localhost
       port: 4100
-      type: DB
+      type: Table
     forms:
       host: localhost
       port: 4101
-      type: DB
+      type: Table
     form_data:
       host: localhost
       port: 4102
-      type: Table
+      type: DB
     aggregate_requests:
       host: localhost
       port: 4203
-      type: DB
+      type: Table
 
 production:
   cookie_secret: sample
@@ -56,17 +56,17 @@ production:
     users:
       host: localhost
       port: 4000
-      type: DB
+      type: Table
     forms:
       host: localhost
       port: 4001
-      type: DB
+      type: Table
     form_data:
       host: localhost
       port: 4002
-      type: Table
+      type: DB
     aggregate_requests:
       host: localhost
       port: 4003
-      type: DB
+      type: Table
 
