@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+require 'json'
+
 require './model/connection_manager'
 require './lib/extensions'
 

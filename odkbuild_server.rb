@@ -1,6 +1,7 @@
 # encoding: UTF-8
 
 require 'sinatra'
+require 'json'
 
 require './lib/multipart'
 
