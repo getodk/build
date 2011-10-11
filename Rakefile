@@ -41,9 +41,9 @@ namespace :deploy do
   end
 end
 
-namespace :dev do
+namespace :devdb do
   desc 'Start development databases'
-  task :start_db do
+  task :start do
     root = File.dirname __FILE__
 
     # make tmp dir if not existent
@@ -62,7 +62,7 @@ namespace :dev do
     end
   end
 
-  task :stop_db do
+  task :stop do
     root = File.dirname __FILE__
 
     # don't worry about if no tmp dir exists
