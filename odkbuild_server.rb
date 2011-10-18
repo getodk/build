@@ -91,10 +91,11 @@ class OdkBuild < Sinatra::Application
     user = env['warden'].user
 
     # pull JSON data out
-    request_data = JSON.parse(request.body.read.to_s)
+    request_data = JSON.parse request.body.read.to_s
+    request_data.deep_symbolize_keys!
 
     # validate input
-    return error_validation_failed if request_data['title'].nil?
+    return error_validation_failed if request_data[:title].nil?
 
     form = Form.create request_data, user
     user.add_form form
@@ -105,7 +106,7 @@ class OdkBuild < Sinatra::Application
   get '/form/:form_id' do
     user = env['warden'].user
 
-    form = Form.find(params[:form_id], true)
+    form = Form.find(params[:form_id])
 
     return error_not_found if form.nil?
     return error_permission_denied if form.owner != user
@@ -117,9 +118,10 @@ class OdkBuild < Sinatra::Application
     user = env['warden'].user
 
     # pull JSON data out
-    request_data = JSON.parse(request.body.read.to_s)
+    request_data = JSON.parse request.body.read.to_s
+    request_data.deep_symbolize_keys!
 
-    form = Form.find(params[:form_id], true)
+    form = Form.find(params[:form_id])
 
     return error_not_found if form.nil?
     return error_permission_denied if form.owner != user
@@ -133,7 +135,7 @@ class OdkBuild < Sinatra::Application
   delete '/form/:form_id' do
     user = env['warden'].user
 
-    form = Form.find(params[:form_id], true)
+    form = Form.find(params[:form_id])
 
     return error_not_found if form.nil?
     return error_permission_denied if form.owner != user

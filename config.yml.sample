@@ -6,11 +6,11 @@ development:
     users:
       host: localhost
       port: 4200
-      type: Table
+      type: DB
     forms:
       host: localhost
       port: 4201
-      type: Table
+      type: DB
     form_data:
       host: localhost
       port: 4202
@@ -33,11 +33,11 @@ staging:
     users:
       host: localhost
       port: 4100
-      type: Table
+      type: DB
     forms:
       host: localhost
       port: 4101
-      type: Table
+      type: DB
     form_data:
       host: localhost
       port: 4102
@@ -56,11 +56,11 @@ production:
     users:
       host: localhost
       port: 4000
-      type: Table
+      type: DB
     forms:
       host: localhost
       port: 4001
-      type: Table
+      type: DB
     form_data:
       host: localhost
       port: 4002

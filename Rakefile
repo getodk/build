@@ -56,7 +56,7 @@ namespace :devdb do
         'Table' => 'tct'
     }
     ConfigManager['database'].each do |name, config|
-      command = "ttserver -dmn -port #{config['port']} -pid #{File.join tmp, name}.pid #{name}.#{DB_EXT[config['type']]}"
+      command = "ttserver -dmn -port #{config['port']} -pid #{File.join tmp, name}.pid #{File.join tmp, name}.#{DB_EXT[config['type']]}"
       puts "starting #{config['name']} on #{config['port']}:\n#{command}"
       `#{command}`
     end
@@ -129,7 +129,7 @@ namespace :analytics do
 
     control_counts = Hash.new(0)
     db[:forms].each do |form_id, form_data|
-      form = Form.find(form_id, true)
+      form = Form.find form_id
       control_counts.merge!(form.control_counts) { |key, count1, count2| count1 + count2 }
     end
     control_counts_ordered = control_counts.to_a.sort { |one, two| two[1] <=> one[1] }

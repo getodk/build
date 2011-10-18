@@ -6,29 +6,25 @@ require './model/connection_manager'
 require './lib/extensions'
 
 class Form
-  def self.find(key, get_form_data = false)
+  def self.find(key)
     key = key.to_s
 
     data = ConnectionManager.connection[:forms][key]
 
-    return nil if data.nil?
-
-    if get_form_data
-      form_data = ConnectionManager.connection[:form_data][key] || ''
-      return (Form.new key, data, form_data)
-    else
-      return (Form.new key, data)
-    end
+    return nil if data.blank?
+    return (Form.new key, (Marshal.load data))
   end
 
 # Class
   def data(summary = false)
     result = @data.dup
-    result['id'] = @key
-    result['controls'] = (JSON.parse @form_data) unless @form_data.nil?
-    result['metadata'] = self.metadata unless summary
+    result[:id] = @key
+    result[:title] = self.title
+    result[:description] = self.description
+    result[:controls] = JSON.parse self.form_data unless summary
+    result[:metadata] = self.metadata unless summary
 
-    return result.force_encoding!
+    return result
   end
 
   def self.create(data, owner)
@@ -36,23 +32,23 @@ class Form
       key = (String.random_chars 6)
     end while !ConnectionManager.connection[:forms][key].nil?
 
-    ConnectionManager.connection[:forms][key] = {
-      :title => data['title'],
-      :description => (data['description'] || ''),
+    ConnectionManager.connection[:forms][key] = Marshal.dump({
+      :title => data[:title],
+      :description => data[:description],
       :owner => owner.username,
-      :metadata => (data['metadata'].is_a? String) ? data['metadata'] : data['metadata'].to_json
-    }
+      :metadata => data[:metadata]
+    })
 
-    ConnectionManager.connection[:form_data][key] = data['controls'].to_json
+    ConnectionManager.connection[:form_data][key] = data[:controls].to_json
 
-    return (Form.find key, true)
+    return Form.find key
   end
 
   def update(data)
-    self.title = data['title'] unless data['title'].nil?
-    self.description = data['description'] unless data['description'].nil?
-    self.metadata = data['metadata'] unless data['metadata'].nil?
-    @form_data = data['controls'].to_json unless data['controls'].nil?
+    self.title = data[:title] unless data[:title].nil?
+    self.description = data[:description] unless data[:description].nil?
+    self.metadata = data[:metadata] unless data[:metadata].nil?
+    @form_data = data[:controls].to_json unless data[:controls].nil?
   end
 
   def delete!
@@ -63,7 +59,7 @@ class Form
   end
 
   def save
-    ConnectionManager.connection[:forms][@key] = @data
+    ConnectionManager.connection[:forms][@key] = Marshal.dump @data
     ConnectionManager.connection[:form_data][@key] = @form_data unless @form_data.nil?
   end
 
@@ -92,47 +88,41 @@ class Form
   end
 
   def title
-    return @data['title']
+    return @data[:title]
   end
   def title=(title)
-    @data['title'] = title
+    @data[:title] = title
   end
 
   def description
-    return @data['description']
+    return @data[:description]
   end
   def description=(description)
-    @data['description'] = description
+    @data[:description] = description
   end
 
   def owner
-    return User.find @data['owner']
+    return User.find @data[:owner]
   end
 
   def form_data
-    return @form_data
+    return @form_data if defined? @form_data
+    @form_data = ConnectionManager.connection[:form_data][@key]
   end
   def form_data=(form_data)
     @form_data = form_data
   end
 
   def metadata
-    begin
-      return (JSON.parse @data['metadata']) unless @data['metadata'].nil? || (@data['metadata'] == '')
-    rescue JSON::ParserError => e
-      return {}
-    end
-
-    return {}
+    return @data[:metadata] || {}
   end
   def metadata=(metadata)
-    metadata_serialized = metadata.to_json unless metadata.is_a? String
-    @data['metadata'] = metadata_serialized
+    @data[:metadata] = metadata
   end
 
 private
-  def initialize(key, data, form_data = nil)
+  def initialize(key, data)
     @key, @data = key, data
-    @form_data = form_data unless form_data.nil?
   end
 end
+
