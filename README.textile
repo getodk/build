@@ -18,7 +18,7 @@ h3. Setup and Execution
 
 Now that you have resolved all the appropriate dependencies, you'll need to set up the configuration by copying @config.yml.sample@ to @config.yml@. This file contains a number of secret keys and tokens, so be sure not to check it into source control once you put your own keys into it.
 
-Next, you want to start up your databases. You'll need to start four Tokyo Tyrant instances, one for each listing in the configuration file. If you're working from a development environment, you can do this simply by running @rake devdb:start@, and @rake devdb:stop@ to stop them again.
+Next, you want to start up your databases. You'll need to start four Tokyo Tyrant instances, one for each listing in the configuration file. If you're working from a development environment, you can do this simply by running @rake db:dev:start@, and @rake db:dev:stop@ to stop them again.
 
 Finally, you'll want to run @bundle exec rackup config.ru@ to start the server, or @bundle exec shotgun config.ru@ if you want the application to automatically detect your changes to source code and load them up when you refresh the app in your web browser.
 
