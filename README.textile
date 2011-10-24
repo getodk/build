@@ -10,7 +10,7 @@ odkbuild is a Ruby Rack-based application. Everything it needs is kicked off by 
 
 h3. Dependencies
 
-The project has one native dependency: Tokyo Cabinet. We use this as our datastore. You'll have to build it natively for any system you want to run the server on. See http://fallabs.com/tokyocabinet/ for details.
+The project has one native dependency: Tokyo Tyrant. We use this as our datastore. You'll have to build it natively for any system you want to run the server on. See http://fallabs.com/tokyotyrant/ for details.
 
 Once you have that, all Rubygem dependencies are managed by Ruby Bundler. Make sure you have at least version 1.0.0 of Bundler installed (@gem update --system && gem install bundler@ if you don't have it already), and then simply run @bundle install@ in the application root to resolve and install the appropriate dependencies.
 
