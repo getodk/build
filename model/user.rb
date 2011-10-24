@@ -22,7 +22,7 @@ class User
       :username => @key,
       :display_name => self.display_name,
       :email => self.email,
-      :forms => (self.forms true).map{ |form| form.data }
+      :forms => (self.forms true).map{ |form| form.data true }
     }
 
     return result
