@@ -4,6 +4,7 @@ gem 'rake', '0.8.7' # REMOVEME when rake figures its shit out.
 
 gem 'ffi', '1.0.9'
 gem 'ruby-tokyotyrant', '0.5.1'
+gem 'rufus-tokyo', '1.0.7', :require => 'rufus/tokyo'
 gem 'sinatra', '1.2.6'
 gem 'json', '1.6.1'
 gem 'pony', '1.3'

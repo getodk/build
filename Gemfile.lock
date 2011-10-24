@@ -25,6 +25,7 @@ GEM
       term-ansicolor
     rr (1.0.4)
     ruby-tokyotyrant (0.5.1)
+    rufus-tokyo (1.0.7)
     shotgun (0.9)
       rack (>= 1.0)
     sinatra (1.2.6)
@@ -56,6 +57,7 @@ DEPENDENCIES
   rake (= 0.8.7)
   riot (= 0.12.1)
   ruby-tokyotyrant (= 0.5.1)
+  rufus-tokyo (= 1.0.7)
   shotgun
   sinatra (= 1.2.6)
   thin

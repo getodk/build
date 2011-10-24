@@ -13,11 +13,6 @@ class String
 end
 
 class Hash
-  def force_encoding! encoding='ISO-8859-1'
-    self.each_value{ |value| value.force_encoding encoding if value.is_a? String }
-    return self
-  end
-
   def symbolize_keys!
     # from activesupport
     keys.each{ |key| self[(key.to_sym rescue key) || key] = delete(key) }
