@@ -242,6 +242,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         // deal with properties:
 
+        var invalidText;
+
         // label
         if ((control.label !== undefined) && (control.label !== ''))
         {
@@ -280,15 +282,21 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         // text length
         if ((control.length !== undefined) && (control.length !== false))
+        {
             constraint.push('regex(., "^.{' + control.length.min + ',' + control.length.max + '}$")');
+            invalidText = 'Response length must be between ' + control.length.min + ' and ' + control.length.max;
+        }
 
         // numeric/date range
         if ((control.range !== undefined) && (control.range !== false))
+        {
             constraint.push('. ' +
                 (control.range.minInclusive ? '&gt;=' : '&gt;') + ' ' +
                 xmlValue(control.range.min) + ' and . ' +
                 (control.range.maxInclusive ? '&lt;=' : '&lt;') + ' ' +
                 xmlValue(control.range.max));
+            invalidText = 'Value must be between ' + control.range.min + ' and ' + control.range.max;
+        }
 
         // media kind
         if (control.type == 'inputMedia')
@@ -325,6 +333,19 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             binding.attrs.relevant = '(' + relevance.join(') and (') + ')';
         if (constraint.length > 0)
             binding.attrs.constraint = '(' + constraint.join(') and (') + ')';
+
+        // constraint message
+        // it's important that this goes last so that it picks up the
+        // defaults set above.
+        if ((control.invalidText !== undefined) && (control.invalidText !== ''))
+        {
+            binding.attrs['jr:constraintMsg'] = "jr:itext('" + xpath + control.name + ":constraintMsg')"
+            addTranslation(control.label, xpath + control.name + ':constraintMsg', translations);
+        }
+        else if (invalidText !== null)
+        {
+            binding.attrs['jr:constraintMsg'] = invalidText;
+        }
     };
     var internalToXForm = function(internal)
     {
