@@ -216,9 +216,10 @@
             // "derive" from numeric range
             $.fn.propertyEditor.editors.numericRange(property, $editor, $parent);
             $editor.find('.editorTextfield').datepicker({
+                dateFormat: 'yy-mm-dd',
                 onSelect: function(dateText, inst)
                 {
-                    $(inst).trigger('keyup');
+                    $(inst.input).trigger('keyup');
                 }
             });
         },

@@ -286,9 +286,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if ((control.range !== undefined) && (control.range !== false))
             constraint.push('. ' +
                 (control.range.minInclusive ? '&gt;=' : '&gt;') + ' ' +
-                control.range.min + ' and . ' +
+                xmlValue(control.range.min) + ' and . ' +
                 (control.range.maxInclusive ? '&lt;=' : '&lt;') + ' ' +
-                control.range.max);
+                xmlValue(control.range.max));
 
         // media kind
         if (control.type == 'inputMedia')
@@ -445,6 +445,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     .replace(/&(?!(?:[a-z0-9]{1,6}|#[a-f0-9]{4});)/ig, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
+    };
+    var xmlValue = function(value)
+    {
+        if (value == null) // or undef
+            return "''";
+        else if (_.isString(value))
+            return "'" + value + "'";
+        else
+            return value;
     };
 
     // Kick it off
