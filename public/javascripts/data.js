@@ -245,7 +245,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var invalidText;
 
         // label
-        if ((control.label !== undefined) && (control.label !== ''))
+        if ((control.label !== undefined) && !_.isEmpty(control.label))
         {
             bodyTag.children.push({
                 name: 'label',
@@ -257,7 +257,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
 
         // hint
-        if ((control.hint !== undefined) && (control.hint !== ''))
+        if ((control.hint !== undefined) && !_.isEmpty(control.hint))
         {
             bodyTag.children.push({
                 name: 'hint',
@@ -337,7 +337,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // constraint message
         // it's important that this goes last so that it picks up the
         // defaults set above.
-        if ((control.invalidText !== undefined) && (control.invalidText !== ''))
+        if ((control.invalidText !== undefined) && !_.isEmpty(control.invalidText))
         {
             binding.attrs['jr:constraintMsg'] = "jr:itext('" + xpath + control.name + ":constraintMsg')"
             addTranslation(control.label, xpath + control.name + ':constraintMsg', translations);

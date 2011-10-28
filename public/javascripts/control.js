@@ -271,7 +271,7 @@
           invalidText:{ name: 'Invalid Text',
                         type: 'uiText',
                         description: 'Message to display if the value fails the length check.',
-                        value: false,
+                        value: {},
                         summary: false } },
         inputNumeric: {
           range:      { name: 'Range',
@@ -282,7 +282,7 @@
           invalidText:{ name: 'Invalid Text',
                         type: 'uiText',
                         description: 'Message to display if the value fails the range check.',
-                        value: false,
+                        value: {},
                         summary: false },
           kind:       { name: 'Kind',
                         type: 'enum',
@@ -300,7 +300,7 @@
           invalidText:{ name: 'Invalid Text',
                         type: 'uiText',
                         description: 'Message to display if the value fails the range check.',
-                        value: false,
+                        value: {},
                         summary: false } },
         inputLocation: {},
         inputMedia: {
