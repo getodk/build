@@ -342,7 +342,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             binding.attrs['jr:constraintMsg'] = "jr:itext('" + xpath + control.name + ":constraintMsg')"
             addTranslation(control.label, xpath + control.name + ':constraintMsg', translations);
         }
-        else if (invalidText !== null)
+        else if (invalidText != null)
         {
             binding.attrs['jr:constraintMsg'] = invalidText;
         }
