@@ -103,7 +103,7 @@
             $editor.find('.editorTextfield')
                 .attr('id', 'property_' + property.name)
                 .val(property.value || '')
-                .keyup(function(event)
+                .bind('keyup input', function(event)
                 {
                     property.value = $(this).val();
                     $parent.trigger('odkControl-propertiesUpdated');
@@ -122,7 +122,7 @@
                 $newRow.find('h5').text(odkmaker.i18n.getFriendlyName(languageKey));
                 $newRow.find('.editorTextfield')
                     .val(property.value[languageKey] || '')
-                    .keyup(function(event)
+                    .bind('keyup input', function(event)
                     {
                         property.value[languageKey] = $(this).val();
                         $parent.trigger('odkControl-propertiesUpdated');
@@ -170,7 +170,7 @@
                     .filter('.minInclusive').attr('checked', property.value.minInclusive).end()
                     .filter('.maxInclusive').attr('checked', property.value.maxInclusive).end();
 
-            $inputs.bind('change keyup', function(event)
+            $inputs.bind('input change keyup', function(event)
             {
                 property.value = getPropertyValue();
                 $parent.trigger('odkControl-propertiesUpdated');
