@@ -127,6 +127,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
     var parseControl = function(control, xpath, instance, translations, model, body, relevance)
     {
+        // first set up some defaults we need
+        // relevance string
+        if (relevance === undefined)
+            relevance = [];
+        // constraint string
+        var constraint = [];
+
         // groups are special
         if (control.type == 'group')
         {
@@ -178,6 +185,22 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 bodyTag.attrs.appearance = 'field-list';
             }
 
+            // relevance
+            if ((control.relevance !== undefined) && (control.relevance !== ''))
+            {
+                relevance.push(control.relevance);
+
+                // we need a binding to express the constraint.
+                var binding = {
+                    name: 'bind',
+                    attrs: {
+                        'nodeset': control.destination || (xpath + control.name),
+                        'relevant': '(' + relevance.join(') and (') + ')'
+                    }
+                }
+                model.children.push(binding);
+            }
+
             // deal with children
             _.each(control.children, function(child)
             { 
@@ -209,13 +232,6 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             }
         }
         model.children.push(binding);
-
-        // relevance string
-        if (relevance === undefined)
-            relevance = [];
-
-        // constraint string
-        var constraint = [];
 
         // deal with input type:
         if (control.type == 'inputText')
