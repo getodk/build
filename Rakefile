@@ -125,7 +125,13 @@ namespace :db do
 
         form.deep_symbolize_keys!
         form.force_encoding!
-        form[:metadata] = (JSON.parse form[:metadata]) unless form[:metadata].nil? || (form[:metadata] == '')
+
+        begin
+          form[:metadata] = (JSON.parse form[:metadata]) unless form[:metadata].nil? || (form[:metadata] == '')
+        rescue Exception => ex
+          STDERR.write "could not parse form metadata for #{form[:id]}."
+          form[:metadata] = "{}"
+        end
 
         [key, form]
       end
