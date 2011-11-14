@@ -129,7 +129,7 @@ namespace :db do
         begin
           form[:metadata] = (JSON.parse form[:metadata]) unless form[:metadata].nil? || (form[:metadata] == '')
         rescue Exception => ex
-          STDERR.write "could not parse form metadata for #{form[:id]}."
+          STDERR.write "could not parse form metadata for #{key}.\n"
           form[:metadata] = "{}"
         end
 
