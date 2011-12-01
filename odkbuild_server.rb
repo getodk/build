@@ -2,6 +2,7 @@
 
 require 'sinatra'
 require 'json'
+require 'oauth'
 
 require './lib/multipart'
 
