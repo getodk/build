@@ -10,7 +10,7 @@
 ;(function($)
 {
     // Private methods
-    var refreshFromProperties = function($this, type, config, properties)
+    var refreshFromProperties = function($this, type, options, properties)
     {
         var $info = $this.children('.controlInfo');
         var $headline = $info.children('.controlHeadline');
@@ -45,39 +45,35 @@
                                                                                  (property.validationErrors.length > 0); }));
     };
 
-    var selectControl = function($this, type, config, properties)
+    var selectControl = function($this, type, options, properties)
     {
-        $('.workspace .control').removeClass('selected');
         $this.addClass('selected');
 
+		// clear out and reconstruct property list
         var $propertyList = $('.propertyList');
         $propertyList.empty();
 
-        // iterate through non-advanced properties
+		var $advancedContainer = $.tag({
+			_: 'li', 'class': 'advanced', contents: [
+				{ _: 'a', 'class': 'toggle', href: '#advanced', contents: [
+					{ _: 'div', 'class': 'icon' },
+					'Advanced'
+				] },
+				{ _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: 'none' } }
+			]
+		});
+        var $advancedList = $advancedContainer.find('.advancedProperties');
+
+        // add our hero's properties
         _.each(properties, function(property, name)
         {
-            if (property.advanced === true)
-                return;
-
             $('<li/>')
                 .propertyEditor(property, name, $this)
-                .appendTo($propertyList);
+                .appendTo((property.advanced === true) ? $advancedList : $propertyList);
         });
 
-        // now do advanced properties
-        $('<li class="advanced"><a class="toggle" href="#advanced"><div class="icon"></div>Advanced</a>' +
-            '<ul class="advancedProperties toggleContainer" style="display:none"></ul></li>')
-            .appendTo($propertyList);
-        var $advancedList = $propertyList.find('.advancedProperties');
-        _.each(properties, function(property, name)
-        {
-            if (property.advanced !== true)
-                return;
-
-            $('<li/>')
-                .propertyEditor(property, name, $this)
-                .appendTo($advancedList);
-        });
+		// drop in advanced
+		$propertyList.append($advancedContainer);
     };
 
     // Constructor
@@ -92,10 +88,6 @@
         return this.each(function()
         {
             var $this = $(this);
-
-            // Support the metadata plugin
-            var config = $.meta ? $.extend({}, options, $this.data()) : options;
-            $this.data('odkControl-config', config);
 
             $this.data('odkControl-type', type);
 
@@ -114,20 +106,20 @@
             $this.bind('odkControl-propertiesUpdated', function(event)
             {
                 event.stopPropagation();
-                refreshFromProperties($this, type, config, properties);
+                refreshFromProperties($this, type, options, properties);
             });
             $this.trigger('odkControl-propertiesUpdated');
 
             $this.bind('odkControl-reloadProperties', function(event)
             {
-                selectControl($this, type, config, properties);
+                selectControl($this, type, options, properties);
             });
             $this.click(function(event)
             {
                 event.stopPropagation();
-                selectControl($this, type, config, properties);
+                selectControl($this, type, options, properties);
             });
-            selectControl($this, type, config, properties);
+            selectControl($this, type, options, properties);
 
             // special treatment for groups and branches
             if (type == 'group')

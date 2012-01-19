@@ -3,6 +3,8 @@ javascripts:
 - json2
 - jquery.jqmodal.min
 - ajaxupload
+- kor.events
+- awesomemarkup
 - namespace
 - util
 - triangle
