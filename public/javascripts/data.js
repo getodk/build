@@ -466,7 +466,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         if (obj.val !== undefined)
         {
-            result += '>' + xmlEncode(obj.val) + '</' + obj.name + '>\n';
+            result += '>' + outputDecode(xmlEncode(obj.val)) + '</' + obj.name + '>\n';
         }
         else if (obj.children !== undefined)
         {
@@ -499,6 +499,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             return "'" + value + "'";
         else
             return value;
+    };
+    var outputDecode = function(value)
+    {
+        // input: ${node1} and ${/group/node2}
+        // output: <output value="/data/node1"> and <output value="/data/group/node2">
+        return value.replace(/\${([a-z0-9_\/]*)}/ig,'<output value=\"/data/$1"/>');
     };
 
     // Kick it off
