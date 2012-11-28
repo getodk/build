@@ -257,6 +257,12 @@
                         description: 'Specify a custom XPath expression at which to store the result.',
                         value: '',
                         advanced: true,
+                        summary: false },
+        calculate:  { name: 'Calculate',
+                        type: 'text',
+                        description: 'Specify a custom expression to store a value in this field',
+                        value: '',
+                        advanced: true,
                         summary: false }
     };
 
