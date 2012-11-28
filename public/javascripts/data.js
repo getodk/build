@@ -134,6 +134,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // constraint string
         var constraint = [];
 
+        // calculate string
+        var calculate = [];
+
         // groups are special
         if (control.type == 'group')
         {
@@ -344,11 +347,16 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // advanced constraint
         if (control.constraint !== '')
             constraint.push(control.constraint);
+        // advanced calculate
+        if (control.calculate !== '')
+            calculate.push(control.calculate);
 
         if (relevance.length > 0)
             binding.attrs.relevant = '(' + relevance.join(') and (') + ')';
         if (constraint.length > 0)
             binding.attrs.constraint = '(' + constraint.join(') and (') + ')';
+        if (calculate.length > 0)
+            binding.attrs.calculate = '(' + calculate.join(') and (') + ')';
 
         // constraint message
         // it's important that this goes last so that it picks up the
