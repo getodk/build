@@ -20,6 +20,10 @@
         {
             $headline.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no group caption text yet]'));
         }
+        else if (type == 'metadata')
+        {
+            // do nothing for now
+        }
         else
         {
             $headline.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no caption text yet]'));
@@ -101,7 +105,7 @@
 
             // Deep clone the properties if relevant
             var properties = null;
-            if ((type == 'group') || (type == 'branch'))
+            if ((type == 'group') || (type == 'branch') || (type == 'metadata'))
                 properties = defaultProperties || $.extend(true, {}, $.fn.odkControl.controlProperties[type]);
             else
                 properties = defaultProperties ||
@@ -360,7 +364,20 @@
                         type: 'logicEditor',
                         description: 'Specify the rules that decide how the form will branch.',
                         value: [],
-                        summary: false }
-        }
+                        summary: false } },
+         metadata: {
+            name:     { name: 'Data Name',
+                        type: 'text',
+                        description: 'The data name of this field in the final exported XML.',
+                        limit: [ 'required', 'alphanumeric', 'unique' ],
+                        required: true,
+                        value: 'untitled',
+                        summary: false },
+            kind:     { name: 'Kind',
+                        type: 'enum',
+                        description: 'Type of metadata to add.',
+                        options: [ 'Device ID', 'Start Time', 'End Time'],
+                        value: 'Device ID',
+                        summary: true} },
     };
 })(jQuery);
