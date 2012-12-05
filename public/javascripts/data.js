@@ -489,7 +489,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var instanceID = {
             name: 'bind',
             attrs: {
-                'nodeset': '/meta/instanceID',
+                'nodeset': '/data/meta/instanceID',
                 'type' : 'string',
                 'readonly' : 'true()',
                 'calculate' : 'concat(\'uuid:\', uuid())'
