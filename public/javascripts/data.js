@@ -68,7 +68,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         _.each(controls, function(control)
         {
             var properties = null;
-            if ((control.type == 'group') || (control.type == 'branch'))
+            if ((control.type == 'group') || (control.type == 'branch') || (control.type == 'metadata'))
                 properties = $.extend(true, {}, $.fn.odkControl.controlProperties[control.type]);
             else
                 properties = $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
@@ -133,6 +133,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             relevance = [];
         // constraint string
         var constraint = [];
+
+        // calculate string
+        var calculate = [];
 
         // groups are special
         if (control.type == 'group')
@@ -208,6 +211,52 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             });
             return;
         }
+
+        // metadata is special
+        if (control.type == 'metadata')
+        {
+            // instance
+            var instanceTag = {
+                name: control.name,
+                attrs: {},
+                children: []
+            };
+            instance.children.push(instanceTag);
+
+            // binding
+            var binding = {
+                name: 'bind',
+                attrs: {
+                    'nodeset': control.destination || (xpath + control.name)
+                }
+            }
+
+            // create binding based on kind
+            var kind = control.kind.toLowerCase();
+            if (kind == 'device id') 
+            {
+                binding.attrs.type='string';
+                binding.attrs['jr:preload']='property';
+                binding.attrs['jr:preloadParams']='deviceid';
+            }
+            else if (kind == 'start time')
+            {
+                binding.attrs.type='dateTime';
+                binding.attrs['jr:preload']='timestamp';
+                binding.attrs['jr:preloadParams']='start';
+            }
+            else if (kind == 'end time')
+            { 
+                binding.attrs.type='dateTime';
+                binding.attrs['jr:preload']='timestamp';
+                binding.attrs['jr:preloadParams']='end';
+            }
+            
+            model.children.push(binding);
+
+            return;
+        }
+
 
         var instanceTag = {
             name: control.name
@@ -344,11 +393,16 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // advanced constraint
         if (control.constraint !== '')
             constraint.push(control.constraint);
+        // advanced calculate
+        if (control.calculate !== '')
+            calculate.push(control.calculate);
 
         if (relevance.length > 0)
             binding.attrs.relevant = '(' + relevance.join(') and (') + ')';
         if (constraint.length > 0)
             binding.attrs.constraint = '(' + constraint.join(') and (') + ')';
+        if (calculate.length > 0)
+            binding.attrs.calculate = '(' + calculate.join(') and (') + ')';
 
         // constraint message
         // it's important that this goes last so that it picks up the
@@ -367,19 +421,27 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     {
         // basic structure
         // TODO: user-config of instanceHead
+
+        // Per OpenRosa spec, instanceID should be in /data/meta
         var instanceHead = {
             name: 'data',
             attrs: {
               'id': 'build_' + $.sanitizeString($('.header h1').text()) +
                     '_' + Math.round((new Date()).getTime() / 1000)
             },
-            children: []
+            children: [ 
+                {   name: 'meta',
+                    children: [
+                        {   name: 'instanceID' }
+                    ]   }
+             ]
         };
 
         var instance = {
             name: 'instance',
             children: [ instanceHead ]
         };
+
         var translations = {
             name: 'itext',
             children: []
@@ -423,6 +485,19 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             });
         });
 
+        // instanceID binding. nodeset path should match instanceHead
+        var instanceID = {
+            name: 'bind',
+            attrs: {
+                'nodeset': '/data/meta/instanceID',
+                'type' : 'string',
+                'readonly' : 'true()',
+                'calculate' : 'concat(\'uuid:\', uuid())'
+            }
+        }
+        model.children.push(instanceID);
+
+
         _.each(internal.controls, function(control)
         {
             parseControl(control, '/data/', instanceHead, translations, model, body);
@@ -458,7 +533,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         if (obj.val !== undefined)
         {
-            result += '>' + xmlEncode(obj.val) + '</' + obj.name + '>\n';
+            result += '>' + outputDecode(xmlEncode(obj.val)) + '</' + obj.name + '>\n';
         }
         else if (obj.children !== undefined)
         {
@@ -491,6 +566,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             return "'" + value + "'";
         else
             return value;
+    };
+    var outputDecode = function(value)
+    {
+        // input: ${node1} and ${/group/node2}
+        // output: <output value="/data/node1"> and <output value="/data/group/node2">
+        return value.replace(/\${([a-z0-9_\/]*)}/ig,'<output value=\"/data/$1"/>');
     };
 
     // Kick it off
