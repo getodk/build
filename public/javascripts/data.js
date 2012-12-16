@@ -113,15 +113,41 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     {
         _.each(translations.children, function(translation)
         {
+            var result = [];
+            var itext = obj[translation.attrs.lang];
+            var match;
+
+            while (match = itext.match(/\$\{[^}]+\}/))
+            {
+                if (match.index > 0)
+                {
+                    result.push(itext.slice(0, match.index).trim());
+                    itext = itext.slice(match.index);
+                }
+
+                result.push({
+                    name: 'output',
+                    attrs: {
+                        value: itext.slice(2, match[0].length - 1)
+                    }
+                });
+                itext = itext.slice(match[0].length);
+            }
+            if (itext.length > 0)
+                result.push(itext.trim());
+
+            if (result.length === 0)
+                result = obj[translation.attrs.lang];
+
             translation.children.push({
                 name: 'text',
                 attrs: {
                     'id': itextPath
                 },
-                children: [
-                    { name: 'value',
-                      val: obj[translation.attrs.lang] }
-                ]
+                children: [{
+                    name: 'value',
+                    val: result
+                }]
             });
         })
     };
@@ -521,7 +547,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var result = generateIndent(indentLevel);
 
         if (_.isString(obj))
-            return result + obj + '\n';
+            return xmlEncode(result + obj) + '\n';
 
         result += '<' + obj.name;
 
@@ -533,7 +559,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         if (obj.val !== undefined)
         {
-            result += '>' + xmlEncode(obj.val) + '</' + obj.name + '>\n';
+            result += '>';
+            if (_.isString(obj.val))
+                result += obj.val;
+            else
+                result += '\n' + _.map(obj.val, function(elem) { return JSONtoXML(elem, indentLevel + 1); }).join('') + generateIndent(indentLevel);
+            result += '</' + obj.name + '>\n';
         }
         else if (obj.children !== undefined)
         {
