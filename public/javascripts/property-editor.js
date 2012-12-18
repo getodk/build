@@ -121,7 +121,7 @@
                 var $newRow = $('#templates .editors .uiText-translation').clone();
                 $newRow.find('h5').text(odkmaker.i18n.getFriendlyName(languageKey));
                 $newRow.find('.editorTextfield')
-                    .val(property.value[languageKey] || '')
+                    .val((property.value == null) ? '' : (property.value[languageKey] || ''))
                     .bind('keyup input', function(event)
                     {
                         property.value[languageKey] = $(this).val();
