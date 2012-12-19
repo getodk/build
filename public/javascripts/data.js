@@ -115,29 +115,32 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         {
             var result = [];
             var itext = obj[translation.attrs.lang];
-            var match;
 
-            while (match = itext.match(/\$\{[^}]+\}/))
+            if (itext)
             {
-                if (match.index > 0)
+                var match;
+                while (match = itext.match(/\$\{[^}]+\}/))
                 {
-                    result.push(itext.slice(0, match.index).trim());
-                    itext = itext.slice(match.index);
-                }
-
-                result.push({
-                    name: 'output',
-                    attrs: {
-                        value: itext.slice(2, match[0].length - 1)
+                    if (match.index > 0)
+                    {
+                        result.push(itext.slice(0, match.index).trim());
+                        itext = itext.slice(match.index);
                     }
-                });
-                itext = itext.slice(match[0].length);
-            }
-            if (itext.length > 0)
-                result.push(itext.trim());
 
-            if (result.length === 0)
-                result = obj[translation.attrs.lang];
+                    result.push({
+                        name: 'output',
+                        attrs: {
+                            value: itext.slice(2, match[0].length - 1)
+                        }
+                    });
+                    itext = itext.slice(match[0].length);
+                }
+                if (itext.length > 0)
+                    result.push(itext.trim());
+
+                if (result.length === 0)
+                    result = obj[translation.attrs.lang];
+            }
 
             translation.children.push({
                 name: 'text',
@@ -146,7 +149,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 },
                 children: [{
                     name: 'value',
-                    val: result
+                    children: result
                 }]
             });
         })
@@ -233,7 +236,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             // deal with children
             _.each(control.children, function(child)
             { 
-                parseControl(child, xpath + control.name + '/', instanceTag, translations, model, bodyTag, relevance);
+                parseControl(child, xpath + control.name + '/', instanceTag, translations, model, bodyTag, $.extend([], relevance));
             });
             return;
         }
@@ -559,12 +562,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         if (obj.val !== undefined)
         {
-            result += '>';
-            if (_.isString(obj.val))
-                result += obj.val;
-            else
-                result += '\n' + _.map(obj.val, function(elem) { return JSONtoXML(elem, indentLevel + 1); }).join('') + generateIndent(indentLevel);
-            result += '</' + obj.name + '>\n';
+            result += '>' + xmlEncode(obj.val) + '</' + obj.name + '>\n';
         }
         else if (obj.children !== undefined)
         {
