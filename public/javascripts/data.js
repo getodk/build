@@ -577,10 +577,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
     var xmlEncode = function(value)
     {
-        return value.replace(/"/g, '&quot;')
-                    .replace(/&(?!(?:[a-z0-9]{1,6}|#[a-f0-9]{4});)/ig, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
+        if (value == null)
+            return '';
+        else
+            return value.replace(/"/g, '&quot;')
+                        .replace(/&(?!(?:[a-z0-9]{1,6}|#[a-f0-9]{4});)/ig, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
     };
     var xmlValue = function(value)
     {
