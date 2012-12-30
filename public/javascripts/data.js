@@ -420,7 +420,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if (control.constraint !== '')
             constraint.push(control.constraint);
         // advanced calculate
-        if (control.calculate !== '')
+        if (control.calculate !== undefined && control.calculate !== '')
             binding.attrs.calculate = control.calculate;
 
         if (relevance.length > 0)
