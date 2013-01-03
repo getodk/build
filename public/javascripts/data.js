@@ -243,9 +243,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         {
             // instance
             var instanceTag = {
-                name: control.name,
-                attrs: {},
-                children: []
+                name: control.name
             };
             instance.children.push(instanceTag);
 
