@@ -123,7 +123,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 {
                     if (match.index > 0)
                     {
-                        result.push(itext.slice(0, match.index).trim());
+                        result.push(itext.slice(0, match.index));
                         itext = itext.slice(match.index);
                     }
 
@@ -136,7 +136,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     itext = itext.slice(match[0].length);
                 }
                 if (itext.length > 0)
-                    result.push(itext.trim());
+                    result.push(itext);
 
                 if (result.length === 0)
                     result = obj[translation.attrs.lang];
@@ -149,6 +149,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 },
                 children: [{
                     name: 'value',
+                    _noWhitespace: true,
                     children: result
                 }]
             });
@@ -243,9 +244,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         {
             // instance
             var instanceTag = {
-                name: control.name,
-                attrs: {},
-                children: []
+                name: control.name
             };
             instance.children.push(instanceTag);
 
@@ -561,12 +560,20 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
         else if (obj.children !== undefined)
         {
-            result += '>\n';
-            _.each(obj.children, function(child)
+            if (obj._noWhitespace !== true)
             {
-                result += JSONtoXML(child, indentLevel + 1);
-            });
-            result += generateIndent(indentLevel) + '</' + obj.name + '>\n';
+                result += '>\n';
+                _.each(obj.children, function(child)
+                {
+                    result += JSONtoXML(child, indentLevel + 1);
+                });
+                result += generateIndent(indentLevel);
+            }
+            else
+            {
+                result += '>' + _.map(obj.children, function(child) { return JSONtoXML(child, 0).slice(0, -1); }).join('');
+            }
+            result += '</' + obj.name + '>\n';
         }
         else
         {
