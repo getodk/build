@@ -10,3 +10,4 @@ config.yml
 .build_time
 public/javascripts/build.js
 tmp/
+build/

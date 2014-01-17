@@ -1,0 +1,20 @@
+{
+  "name": "odkbuild",
+  "version": "0.1.0",
+  "author": "Clint Tseng <clint@dontexplain.com>",
+  "description": "offline desktop app branch of odkbuild",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/clint-tseng/odkbuild.git#offline"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "main": "public/index.html",
+  "window": {
+    "title": "ODK Build",
+    "toolbar": true,
+    "width": 1000,
+    "height": 800
+  }
+}
