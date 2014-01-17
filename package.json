@@ -13,7 +13,7 @@
   "main": "public/index.html",
   "window": {
     "title": "ODK Build",
-    "toolbar": true,
+    "toolbar": false,
     "width": 1000,
     "height": 800
   }

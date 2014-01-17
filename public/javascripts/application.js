@@ -88,5 +88,17 @@ $(function()
     // No loading screen here
     $('.loadingScreen').remove();
     $('.preloadImages').remove();
+
+    // Trigger devtools
+    var lastPress = 0;
+    $('body').keydown(function(event)
+    {
+        if (event.which == 192)
+        {
+            var now = (new Date()).getTime()
+            if (now - lastPress < 250) { require('nw.gui').Window.get().showDevTools() }
+            lastPress = now
+        }
+    });
 });
 
