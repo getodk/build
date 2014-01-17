@@ -1,0 +1,10 @@
+.header
+{
+    display: none;
+}
+
+.workspaceScrollArea, .propertiesPane
+{
+    top: 0.5em;
+}
+
