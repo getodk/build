@@ -21,6 +21,7 @@ build/app.nw: build
 	@echo "done"
 
 run:
+	killall  node-webkit || true
 	open build/app.nw
 
 go:	clean all run
