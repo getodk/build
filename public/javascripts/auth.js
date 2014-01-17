@@ -36,35 +36,7 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
 
     authNS.verify = function(callback)
     {
-        // Get current user status from server
-        $.ajax({
-            url: '/user',
-            dataType: 'json',
-            type: 'GET',
-            complete: function()
-            {
-                setTimeout(function()
-                {
-                    $('.loadingScreen')
-                        .fadeOut('normal', function()
-                        {
-                            $(this).remove();
-                        });
-                    $('.preloadImages').remove();
-                }, 200); // give a bit of extra time in case the load was instantaneous
-            },
-            success: function(response, status)
-            {
-                authNS.currentUser = response;
-                (callback || signinSuccessful)(response, status);
-            },
-            error: function(request, status, error)
-            {
-                authNS.currentUser = null;
-                noAuthMessage();
-                $('.signinDialog').jqmShow();
-            }
-        });
+        callback();
     };
 
     $(function()
@@ -249,7 +221,5 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
                 }
             });
         });
-
-        authNS.verify();
     });
 })(jQuery);
