@@ -10,12 +10,16 @@ var fileMenu = new gui.Menu();
 
 // file -> new
 var fileNew = new gui.MenuItem({ label: 'New Form' });
-fileNew.on('click', function() { $('.menu .newLink').click(); });
+fileNew.on('click', function()
+{
+    currentPath = null;
+    $('.menu .newLink').click();
+});
 fileMenu.append(fileNew);
 
 // file -> open
 var fileOpen = new gui.MenuItem({ label: 'Open Form...' });
-fileOpen.on('click', function() { /* TODO */ });
+fileOpen.on('click', function() { odkmaker.file.open(); });
 fileMenu.append(fileOpen);
 
 // ---
@@ -23,12 +27,12 @@ fileMenu.append(new gui.MenuItem({ type: 'separator' }));
 
 // file -> save
 var fileSave = new gui.MenuItem({ label: 'Save Form' });
-fileSave.on('click', function() { /* TODO */ });
+fileSave.on('click', function() { odkmaker.file.save(true); });
 fileMenu.append(fileSave);
 
 // file -> save as
 var fileSaveAs = new gui.MenuItem({ label: 'Save Form As...' });
-fileSaveAs.on('click', function() { /* TODO */ });
+fileSaveAs.on('click', function() { odkmaker.file.save(false); });
 fileMenu.append(fileSaveAs);
 
 // ---
@@ -36,7 +40,7 @@ fileMenu.append(new gui.MenuItem({ type: 'separator' }));
 
 // file -> export
 var fileExport = new gui.MenuItem({ label: 'Export to XML...' });
-fileExport.on('click', function() { /* TODO */ });
+fileExport.on('click', function() { odkmaker.file.export(); });
 fileMenu.append(fileExport);
 
 
