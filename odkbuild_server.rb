@@ -197,28 +197,17 @@ class OdkBuild < Sinatra::Application
   post '/binary/load' do
     # read up whatever file we got, dump it right back to client
 
-    # first try ruby unmarshal.
     result = nil
     begin
+      # first try ruby unmarshal.
       result = (Marshal.load params[:file][:tempfile]).to_json
     rescue
+      # otherwise just return as-is.
+      params[:file][:tempfile].rewind
+      result = params[:file][:tempfile]
     end
 
-    # next test json parse
-    if result.nil?
-      begin
-        result = params[:file][:tempfile]
-        JSON.parse result
-      rescue
-        result = nil
-      end
-    end
-
-    if result.nil?
-      return { :error => true }.to_json
-    else
-      return result
-    end
+    return result
   end
 
   # bounce a payload through the server to aggregate
