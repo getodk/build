@@ -14,6 +14,7 @@
   "window": {
     "title": "ODK Build",
     "toolbar": false,
+    "icon": "public/images/256.png",
     "width": 1000,
     "height": 800
   }

@@ -1,7 +1,7 @@
 ;(function($) {
 
 var gui = require('nw.gui');
-
+var os = require('os');
 
 
 ////////
@@ -122,10 +122,21 @@ settingsMenu.append(editLanguages);
 
 
 var menu = new gui.Menu({ type: 'menubar' });
-gui.Window.get().menu = menu;
-menu.insert(new gui.MenuItem({ label: 'File', submenu: fileMenu }), 1);
-menu.insert(new gui.MenuItem({ label: 'View', submenu: viewMenu }), 3);
-menu.insert(new gui.MenuItem({ label: 'Settings', submenu: settingsMenu }), 4);
+
+if (os.platform() == 'darwin')
+{
+    gui.Window.get().menu = menu;
+    menu.insert(new gui.MenuItem({ label: 'File', submenu: fileMenu }), 1);
+    menu.insert(new gui.MenuItem({ label: 'View', submenu: viewMenu }), 3);
+    menu.insert(new gui.MenuItem({ label: 'Settings', submenu: settingsMenu }), 4);
+}
+else
+{
+    menu.append(new gui.MenuItem({ label: 'File', submenu: fileMenu }));
+    menu.append(new gui.MenuItem({ label: 'View', submenu: viewMenu }));
+    menu.append(new gui.MenuItem({ label: 'Settings', submenu: settingsMenu }));
+    gui.Window.get().menu = menu;
+}
 
 
 })(jQuery);
