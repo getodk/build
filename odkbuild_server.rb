@@ -190,16 +190,34 @@ class OdkBuild < Sinatra::Application
   post '/binary/save' do
     content_type 'application/octet-stream'
     attachment params[:filename]
-    return Marshal.dump JSON.parse params[:payload]
+    return params[:payload]
   end
 
   # bounce a file off the server and deserialize it for native upload
   post '/binary/load' do
     # read up whatever file we got, dump it right back to client
+
+    # first try ruby unmarshal.
+    result = nil
     begin
-      return (Marshal.load params[:file][:tempfile]).to_json
+      result = (Marshal.load params[:file][:tempfile]).to_json
     rescue
+    end
+
+    # next test json parse
+    if result.nil?
+      begin
+        result = params[:file][:tempfile]
+        JSON.parse result
+      rescue
+        result = nil
+      end
+    end
+
+    if result.nil?
       return { :error => true }.to_json
+    else
+      return result
     end
   end
 
