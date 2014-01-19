@@ -51,6 +51,7 @@
 
     var selectControl = function($this, type, options, properties)
     {
+        $('.workspace .control.selected').removeClass('selected');
         $this.addClass('selected');
 
 		// clear out and reconstruct property list
