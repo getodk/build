@@ -1,26 +1,31 @@
-h1. odkbuild — wysiwyg web-based xforms editor for the odk subset
+h1. odkbuild
+
+wysiwyg xforms editor for the odk subset
 
 h2. Usage
 
-odkbuild (formerly odkmaker) is a web-based service. Unless you mean to do development on it, just go to http://build.opendatakit.org to give it a try.
+This particular branch of odkbuild is for the offline version of the application. It's much simpler since there's no infrastructure required to store user authentication or communicate with a server, and it's much better for users in sparsely-connected regions since we can just interact with files locally.
+
+Please see the "releases page":https://github.com/clint-tseng/odkbuild/releases to download the latest release of the application.
 
 h2. Development
 
-odkbuild is a Ruby Rack-based application. Everything it needs is kicked off by the config.ru Rackup file. We use @shotgun@ for local development and Phusion Passenger for staging and production deployment.
+The app is built using a modified version of the client-side code in ODK Build, and runs on top of "node-webkit":https://github.com/rogerwang/node-webkit . There is a @Makefile@ present that will build a correct @app.nw@ under the @build/@ directory -- run that package using node-webkit to test out the application. There is also a shortcut target @make go@ that will spawn the node-webkit process with a fresh build of your application if you are on OS X.
 
-h3. Dependencies
+To package and distribute the app, please follow the instructions on the "node-webkit wiki":https://github.com/rogerwang/node-webkit/wiki/How-to-package-and-distribute-your-apps .
 
-The project has one native dependency: Tokyo Tyrant. We use this as our datastore. You'll have to build it natively for any system you want to run the server on. See http://fallabs.com/tokyotyrant/ for details.
+The following things differ from the mainline branch:
 
-Once you have that, all Rubygem dependencies are managed by Ruby Bundler. Make sure you have at least version 1.0.0 of Bundler installed (@gem update --system && gem install bundler@ if you don't have it already), and then simply run @bundle install@ in the application root to resolve and install the appropriate dependencies.
+* All server-side source files are removed for clarity.
+* The main app markup at @views/index.erb@ has been rewritten to a static file at @public/index.html@. The script tags have been hardcoded in rather than being loaded from @assets.yml@. The image preloader has been removed.
+* @auth.js@ blindly reports a present user, and approves all authed actions.
+* @application.js@ now hides the loading screen immediately, and activates the webkit dev inspector when one presses @~~@.
+* @file.js@ is a new set of code that manages file saving and loading, including XML export.
+* @menu.js@ is a new set of code that manages the application menu.
+* @override.css@ is a new stylesheet that adapts the existing styles for native ui use.
 
-h3. Setup and Execution
+In addition, the following automatic source transforms are performed on compilation:
 
-Now that you have resolved all the appropriate dependencies, you'll need to set up the configuration by copying @config.yml.sample@ to @config.yml@. This file contains a number of secret keys and tokens, so be sure not to check it into source control once you put your own keys into it.
-
-Next, you want to start up your databases. You'll need to start four Tokyo Tyrant instances, one for each listing in the configuration file. If you're working from a development environment, you can do this simply by running @rake db:dev:start@, and @rake db:dev:stop@ to stop them again.
-
-Finally, you'll want to run @bundle exec rackup config.ru@ to start the server, or @bundle exec shotgun config.ru@ if you want the application to automatically detect your changes to source code and load them up when you refresh the app in your web browser.
-
-If you're running Build in a production environment, there are a couple of things that the application needs to build before it will run. Before first-run, and after each time you update with a new version, you'll want to run @rake deploy:build@. This will bundle all the assets the application needs for speed an ease of deployment.
+* @styles.css@ automatically has all absolute resource references renamed to relative references.
+* The @images/@ directory is cloned into the stylesheets directory to work with the above.
 
