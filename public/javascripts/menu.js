@@ -41,16 +41,59 @@ fileMenu.append(fileExport);
 
 
 
+/////////////////////
+// VIEW -> LANGUAGES
+var languageMenu = new gui.Menu();
+var languageItems = {};
+var updateLanguages = function()
+{
+    var currentLanguages = odkmaker.i18n.activeLanguages();
+
+    _.each(currentLanguages, function(language)
+    {
+        if (!languageItems[language])
+        {
+            var item = new gui.MenuItem({ type: 'checkbox', label: odkmaker.i18n.getFriendlyName(language) });
+            item.on('click', function()
+            {
+                _.each(languageItems, function(item) { item.checked = false; });
+                item.checked = true;
+
+                odkmaker.i18n.displayLanguage(language);
+                $('.workspace .control').trigger('odkControl-propertiesUpdated');
+            });
+            if (odkmaker.i18n.displayLanguage() === language)
+                item.checked = true;
+
+            languageItems[language] = item;
+            languageMenu.append(item);
+        }
+    });
+
+    _.each(languageItems, function(item, language)
+    {
+        if (currentLanguages.indexOf(language) < 0)
+        {
+            languageMenu.remove(languageItems[language]);
+            delete languageItems[language];
+        }
+    });
+};
+updateLanguages();
+$('body').bind('odk-activeLanguagesChanged', updateLanguages);
+
+
+
 ////////
 // VIEW
 var viewMenu = new gui.Menu();
 
-// edit -> form properties
-var viewLanguage = new gui.MenuItem({ label: 'Displayed Language' });
+// view -> form properties
+var viewLanguage = new gui.MenuItem({ label: 'Displayed Language', submenu: languageMenu });
 viewLanguage.on('click', function() { /* TODO */ });
 viewMenu.append(viewLanguage);
 
-// edit -> languages
+// view -> languages
 var viewCollapse = new gui.MenuItem({ type: 'checkbox', label: 'Collapse Controls' });
 viewCollapse.on('click', function() { $('.header .menu .toggleCollapsed').click(); });
 viewMenu.append(viewCollapse);

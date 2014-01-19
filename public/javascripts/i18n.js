@@ -202,6 +202,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
     };
     i18nNS.setActiveLanguages = function(newActive)
     {
+        $('body').trigger('odk-activeLanguagesChanged');
         active = newActive || ['eng'];
     };
 
@@ -276,6 +277,10 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             var languageKey = $selectedOption.attr('value');
             active.push(languageKey);
 
+            // event
+            $('body').trigger('odk-activeLanguagesChanged');
+
+
             // update dialog ui
             $('.translationsDialog .translationList').append(createTranslationRow(languageKey, languages[languageKey]));
             $selectedOption.remove();
@@ -309,6 +314,9 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
 
             $.removeFromArray(languageKey,active);
             display = active[0];
+
+            // event
+            $('body').trigger('odk-activeLanguagesChanged');
 
             // update dialog ui
             $('.translationSelect').append($('<option value="' + languageKey + '">' + languages[languageKey] + '</option>'));
