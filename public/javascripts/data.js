@@ -212,6 +212,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             // field-list
             if (control.fieldList === true)
             {
+                // per #9 from jluis859, a group with both field-list and looped
+                // breaks unless nested.
+                if (control.loop === true)
+                {
+                    var innerBodyTag = { name: 'group', attrs: {}, children: [] };
+                    bodyTag.children.push(innerBodyTag);
+                    bodyTag = innerBodyTag;
+                }
+
                 bodyTag.attrs.appearance = 'field-list';
             }
 
