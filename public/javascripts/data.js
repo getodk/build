@@ -103,6 +103,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         inputText: 'input',
         inputNumeric: 'input',
         inputDate: 'input',
+        inputTime: 'input',
         inputLocation: 'input',
         inputMedia: 'upload',
         inputBarcode: 'input',
@@ -327,7 +328,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 binding.attrs.type = 'decimal';
         }
         else if (control.type == 'inputDate')
-            binding.attrs.type = 'date';
+        {
+            if ((control.kind == null) || (control.kind == 'Date'))
+                binding.attrs.type = 'date';
+            else if (control.kind == 'Date and Time')
+                binding.attrs.type = 'dateTime';
+        }
+        else if (control.type == 'inputTime')
+            binding.attrs.type = 'time';
         else if (control.type == 'inputLocation')
             binding.attrs.type = 'geopoint';
         else if (control.type == 'inputMedia')

@@ -1006,12 +1006,13 @@ body > .control.last .controlFlowArrow,
 .inputSelectOne .typeIcon  { background-position: 0 -320px; }
 .inputSelectMany .typeIcon { background-position: 0 -384px; }
 .inputBarcode .typeIcon    { background-position: 0 -576px; }
+.inputTime .typeIcon    { background-position: 0 -640px; }
 
 .collapsed .control .controlInfo .typeIcon
 {
     background-image: url(/images/type_icons_small.png?1);
-    height: 24px;
-    width: 24px;
+    height: 20px;
+    width: 20px;
 }
 .collapsed .group .typeIcon           { background-position: 0 -168px; }
 .collapsed .branch .typeIcon          { background-position: 0 -192px; }
@@ -1023,4 +1024,5 @@ body > .control.last .controlFlowArrow,
 .collapsed .inputSelectOne .typeIcon  { background-position: 0 -120px; }
 .collapsed .inputSelectMany .typeIcon { background-position: 0 -144px; }
 .collapsed .inputBarcode .typeIcon    { background-position: 0 -216px; }
+.collapsed .inputTime .typeIcon    { background-position: 0 -240px; }
 
