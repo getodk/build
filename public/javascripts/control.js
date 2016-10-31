@@ -344,11 +344,13 @@
         inputSelectOne: {
           options:    { name: 'Options',
                         type: 'optionsEditor',
+                        limit: [ 'underlyingrequired', 'underlyingvalid' ],
                         value: [],
                         summary: false } },
         inputSelectMany: {
           options:    { name: 'Options',
                         type: 'optionsEditor',
+                        limit: [ 'underlyingrequired', 'underlyingvalid' ],
                         value: [],
                         summary: false } },
         group: {

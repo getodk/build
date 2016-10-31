@@ -13,7 +13,9 @@
         alphanumeric: 'Only letters and numbers are allowed.',
         alphastart: 'The first character may not be a number.',
         unique: 'This property must be unique; there is another control that conflicts with it.',
-        atomicchildren: 'A group may not have this option active if it has groups within it.'
+        atomicchildren: 'A group may not have this option active if it has groups within it.',
+        underlyingrequired: 'One or more Underlying Value has not been provided; they are required.',
+        underlyingvalid: 'One or more Underlying Value contains invalid characters: only letters and numbers are allowed.'
     };
     // private methods
     var validateProperty = function($this, property, name, $parent)
@@ -57,7 +59,6 @@
                     break;
 
                 case 'atomicchildren':
-                    console.log('validating atomicity for ' + property.value);
                     if (property.value !== true)
                         break; // not relevant unless we are a field-list.
 
@@ -67,6 +68,22 @@
                         okay = okay && !$(this).hasClass('group');
                     });
                     if (!okay)
+                        validationErrors.push(limit);
+                    break;
+
+                case 'underlyingrequired':
+                    if ((property.value == null) || (property.value.length === 0))
+                        break; // no options yet.
+
+                    if (_.any(property.value, function(option) { return option.val == null || option.val == ''; }))
+                        validationErrors.push(limit);
+                    break;
+
+                case 'underlyingvalid':
+                    if ((property.value == null) || (property.value.length === 0))
+                        break; // no options yet.
+
+                    if (_.any(property.value, function(option) { return option.val != null && /[^0-9a-z_]/i.exec(option.val); }))
                         validationErrors.push(limit);
                     break;
             }
