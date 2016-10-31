@@ -47,8 +47,9 @@
                         break; // we have not been inserted yet.
 
                     var okay = true;
-                    $parent.siblings('.control').each(function()
+                    $('.workspace .control').each(function()
                     {
+                        if (this == $parent.get(0)) return; // we found ourselves.
                         okay = okay && ($(this).data('odkControl-properties')[name].value != property.value);
                     });
                     if (!okay)

@@ -42,6 +42,11 @@
             );
         });
 
+        validateControl($this, properties);
+    };
+
+    var validateControl = function($this, properties)
+    {
         // revalidate either with the already-initialized components or make a new set of temporary components.
         if ($this.hasClass('selected'))
             $('.propertyList > li, .advancedProperties > li').trigger('odkProperty-validate');
@@ -211,6 +216,9 @@
                 },
                 insertPlaceholder: false
             });
+
+            // validate upon creation.
+            _.defer(function() { validateControl($this, properties); });
 
             // fill in the flow arrow
             _.defer(function() { $this.find('.controlFlowArrow').triangle(); });
