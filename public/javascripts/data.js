@@ -433,7 +433,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if ((control.invalidText !== undefined) && !_.isEmpty(control.invalidText))
         {
             binding.attrs['jr:constraintMsg'] = "jr:itext('" + xpath + control.name + ":constraintMsg')"
-            addTranslation(control.label, xpath + control.name + ':constraintMsg', translations);
+            addTranslation(control.invalidText, xpath + control.name + ':constraintMsg', translations);
         }
         else if (invalidText != null)
         {
