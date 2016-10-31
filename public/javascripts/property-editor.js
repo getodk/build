@@ -338,7 +338,7 @@
                             name: 'Option ' + (index + 1),
                             type: 'uiText',
                             value: data.text
-                        }, $parent)
+                        }, null, $parent)
                         .prepend($removeLink)
                         .append($underlyingValueEdit));
     };
