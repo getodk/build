@@ -359,6 +359,7 @@ body
     -moz-user-select: -moz-none;
     -webkit-user-select: none;
     position: absolute;
+    z-index: 1;
 }
 .toolPalette h3
 {
