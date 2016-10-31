@@ -11,6 +11,7 @@
     var validationMessages = {
         required: 'This property is required.',
         alphanumeric: 'Only letters and numbers are allowed.',
+        alphastart: 'The first character may not be a number.',
         unique: 'This property must be unique; there is another control that conflicts with it.'
     };
     // private methods
@@ -32,6 +33,11 @@
 
                 case 'alphanumeric':
                     if (!_.isString(property.value) || property.value.match(/[^0-9a-z_]/i))
+                        validationErrors.push(limit);
+                    break;
+
+                case 'alphastart':
+                    if (!_.isString(property.value) || property.value.match(/^[0-9]/))
                         validationErrors.push(limit);
                     break;
 

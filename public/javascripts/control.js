@@ -207,7 +207,7 @@
         name:         { name: 'Data Name',
                         type: 'text',
                         description: 'The data name of this field in the final exported XML.',
-                        limit: [ 'required', 'alphanumeric', 'unique' ],
+                        limit: [ 'required', 'alphanumeric', 'unique', 'alphastart' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
