@@ -42,8 +42,18 @@
             );
         });
 
+        // revalidate either with the already-initialized components or make a new set of temporary components.
         if ($this.hasClass('selected'))
             $('.propertyList > li, .advancedProperties > li').trigger('odkProperty-validate');
+        else
+        {
+            var $validationProps = $('<ul/>');
+            _.each(properties, function(property, name)
+            {
+                $('<li/>').propertyEditor(property, name, $this).appendTo($validationProps);
+            });
+            $validationProps.children().trigger('odkProperty-validate');
+        }
 
         $this.toggleClass('error', _.any(properties, function(property) { return _.isArray(property.validationErrors) &&
                                                                                  (property.validationErrors.length > 0); }));
@@ -54,19 +64,19 @@
         $('.workspace .control.selected').removeClass('selected');
         $this.addClass('selected');
 
-		// clear out and reconstruct property list
+        // clear out and reconstruct property list
         var $propertyList = $('.propertyList');
         $propertyList.empty();
 
-		var $advancedContainer = $.tag({
-			_: 'li', 'class': 'advanced', contents: [
-				{ _: 'a', 'class': 'toggle', href: '#advanced', contents: [
-					{ _: 'div', 'class': 'icon' },
-					'Advanced'
-				] },
-				{ _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: 'none' } }
-			]
-		});
+        var $advancedContainer = $.tag({
+            _: 'li', 'class': 'advanced', contents: [
+                { _: 'a', 'class': 'toggle', href: '#advanced', contents: [
+                    { _: 'div', 'class': 'icon' },
+                    'Advanced'
+                ] },
+                { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: 'none' } }
+            ]
+        });
         var $advancedList = $advancedContainer.find('.advancedProperties');
 
         // add our hero's properties
@@ -77,8 +87,8 @@
                 .appendTo((property.advanced === true) ? $advancedList : $propertyList);
         });
 
-		// drop in advanced
-		$propertyList.append($advancedContainer);
+        // drop in advanced
+        $propertyList.append($advancedContainer);
     };
 
     // Constructor
@@ -148,6 +158,9 @@
                 draggableOptions: {
                     start: function(event, ui)
                     {
+                        // keep track of old parents to revalidate.
+                        var $parents = $this.parents('.control');
+
                         ui.helper.width($this.width());
                         cachedHeight = $this.outerHeight(true);
                         $this
@@ -156,6 +169,9 @@
                                     .css('height', cachedHeight + 'px'))
                             .hide()
                             .appendTo($('body'));
+
+                        // trigger revalidation to possibly free up some validation errors.
+                        $parents.trigger('odkControl-propertiesUpdated');
                     }
                 },
                 dragCallback: function($control, direction)
@@ -189,6 +205,9 @@
                     else
                         $this.appendTo('.workspace');
                     $this.show();
+
+                    // trigger revalidation on parents as adding components can cause new errors.
+                    $this.parents('.control').trigger('odkControl-propertiesUpdated');
                 },
                 insertPlaceholder: false
             });
@@ -345,6 +364,7 @@
           fieldList:  { name: 'Display On One Screen',
                         type: 'bool',
                         description: 'Display all the controls in this group on one screen',
+                        limit: [ 'atomicchildren' ],
                         value: false },
         relevance:    { name: 'Relevance',
                         type: 'text',

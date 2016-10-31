@@ -574,8 +574,11 @@ body
     background-color: #73823f;
 }
 .control.error > .controlInfo,
+.control.group.error > .controlInfo,
 .control.error > .controlFlowArrow .slice,
-.control.error > .groupFooter
+.control.group.error > .controlFlowArrow .slice,
+.control.error > .groupFooter,
+.control.group.error > .groupFooter
 {
     background-color: #a20f0f;
 }

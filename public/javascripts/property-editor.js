@@ -12,7 +12,8 @@
         required: 'This property is required.',
         alphanumeric: 'Only letters and numbers are allowed.',
         alphastart: 'The first character may not be a number.',
-        unique: 'This property must be unique; there is another control that conflicts with it.'
+        unique: 'This property must be unique; there is another control that conflicts with it.',
+        atomicchildren: 'A group may not have this option active if it has groups within it.'
     };
     // private methods
     var validateProperty = function($this, property, name, $parent)
@@ -46,9 +47,23 @@
                         break; // we have not been inserted yet.
 
                     var okay = true;
-                    $parent.siblings().each(function()
+                    $parent.siblings('.control').each(function()
                     {
                         okay = okay && ($(this).data('odkControl-properties')[name].value != property.value);
+                    });
+                    if (!okay)
+                        validationErrors.push(limit);
+                    break;
+
+                case 'atomicchildren':
+                    console.log('validating atomicity for ' + property.value);
+                    if (property.value !== true)
+                        break; // not relevant unless we are a field-list.
+
+                    var okay = true;
+                    $parent.find('> .workspaceInnerWrapper > .workspaceInner').children().each(function()
+                    {
+                        okay = okay && !$(this).hasClass('group');
                     });
                     if (!okay)
                         validationErrors.push(limit);
