@@ -366,10 +366,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
         else if (control.type == 'inputDate')
         {
-            if ((control.kind == null) || (control.kind == 'Date'))
-                binding.attrs.type = 'date';
-            else if (control.kind == 'Date and Time')
+            if (control.kind == 'Full Date and Time')
                 binding.attrs.type = 'dateTime';
+            else
+                binding.attrs.type = 'date';
         }
         else if (control.type == 'inputTime')
             binding.attrs.type = 'time';
@@ -460,6 +460,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             if (finalAppearance != null)
                 bodyTag.attrs.appearance = finalAppearance;
         }
+        if ((control.type === 'inputDate') && ((control.kind === 'Year and Month') || (control.kind === 'Year')))
+            bodyTag.attrs.appearance = (control.kind === 'Year') ? 'year' : 'month-year';
 
         // options
         if (control.options !== undefined)

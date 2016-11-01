@@ -335,9 +335,8 @@
           kind:       { name: 'Kind',
                         type: 'enum',
                         description: 'Type of value to prompt for.',
-                        options: [ 'Date',
-                                   'Date and Time' ],
-                        value: 'Date',
+                        options: [ 'Full Date', 'Year and Month', 'Year', 'Full Date and Time' ],
+                        value: 'Full Date',
                         summary: true } },
         inputTime: {},
         inputLocation: {
