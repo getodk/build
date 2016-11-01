@@ -407,7 +407,7 @@
             kind:     { name: 'Kind',
                         type: 'enum',
                         description: 'Type of metadata to add.',
-                        options: [ 'Device ID', 'Start Time', 'End Time'],
+                        options: [ 'Device ID', 'Start Time', 'End Time', 'Today', 'Username', 'Subscriber ID', 'SIM Serial', 'Phone Number' ],
                         value: 'Device ID',
                         summary: true} },
     };
