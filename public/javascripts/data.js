@@ -449,6 +449,17 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             invalidText = 'Value must be between ' + control.range.min + ' and ' + control.range.max;
         }
 
+        // select multiple range
+        if ((control.count !== undefined) && (control.count !== false))
+        {
+            constraint.push('count-selected(.) ' +
+                (control.count.minInclusive ? '&gt;=' : '&gt;') + ' ' +
+                xmlValue(control.count.min) + ' and count-selected(.) ' +
+                (control.count.maxInclusive ? '&lt;=' : '&lt;') + ' ' +
+                xmlValue(control.count.max));
+            invalidText = 'Must choose between ' + control.count.min + ' and ' + control.count.max + ' options';
+        }
+
         // media kind
         if (control.type == 'inputMedia')
             bodyTag.attrs.mediatype = control.kind.toLowerCase() + '/*';
