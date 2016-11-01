@@ -340,7 +340,15 @@
                         value: 'Date',
                         summary: true } },
         inputTime: {},
-        inputLocation: {},
+        inputLocation: {
+          kind:       { name: 'Kind',
+                        type: 'enum',
+                        description: 'Type of location information to collect.',
+                        options: [ 'Point',
+                                   'Path',
+                                   'Shape' ],
+                        value: 'Point',
+                        summary: true } },
         inputMedia: {
           kind:       { name: 'Kind',
                         type: 'enum',

@@ -367,7 +367,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         else if (control.type == 'inputTime')
             binding.attrs.type = 'time';
         else if (control.type == 'inputLocation')
-            binding.attrs.type = 'geopoint';
+        {
+            if ((control.kind == null) || (control.kind == 'Point'))
+                binding.attrs.type = 'geopoint';
+            else if (control.kind == 'Path')
+                binding.attrs.type = 'geotrace';
+            else if (control.kind == 'Shape')
+                binding.attrs.type = 'geoshape';
+        }
         else if (control.type == 'inputMedia')
             binding.attrs.type = 'binary';
         else if (control.type == 'inputBarcode')
