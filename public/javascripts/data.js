@@ -110,6 +110,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         inputSelectOne: 'select1',
         inputSelectMany: 'select'
     };
+    var appearanceTypes = {
+        'Show Map (GPS)': 'maps',
+        'Manual (No GPS)': 'placement-map',
+        'Minimal (spinner)': 'minimal',
+        'Table': 'label',
+        'Horizontal Layout': 'horizontal'
+    };
     var addTranslation = function(obj, itextPath, translations)
     {
         _.each(translations.children, function(translation)
@@ -445,6 +452,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // media kind
         if (control.type == 'inputMedia')
             bodyTag.attrs.mediatype = control.kind.toLowerCase() + '/*';
+
+        // appearance
+        if (control.appearance != null)
+        {
+            var finalAppearance = appearanceTypes[control.appearance];
+            if (finalAppearance != null)
+                bodyTag.attrs.appearance = finalAppearance;
+        }
 
         // options
         if (control.options !== undefined)
