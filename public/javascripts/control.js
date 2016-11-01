@@ -365,7 +365,7 @@
         inputSelectOne: {
           options:    { name: 'Options',
                         type: 'optionsEditor',
-                        limit: [ 'underlyingrequired', 'underlyingvalid' ],
+                        limit: [ 'underlyingrequired', 'underlyingvalid', 'hasoptions' ],
                         value: [],
                         summary: false },
           appearance: { name: 'Style',
@@ -377,7 +377,7 @@
         inputSelectMany: {
           options:    { name: 'Options',
                         type: 'optionsEditor',
-                        limit: [ 'underlyingrequired', 'underlyingvalid' ],
+                        limit: [ 'underlyingrequired', 'underlyingvalid', 'hasoptions' ],
                         value: [],
                         summary: false },
           count:      { name: 'Response Count',
