@@ -176,6 +176,7 @@
                             .appendTo($('body'));
 
                         // trigger revalidation to possibly free up some validation errors.
+                        $this.trigger('odkControl-propertiesUpdated');
                         $parents.trigger('odkControl-propertiesUpdated');
                     }
                 },
@@ -212,6 +213,7 @@
                     $this.show();
 
                     // trigger revalidation on parents as adding components can cause new errors.
+                    $this.trigger('odkControl-propertiesUpdated');
                     $this.parents('.control').trigger('odkControl-propertiesUpdated');
                 },
                 insertPlaceholder: false
@@ -268,6 +270,7 @@
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this field is shown.',
                         value: '',
+                        limit: [ 'notinfieldlist' ],
                         advanced: true,
                         summary: false },
         constraint:   { name: 'Constraint',
@@ -418,6 +421,7 @@
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this group is shown.',
                         value: '',
+                        limit: [ 'notinfieldlist' ],
                         advanced: true,
                         summary: false } },
         branch: {
