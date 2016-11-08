@@ -217,7 +217,7 @@
                 };
             };
 
-            if (property.value === false)
+            if ((property.value === false) || (property.value == null))
                 $inputs.attr('disabled', true);
             else
                 $inputs
