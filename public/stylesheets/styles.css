@@ -789,6 +789,13 @@ body > .control.last .controlFlowArrow,
     margin-left: 14em;
 }
 
+.openDialog .formList
+{
+    max-height: 30em;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .openDialog .formList li.loading,
 .openDialog .formList li.loading:hover
 {
