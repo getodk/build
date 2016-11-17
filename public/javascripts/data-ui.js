@@ -249,12 +249,28 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         {
             event.preventDefault();
 
-            var $form = $('<form action="/aggregate/post" method="post" target="blank" />');
-            $form
-                .append($('<input type="hidden" name="payload"/>').val(dataNS.serialize()))
-                .append($('<input type="hidden" name="aggregate_instance_name"/>').val($('.aggregateInstanceName').val()));
-            $form.appendTo($('body'));
-            $form.submit();
+            var $loading = $('.aggregateDialog .modalLoadingOverlay');
+            var target = $('.aggregateInstanceName').val();
+            $loading.show();
+            $.ajax({
+                url: '/aggregate/post',
+                dataType: 'json',
+                type: 'POST',
+                data: { target: target, credentials: { user: $('#aggregateUser').val(), password: $('#aggregatePassword').val() }, name: $('h1').text(), payload: odkmaker.data.serialize() },
+                success: function(response, status)
+                {
+                    $.toast('Your form has been successfully uploaded to ' + $.h(target) + '.');
+                    $('.aggregateDialog').jqmHide();
+                },
+                error: function(request, status, error)
+                {
+                    $('.aggregateDialog .errorMessage')
+                        .empty()
+                        .append('<p>Could not upload the form. Please check your credentials and instance name, and try again.</p>')
+                        .slideDown();
+                },
+                complete: function() { $loading.hide(); }
+            });
         });
     });
 })(jQuery);

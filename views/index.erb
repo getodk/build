@@ -297,12 +297,19 @@
     <div class="modal narrowModal aggregateDialog">
       <h3>Export</h3>
       <div class="modalContents">
+        <div class="errorMessage"></div>
         <p>You will be asked to authenticate with the Aggregate instance in order to
            be able to export the form there. Please supply your Google account information
            when prompted.</p>
 
         <h4>Aggregate Instance URI</h4>
-        <p>http://<input type="text" class="aggregateInstanceName"/>.appspot.com/</p>
+        <p>https://<input type="text" class="aggregateInstanceName"/>.appspot.com/</p>
+        <h4>Aggregate Credentials</h4>
+        <label for="aggregateUser">Username</label> <input type="text" id="aggregateUser"/>
+        <label for="aggregatePassword">Password</label> <input type="password" id="aggregatePassword"/>
+        <p><strong>Note:</strong> this is your Aggregate account information, <em>not</em>
+          your Google account. You may leave these blank if your Aggregate instance
+          allows anonymous form uploading.</p>
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton aggregateExportButton" href="#export">Export</a>

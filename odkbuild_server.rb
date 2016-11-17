@@ -2,8 +2,11 @@
 
 require 'sinatra'
 require 'json'
-require 'oauth'
 
+require 'date'
+require 'uri'
+require 'net/https'
+require 'net/http/digest_auth'
 require './lib/multipart'
 
 require './model/user'
@@ -215,53 +218,45 @@ class OdkBuild < Sinatra::Application
     # make sure we're good to go
     user = env['warden'].user
     return error_permission_denied unless user
+    return error_validation_failed unless params[:target]
     return error_validation_failed unless params[:payload]
+    return error_validation_failed unless params[:name]
+    return error_validation_failed unless params[:credentials][:user]
+    return error_validation_failed unless params[:credentials][:password]
 
-    # generate some local ids
-    local_token = "#{Time.now.to_i}_#{user.username}"
-    oauth_callback = "http://#{request.host_with_port}/aggregate/return/#{local_token}"
+    uri = URI.parse("https://#{params[:target]}.appspot.com/formUpload")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    req = Net::HTTP::Post.new(uri.request_uri)
 
-    # oauth
-    instance_uri = "https://#{params[:aggregate_instance_name]}.appspot.com"
-    consumer = get_oauth_consumer instance_uri
-    request_token = consumer.get_request_token :oauth_callback => oauth_callback
+    body, headers = Multipart::Post.prepare_query({ 'form_name' => params[:name], 'form_def_file' => { :filename => 'form.xml', :content => params[:payload] } })
+    req.body = body
+    headers.each{ |k, v| req[k] = v }
 
-    # store off stuff we'll need later
-    ConnectionManager.connection[:aggregate_requests][local_token] = {
-      'site' => instance_uri,
-      'instance_name' => params[:aggregate_instance_name],
-      'token' => request_token.token,
-      'secret' => request_token.secret,
-      'payload' => params[:payload]
-    }
+    req['X-OpenRosa-Version'] = '1.0'
+    req['Date'] = DateTime.now.httpdate
 
-    # send the user to the right place
-    redirect request_token.authorize_url :oauth_callback => oauth_callback
-  end
+    res = http.request(req)
 
-  get '/aggregate/return/:local_token' do
-    # get our info back
-    aggregate_request = ConnectionManager.connection[:aggregate_requests][params[:local_token]]
+    if res.code.to_s == '401'
+      # we failed without auth; retry with digest auth now that we have details.
+      uri.user = params[:credentials][:user]
+      uri.password = params[:credentials][:password]
+      auth = Net::HTTP::DigestAuth.new.auth_header uri, res['www-authenticate'], 'POST'
+      req.add_field 'Authorization', auth
+      res = http.request(req)
 
-    # oauth
-    consumer = get_oauth_consumer aggregate_request['site']
-    request_token = OAuth::RequestToken.new consumer, aggregate_request['token'], aggregate_request['secret']
-    access_token = request_token.get_access_token :oauth_verifier => params[:oauth_verifier]
-
-    # fire off our request
-    body, headers = Multipart::Post.prepare_query 'form_def_file' => { :filename => 'form.xml', :content => aggregate_request['payload'] }
-    result = access_token.post '/upload?auth=oauth', body, headers
-
-    # look at the bloody remains
-    unless (result.is_a? Net::HTTPSuccess) || (result.is_a? Net::HTTPFound) # aggregate is really weird.
-      # something went wrong
-      status 400
-      return { :error => 'Something went wrong when trying to post to Aggregate.' }.to_json
+      if res.code.to_s == '401'
+        return error_permission_denied
+      elsif (res.code.to_s =~ /^2/).nil?
+        return error_validation_failed
+      end
+    elsif (res.code.to_s =~ /^2/).nil?
+      return error_validation_failed
     end
 
-    content_type :html
-    @aggregate_instance_uri = aggregate_request['site']
-    erb :aggregate_success
+    status 200
+    return { :success => true }.to_json
   end
 
 private
@@ -279,13 +274,5 @@ private
     status 404
     return { :error => 'not found' }.to_json
   end
-
-  def get_oauth_consumer(site)
-    OAuth::Consumer.new ConfigManager['oauth_key'], ConfigManager['oauth_secret'],
-      { :site => site,
-        :request_token_path => '/_ah/OAuthGetRequestToken',
-        :authorize_path => '/_ah/OAuthAuthorizeToken',
-        :access_token_path => '/_ah/OAuthGetAccessToken' }
-  end
-
 end
+
