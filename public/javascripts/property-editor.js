@@ -17,7 +17,7 @@
         underlyingrequired: 'One or more Underlying Value has not been provided; they are required.',
         underlyingvalid: 'One or more Underlying Value contains invalid characters: only letters and numbers are allowed.',
         hasoptions: 'At least one option is required.',
-        notinfieldlist: 'Because this control is within a Field List Group, anything specified here may not work.'
+        fieldlistexpr: 'Because this control is within a single-screen group (field list), any expressions that reference other fields in the same group will not work.'
     };
     // private methods
     var validateProperty = function($this, property, name, $parent)
@@ -94,7 +94,7 @@
                         validationErrors.push(limit);
                     break;
 
-                case 'notinfieldlist':
+                case 'fieldlistexpr':
                     if ((property.value == null) || (property.value === '') || ($parent.parent().length === 0))
                         break;
 

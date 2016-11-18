@@ -270,7 +270,7 @@
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this field is shown.',
                         value: '',
-                        limit: [ 'notinfieldlist' ],
+                        limit: [ 'fieldlistexpr' ],
                         advanced: true,
                         summary: false },
         constraint:   { name: 'Constraint',
@@ -421,7 +421,7 @@
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this group is shown.',
                         value: '',
-                        limit: [ 'notinfieldlist' ],
+                        limit: [ 'fieldlistexpr' ],
                         advanced: true,
                         summary: false } },
         branch: {
