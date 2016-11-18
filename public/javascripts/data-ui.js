@@ -262,11 +262,16 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     $.toast('Your form has been successfully uploaded to ' + $.h(target) + '.');
                     $('.aggregateDialog').jqmHide();
                 },
-                error: function(request, status, error)
+                error: function(xhr, status, error)
                 {
+                    var errorBody = $.parseJSON(xhr.responseText);
+                    var message = (errorBody.code == '400') ?
+                      '<p>Could not upload the form. Aggregate could not validate the form contents. Please make sure your form is valid and try again.</p>' :
+                      '<p>Could not upload the form. Please check your credentials and instance name, and try again.</p>';
+
                     $('.aggregateDialog .errorMessage')
                         .empty()
-                        .append('<p>Could not upload the form. Please check your credentials and instance name, and try again.</p>')
+                        .append(message)
                         .slideDown();
                 },
                 complete: function() { $loading.hide(); }

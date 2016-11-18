@@ -249,10 +249,12 @@ class OdkBuild < Sinatra::Application
       if res.code.to_s == '401'
         return error_permission_denied
       elsif (res.code.to_s =~ /^2/).nil?
-        return error_validation_failed
+        status 400
+        return { :error => res.message, :code => res.code, :body => res.body }.to_json
       end
     elsif (res.code.to_s =~ /^2/).nil?
-      return error_validation_failed
+      status 400
+      return { :error => res.message, :code => res.code, :body => res.body }.to_json
     end
 
     status 200
