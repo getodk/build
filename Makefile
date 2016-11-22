@@ -12,6 +12,7 @@ build/app.nw: build
 	@echo "building contents..."
 	cp package.json $(TEMPDIR)
 	cp -r public $(TEMPDIR)
+	cp -r node_modules $(TEMPDIR)
 	@echo "modifying content..."
 	find $(TEMPDIR) -name '*.css' | xargs perl -pi -e 's/url\(\//url\(/g'
 	cp -r $(TEMPDIR)/public/images $(TEMPDIR)/public/stylesheets

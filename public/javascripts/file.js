@@ -2,6 +2,7 @@
 
 var fileNS = odkmaker.namespace.load('odkmaker.file');
 var fs = require('fs');
+var xlsform = require('build2xlsform');
 
 var currentPath = null;
 fileNS.currentPath = function() { return currentPath; };
@@ -78,6 +79,24 @@ fileNS.export = function()
     filePrompt(true, 'xml', function(path)
     {
         saveFile(path, odkmaker.data.serialize());
+    });
+};
+
+fileNS.exportXLS = function()
+{
+    filePrompt(true, 'xlsx', function(path)
+    {
+        xlsform.writeForm(path, xlsform.convertForm(odkmaker.data.extract()), function(err)
+        {
+            if (err)
+            {
+                $.toast('There was a problem saving that file: ' + err.message);
+            }
+            else
+            {
+                $.toast('File saved successfully.');
+            }
+        });
     });
 };
 

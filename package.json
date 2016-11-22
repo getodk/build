@@ -10,6 +10,9 @@
   "engines": {
     "node": ">= 0.10.0"
   },
+  "dependencies": {
+    "build2xlsform": "git://github.com/clint-tseng/build2xlsform"
+  },
   "main": "public/index.html",
   "window": {
     "title": "ODK Build",

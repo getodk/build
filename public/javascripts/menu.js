@@ -43,6 +43,11 @@ var fileExport = new gui.MenuItem({ label: 'Export to XML...' });
 fileExport.on('click', function() { odkmaker.file.export(); });
 fileMenu.append(fileExport);
 
+// file -> export xlsform
+var fileExport = new gui.MenuItem({ label: 'Export to XLSForm...' });
+fileExport.on('click', function() { odkmaker.file.exportXLS(); });
+fileMenu.append(fileExport);
+
 
 
 /////////////////////

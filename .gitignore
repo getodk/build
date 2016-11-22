@@ -1,6 +1,7 @@
 .DS_Store
 *.swp
 *.swo
+*.swn
 *.tdb
 *.tch
 *.tct
@@ -11,3 +12,4 @@ config.yml
 public/javascripts/build.js
 tmp/
 build/
+/node_modules
