@@ -42,8 +42,23 @@
             );
         });
 
+        validateControl($this, properties);
+    };
+
+    var validateControl = function($this, properties)
+    {
+        // revalidate either with the already-initialized components or make a new set of temporary components.
         if ($this.hasClass('selected'))
             $('.propertyList > li, .advancedProperties > li').trigger('odkProperty-validate');
+        else
+        {
+            var $validationProps = $('<ul/>');
+            _.each(properties, function(property, name)
+            {
+                $('<li/>').propertyEditor(property, name, $this).appendTo($validationProps);
+            });
+            $validationProps.children().trigger('odkProperty-validate');
+        }
 
         $this.toggleClass('error', _.any(properties, function(property) { return _.isArray(property.validationErrors) &&
                                                                                  (property.validationErrors.length > 0); }));
@@ -54,19 +69,19 @@
         $('.workspace .control.selected').removeClass('selected');
         $this.addClass('selected');
 
-		// clear out and reconstruct property list
+        // clear out and reconstruct property list
         var $propertyList = $('.propertyList');
         $propertyList.empty();
 
-		var $advancedContainer = $.tag({
-			_: 'li', 'class': 'advanced', contents: [
-				{ _: 'a', 'class': 'toggle', href: '#advanced', contents: [
-					{ _: 'div', 'class': 'icon' },
-					'Advanced'
-				] },
-				{ _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: 'none' } }
-			]
-		});
+        var $advancedContainer = $.tag({
+            _: 'li', 'class': 'advanced', contents: [
+                { _: 'a', 'class': 'toggle', href: '#advanced', contents: [
+                    { _: 'div', 'class': 'icon' },
+                    'Advanced'
+                ] },
+                { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: 'none' } }
+            ]
+        });
         var $advancedList = $advancedContainer.find('.advancedProperties');
 
         // add our hero's properties
@@ -77,8 +92,8 @@
                 .appendTo((property.advanced === true) ? $advancedList : $propertyList);
         });
 
-		// drop in advanced
-		$propertyList.append($advancedContainer);
+        // drop in advanced
+        $propertyList.append($advancedContainer);
     };
 
     // Constructor
@@ -148,6 +163,9 @@
                 draggableOptions: {
                     start: function(event, ui)
                     {
+                        // keep track of old parents to revalidate.
+                        var $parents = $this.parents('.control');
+
                         ui.helper.width($this.width());
                         cachedHeight = $this.outerHeight(true);
                         $this
@@ -156,6 +174,10 @@
                                     .css('height', cachedHeight + 'px'))
                             .hide()
                             .appendTo($('body'));
+
+                        // trigger revalidation to possibly free up some validation errors.
+                        $this.trigger('odkControl-propertiesUpdated');
+                        $parents.trigger('odkControl-propertiesUpdated');
                     }
                 },
                 dragCallback: function($control, direction)
@@ -189,9 +211,16 @@
                     else
                         $this.appendTo('.workspace');
                     $this.show();
+
+                    // trigger revalidation on parents as adding components can cause new errors.
+                    $this.trigger('odkControl-propertiesUpdated');
+                    $this.parents('.control').trigger('odkControl-propertiesUpdated');
                 },
                 insertPlaceholder: false
             });
+
+            // validate upon creation.
+            _.defer(function() { validateControl($this, properties); });
 
             // fill in the flow arrow
             _.defer(function() { $this.find('.controlFlowArrow').triangle(); });
@@ -207,7 +236,7 @@
         name:         { name: 'Data Name',
                         type: 'text',
                         description: 'The data name of this field in the final exported XML.',
-                        limit: [ 'required', 'alphanumeric', 'unique' ],
+                        limit: [ 'required', 'alphanumeric', 'unique', 'alphastart' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
@@ -241,6 +270,7 @@
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this field is shown.',
                         value: '',
+                        limit: [ 'fieldlistexpr' ],
                         advanced: true,
                         summary: false },
         constraint:   { name: 'Constraint',
@@ -304,8 +334,29 @@
                         type: 'uiText',
                         description: 'Message to display if the value fails the range check.',
                         value: {},
-                        summary: false } },
-        inputLocation: {},
+                        summary: false },
+          kind:       { name: 'Kind',
+                        type: 'enum',
+                        description: 'Type of value to prompt for.',
+                        options: [ 'Full Date', 'Year and Month', 'Year', 'Full Date and Time' ],
+                        value: 'Full Date',
+                        summary: true } },
+        inputTime: {},
+        inputLocation: {
+          kind:       { name: 'Kind',
+                        type: 'enum',
+                        description: 'Type of location information to collect.',
+                        options: [ 'Point',
+                                   'Path',
+                                   'Shape' ],
+                        value: 'Point',
+                        summary: true },
+          appearance: { name: 'Style',
+                        type: 'enum',
+                        description: 'How to collect the information.',
+                        options: [ 'Default (GPS)', 'Show Map (GPS)', 'Manual (No GPS)' ],
+                        value: 'Default (GPS)',
+                        summary: true } },
         inputMedia: {
           kind:       { name: 'Kind',
                         type: 'enum',
@@ -317,13 +368,32 @@
         inputSelectOne: {
           options:    { name: 'Options',
                         type: 'optionsEditor',
+                        limit: [ 'underlyingrequired', 'underlyingvalid', 'hasoptions' ],
                         value: [],
-                        summary: false } },
+                        summary: false },
+          appearance: { name: 'Style',
+                        type: 'enum',
+                        description: 'What interface to present.',
+                        options: [ 'Default', 'Minimal (spinner)', 'Table', 'Horizontal Layout' ],
+                        value: 'Default',
+                        summary: true } },
         inputSelectMany: {
           options:    { name: 'Options',
                         type: 'optionsEditor',
+                        limit: [ 'underlyingrequired', 'underlyingvalid', 'hasoptions' ],
                         value: [],
-                        summary: false } },
+                        summary: false },
+          count:      { name: 'Response Count',
+                        type: 'numericRange',
+                        description: 'This many options must be selected for the response to be valid.',
+                        value: false,
+                        summary: true },
+          appearance: { name: 'Style',
+                        type: 'enum',
+                        description: 'What interface to present.',
+                        options: [ 'Default', 'Minimal (spinner)', 'Table', 'Horizontal Layout' ],
+                        value: 'Default',
+                        summary: true } },
         group: {
           name:       { name: 'Name',
                         type: 'text',
@@ -345,11 +415,13 @@
           fieldList:  { name: 'Display On One Screen',
                         type: 'bool',
                         description: 'Display all the controls in this group on one screen',
+                        limit: [ 'atomicchildren' ],
                         value: false },
         relevance:    { name: 'Relevance',
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this group is shown.',
                         value: '',
+                        limit: [ 'fieldlistexpr' ],
                         advanced: true,
                         summary: false } },
         branch: {
@@ -358,19 +430,19 @@
                         description: 'Specify the rules that decide how the form will branch.',
                         value: [],
                         summary: false } },
-         metadata: {
-            name:     { name: 'Data Name',
+        metadata: {
+          name:       { name: 'Data Name',
                         type: 'text',
                         description: 'The data name of this field in the final exported XML.',
                         limit: [ 'required', 'alphanumeric', 'unique' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
-            kind:     { name: 'Kind',
+          kind:       { name: 'Kind',
                         type: 'enum',
                         description: 'Type of metadata to add.',
-                        options: [ 'Device ID', 'Start Time', 'End Time'],
+                        options: [ 'Device ID', 'Start Time', 'End Time', 'Today', 'Username', 'Subscriber ID', 'SIM Serial', 'Phone Number' ],
                         value: 'Device ID',
-                        summary: true} },
+                        summary: true } },
     };
 })(jQuery);

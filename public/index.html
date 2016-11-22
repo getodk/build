@@ -42,6 +42,7 @@
             <li><a href="#saveAsDialog" rel="modal">Save As...</a></li>
             <li class="divider"></li>
             <li><a href="#exportDialog" id="exportLink" rel="modal">Export to XML...</a></li>
+            <li><a href="#xlsformExport" id="xlsformLink">Export to XLSForm</a></li>
           </ul>
         </li>
         <li>
@@ -73,8 +74,6 @@
         <li>
           <span>Help</span>
           <ul class="submenu">
-            <li class="disabled"><a href="#toggleHints">Display Hints</a></li>
-            <li class="disabled"><a href="#tutorial">Tutorial</a></li>
             <li><a href="#aboutDialog" rel="modal">About ODK Build...</a></li>
           </ul>
         </li>
@@ -88,7 +87,8 @@
         <ul>
           <li><a class="toolButton inputText" rel="inputText">Text</a></li>
           <li><a class="toolButton inputNumeric" rel="inputNumeric">Numeric</a></li>
-          <li><a class="toolButton inputDate" rel="inputDate">Date</a></li>
+          <li><a class="toolButton inputDate" rel="inputDate">Date/Time</a></li>
+          <li><a class="toolButton inputTime" rel="inputTime">Time</a></li>
           <li><a class="toolButton inputLocation" rel="inputLocation">Location</a></li>
           <li><a class="toolButton inputMedia" rel="inputMedia">Media</a></li>
           <li><a class="toolButton inputBarcode" rel="inputBarcode">Barcode</a></li>
@@ -98,7 +98,6 @@
           <li><a class="toolButton metadata" rel="metadata">Metadata</a></li>
           <li class="separator"></li>
           <li><a class="toolButton group" rel="group">Group</a></li>
-          <li class="disabled"><a class="branch" rel="branch">Branch</a></li>
         </ul>
       </div>
       <div class="workspaceScrollArea">
@@ -280,12 +279,19 @@
     <div class="modal narrowModal aggregateDialog">
       <h3>Export</h3>
       <div class="modalContents">
+        <div class="errorMessage"></div>
         <p>You will be asked to authenticate with the Aggregate instance in order to
            be able to export the form there. Please supply your Google account information
            when prompted.</p>
 
         <h4>Aggregate Instance URI</h4>
-        <p>http://<input type="text" class="aggregateInstanceName"/>.appspot.com/</p>
+        <p>https://<input type="text" class="aggregateInstanceName"/>.appspot.com/</p>
+        <h4>Aggregate Credentials</h4>
+        <label for="aggregateUser">Username</label> <input type="text" id="aggregateUser"/>
+        <label for="aggregatePassword">Password</label> <input type="password" id="aggregatePassword"/>
+        <p><strong>Note:</strong> this is your Aggregate account information, <em>not</em>
+          your Google account. You may leave these blank if your Aggregate instance
+          allows anonymous form uploading.</p>
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton aggregateExportButton" href="#export">Export</a>

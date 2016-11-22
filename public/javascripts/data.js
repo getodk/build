@@ -103,11 +103,19 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         inputText: 'input',
         inputNumeric: 'input',
         inputDate: 'input',
+        inputTime: 'input',
         inputLocation: 'input',
         inputMedia: 'upload',
         inputBarcode: 'input',
         inputSelectOne: 'select1',
         inputSelectMany: 'select'
+    };
+    var appearanceTypes = {
+        'Show Map (GPS)': 'maps',
+        'Manual (No GPS)': 'placement-map',
+        'Minimal (spinner)': 'minimal',
+        'Table': 'label',
+        'Horizontal Layout': 'horizontal'
     };
     var addTranslation = function(obj, itextPath, translations)
     {
@@ -212,6 +220,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             // field-list
             if (control.fieldList === true)
             {
+                // per #9 from jluis859, a group with both field-list and looped
+                // breaks unless nested.
+                if (control.loop === true)
+                {
+                    var innerBodyTag = { name: 'group', attrs: {}, children: [] };
+                    bodyTag.children.push(innerBodyTag);
+                    bodyTag = innerBodyTag;
+                }
+
                 bodyTag.attrs.appearance = 'field-list';
             }
 
@@ -271,12 +288,42 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 binding.attrs['jr:preloadParams']='start';
             }
             else if (kind == 'end time')
-            { 
+            {
                 binding.attrs.type='dateTime';
                 binding.attrs['jr:preload']='timestamp';
                 binding.attrs['jr:preloadParams']='end';
             }
-            
+            else if (kind == 'today')
+            {
+                binding.attrs.type='date';
+                binding.attrs['jr:preload']='date';
+                binding.attrs['jr:preloadParams']='today';
+            }
+            else if (kind == 'username')
+            {
+                binding.attrs.type='string';
+                binding.attrs['jr:preload']='property';
+                binding.attrs['jr:preloadParams']='username';
+            }
+            else if (kind == 'subscriber id')
+            {
+                binding.attrs.type='string';
+                binding.attrs['jr:preload']='property';
+                binding.attrs['jr:preloadParams']='subscriberid';
+            }
+            else if (kind == 'sim serial')
+            {
+                binding.attrs.type='string';
+                binding.attrs['jr:preload']='property';
+                binding.attrs['jr:preloadParams']='simserial';
+            }
+            else if (kind == 'phone number')
+            {
+                binding.attrs.type='string';
+                binding.attrs['jr:preload']='property';
+                binding.attrs['jr:preloadParams']='phonenumber';
+            }
+
             model.children.push(binding);
 
             return;
@@ -318,9 +365,23 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 binding.attrs.type = 'decimal';
         }
         else if (control.type == 'inputDate')
-            binding.attrs.type = 'date';
+        {
+            if (control.kind == 'Full Date and Time')
+                binding.attrs.type = 'dateTime';
+            else
+                binding.attrs.type = 'date';
+        }
+        else if (control.type == 'inputTime')
+            binding.attrs.type = 'time';
         else if (control.type == 'inputLocation')
-            binding.attrs.type = 'geopoint';
+        {
+            if ((control.kind == null) || (control.kind == 'Point'))
+                binding.attrs.type = 'geopoint';
+            else if (control.kind == 'Path')
+                binding.attrs.type = 'geotrace';
+            else if (control.kind == 'Shape')
+                binding.attrs.type = 'geoshape';
+        }
         else if (control.type == 'inputMedia')
             binding.attrs.type = 'binary';
         else if (control.type == 'inputBarcode')
@@ -388,9 +449,30 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             invalidText = 'Value must be between ' + control.range.min + ' and ' + control.range.max;
         }
 
+        // select multiple range
+        if ((control.count !== undefined) && (control.count !== false))
+        {
+            constraint.push('count-selected(.) ' +
+                (control.count.minInclusive ? '&gt;=' : '&gt;') + ' ' +
+                xmlValue(control.count.min) + ' and count-selected(.) ' +
+                (control.count.maxInclusive ? '&lt;=' : '&lt;') + ' ' +
+                xmlValue(control.count.max));
+            invalidText = 'Must choose between ' + control.count.min + ' and ' + control.count.max + ' options';
+        }
+
         // media kind
         if (control.type == 'inputMedia')
             bodyTag.attrs.mediatype = control.kind.toLowerCase() + '/*';
+
+        // appearance
+        if (control.appearance != null)
+        {
+            var finalAppearance = appearanceTypes[control.appearance];
+            if (finalAppearance != null)
+                bodyTag.attrs.appearance = finalAppearance;
+        }
+        if ((control.type === 'inputDate') && ((control.kind === 'Year and Month') || (control.kind === 'Year')))
+            bodyTag.attrs.appearance = (control.kind === 'Year') ? 'year' : 'month-year';
 
         // options
         if (control.options !== undefined)
@@ -433,7 +515,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if ((control.invalidText !== undefined) && !_.isEmpty(control.invalidText))
         {
             binding.attrs['jr:constraintMsg'] = "jr:itext('" + xpath + control.name + ":constraintMsg')"
-            addTranslation(control.label, xpath + control.name + ':constraintMsg', translations);
+            addTranslation(control.invalidText, xpath + control.name + ':constraintMsg', translations);
         }
         else if (invalidText != null)
         {

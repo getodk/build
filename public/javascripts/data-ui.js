@@ -85,6 +85,33 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             $form.appendTo($('body'));
             $form.submit();
         });
+        $('.header .menu #xlsformLink').click(function(event)
+        {
+          event.preventDefault();
+
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function()
+          {
+            if ((xhttp.readyState === 4) && (xhttp.status >= 400))
+              $.toast('Something went wrong while exporting. Please try again later.');
+            if ((xhttp.readyState !== 4) || (xhttp.status !== 200)) return;
+
+            // take the binary response, create a blob-reference link out of it, and click on it to trigger dl.
+            var a = document.createElement('a');
+            a.href = window.URL.createObjectURL(xhttp.response);
+            a.download = $.sanitizeString($('h1').text()) + '-export.xlsx';
+            a.style.display = 'none';
+
+            document.body.appendChild(a);
+            a.click();
+          };
+
+          // actually send off the form data.
+          xhttp.open('POST', '/convert');
+          xhttp.setRequestHeader('Content-Type', 'application/json');
+          xhttp.responseType = 'blob';
+          xhttp.send(JSON.stringify(odkmaker.data.extract()));
+        });
 
         // modal events
         var $openDialog = $('.openDialog');
@@ -222,12 +249,33 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         {
             event.preventDefault();
 
-            var $form = $('<form action="/aggregate/post" method="post" target="blank" />');
-            $form
-                .append($('<input type="hidden" name="payload"/>').val(dataNS.serialize()))
-                .append($('<input type="hidden" name="aggregate_instance_name"/>').val($('.aggregateInstanceName').val()));
-            $form.appendTo($('body'));
-            $form.submit();
+            var $loading = $('.aggregateDialog .modalLoadingOverlay');
+            var target = $('.aggregateInstanceName').val();
+            $loading.show();
+            $.ajax({
+                url: '/aggregate/post',
+                dataType: 'json',
+                type: 'POST',
+                data: { target: target, credentials: { user: $('#aggregateUser').val(), password: $('#aggregatePassword').val() }, name: $('h1').text(), payload: odkmaker.data.serialize() },
+                success: function(response, status)
+                {
+                    $.toast('Your form has been successfully uploaded to ' + $.h(target) + '.');
+                    $('.aggregateDialog').jqmHide();
+                },
+                error: function(xhr, status, error)
+                {
+                    var errorBody = $.parseJSON(xhr.responseText);
+                    var message = (errorBody.code == '400') ?
+                      '<p>Could not upload the form. Aggregate could not validate the form contents. Please make sure your form is valid and try again.</p>' :
+                      '<p>Could not upload the form. Please check your credentials and instance name, and try again.</p>';
+
+                    $('.aggregateDialog .errorMessage')
+                        .empty()
+                        .append(message)
+                        .slideDown();
+                },
+                complete: function() { $loading.hide(); }
+            });
         });
     });
 })(jQuery);

@@ -11,7 +11,13 @@
     var validationMessages = {
         required: 'This property is required.',
         alphanumeric: 'Only letters and numbers are allowed.',
-        unique: 'This property must be unique; there is another control that conflicts with it.'
+        alphastart: 'The first character may not be a number.',
+        unique: 'This property must be unique; there is another control that conflicts with it.',
+        atomicchildren: 'A group may not have this option active if it has groups within it.',
+        underlyingrequired: 'One or more Underlying Value has not been provided; they are required.',
+        underlyingvalid: 'One or more Underlying Value contains invalid characters: only letters and numbers are allowed.',
+        hasoptions: 'At least one option is required.',
+        fieldlistexpr: 'Because this control is within a single-screen group (field list), any expressions that reference other fields in the same group will not work.'
     };
     // private methods
     var validateProperty = function($this, property, name, $parent)
@@ -35,15 +41,65 @@
                         validationErrors.push(limit);
                     break;
 
+                case 'alphastart':
+                    if (!_.isString(property.value) || property.value.match(/^[0-9]/))
+                        validationErrors.push(limit);
+                    break;
+
                 case 'unique':
                     if ($parent.parent().length === 0)
                         break; // we have not been inserted yet.
 
                     var okay = true;
-                    $parent.siblings().each(function()
+                    $('.workspace .control').each(function()
                     {
+                        if (this == $parent.get(0)) return; // we found ourselves.
                         okay = okay && ($(this).data('odkControl-properties')[name].value != property.value);
                     });
+                    if (!okay)
+                        validationErrors.push(limit);
+                    break;
+
+                case 'atomicchildren':
+                    if (property.value !== true)
+                        break; // not relevant unless we are a field-list.
+
+                    var okay = true;
+                    $parent.find('> .workspaceInnerWrapper > .workspaceInner').children().each(function()
+                    {
+                        okay = okay && !$(this).hasClass('group');
+                    });
+                    if (!okay)
+                        validationErrors.push(limit);
+                    break;
+
+                case 'underlyingrequired':
+                    if ((property.value == null) || (property.value.length === 0))
+                        break; // no options yet.
+
+                    if (_.any(property.value, function(option) { return option.val == null || option.val == ''; }))
+                        validationErrors.push(limit);
+                    break;
+
+                case 'underlyingvalid':
+                    if ((property.value == null) || (property.value.length === 0))
+                        break; // no options yet.
+
+                    if (_.any(property.value, function(option) { return option.val != null && /[^0-9a-z_]/i.exec(option.val); }))
+                        validationErrors.push(limit);
+                    break;
+
+                case 'hasoptions':
+                    if ((property.value == null) || (property.value.length === 0))
+                        validationErrors.push(limit);
+                    break;
+
+                case 'fieldlistexpr':
+                    if ((property.value == null) || (property.value === '') || ($parent.parent().length === 0))
+                        break;
+
+                    var okay = true;
+                    $parent.parents('.control').each(function() { okay = okay && $(this).data('odkControl-properties').fieldList.value !== true; });
                     if (!okay)
                         validationErrors.push(limit);
                     break;
@@ -161,7 +217,7 @@
                 };
             };
 
-            if (property.value === false)
+            if ((property.value === false) || (property.value == null))
                 $inputs.attr('disabled', true);
             else
                 $inputs
@@ -299,7 +355,7 @@
                             name: 'Option ' + (index + 1),
                             type: 'uiText',
                             value: data.text
-                        }, $parent)
+                        }, null, $parent)
                         .prepend($removeLink)
                         .append($underlyingValueEdit));
     };
