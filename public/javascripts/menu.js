@@ -1,6 +1,6 @@
 ;(function($) {
 
-var gui = require('nw.gui');
+var gui = nw;
 var os = require('os');
 
 
@@ -130,6 +130,7 @@ var menu = new gui.Menu({ type: 'menubar' });
 
 if (os.platform() == 'darwin')
 {
+    menu.createMacBuiltin('ODK Build')
     gui.Window.get().menu = menu;
     menu.insert(new gui.MenuItem({ label: 'File', submenu: fileMenu }), 1);
     menu.insert(new gui.MenuItem({ label: 'View', submenu: viewMenu }), 3);
