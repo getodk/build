@@ -66,6 +66,10 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
 
             $dialog.find('.exportCodeContainer pre').text(odkmaker.data.serialize());
         },
+        propertiesDialog: function($dialog)
+        {
+            $dialog.find('#propertiesName').val($('h1').text());
+        },
         aggregateDialog: function($dialog)
         {
             $dialog.removeClass('exporting');

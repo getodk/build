@@ -106,7 +106,7 @@ var viewMenu = new gui.Menu();
 
 // view -> form properties
 var viewLanguage = new gui.MenuItem({ label: 'Displayed Language', submenu: languageMenu });
-viewLanguage.on('click', function() { /* TODO */ });
+viewLanguage.on('click', function() { /* nothing */ });
 viewMenu.append(viewLanguage);
 
 // view -> languages
@@ -122,7 +122,7 @@ var settingsMenu = new gui.Menu();
 
 // edit -> form properties
 var editProperties = new gui.MenuItem({ label: 'Form Properties...' });
-editProperties.on('click', function() { /* TODO */ });
+editProperties.on('click', function() { $('.menu #propertiesLink').click(); });
 settingsMenu.append(editProperties);
 
 // edit -> languages

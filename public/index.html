@@ -62,6 +62,8 @@
         <li>
           <span>View</span>
           <ul class="submenu">
+            <li><a href="#propertiesDialog" id="propertiesLink" rel="modal">Form Properties...</a></li>
+            <li class="divider"></li>
             <li class="infoText">Displayed Language</li>
             <li>
               <ul class="displayLanguages">
@@ -274,6 +276,18 @@
       <div class="modalButtonContainer">
         <a class="modalButton applyOptions" href="#apply">Apply</a>
         <a class="modalButton jqmClose" href="#cancel">Cancel</a>
+      </div>
+    </div>
+
+    <div class="modal narrowModal propertiesDialog">
+      <h3>Export</h3>
+      <div class="modalContents">
+        <h4>Form Name</h4>
+        <input type="text" id="propertiesName"/>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton propertiesCommitButton jqmClose" href="#export">Done</a>
+        <a class="modalButton jqmClose" href="#close">Cancel</a>
       </div>
     </div>
 

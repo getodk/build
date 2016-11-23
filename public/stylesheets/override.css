@@ -13,3 +13,8 @@
     bottom: 3em;
 }
 
+.propertiesDialog #propertiesName
+{
+    width: calc(100% - 1em);
+}
+

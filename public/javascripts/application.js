@@ -57,6 +57,13 @@ $(function()
         }
     });
 
+    // Wire up properties dialog
+    $('.propertiesDialog .propertiesCommitButton').click(function(event)
+    {
+        event.preventDefault();
+        $('h1').text($('#propertiesName').val());
+    });
+
     // Wire up toolpane
     $('.toolPalette a').toolButton();
 
