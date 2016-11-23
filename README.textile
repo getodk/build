@@ -10,9 +10,9 @@ Please see the "releases page":https://github.com/clint-tseng/odkbuild/releases 
 
 h2. Development
 
-The app is built using a modified version of the client-side code in ODK Build, and runs on top of "node-webkit":https://github.com/rogerwang/node-webkit . There is a @Makefile@ present that will build a correct @app.nw@ under the @build/@ directory -- run that package using node-webkit to test out the application. There is also a shortcut target @make go@ that will spawn the node-webkit process with a fresh build of your application if you are on OS X.
+The app is built using a modified version of the client-side code in ODK Build, and runs on top of "node-webkit":https://github.com/nwjs/nw.js (0.18.x+). There is a @Makefile@ present that will build a correct @app.nw@ under the @build/@ directory -- run that package using node-webkit to test out the application. There is also a shortcut target @make go@ that will spawn the node-webkit process with a fresh build of your application if you are on OS X.
 
-To package and distribute the app, please follow the instructions on the "node-webkit wiki":https://github.com/rogerwang/node-webkit/wiki/How-to-package-and-distribute-your-apps .
+To package and distribute the app, please follow the instructions on the "node-webkit wiki":http://docs.nwjs.io/en/latest/For%20Users/Package%20and%20Distribute/ .
 
 The following things differ from the mainline branch:
 
@@ -22,6 +22,7 @@ The following things differ from the mainline branch:
 * @application.js@ now hides the loading screen immediately, and activates the webkit dev inspector when one presses @~~@.
 * @file.js@ is a new set of code that manages file saving and loading, including XML export.
 * @menu.js@ is a new set of code that manages the application menu.
+* @remote.js@ is a new set of code that manages remote networking (primarily Aggregate Upload).
 * @override.css@ is a new stylesheet that adapts the existing styles for native ui use.
 
 In addition, the following automatic source transforms are performed on compilation:
