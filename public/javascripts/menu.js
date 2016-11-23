@@ -44,10 +44,17 @@ fileExport.on('click', function() { odkmaker.file.export(); });
 fileMenu.append(fileExport);
 
 // file -> export xlsform
-var fileExport = new gui.MenuItem({ label: 'Export to XLSForm...' });
-fileExport.on('click', function() { odkmaker.file.exportXLS(); });
-fileMenu.append(fileExport);
+var xlsfileExport = new gui.MenuItem({ label: 'Export to XLSForm...' });
+xlsfileExport.on('click', function() { odkmaker.file.exportXLS(); });
+fileMenu.append(xlsfileExport);
 
+// ---
+fileMenu.append(new gui.MenuItem({ type: 'separator' }));
+
+// file -> upload to aggregate
+var aggregateUpload = new gui.MenuItem({ label: 'Upload to Aggregate...' });
+aggregateUpload.on('click', function() { $('.menu #aggregateLink').click(); });
+fileMenu.append(aggregateUpload);
 
 
 /////////////////////

@@ -11,7 +11,8 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
-    "build2xlsform": "git://github.com/clint-tseng/build2xlsform"
+    "build2xlsform": "git://github.com/clint-tseng/build2xlsform",
+    "request-digest": "~1.0"
   },
   "main": "public/index.html",
   "window": {
