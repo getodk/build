@@ -10,7 +10,7 @@ fileNS.currentPath = function() { return currentPath; };
 var filePrompt = function(save, format, callback)
 {
     var inputConf = { _: 'input', type: 'file', accept: '.' + format };
-    if (save === true) inputConf.nwsaveas = true;
+    if (save === true) inputConf.nwsaveas = $.sanitizeString($('h1').text());
     //if (currentPath != null) inputConf.nwworkingdir = currentPath;
     var $input = $.tag(inputConf);
     $input.change(function()
