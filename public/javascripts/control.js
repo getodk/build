@@ -9,6 +9,12 @@
 
 ;(function($)
 {
+    var validationNS = odkmaker.namespace.load('odkmaker.validation');
+
+    // our own incrementing counter:
+    var untitledCount_ = 1;
+    var untitledCount = function() { return untitledCount_++; };
+
     // Private methods
     var refreshFromProperties = function($this, type, options, properties)
     {
@@ -41,27 +47,6 @@
                 $('<li>' + property.name + '</li>')
             );
         });
-
-        validateControl($this, properties);
-    };
-
-    var validateControl = function($this, properties)
-    {
-        // revalidate either with the already-initialized components or make a new set of temporary components.
-        if ($this.hasClass('selected'))
-            $('.propertyList > li, .advancedProperties > li').trigger('odkProperty-validate');
-        else
-        {
-            var $validationProps = $('<ul/>');
-            _.each(properties, function(property, name)
-            {
-                $('<li/>').propertyEditor(property, name, $this).appendTo($validationProps);
-            });
-            $validationProps.children().trigger('odkProperty-validate');
-        }
-
-        $this.toggleClass('error', _.any(properties, function(property) { return _.isArray(property.validationErrors) &&
-                                                                                 (property.validationErrors.length > 0); }));
     };
 
     var selectControl = function($this, type, options, properties)
@@ -109,6 +94,7 @@
         {
             var $this = $(this);
 
+            $this.data('odkControl-id', _.uniqueId());
             $this.data('odkControl-type', type);
 
             // Deep clone the properties if relevant
@@ -120,7 +106,12 @@
                     $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
                                    $.fn.odkControl.controlProperties[type]);
             if (properties.name.value == 'untitled')
-                properties.name.value += (_.uniqueId() + 1);
+                properties.name.value += (untitledCount() + 1);
+            _.each(properties, function(property, name)
+            {
+                property.id = name;
+                property.validations = [];
+            });
             $this.data('odkControl-properties', properties);
 
             $this.bind('odkControl-propertiesUpdated', function(event)
@@ -129,6 +120,8 @@
                 refreshFromProperties($this, type, options, properties);
             });
             $this.trigger('odkControl-propertiesUpdated');
+
+            validationNS.controlCreated($this, properties);
 
             $this.bind('odkControl-reloadProperties', function(event)
             {
@@ -140,6 +133,19 @@
                 selectControl($this, type, options, properties);
             });
             selectControl($this, type, options, properties);
+
+            $this.bind('odkControl-validationChanged', function(event, property, hasError)
+            {
+                if (this !== event.target) return;
+
+                if (hasError === true)
+                    $this.addClass('error');
+                else
+                {
+                    var validations = $this.data('odkControl-validations');
+                    $this.toggleClass('error', _.any(validations, function(validation) { return validation.hasError === true; }));
+                }
+            });
 
             // special treatment for groups and branches
             if (type == 'group')
@@ -154,7 +160,12 @@
                 {
                     if ($this.is('.selected'))
                         $('.propertyList').empty();
+
+                    var $thisAndChildren = $this.find('.control').add($this);
+                    $thisAndChildren.each(function() { validationNS.controlDestroyed($(this), properties); });
+                    $thisAndChildren.trigger('odkControl-removing');
                     $this.remove();
+                    $thisAndChildren.trigger('odkControl-removed');
                 });
             });
 
@@ -163,9 +174,8 @@
                 draggableOptions: {
                     start: function(event, ui)
                     {
-                        // keep track of old parents to revalidate.
-                        var $parents = $this.parents('.control');
-
+                        $this.trigger('odkControl-removing');
+                        _.defer(function() { $this.trigger('odkControl-removed'); });
                         ui.helper.width($this.width());
                         cachedHeight = $this.outerHeight(true);
                         $this
@@ -174,10 +184,6 @@
                                     .css('height', cachedHeight + 'px'))
                             .hide()
                             .appendTo($('body'));
-
-                        // trigger revalidation to possibly free up some validation errors.
-                        $this.trigger('odkControl-propertiesUpdated');
-                        $parents.trigger('odkControl-propertiesUpdated');
                     }
                 },
                 dragCallback: function($control, direction)
@@ -210,17 +216,11 @@
                         $target.replaceWith($this);
                     else
                         $this.appendTo('.workspace');
+                    $this.trigger('odkControl-added');
                     $this.show();
-
-                    // trigger revalidation on parents as adding components can cause new errors.
-                    $this.trigger('odkControl-propertiesUpdated');
-                    $this.parents('.control').trigger('odkControl-propertiesUpdated');
                 },
                 insertPlaceholder: false
             });
-
-            // validate upon creation.
-            _.defer(function() { validateControl($this, properties); });
 
             // fill in the flow arrow
             _.defer(function() { $this.find('.controlFlowArrow').triangle(); });
@@ -236,7 +236,7 @@
         name:         { name: 'Data Name',
                         type: 'text',
                         description: 'The data name of this field in the final exported XML.',
-                        limit: [ 'required', 'alphanumeric', 'unique', 'alphastart' ],
+                        limit: [ 'required', 'xmlLegalChars', 'unique', 'alphaStart' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
@@ -270,7 +270,7 @@
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this field is shown.',
                         value: '',
-                        limit: [ 'fieldlistexpr' ],
+                        limit: [ 'fieldListExpr' ],
                         advanced: true,
                         summary: false },
         constraint:   { name: 'Constraint',
@@ -368,7 +368,7 @@
         inputSelectOne: {
           options:    { name: 'Options',
                         type: 'optionsEditor',
-                        limit: [ 'underlyingrequired', 'underlyingvalid', 'hasoptions' ],
+                        limit: [ 'underlyingRequired', 'underlyingLegal', 'hasOptions' ],
                         value: [],
                         summary: false },
           appearance: { name: 'Style',
@@ -380,7 +380,7 @@
         inputSelectMany: {
           options:    { name: 'Options',
                         type: 'optionsEditor',
-                        limit: [ 'underlyingrequired', 'underlyingvalid', 'hasoptions' ],
+                        limit: [ 'underlyingRequired', 'underlyingLegal', 'hasOptions' ],
                         value: [],
                         summary: false },
           count:      { name: 'Response Count',
@@ -398,7 +398,7 @@
           name:       { name: 'Name',
                         type: 'text',
                         description: 'The data name of this group in the final exported XML.',
-                        limit: [ 'required', 'alphanumeric', 'unique' ],
+                        limit: [ 'required', 'xmlLegalChars', 'unique' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
@@ -415,13 +415,13 @@
           fieldList:  { name: 'Display On One Screen',
                         type: 'bool',
                         description: 'Display all the controls in this group on one screen',
-                        limit: [ 'atomicchildren' ],
+                        limit: [ 'fieldListChildren' ],
                         value: false },
         relevance:    { name: 'Relevance',
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this group is shown.',
                         value: '',
-                        limit: [ 'fieldlistexpr' ],
+                        limit: [ 'fieldListExpr' ],
                         advanced: true,
                         summary: false } },
         branch: {
@@ -434,7 +434,7 @@
           name:       { name: 'Data Name',
                         type: 'text',
                         description: 'The data name of this field in the final exported XML.',
-                        limit: [ 'required', 'alphanumeric', 'unique' ],
+                        limit: [ 'required', 'xmlLegalChars', 'unique' ],
                         required: true,
                         value: 'untitled',
                         summary: false },

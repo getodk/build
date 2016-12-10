@@ -24,7 +24,9 @@
             $this.click(function(event)
             {
                 event.preventDefault();
-                $('.workspace').append(createOdkControl($this.attr('rel')));
+                var $control = createOdkControl($this.attr('rel'));
+                $('.workspace').append($control);
+                $control.trigger('odkControl-added');
             });
 
             $this.workspaceDraggable({
@@ -52,7 +54,11 @@
                 {
                     var $placeholder = $('.workspace .placeholder:not(.closing)');
                     if ($placeholder.length > 0)
-                        $placeholder.replaceWith(createOdkControl($this.attr('rel')));
+                    {
+                        var $control = createOdkControl($this.attr('rel'))
+                        $placeholder.replaceWith($control);
+                        $control.trigger('odkControl-added');
+                    }
                 },
                 draggableOptions: {
                     start: function(event, ui)

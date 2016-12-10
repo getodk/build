@@ -11,6 +11,8 @@ javascripts:
 - auth
 - data
 - data-ui
+- validation
+- impl.limits
 - i18n
 - options-editor
 - modals

@@ -8,126 +8,6 @@
 
 ;(function($)
 {
-    var validationMessages = {
-        required: 'This property is required.',
-        alphanumeric: 'Only letters and numbers are allowed.',
-        alphastart: 'The first character may not be a number.',
-        unique: 'This property must be unique; there is another control that conflicts with it.',
-        atomicchildren: 'A group may not have this option active if it has groups within it.',
-        underlyingrequired: 'One or more Underlying Value has not been provided; they are required.',
-        underlyingvalid: 'One or more Underlying Value contains invalid characters: only letters and numbers are allowed.',
-        hasoptions: 'At least one option is required.',
-        fieldlistexpr: 'Because this control is within a single-screen group (field list), any expressions that reference other fields in the same group will not work.'
-    };
-    // private methods
-    var validateProperty = function($this, property, name, $parent)
-    {
-        if (_.isUndefined(property.limit))
-            return;
-
-        var validationErrors = [];
-
-        _.each(property.limit, function(limit)
-        {
-            switch (limit)
-            {
-                case 'required':
-                    if ((property.value == null) || (property.value === '')) // douglas cries, but I do mean null/undef here.
-                        validationErrors.push(limit);
-                    break;
-
-                case 'alphanumeric':
-                    if (!_.isString(property.value) || property.value.match(/[^0-9a-z_]/i))
-                        validationErrors.push(limit);
-                    break;
-
-                case 'alphastart':
-                    if (!_.isString(property.value) || property.value.match(/^[0-9]/))
-                        validationErrors.push(limit);
-                    break;
-
-                case 'unique':
-                    if ($parent.parent().length === 0)
-                        break; // we have not been inserted yet.
-
-                    var okay = true;
-                    $('.workspace .control').each(function()
-                    {
-                        if (this == $parent.get(0)) return; // we found ourselves.
-                        okay = okay && ($(this).data('odkControl-properties')[name].value != property.value);
-                    });
-                    if (!okay)
-                        validationErrors.push(limit);
-                    break;
-
-                case 'atomicchildren':
-                    if (property.value !== true)
-                        break; // not relevant unless we are a field-list.
-
-                    var okay = true;
-                    $parent.find('> .workspaceInnerWrapper > .workspaceInner').children().each(function()
-                    {
-                        okay = okay && !$(this).hasClass('group');
-                    });
-                    if (!okay)
-                        validationErrors.push(limit);
-                    break;
-
-                case 'underlyingrequired':
-                    if ((property.value == null) || (property.value.length === 0))
-                        break; // no options yet.
-
-                    if (_.any(property.value, function(option) { return option.val == null || option.val == ''; }))
-                        validationErrors.push(limit);
-                    break;
-
-                case 'underlyingvalid':
-                    if ((property.value == null) || (property.value.length === 0))
-                        break; // no options yet.
-
-                    if (_.any(property.value, function(option) { return option.val != null && /[^0-9a-z_]/i.exec(option.val); }))
-                        validationErrors.push(limit);
-                    break;
-
-                case 'hasoptions':
-                    if ((property.value == null) || (property.value.length === 0))
-                        validationErrors.push(limit);
-                    break;
-
-                case 'fieldlistexpr':
-                    if ((property.value == null) || (property.value === '') || ($parent.parent().length === 0))
-                        break;
-
-                    var okay = true;
-                    $parent.parents('.control').each(function() { okay = okay && $(this).data('odkControl-properties').fieldList.value !== true; });
-                    if (!okay)
-                        validationErrors.push(limit);
-                    break;
-            }
-        });
-
-        $this.children('.errorList').remove();
-
-        if (validationErrors.length > 0)
-        {
-            property.validationErrors = validationErrors;
-            $this.addClass('error');
-
-            $('<ul/>')
-                .addClass('errorList')
-                .append(
-                    _.map(validationErrors, function(error)
-                    {
-                        return '<li>' + validationMessages[error] + '</li>';
-                    }).join(''))
-                .appendTo($this);
-        }
-        else
-        {
-            delete property.validationErrors;
-            $this.removeClass('error');
-        }
-    };
     // Constructor
     $.fn.propertyEditor = function(property, name, $parent)
     {
@@ -140,11 +20,29 @@
 
             $.fn.propertyEditor.editors[property.type](property, $editor, $parent, name);
 
-            $this.bind('odkProperty-validate', function()
+            var processValidation = function()
             {
-                validateProperty($this, property, name, $parent);
+                var errors = _.filter(property.validations, function(validation) { return validation.hasError; });
+                $this.toggleClass('error', errors.length > 0);
+                $this.children('.errorList').remove();
+                if (errors.length > 0)
+                {
+                    $('<ul/>')
+                        .addClass('errorList')
+                        .append(
+                            _.map(errors, function(error)
+                            {
+                                return '<li>' + error.limit.message + '</li>';
+                            }).join(''))
+                        .appendTo($this);
+                }
+            };
+            $parent.bind('odkControl-validationChanged', function(event, vProperty, limit)
+            {
+                if (vProperty !== property) return;
+                processValidation();
             });
-            validateProperty($this, property, name, $parent);
+            processValidation();
         });
     };
 
@@ -162,7 +60,7 @@
                 .bind('keyup input', function(event)
                 {
                     property.value = $(this).val();
-                    $parent.trigger('odkControl-propertiesUpdated');
+                    $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                 });
         },
         uiText: function(property, $editor, $parent) {
@@ -181,7 +79,7 @@
                     .bind('keyup input', function(event)
                     {
                         property.value[languageKey] = $(this).val();
-                        $parent.trigger('odkControl-propertiesUpdated');
+                        $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                     });
                 $translationsList.append($newRow);
             });
@@ -193,7 +91,7 @@
                 .click(function(event)
                 {
                     property.value = $(this).is(':checked');
-                    $parent.trigger('odkControl-propertiesUpdated');
+                    $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                 });
             $editor.find('label')
                 .attr('for', 'property_' + property.name)
@@ -229,7 +127,7 @@
             $inputs.bind('input change keyup', function(event)
             {
                 property.value = getPropertyValue();
-                $parent.trigger('odkControl-propertiesUpdated');
+                $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
             });
 
             $editor.find('.editorEnabled')
@@ -240,13 +138,13 @@
                     {
                         $inputs.attr('disabled', false);
                         property.value = getPropertyValue();
-                        $parent.trigger('odkControl-propertiesUpdated');
+                        $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                     }
                     else
                     {
                         $inputs.attr('disabled', true);
                         property.value = false;
-                        $parent.trigger('odkControl-propertiesUpdated');
+                        $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                     }
                 });
         },
@@ -264,7 +162,7 @@
             $select.change(function(event)
             {
                 property.value = $(this).val();
-                $parent.trigger('odkControl-propertiesUpdated');
+                $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
             });
             property.value = $select.val();
         },
@@ -297,7 +195,7 @@
                 var newOption = {text: {}};
                 property.value.push(newOption);
                 $optionsList.append(newOptionRow(property, newOption, $optionsList.children().length, $parent));
-                $parent.trigger('odkControl-propertiesUpdated');
+                $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
             });
 
             $editor.find('.optionsEditorLink').click(function(event)
@@ -306,7 +204,7 @@
                 odkmaker.options.optionsUpdated = function(options)
                 {
                     property.value = options;
-                    $parent.trigger('odkControl-propertiesUpdated');
+                    $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
 
                     // recycle the editor to update text
                     var $newEditor = $('<li/>').propertyEditor(property, $editor.attr('data-name'), $parent);
@@ -335,7 +233,7 @@
                     .text('Option ' + (i + 1));
             });
 
-            $parent.trigger('odkControl-propertiesUpdated');
+            $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
         });
         var $underlyingValueEdit = $('#templates .editors .optionsEditorValueField').clone();
         $underlyingValueEdit
@@ -344,7 +242,7 @@
                 .keyup(function(event)
                 {
                     data.val = $(this).val();
-                    $parent.trigger('odkControl-propertiesUpdated');
+                    $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                 });
         return $('<li></li>')
                 .toggleClass('even', (index % 2) == 0)

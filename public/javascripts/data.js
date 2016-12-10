@@ -82,7 +82,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                                .clone()
                                .addClass(control.type)
                                .odkControl(control.type, null, properties)
-                               .appendTo($root);
+                               .appendTo($root)
+                               .trigger('odkControl-added');
 
             if (control.type == 'group')
                 loadRecurse($control.find('.workspaceInner'), control.children);
