@@ -125,6 +125,15 @@
             },
             message: 'One or more Underlying Value contains invalid characters: only letters, numbers, -, _, and . are allowed.'
         },
+        underlyingLength: {
+            given: [ 'self' ],
+            then: function(options)
+            {
+                if (options == null) return false;
+                return _.any(options, function(option) { return !isEmpty(option.val) && option.val.length > 32; });
+            },
+            message: 'One or more Underlying Value is longer than the allowed maximum of 32 characters.'
+        },
         hasOptions: {
             given: [ 'self' ],
             then: function(options)
