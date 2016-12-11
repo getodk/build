@@ -398,7 +398,7 @@
           name:       { name: 'Name',
                         type: 'text',
                         description: 'The data name of this group in the final exported XML.',
-                        limit: [ 'required', 'xmlLegalChars', 'unique' ],
+                        limit: [ 'required', 'xmlLegalChars', 'unique', 'alphaStart' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
