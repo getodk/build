@@ -1,6 +1,68 @@
+/**
+ *  impl.limits.js - your one stop shop to stop bad input.
+ *    If your goal is to add new types of validations, or to modify the ones that
+ *    already exist, you're in the right spot. If you wish to fix a bug in how
+ *    validations are triggered or recomputed, you'll want to look at validation.js.
+ *
+ *    Validations may only currently be attached to specific properties of specific
+ *    control types. This is done via the configuration section at the bottom of
+ *    control.js; any property may define a limits array in which string keys
+ *    reference predefined limits in this file, or an ad-hoc definition may be given
+ *    following the same syntax as the definitions here.
+ *
+ *    Here is that syntax:
+ *
+ *    given
+ *    =====
+ *    Each validation may declare an interest in any number of dependencies from
+ *    anywhere in the control tree. These declarations come in two parts; a scope
+ *    and a type.
+ *      scope: the control or controls in the form you are interested in. passed
+ *        as the scope key of the object passed to given. options:
+ *        * all: all controls, anywhere in the form. **n.b. includes self!**
+ *        * children: direct children of the validation target control.
+ *        * siblings: all siblings of the validation target control.
+ *        * parents: all parents of the validation target control.
+ *        * self: the validation target control itself; this is given as a bare
+ *          value rather than an array.
+ *      type: the portion of the selected controls you're interested in. options:
+ *        * { property: 'someproperty' }: the given property off selected controls.
+ *          If you pass { property: 'self' }, the validation target property is given.
+ *        * { type: 'type' }: the control type for each control; eg group or number.
+ *        * { type: 'control' }: the entire control.
+ *
+ *    You'll also notice that often rather than an object, simply the string 'self'
+ *    is passed. This is just a shortcut for { scope: 'self', property: 'self' }.
+ *
+ *    then
+ *    ====
+ *    The then function takes in all the values gathered by the declared givens,
+ *    and uses them to determine whether the validation fails or not. A return value
+ *    of true indicates that the validation has found a problem. So as an example,
+ *    if for some reason you want the total number of text controls on a form to
+ *    equal the value of a given property, you might have:
+ *    {
+ *        given: [ 'self', { scope: 'all', type: 'type' } ],
+ *        then: function(count, types)
+ *        {
+ *            var texts = _.filter(types, function(type) { return type === 'text' });
+ *            return count !== texts.length;
+ *        }
+ *    }
+ *
+ *    As you can see, we declare the two parameters that we then take in to process.
+ *    Note that validations are very frequently reprocessed, so very heavy operations
+ *    may lead to performance difficulties.
+ *
+ *    message
+ *    =======
+ *    The message is the displayed error if the validation finds a problem. Right
+ *    now it only takes static strings; eventually it may take a function to
+ *    generate a string.
+ */
+
 ;(function()
 {
-
     var validationNS = odkmaker.namespace.load('odkmaker.validation');
 
     // some util funcs:

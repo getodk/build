@@ -1,3 +1,23 @@
+/**
+ *  validation.js - the engine that powers validations.
+ *
+ *  This is the core code that makes validations work. If you have found a bug
+ *  in how validations are handled or wish to extend the functionality available
+ *  to limit declarations, this is the place. If you wish to adjust how a
+ *  particular validation works or add a new kind of validation, you are looking
+ *  for impl.limits.js.
+ *
+ *  This file is largely grouped into three parts:
+ *  * The first section is some utility code and data structures that the rest
+ *    of the code depends on.
+ *  * The second section is a series of subscription functions that take a context
+ *    and a callback and calls the callback whenever the specified scope changes.
+ *    Each subscription returns a function you can call to stop said subscription.
+ *  * The final section glues the above two together along with some additional
+ *    business logic to actually track and manage controls and their validations,
+ *    as well as process the higher-level definition structures from impl.limits.js.
+ */
+
 ;(function($)
 {
     var validationNS = odkmaker.namespace.load('odkmaker.validation');
