@@ -298,15 +298,19 @@
       <h3>Upload Form to Aggregate</h3>
       <div class="modalContents">
         <div class="errorMessage"></div>
-        <p>You will be asked to authenticate with the Aggregate instance in order to
-           be able to export the form there. Please supply your Google account information
-           when prompted.</p>
+        <p>You can use this tool to upload your form to any Aggregate instance publicly
+          visible on the Internet.</p>
 
         <h4>Aggregate Instance URI</h4>
-        <p>https://<input type="text" class="aggregateInstanceName"/>.appspot.com/</p>
+        <p>https://<input type="text" class="aggregateInstanceName"/></p>
+        <p>Examples include <code>https://my-aggregate.appspot.com</code> if you're on
+          Google App Engine, or <code>https://216.58.193.110:8080/ODKAggregate</code> if
+          you have your own server on the web.</p>
         <h4>Aggregate Credentials</h4>
-        <label for="aggregateUser">Username</label> <input type="text" id="aggregateUser"/>
-        <label for="aggregatePassword">Password</label> <input type="password" id="aggregatePassword"/>
+        <p>
+          <label for="aggregateUser">Username</label> <input type="text" id="aggregateUser"/>
+          <label for="aggregatePassword">Password</label> <input type="password" id="aggregatePassword"/>
+        </p>
         <p><strong>Note:</strong> This is your Aggregate account credentials with Form
           Manager or greater capabilities. The account type in Aggregate has to be ODK,
           not Google. You may leave these blank if your Aggregate instance allows anonymous

@@ -930,6 +930,20 @@ body > .control.last .controlFlowArrow,
     float: right;
 }
 
+.aggregateDialog .aggregateInstanceName
+{
+    width: calc(100% - 5.2em);
+}
+.aggregateDialog .note
+{
+    display: block;
+    padding-top: 0.3em;
+}
+.aggregateDialog #aggregateUser
+{
+    width: 9.5em;
+}
+
 .narrowModal
 {
     margin-left: -20em;
