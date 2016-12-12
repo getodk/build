@@ -1,6 +1,8 @@
 # ODK Build
 
-Build is a web-based service. Unless you mean to do development on it, just go to http://build.opendatakit.org to give it a try, or to the [releases page](https://github.com/opendatakit/build/releases) to download a local copy.
+ODK Build is a web-based, drag-and-drop service for creating forms used with tools such as [ODK Collect](https://opendatakit.org/use/collect/) for data collection. ODK Build is part of Open Data Kit (ODK), a free and open-source set of tools which help organizations author, field, and manage mobile data collection solutions. Learn more about the Open Data Kit project and its history [here](https://opendatakit.org/about/) and read about example ODK deployments [here](https://opendatakit.org/about/deployments/).
+
+Unless you mean to do development on ODK Build, just go to [http://build.opendatakit.org](http://build.opendatakit.org) to give it a try, or to the [releases page](https://github.com/opendatakit/build/releases) to download a local copy.
 
 ## Development
 
@@ -29,4 +31,3 @@ Pull requests are welcome! Please be sure you follow existing convetions: braces
 ### License
 
 Build is licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
-
