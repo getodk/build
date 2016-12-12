@@ -1,18 +1,18 @@
-h1. ODK Build
+# ODK Build
 
-Build is a web-based service. Unless you mean to do development on it, just go to http://build.opendatakit.org to give it a try, or to the "releases page":https://github.com/opendatakit/build/releases to download a local copy.
+Build is a web-based service. Unless you mean to do development on it, just go to http://build.opendatakit.org to give it a try, or to the [releases page](https://github.com/opendatakit/build/releases) to download a local copy.
 
-h2. Development
+## Development
 
 Build is a combination between a Ruby Rack-based application built on Sinatra and a large Javascript frontend. Everything it needs is kicked off by the config.ru Rackup file. We use @shotgun@ for local development and Phusion Passenger for staging and production deployment.
 
-h3. Dependencies
+### Dependencies
 
-The project has one native dependency: Tokyo Tyrant. We use this as our datastore. You'll have to build it natively for any system you want to run the server on. See http://fallabs.com/tokyotyrant/ for details. If you're on a Mac and having issues, "this":https://github.com/opendatakit/build/wiki/Installing-Tokyo-Tyrant-gem-(on-Mac) wiki page may help.
+The project has one native dependency: Tokyo Tyrant. We use this as our datastore. You'll have to build it natively for any system you want to run the server on. See http://fallabs.com/tokyotyrant/ for details. If you're on a Mac and having issues, [this](https://github.com/opendatakit/build/wiki/Installing-Tokyo-Tyrant-gem-(on-Mac)) wiki page may help.
 
 Once you have that, all Rubygem dependencies are managed by Ruby Bundler. Make sure you have at least version 1.0.0 of Bundler installed (@gem update --system && gem install bundler@ if you don't have it already), and then simply run @bundle install@ in the application root to resolve and install the appropriate dependencies.
 
-h3. Setup and Execution
+### Setup and Execution
 
 Now that you have resolved all the appropriate dependencies, you'll need to set up the configuration by copying @config.yml.sample@ to @config.yml@. This file contains a number of secret keys and tokens, so be sure not to check it into source control once you put your own keys into it.
 
@@ -22,11 +22,11 @@ Finally, you'll want to run @bundle exec rackup config.ru@ to start the server, 
 
 If you're running Build in a production environment, there are a couple of things that the application needs to build before it will run. Before first-run, and after each time you update with a new version, you'll want to run @rake deploy:build@. This will bundle all the assets the application needs for speed an ease of deployment.
 
-h3. Contributing
+### Contributing
 
-Pull requests are welcome! Please be sure you follow existing convetions: braces on newlines, 4-width soft tabs, single-quoted strings, and so on. Don't be shy to submit living pull requests early, so we can all work together to refine your contribution. See the "full conttribution guide":https://github.com/opendatakit/build/blob/master/CONTRIBUTING.md for further details.
+Pull requests are welcome! Please be sure you follow existing convetions: braces on newlines, 4-width soft tabs, single-quoted strings, and so on. Don't be shy to submit living pull requests early, so we can all work together to refine your contribution. See the [full conttribution guide](CONTRIBUTING.md) for further details.
 
-h3. License
+### License
 
-Build is licensed under the "Apache 2.0":http://www.apache.org/licenses/LICENSE-2.0 license.
+Build is licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
 
