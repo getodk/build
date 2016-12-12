@@ -26,7 +26,7 @@ If you're running Build in a production environment, there are a couple of thing
 
 ### Contributing
 
-Pull requests are welcome! Please be sure you follow existing conventions: braces on newlines, 4-width soft tabs, single-quoted strings, and so on. Don't be shy to submit living pull requests early, so we can all work together to refine your contribution. See the [full conttribution guide](CONTRIBUTING.md) for further details.
+Pull requests are welcome! Please be sure you follow existing conventions: braces on newlines, 4-width soft tabs, single-quoted strings, and so on. Don't be shy to submit living pull requests early, so we can all work together to refine your contribution. See the [full contribution guide](CONTRIBUTING.md) for further details.
 
 ### License
 
