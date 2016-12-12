@@ -10,9 +10,9 @@ Build is a combination between a Ruby Rack-based application built on Sinatra an
 
 ### Dependencies
 
-The project has one native dependency: Tokyo Tyrant. We use this as our datastore. You'll have to build it natively for any system you want to run the server on. See [http://fallabs.com/tokyotyrant/](http://fallabs.com/tokyotyrant/) for details. If you're on a Mac and having issues, [this](https://github.com/opendatakit/build/wiki/Installing-Tokyo-Tyrant-gem-(on-Mac)) wiki page may help.
+The project has one native dependency: Tokyo Tyrant. We use this as our datastore. You'll have to build it natively for any system you want to run the server on. See [http://fallabs.com/tokyotyrant/](http://fallabs.com/tokyotyrant/) for details.
 
-All Rubygem dependencies are managed by Ruby Bundler. Make sure you have at least version 1.0.0 of Bundler installed (`gem update --system && gem install bundler` if you don't have it already), and then simply run `bundle install` in the application root to resolve and install the appropriate dependencies.
+All Rubygem dependencies are managed by Ruby Bundler. Make sure you have at least version 1.0.0 of Bundler installed (`gem update --system && gem install bundler` if you don't have it already). On a Mac, you will need to install the Tokyo Tyrant gem separately as described [here](https://github.com/opendatakit/build/wiki/Installing-Tokyo-Tyrant-gem-(on-Mac)). Then run `bundle install` in the application root to resolve and install the appropriate dependencies.
 
 ### Setup and Execution
 
