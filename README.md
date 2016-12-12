@@ -1,12 +1,12 @@
 # ODK Build
 
-ODK Build is a web-based, drag-and-drop service for creating forms used with tools such as [ODK Collect](https://opendatakit.org/use/collect/) for data collection. ODK Build is part of Open Data Kit (ODK), a free and open-source set of tools which help organizations author, field, and manage mobile data collection solutions. Learn more about the Open Data Kit project and its history [here](https://opendatakit.org/about/) and read about example ODK deployments [here](https://opendatakit.org/about/deployments/).
+ODK Build is a web-based, drag-and-drop service for creating forms used with data collection tools such as [ODK Collect](https://opendatakit.org/use/collect/). ODK Build is part of Open Data Kit (ODK), a free and open-source set of tools which help organizations author, field, and manage mobile data collection solutions. Learn more about the Open Data Kit project and its history [here](https://opendatakit.org/about/) and read about example ODK deployments [here](https://opendatakit.org/about/deployments/).
 
 Unless you mean to do development on ODK Build, just go to [http://build.opendatakit.org](http://build.opendatakit.org) to give it a try, or to the [releases page](https://github.com/opendatakit/build/releases) to download a local copy.
 
 ## Development
 
-Build is a combination between a Ruby Rack-based application built on Sinatra and a large Javascript frontend. Everything it needs is kicked off by the config.ru Rackup file. We use `shotgun` for local development and Phusion Passenger for staging and production deployment.
+Build is a combination between a Ruby Rack-based application built on Sinatra and a large Javascript frontend. Everything it needs is kicked off by the `config.ru` Rackup file. We use `shotgun` for local development and Phusion Passenger for staging and production deployment.
 
 ### Dependencies
 
@@ -26,7 +26,7 @@ If you're running Build in a production environment, there are a couple of thing
 
 ### Contributing
 
-Pull requests are welcome! Please be sure you follow existing conventions: braces on newlines, 4-width soft tabs, single-quoted strings, and so on. Don't be shy to submit living pull requests early, so we can all work together to refine your contribution. See the [full contribution guide](CONTRIBUTING.md) for further details.
+Pull requests are welcome! Please be sure you follow existing conventions: braces on newlines, 4-width soft tabs, single-quoted strings, and so on. Don't be shy about submitting living pull requests early, so we can all work together to refine your contribution. See the [full contribution guide](CONTRIBUTING.md) for further details.
 
 ### License
 
