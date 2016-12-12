@@ -252,6 +252,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             var $loading = $('.aggregateDialog .modalLoadingOverlay');
             var target = $('.aggregateInstanceName').val();
             $loading.show();
+            $('.aggregateDialog .errorMessage').empty().hide();
+
             $.ajax({
                 url: '/aggregate/post',
                 dataType: 'json',
