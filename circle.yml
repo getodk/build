@@ -1,0 +1,11 @@
+compile:
+  override:
+    - "bundle exec rake deploy:build"
+deployment:
+  staging:
+    branch: staging
+    commands:
+      - "tar jcf build.tar.bz2 ."
+general:
+  artifacts:
+    - "build.tar.bz2"
