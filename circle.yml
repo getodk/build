@@ -15,11 +15,7 @@ compile:
   override:
     - "cp config.yml.sample config.yml"
     - "bundle exec rake deploy:build"
-deployment:
-  staging:
-    branch: staging
-    commands:
-      - "tar jcf build.tar.bz2 ."
+    - "tar jcf build.tar.bz2 *"
 general:
   artifacts:
     - "build.tar.bz2"
