@@ -235,12 +235,21 @@
         var lastHasError = false;
         var apply = function()
         {
-            var hasError = limitObj.then.apply(null, params);
-            console.log('%c' + property.id + ': ' + limit + ' -> ' + hasError, 'color:' + (hasError === true ? 'red;font-weight:bold' : '#444'));
+            var passed;
+            if ((limitObj.prereq != null) && (limitObj.prereq.apply(null, params) !== true))
+            {
+                passed = true; // bail out if we fail the precondition.
+            }
+            else
+            {
+                passed = limitObj.then.apply(null, params);
+            }
 
-            result.hasError = hasError;
-            if (lastHasError !== hasError) $control.trigger('odkControl-validationChanged', [ property, hasError ]);
-            lastHasError = hasError;
+            console.log('%c' + property.id + ': ' + limit + ' -> ' + passed, 'color:' + (passed === false ? 'red;font-weight:bold' : '#444'));
+
+            result.hasError = !passed;
+            if (lastHasError !== result.hasError) $control.trigger('odkControl-validationChanged', [ property, result.hasError ]);
+            lastHasError = result.hasError;
         };
 
         var result = { property: property, limit: limitObj, hasError: false };

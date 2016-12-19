@@ -54,6 +54,15 @@
  *    Note that validations are very frequently reprocessed, so very heavy operations
  *    may lead to performance difficulties.
  *
+ *    prereq (optional)
+ *    =================
+ *    Prereq is exactly the same as then: it takes the same parameters and also returns
+ *    true or false. But if it returns anything other than true, the entire validation
+ *    is considered passing and the then clause is never run. This is to cover cases
+ *    where, for instance, the then clause tests the /validity/ of a string, but in order
+ *    to do so such a string must exist in the first place, and to do so in a way that
+ *    doesn't boggle the mind with negative logic within the test itself.
+ *
  *    message
  *    =======
  *    The message is the displayed error if the validation finds a problem. Right
@@ -66,89 +75,93 @@
     var validationNS = odkmaker.namespace.load('odkmaker.validation');
 
     // some util funcs:
-    var isEmpty = function(val) { return (val == null) || (val === ''); };
-    var xmlLegalChars = function(val) { return _.isString(val) && /[^0-9a-z_.-]/i.test(val); };
-    var alphaStart = function(val) { return _.isString(val) && /^[^a-z]/i.test(val); };
+    var hasString = function(val) { return (val != null) && (val !== ''); };
+    var hasOptions = function(val) { return _.isArray(val) && (val.length > 0); };
+    var xmlLegalChars = function(val) { return /^[0-9a-z_.-]+$/i.test(val); };
+    var alphaStart = function(val) { return /^[a-z]/i.test(val); };
 
     // the actual definitions:
     validationNS.limits = {
         required: {
             given: [ 'self' ],
-            then: function(self) { return isEmpty(self); },
+            then: function(self) { return hasString(self); },
             message: 'This property is required.'
         },
         xmlLegalChars: {
             given: [ 'self' ],
+            prereq: hasString,
             then: function(self) { return xmlLegalChars(self); },
             message: 'Only letters, numbers, -, _, and . are allowed.'
         },
         alphaStart: {
             given: [ 'self' ],
+            prereq: hasString,
             then: function(self) { return alphaStart(self); },
             message: 'The first character must be a letter.'
         },
         unique: {
             given: [ 'self', { scope: 'all', property: 'self' } ],
+            prereq: hasString,
             then: function(self, all)
             {
                 // we expect to see one instance of self in all, which is the
-                // very instance we are validating. but if we see two we're in
-                // trouble.
-                return _.filter(all, function(it) { return self === it; }).length > 1;
+                // very instance we are validating. and zero is fine; dragging
+                // can cause that. but if we see two or more we're in trouble.
+                return _.filter(all, function(it) { return self === it; }).length <= 1;
             },
             message: 'This property must be unique; there is another control that conflicts with it.'
         },
         fieldListChildren: {
             given: [ { scope: 'self', property: 'fieldList' }, { scope: 'children', get: 'type' } ],
+            prereq: function(fieldList) { return fieldList === true; },
             then: function(fieldList, childTypes)
             {
-                if (fieldList !== true) return false; // we don't care unless we're a fieldList.
-                return _.any(childTypes, function(type) { return type === 'group' || type === 'loop'; });
+                return !_.any(childTypes, function(type) { return type === 'group' || type === 'loop'; });
             },
             message: 'A group may not be Display On One Screen if it has groups or loops within it.'
         },
         underlyingRequired: {
             given: [ 'self' ],
+            prereq: _.isArray,
             then: function(options)
             {
-                if (options == null) return false;
-                return _.any(options, function(option) { return isEmpty(option.val); });
+                return _.all(options, function(option) { return hasString(option.val); });
             },
             message: 'One or more Underlying Value has not been provided; they are required.'
         },
-        underlyingLegal: {
+        underlyingLegalChars: {
             given: [ 'self' ],
+            prereq: hasOptions,
             then: function(options)
             {
-                if (options == null) return false;
-                return _.any(options, function(option) { return xmlLegalChars(option.val); });
+                return _.all(options, function(option) { return xmlLegalChars(option.val); });
             },
             message: 'One or more Underlying Value contains invalid characters: only letters, numbers, -, _, and . are allowed.'
         },
         underlyingLength: {
             given: [ 'self' ],
+            prereq: hasOptions,
             then: function(options)
             {
-                if (options == null) return false;
-                return _.any(options, function(option) { return !isEmpty(option.val) && option.val.length > 32; });
+                return _.all(options, function(option) { return !hasString(option.val) || option.val.length <= 32; });
             },
             message: 'One or more Underlying Value is longer than the allowed maximum of 32 characters.'
         },
         hasOptions: {
             given: [ 'self' ],
+            prereq: _.isArray,
             then: function(options)
             {
-                return (options != null) && (options.length === 0);
+                return options.length > 0;
             },
-            message: 'At least one option is required.',
-            immediate: true
+            message: 'At least one option is required.'
         },
         fieldListExpr: {
             given: [ 'self', { scope: 'parents', property: 'fieldList' } ],
+            prereq: hasString,
             then: function(expr, parentFLs)
             {
-                if (isEmpty(expr)) return false;
-                return _.any(parentFLs, function(fl) { return fl === true; });
+                return _.all(parentFLs, function(fl) { return fl !== true; });
             },
             severity: 'warning',
             message: 'Because this control is within a single-screen group (field list), any expressions that reference other fields in the same group will not work.'
