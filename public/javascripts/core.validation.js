@@ -3,7 +3,7 @@
  *
  *  This is the core code that makes validations work. If you have found a bug
  *  in how validations are handled or wish to extend the functionality available
- *  to limit declarations, this is the place. If you wish to adjust how a
+ *  to validation declarations, this is the place. If you wish to adjust how a
  *  particular validation works or add a new kind of validation, you are looking
  *  for impl.validation.js.
  *
@@ -140,8 +140,8 @@
         return function() { stopped = true; };
     };
 
-    // subscribe creates interests. each limit can require as many interests as
-    // it needs in order to properly process its limit. each interest can
+    // subscribe creates interests. each validation can require as many interests as
+    // it needs in order to properly process its validation. each interest can
     // consist of a property, the type, or the whole control of a scoped class
     // of its peer controls.
     var subscribe = function($control, scope, type, param, f)
@@ -161,14 +161,14 @@
 
                 var update = function(event, propertyName) { if (propertyName === param) go(); };
                 var tryUpdate = _.throttle(update, 100);
-                if ($last != null) $last.unbind('odkControl-propertiesUpdated.limit' + id);
-                $last = $(controls).bind('odkControl-propertiesUpdated.limit' + id, tryUpdate);
+                if ($last != null) $last.unbind('odkControl-propertiesUpdated.validation' + id);
+                $last = $(controls).bind('odkControl-propertiesUpdated.validation' + id, tryUpdate);
             };
         }
         else if (type === 'type')
             handle = function(controls) { f(_.map(controls, function(control) { return $(control).data('odkControl-type'); })); };
         else
-          throw new Error('unknown limit subscription type.');
+          throw new Error('unknown validation subscription type.');
 
         // now we figure out when to call the handler.
         var stop = null;
@@ -188,26 +188,26 @@
             handle($control);
         }
         else
-            throw new Error('unknown limit scope type.');
+            throw new Error('unknown validation scope type.');
 
         return stop;
     };
 
     // now we finally start getting higher-level. here we take a named or custom
-    // limit and apply it to the control as appropriate.
-    var validate = function($control, property, limit)
+    // validation and apply it to the control as appropriate.
+    var validate = function($control, property, validation)
     {
         // first find our object.
-        var limitObj = validationNS.limits[limit] || limit;
-        if ((limitObj == null) || (limitObj.given == null) || (limitObj.then == null))
-            throw new Error('unknown limit specified!');
+        var validationObj = validationNS.validations[validation] || validation;
+        if ((validationObj == null) || (validationObj.given == null) || (validationObj.check == null))
+            throw new Error('unknown validation specified!');
 
         // now translate syntactic sugar into our more-formal expectations.
-        limitObj = $.extend(true, {}, limitObj);
-        _.each(limitObj.given, function(it, idx)
+        validationObj = $.extend(true, {}, validationObj);
+        _.each(validationObj.given, function(it, idx)
         {
             if (it === 'self')
-                it = limitObj.given[idx] = { scope: 'self', type: 'property', param: property.id };
+                it = validationObj.given[idx] = { scope: 'self', type: 'property', param: property.id };
             else if (it.property != null)
             {
                 it.type = 'property';
@@ -224,7 +224,7 @@
         // now for each given we want to subscribe, and whenever any subscription
         // updates we want to call the validation code.
         var params = [];
-        _.each(limitObj.given, function(it, idx)
+        _.each(validationObj.given, function(it, idx)
         {
             subscribe($control, it.scope, it.type, it.param, function(x)
             {
@@ -236,23 +236,23 @@
         var apply = function()
         {
             var passed;
-            if ((limitObj.prereq != null) && (limitObj.prereq.apply(null, params) !== true))
+            if ((validationObj.prereq != null) && (validationObj.prereq.apply(null, params) !== true))
             {
                 passed = true; // bail out if we fail the precondition.
             }
             else
             {
-                passed = limitObj.then.apply(null, params);
+                passed = validationObj.check.apply(null, params);
             }
 
-            console.log('%c' + property.id + ': ' + limit + ' -> ' + passed, 'color:' + (passed === false ? 'red;font-weight:bold' : '#444'));
+            console.log('%c' + property.id + ': ' + validation + ' -> ' + passed, 'color:' + (passed === false ? 'red;font-weight:bold' : '#444'));
 
             result.hasError = !passed;
             if (lastHasError !== result.hasError) $control.trigger('odkControl-validationChanged', [ property, result.hasError ]);
             lastHasError = result.hasError;
         };
 
-        var result = { property: property, limit: limitObj, hasError: false };
+        var result = { property: property, validation: validationObj, hasError: false };
         return result;
     };
 
@@ -264,10 +264,10 @@
         var validations = [];
         _.each(properties, function(property, name)
         {
-            if (property.limit != null)
-                _.each(property.limit, function(limit)
+            if (property.validation != null)
+                _.each(property.validation, function(validation)
                 {
-                    var validation = validate($control, property, limit);
+                    var validation = validate($control, property, validation);
                     property.validations.push(validation);
                     validations.push(validation);
                 });
