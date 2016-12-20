@@ -1,8 +1,8 @@
 /**
- *  impl.limits.js - your one stop shop to stop bad input.
+ *  impl.validation.js - your one stop shop to stop bad input.
  *    If your goal is to add new types of validations, or to modify the ones that
  *    already exist, you're in the right spot. If you wish to fix a bug in how
- *    validations are triggered or recomputed, you'll want to look at validation.js.
+ *    validations are triggered or recomputed, you'll want to look at core.validation.js.
  *
  *    Validations may only currently be attached to specific properties of specific
  *    control types. This is done via the configuration section at the bottom of
