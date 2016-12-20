@@ -15,7 +15,16 @@ compile:
   override:
     - "cp config.yml.sample config.yml"
     - "bundle exec rake deploy:build"
-    - "tar jcf build.tar.bz2 *"
+    - "echo $CIRCLE_SHA1 > .build_rev"
+    - "tar jcf build.tar.bz2 * .build_rev"
 general:
   artifacts:
     - "build.tar.bz2"
+notify:
+  webhooks:
+    - url: "http://build.opendatakit.org:5566/deploy"
+experimental:
+  notify:
+    branches:
+      only:
+        - "staging"

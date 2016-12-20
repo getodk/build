@@ -62,3 +62,8 @@ Otherwise, files of note include:
 * `property-editor.js` renders and manages all of the property controls that appear in the right sidebar, and pushes updates back into the control.
 * `validation.js` is the core code that routes data in order to _perform_ validation, as opposed to `impl.limits.js` which _defines_ how the validations behave.
 
+Staging
+-------
+
+The [staging.build.opendatakit.org](http://staging.build.opendatakit.org) site is set up to track the `staging` branch of this repository. You can see the status of the CI build on the [staging branch page on CircleCI](https://circleci.com/gh/opendatakit/build/tree/staging); the deploy should kick off on the staging server no more than two minutes after the build, and should complete within a minute of that. You can always see which SHA is live by going to `Help > About` in the application itself.
+

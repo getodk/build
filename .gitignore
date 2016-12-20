@@ -8,5 +8,6 @@
 vendor
 config.yml
 .build_time
+.build_rev
 public/javascripts/build.js
 tmp/
