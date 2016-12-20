@@ -22,13 +22,9 @@ class ConnectionManager
     self.class.connection ||= begin
       add_finalizer_hook!
       {
-        # permanent stores
         :users => open_connection(:users),
         :forms => open_connection(:forms),
         :form_data => open_connection(:form_data),
-
-        # temporary stores
-        :aggregate_requests => open_connection(:aggregate_requests)
       }
     end
   end

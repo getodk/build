@@ -15,10 +15,6 @@ development:
       host: localhost
       port: 4202
       type: DB
-    aggregate_requests:
-      host: localhost
-      port: 4203
-      type: Table
 
 test:
   cookie_secret: sample
@@ -42,10 +38,6 @@ staging:
       host: localhost
       port: 4102
       type: DB
-    aggregate_requests:
-      host: localhost
-      port: 4203
-      type: Table
 
 production:
   cookie_secret: sample
@@ -65,8 +57,4 @@ production:
       host: localhost
       port: 4002
       type: DB
-    aggregate_requests:
-      host: localhost
-      port: 4003
-      type: Table
 

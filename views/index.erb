@@ -28,7 +28,7 @@
     <div class="loadingScreen">
       <div class="loadingMessage">
         <h1>loading <strong>odk build</strong><sup>BETA</sup></h1>
-        <p>version 0.85</p>
+        <p>version 0.90</p>
         <div class="loadingBar">please wait.</div>
         <p class="status">loading application...</p>
       </div>
@@ -58,7 +58,7 @@
             <li><a href="#saveLocally" class="saveLocallyLink">Save Form to File...</a></li>
             <li><a href="#loadLocallyDialog" rel="modal" class="destructive">Load Form from File...</a></li>
             <li class="divider"></li>
-            <li><a href="#aggregateDialog" id="aggregateLink" rel="modal">Publish to Aggregate...</a></li>
+            <li><a href="#aggregateDialog" id="aggregateLink" rel="modal">Upload Form to Aggregate...</a></li>
             <li><a href="#exportDialog" id="exportLink" rel="modal">Export to XML...</a></li>
             <li><a href="#xlsformExport" id="xlsformLink">Export to XLSForm</a></li>
           </ul>
@@ -295,21 +295,26 @@
     </div>
 
     <div class="modal narrowModal aggregateDialog">
-      <h3>Export</h3>
+      <h3>Upload Form to Aggregate</h3>
       <div class="modalContents">
         <div class="errorMessage"></div>
-        <p>You will be asked to authenticate with the Aggregate instance in order to
-           be able to export the form there. Please supply your Google account information
-           when prompted.</p>
+        <p>You can use this tool to upload your form to any Aggregate instance publicly
+          visible on the Internet.</p>
 
         <h4>Aggregate Instance URI</h4>
-        <p>https://<input type="text" class="aggregateInstanceName"/>.appspot.com/</p>
+        <p>https://<input type="text" class="aggregateInstanceName"/></p>
+        <p>Examples include <code>https://my-aggregate.appspot.com</code> if you're on
+          Google App Engine, or <code>https://216.58.193.110:8080/ODKAggregate</code> if
+          you have your own server on the web.</p>
         <h4>Aggregate Credentials</h4>
-        <label for="aggregateUser">Username</label> <input type="text" id="aggregateUser"/>
-        <label for="aggregatePassword">Password</label> <input type="password" id="aggregatePassword"/>
-        <p><strong>Note:</strong> this is your Aggregate account information, <em>not</em>
-          your Google account. You may leave these blank if your Aggregate instance
-          allows anonymous form uploading.</p>
+        <p>
+          <label for="aggregateUser">Username</label> <input type="text" id="aggregateUser"/>
+          <label for="aggregatePassword">Password</label> <input type="password" id="aggregatePassword"/>
+        </p>
+        <p><strong>Note:</strong> This is your Aggregate account credentials with Form
+          Manager or greater capabilities. The account type in Aggregate has to be ODK,
+          not Google. You may leave these blank if your Aggregate instance allows anonymous
+          form uploading.</p>
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton aggregateExportButton" href="#export">Export</a>
@@ -334,6 +339,9 @@
         <p>
           Found a bug? Have a feature request?
           <a href="http://github.com/clint-tseng/odkbuild/issues" rel="external">Report it</a>.
+        </p>
+        <p>
+          You are running <%= AssetManager.build_rev %>
         </p>
       </div>
       <div class="modalButtonContainer">
