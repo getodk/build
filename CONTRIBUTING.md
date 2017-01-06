@@ -51,8 +51,8 @@ Most of what the user actually interacts with is purely in Javascript. It's all 
 
 The two most likely things you may wish to do are:
 
-* Change how a type of control works, or add a new control type. You'll want to check out the bottom of `controls.js`, and then take a look at `data.js` to define how your changes or additions serialize to XForms XML. (These should be unified to a simple one-stop location in an imminent release similar to `impl.limits.js` below.)
-* Modify or add a validation. For this, the only place you should really have to look is `impl.limits.js`.
+* Change how a type of control works, or add a new control type. You'll want to check out the bottom of `controls.js`, and then take a look at `data.js` to define how your changes or additions serialize to XForms XML. (These should be unified to a simple one-stop location in an imminent release similar to `impl.validation.js` below.)
+* Modify or add a validation. For this, the only place you should really have to look is `impl.validation.js`.
 
 Otherwise, files of note include:
 
@@ -60,7 +60,7 @@ Otherwise, files of note include:
 * `data-ui.js`, which handles all user interactions around dealing with entire forms: opening, closing, exporting, etc; anything that calls into `data.js` is probably here.
 * `options-editor.js` is the code underlying the pop-up options editor experience.
 * `property-editor.js` renders and manages all of the property controls that appear in the right sidebar, and pushes updates back into the control.
-* `validation.js` is the core code that routes data in order to _perform_ validation, as opposed to `impl.limits.js` which _defines_ how the validations behave.
+* `core.validation.js` is the core code that routes data in order to _perform_ validation, as opposed to `impl.validation.js` which _defines_ how the validations behave.
 
 Staging
 -------

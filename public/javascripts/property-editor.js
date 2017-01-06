@@ -32,12 +32,12 @@
                         .append(
                             _.map(errors, function(error)
                             {
-                                return '<li>' + error.limit.message + '</li>';
+                                return '<li>' + error.validation.message + '</li>';
                             }).join(''))
                         .appendTo($this);
                 }
             };
-            $parent.bind('odkControl-validationChanged', function(event, vProperty, limit)
+            $parent.bind('odkControl-validationChanged', function(event, vProperty)
             {
                 if (vProperty !== property) return;
                 processValidation();
