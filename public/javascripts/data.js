@@ -92,6 +92,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     odkmaker.data.load = function(formObj)
     {
         $('h1').text(formObj.title);
+        $('.control').trigger('odkControl-removing');
+        $('.control').trigger('odkControl-removed');
         $('.workspace').empty();
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
