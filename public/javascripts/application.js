@@ -90,5 +90,26 @@ $(function()
     {
         $('.loadingScreen .status').text('checking who you are...');
     }, 0);
+
+    // Show the survey popup if it exists and the user hasn't already dismissed it
+    var $surveyToast = $('#surveyToast');
+    if (($surveyToast.length > 0) && (localStorage.getItem('dismissedSurvey') == null))
+    {
+        var ticket = kor.events.listen({
+            verb: 'form-load',
+            callback: function()
+            {
+                kor.events.unlisten(ticket); // only ask once per session.
+                $surveyToast
+                    .animate({ bottom: '-' + ($surveyToast.outerHeight(true) - $surveyToast.height() - 20) + 'px' }, 'slow')
+                    .delegate('a', 'click', function() { $surveyToast.animate({ bottom: '-15em' }, 'slow'); })
+                    .delegate('#dismissSurvey', 'click', function()
+                    {
+                        localStorage.setItem('dismissedSurvey', 'true');
+                        $.toast('Got it. We&rsquo;ve made a note not to ask you again on this computer.');
+                    });
+            }
+        });
+    }
 });
 

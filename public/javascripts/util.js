@@ -65,7 +65,7 @@
 
     $.toast = function(message)
     {
-        var $toast = $('.toast');
+        var $toast = $('#toast');
         $toast
             .empty()
             .append('<span>' + message + '</span>')

@@ -39,7 +39,15 @@
       <img src="/images/type_icons.png"/>
       <img src="/images/type_icons_small.png"/>
     </div>
-    <div class="toast"></div>
+    <% unless ConfigManager['survey_url'].nil? %>
+      <div id="surveyToast" class="toast">
+        <h2>Help us out?</h2>
+        <p>We're trying to improve ODK Build, and we would really like to know what you think. It will only take a couple of minutes.</p>
+        <a id="launchSurvey" href="<%= ConfigManager['survey_url'] %>" target="_blank">Sure!</a>
+        <a id="dismissSurvey" href="#">No thanks</a>
+      </div>
+    <% end %>
+    <div id="toast" class="toast"></div>
     <div class="header">
       <h1>Untitled Form</h1>
       <input type="text" id="renameFormField"/>

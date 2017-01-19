@@ -195,6 +195,34 @@ form input
     z-index: 20;
 }
 
+#surveyToast
+{
+    background-color: #673ab7;
+    color: #fff;
+    overflow: hidden;
+}
+#surveyToast h2 { color: #eee; }
+#surveyToast p { padding: 0.6em 0 1em; }
+#surveyToast a { color: #fff; }
+#surveyToast #launchSurvey
+{
+    background-color: #fff;
+    border-radius: 0.2em;
+    color: #673ab7;
+    display: block;
+    font-weight: bold;
+    float: left;
+    padding: 0.5em 0.7em 0.4em;
+}
+#surveyToast #dismissSurvey
+{
+    color: #ddd;
+    display: block;
+    float: right;
+    font-size: 0.8em;
+    line-height: 2.5em;
+}
+
 /***********
  * GENERAL *
  ***********/

@@ -97,6 +97,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadRecurse($('.workspace'), formObj.controls);
         $('.workspace .control:first').trigger('odkControl-select');
+
+        kor.events.fire({ subject: formObj, verb: 'form-load' });
     };
 
     // massages the output JSON into a structure representing an XForm
