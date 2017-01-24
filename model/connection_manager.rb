@@ -1,10 +1,10 @@
 # encoding: UTF-8
 
-require 'tokyo_tyrant'
+require 'sequel'
 
 class ConnectionManager
   class << self
-    attr_accessor :connection
+    attr_accessor :db
   end
 
   def initialize(app)
@@ -19,28 +19,24 @@ class ConnectionManager
   protected
 
   def open_connections_if_necessary!
-    self.class.connection ||= begin
+    self.class.db ||= begin
       add_finalizer_hook!
-      {
-        :users => open_connection(:users),
-        :forms => open_connection(:forms),
-        :form_data => open_connection(:form_data),
-      }
+      Sequel.connect(
+        :adapter => 'postgres',
+        :host => ConfigManager['database']['host'],
+        :database => ConfigManager['database']['database'],
+        :user => ConfigManager['database']['user'],
+        :password => ConfigManager['database']['password']
+      )
     end
-  end
-
-  def open_connection(db_name)
-    TokyoTyrant.const_get(ConfigManager['database'][db_name.to_s]['type']).new(
-      ConfigManager['database'][db_name.to_s]['host'],
-      ConfigManager['database'][db_name.to_s]['port'])
   end
 
   def add_finalizer_hook!
     at_exit do
       begin
-        self.class.connection.each_value{ |connection| connection.close }
+        self.class.db.disconnect
       rescue Exception => e
-        puts "Error closing Tokyo Cabinet connection. You might have to clean up manually."
+        puts "Error closing Postgres connection. Some minor data loss may have occurred for in-flight transactions."
       end
     end
   end
@@ -51,7 +47,7 @@ class ConnectionManager
   def self.rackless_connection
     app = FakeRack.new
     ConnectionManager.new(app).call({})
-    return ConnectionManager.connection
+    return ConnectionManager.db
   end
 end
 

@@ -15,6 +15,10 @@ class Form
     return (Form.new key, (Marshal.load data))
   end
 
+  def self.find_by_user(user, get_form_data = false)
+    return [] # TODO
+  end
+
 # Class
   def data(summary = false)
     result = @data.dup

@@ -10,17 +10,43 @@ class User
   def self.find(key)
     key = key.to_s.downcase
 
-    data = ConnectionManager.connection[:users][key]
+    data = User.table.filter( :username => key ).first
 
-    return nil if data.blank?
-    return (User.new key, (Marshal.load data))
+    return nil if data.nil?
+    return (User.new key, data)
+  end
+
+  def self.find_by_email(email)
+    data = User.table.filter( :email => email ).first
+
+    return nil if data.nil?
+    return (User.new key, data)
   end
 
 # Class
+  def self.create(data)
+    key = data[:username].downcase
+    pepper = Time.now.to_f.to_s
+
+    begin
+      User.table.insert({
+        :email => data[:email],
+        :username => key,
+        :password => (User.hash_password data[:password], pepper),
+        :pepper => pepper
+      })
+    rescue Sequel::DatabaseError
+      return nil
+    end
+
+    return (User.find key)
+  end
+
+# Instance
   def data
     result = {
-      :username => @key,
-      :display_name => self.display_name,
+      :username => self.username,
+      :display_name => self.username,
       :email => self.email,
       :forms => (self.forms true).map{ |form| form.data true }
     }
@@ -28,32 +54,17 @@ class User
     return result
   end
 
-  def self.create(data)
-    key = data[:username].downcase
-    pepper = Time.now.to_f.to_s
-
-    ConnectionManager.connection[:users][key] = Marshal.dump({
-      :display_name => data[:username],
-      :email => data[:email],
-      :pepper => pepper,
-      :password => (User.hash_password data[:password], pepper),
-      :forms => []
-    })
-
-    return (User.find key)
-  end
-
   def update(data)
     self.email = data[:email] unless data[:email].nil?
-    self.password = data[:password] unless data[:password].nil?
+    self.password = data[:password] unless data[:password].nil? || data[:password] == ""
   end
 
   def delete!
-    ConnectionManager.connection[:users][@key] = nil
+    row.delete
   end
 
   def save
-    ConnectionManager.connection[:users][@key] = Marshal.dump @data
+    row.update(@data)
   end
 
   def ==(other)
@@ -62,12 +73,15 @@ class User
   end
 
 # Fields
-  def username
-    return @key
+  def email
+    return @data[:email]
+  end
+  def email=(email)
+    @data[:email] = email
   end
 
-  def display_name
-    return @data[:display_name]
+  def username
+    return @key
   end
 
   def password
@@ -77,28 +91,8 @@ class User
     @data[:password] = (User.hash_password plaintext, @data[:pepper])
   end
 
-  def email
-    return @data[:email]
-  end
-  def email=(email)
-    @data[:email] = email
-  end
-
   def forms(get_form_data = false)
-    return [] if @data[:forms].nil?
-
-    return @data[:forms] unless get_form_data
-
-    return @forms if defined? @forms
-    @forms = @data[:forms].map{ |id| Form.find id }
-  end
-  def add_form(form)
-    @data[:forms] ||= []
-    @data[:forms].push form.id
-  end
-  def remove_form(form)
-    return if @data[:forms].nil?
-    @data[:forms].delete form.id
+    Form.find_by_user(self, get_form_data)
   end
 
   def is_admin?
@@ -124,8 +118,20 @@ private
     @key, @data = key, data
   end
 
+  def id
+    return @data[:id]
+  end
+
   def self.hash_password(plaintext, pepper)
     return (Digest::SHA1.hexdigest "--[#{plaintext}]==[#{pepper}]--")
+  end
+
+  def self.table
+    return ConnectionManager.db[:users]
+  end
+
+  def row
+    return User.table.filter( :username => @key )
   end
 end
 
