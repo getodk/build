@@ -3,8 +3,10 @@ source 'https://rubygems.org'
 gem 'rake'
 
 gem 'ffi', '1.0.9'
-gem 'ruby-tokyotyrant', '0.5.1'
-gem 'rufus-tokyo', '1.0.7', :require => 'rufus/tokyo'
+gem 'ruby-tokyotyrant', '0.5.1' # rm
+gem 'rufus-tokyo', '1.0.7', :require => 'rufus/tokyo' # rm
+gem 'sequel', '>= 4.42'
+gem 'pg', '>= 0.18'
 gem 'sinatra', '1.2.6'
 gem 'pony', '1.3'
 gem 'warden', '1.0.6'

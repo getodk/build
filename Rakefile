@@ -5,7 +5,8 @@ require 'yaml'
 require 'yui/compressor'
 require 'json'
 
-require 'tokyo_tyrant'
+require 'sequel'
+
 require 'rake/testtask'
 
 require './config_manager'
@@ -44,116 +45,13 @@ namespace :deploy do
 end
 
 namespace :db do
-  namespace :dev do
-    desc 'Start development databases'
-    task :start do
-      root = File.dirname __FILE__
+  task :migrate do
+    Sequel.extension :migration, :core_extensions
+    db = ConnectionManager.rackless_connection
+    Sequel::Migrator.apply(db, 'model/migrations')
+    db.disconnect
 
-      # make tmp dir if not existent
-      tmp = File.join root, 'tmp'
-      Dir.mkdir tmp unless File.directory? tmp
-
-      # start db's
-      DB_EXT = {
-          'DB' => 'tch',
-          'Table' => 'tct'
-      }
-      ConfigManager['database'].each do |name, config|
-        command = "ttserver -dmn -port #{config['port']} -pid #{File.join tmp, name}.pid #{File.join tmp, name}.#{DB_EXT[config['type']]}"
-        puts "starting #{config['name']} on #{config['port']}:\n#{command}"
-        `#{command}`
-      end
-    end
-
-    desc 'Stop development databases'
-    task :stop do
-      root = File.dirname __FILE__
-
-      # don't worry about if no tmp dir exists
-      tmp = File.join root, 'tmp'
-      exit unless File.directory? tmp
-
-      # sigterm all pid's in here
-      Dir.foreach tmp do |filename|
-        next unless filename =~ /\.pid$/i
-
-        pid = (File.read (File.join tmp, filename))
-
-        command = "kill -s term #{pid}"
-        puts "stopping server at #{pid}#{command}"
-        `#{command}`
-      end
-    end
-  end
-
-  # import has to be two-phase because rufus-tokyo and tokyo-tyrant
-  # dislike being ffi'd at the same time.
-  namespace :import do
-    desc 'Dump data from Cabinet-based format to Tyrant format to stdout'
-    task :stage_one, :db_path do |t, args|
-      puts 'usage: rake db:import[db_path]' and exit if args[:db_path].nil?
-
-      class Hash
-        def force_encoding! encoding='ISO-8859-1'
-          self.each_value{ |value| value.force_encoding encoding if value.is_a? String }
-          return self
-        end
-      end
-
-      output = {}
-
-      dir = Dir.open args[:db_path]
-      require 'rufus/tokyo'
-
-      # okay. first, export users.
-      user_db = (Rufus::Tokyo::Table.new (File.join dir, 'users.tdb'))
-      output[:users] = user_db.keys.map do |key|
-        user = user_db[key]
-
-        user.deep_symbolize_keys!
-        user.force_encoding!
-        user[:forms] ||= []
-        user[:forms] = (user[:forms].split /,/).reject{ |s| s.empty? } if user[:forms].is_a? String
-
-        [key, user]
-      end
-
-      # now let's give forms a shot.
-      form_db = (Rufus::Tokyo::Table.new (File.join dir, 'forms.tdb'))
-      output[:forms] = form_db.keys.map do |key|
-        form = form_db[key]
-
-        form.deep_symbolize_keys!
-        form.force_encoding!
-
-        begin
-          form[:metadata] = (JSON.parse form[:metadata]) unless form[:metadata].nil? || (form[:metadata] == '')
-        rescue Exception => ex
-          STDERR.write "could not parse form metadata for #{form[:id]}."
-          form[:metadata] = "{}"
-        end
-
-        [key, form]
-      end
-
-      # form data is easy.
-      form_data_db = (Rufus::Tokyo::Cabinet.new (File.join dir, 'form_data.tch'))
-      output[:form_data] = form_data_db.keys.map{ |key| [key, form_data_db[key]] }
-
-      STDOUT.write Marshal.dump output
-    end
-
-    desc 'Read data from an import tmpfile into Tokyo Tyrant. Destructive operation if conflicts arise!'
-    task :stage_two, :outfile do |t, args|
-      puts 'usage: rake db:import[db_path]' and exit if args[:outfile].nil?
-
-      output = Marshal.load File.open args[:outfile]
-      db = ConnectionManager.rackless_connection
-
-      output[:users].each{ |u| db[:users][u.first] = Marshal.dump u.last }
-      output[:forms].each{ |f| db[:forms][f.first] = Marshal.dump f.last }
-      output[:form_data].each{ |fd| db[:form_data][fd.first] = fd.last }
-    end
+    puts "migrated successfully."
   end
 end
 
