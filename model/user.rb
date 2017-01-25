@@ -76,6 +76,11 @@ class User
     return other.username == self.username
   end
 
+  def log_login_audit!(as_user = nil)
+    # TODO: see note in form.rb => Form#log-audit!
+    Thread.new{ User.audit_table.insert({ :user_id => self.id, :timestamp => DateTime.now, :as_user => (as_user.nil? ? nil : as_user.id) }) }.join
+  end
+
 # Fields
   def id
     return @data[:id]
@@ -132,6 +137,10 @@ private
 
   def self.table
     return ConnectionManager.db[:users]
+  end
+
+  def self.audit_table
+    return ConnectionManager.db[:login_audit]
   end
 
   def row

@@ -154,6 +154,12 @@ class OdkBuild < Sinatra::Application
   post '/login' do
     env['warden'].authenticate(:odkbuild)
     if env['warden'].authenticated?
+      if env['spoofer']
+        env['spoofer'].log_login_audit!(env['warden'].user)
+      else
+        env['warden'].user.log_login_audit!
+      end
+
       return env['warden'].user.data.to_json
     else
       return error_permission_denied

@@ -21,6 +21,7 @@ Warden::Strategies.add(:odkbuild) do
       fail! "authentication failed"
     else
       if as_user && user.is_admin?
+        env['spoofer'] = user
         success! as_user
       else
         success! user
