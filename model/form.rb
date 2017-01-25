@@ -54,6 +54,7 @@ class Form
       return nil
     end
 
+    form.log_audit!('create')
     return form
   end
 
@@ -68,11 +69,20 @@ class Form
     self.save
   end
 
+  def log_audit!(type)
+    # TODO: for some reason if we don't join this thread the database statement
+    # never runs and the thread just hangs. right now we're fast enough (<60ms)
+    # that it isn't a big perf hit to run this in-line, but it'd be nice to be
+    # able to background it in the future sometime.
+    Thread.new{ Form.audit_table.insert({ :form_id => self.id, :timestamp => DateTime.now, :type => type }) }.join
+  end
+
   def save
     ConnectionManager.db.transaction do
       row.update(@data)
       blob_row.update({ :data => { :controls => @blob[:controls], :metadata => @blob[:metadata] }.to_json }) unless @blob.nil?
     end
+    self.log_audit!('update')
   end
 
   def ==(other)
@@ -119,6 +129,10 @@ private
 
   def self.blob_table
     return ConnectionManager.db[:form_data]
+  end
+
+  def self.audit_table
+    return ConnectionManager.db[:update_audit]
   end
 
   def row
