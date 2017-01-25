@@ -6,89 +6,87 @@ require './model/connection_manager'
 require './lib/extensions'
 
 class Form
-  def self.find(key)
-    key = key.to_s
-
-    data = ConnectionManager.connection[:forms][key]
+  def self.find(uid)
+    data = Form.table.filter( :uid => uid.to_s, :deleted_at => nil ).first
 
     return nil if data.blank?
-    return (Form.new key, (Marshal.load data))
+    return (Form.new data)
   end
 
-  def self.find_by_user(user, get_form_data = false)
-    return [] # TODO
+  def self.find_by_user(user)
+    return Form.table.filter( :user_id => user.id, :deleted_at => nil ).map{ |data| Form.new(data) } || []
   end
 
 # Class
   def data(summary = false)
-    result = @data.dup
-    result[:id] = @key
-    result[:title] = self.title
-    result[:description] = self.description
-    result[:controls] = JSON.parse self.form_data unless summary
-    result[:metadata] = self.metadata unless summary
-
+    result = {
+      :id => self.uid,
+      :title => self.title
+    }
+    unless summary
+      blob = self.blob
+      result.merge!({
+        :controls => blob[:controls],
+        :metadata => blob[:metadata],
+        :owner => self.owner.data(true)
+      })
+    end
     return result
   end
 
   def self.create(data, owner)
     begin
-      key = (String.random_chars 6)
-    end while !ConnectionManager.connection[:forms][key].nil?
+      uid = (String.random_chars 6)
+    end while !Form.find(uid).blank?
 
-    ConnectionManager.connection[:forms][key] = Marshal.dump({
-      :title => data[:title],
-      :description => data[:description],
-      :owner => owner.username,
-      :metadata => data[:metadata]
-    })
+    form = nil
+    begin
+      ConnectionManager.db.transaction do
+        Form.table.insert({ :uid => uid, :title => data[:title], :user_id => owner.id })
 
-    ConnectionManager.connection[:form_data][key] = data[:controls].to_json
+        form = (Form.find uid)
+        Form.blob_table.insert({
+          :form_id => form.id,
+          :data => { :controls => data[:controls], :metadata => data[:metadata] }.to_json
+        })
+      end
+    rescue Sequel::DatabaseError
+      return nil
+    end
 
-    return Form.find key
+    return form
   end
 
   def update(data)
     self.title = data[:title] unless data[:title].nil?
-    self.description = data[:description] unless data[:description].nil?
-    self.metadata = data[:metadata] unless data[:metadata].nil?
-    @form_data = data[:controls].to_json unless data[:controls].nil?
+    @blob = data[:data].to_json unless data[:data].nil?
   end
 
   def delete!
-    # delete the reference instead of the actual form, just in case
-    owner = self.owner
-    owner.remove_form self
-    owner.save
+    # we soft delete just in case.
+    @data[:deleted_at] = DateTime.now
+    self.save
   end
 
   def save
-    ConnectionManager.connection[:forms][@key] = Marshal.dump @data
-    ConnectionManager.connection[:form_data][@key] = @form_data unless @form_data.nil?
+    ConnectionManager.db.transaction do
+      row.update(@data)
+      blob_row.update({ :data => { :controls => @blob[:controls], :metadata => @blob[:metadata] }.to_json }) unless @blob.nil?
+    end
   end
 
   def ==(other)
     return false unless other.is_a? Form
-    return other.id == @key
-  end
-
-  # Recursively counts how many controls are in this form.
-  def control_counts(control_group = self.data[:controls])
-    control_counts = Hash.new(0)
-    return control_counts unless control_group
-    control_group.each do |control|
-      control_counts[control["type"]] += 1
-      if control["type"] == "group"
-        child_control_counts = self.control_counts(control["children"])
-        control_counts.merge!(child_control_counts) { |key, count1, count2| count1 + count2 }
-      end
-    end
-    control_counts
+    return other.id == self.id
   end
 
 # Fields
   def id
-    return @key
+    return @data[:id]
+  end
+
+  def uid
+    return @data[:uid]
   end
 
   def title
@@ -98,35 +96,33 @@ class Form
     @data[:title] = title
   end
 
-  def description
-    return @data[:description]
-  end
-  def description=(description)
-    @data[:description] = description
-  end
-
   def owner
-    return User.find @data[:owner]
+    return User.find_by_id @data[:user_id]
   end
 
-  def form_data
-    return @form_data if defined? @form_data
-    @form_data = ConnectionManager.connection[:form_data][@key]
+  def blob
+    blob = Form.blob_table.filter( :form_id => self.id ).first
+    result = JSON.parse(blob[:data] || "", :symbolize_names => true ) unless blob.blank?
   end
-  def form_data=(form_data)
-    @form_data = form_data
-  end
-
-  def metadata
-    return @data[:metadata] || {}
-  end
-  def metadata=(metadata)
-    @data[:metadata] = metadata
+  def blob=(blob)
+    @blob = blob
   end
 
 private
-  def initialize(key, data)
-    @key, @data = key, data
+  def initialize(data)
+    @data = data
+  end
+
+  def self.table
+    return ConnectionManager.db[:forms]
+  end
+
+  def self.blob_table
+    return ConnectionManager.db[:form_data]
+  end
+
+  def row
+    return Form.table.filter( :uid => self.uid, :deleted_at => nil )
   end
 end
 

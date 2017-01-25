@@ -99,11 +99,11 @@ class OdkBuild < Sinatra::Application
     request_data.deep_symbolize_keys!
 
     # validate input
-    return error_validation_failed if request_data[:title].nil?
+    return error_validation_failed if request_data[:title].blank?
+    return error_validation_failed if request_data[:controls].blank?
+    return error_validation_failed if request_data[:metadata].blank?
 
-    form = Form.create request_data, user
-    user.add_form form
-    user.save
+    form = (Form.create request_data, user)
     return form.data.to_json
   end
 

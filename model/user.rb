@@ -7,31 +7,36 @@ require './lib/extensions'
 require 'digest/sha1'
 
 class User
-  def self.find(key)
-    key = key.to_s.downcase
-
-    data = User.table.filter( :username => key ).first
+  def self.find(username)
+    data = User.table.filter( :username => username.to_s.downcase ).first
 
     return nil if data.nil?
-    return (User.new key, data)
+    return (User.new data)
   end
 
   def self.find_by_email(email)
     data = User.table.filter( :email => email ).first
 
     return nil if data.nil?
-    return (User.new key, data)
+    return (User.new data)
+  end
+
+  def self.find_by_id(id)
+    data = User.table.filter( :id => id ).first
+
+    return nil if data.nil?
+    return (User.new data)
   end
 
 # Class
   def self.create(data)
-    key = data[:username].downcase
+    username = data[:username].downcase
     pepper = Time.now.to_f.to_s
 
     begin
       User.table.insert({
         :email => data[:email],
-        :username => key,
+        :username => username,
         :password => (User.hash_password data[:password], pepper),
         :pepper => pepper
       })
@@ -39,18 +44,17 @@ class User
       return nil
     end
 
-    return (User.find key)
+    return (User.find username)
   end
 
 # Instance
-  def data
+  def data(summary = false)
     result = {
       :username => self.username,
       :display_name => self.username,
-      :email => self.email,
-      :forms => (self.forms true).map{ |form| form.data true }
+      :email => self.email
     }
-
+    result[:forms] = self.forms.map{ |form| form.data(true) } unless summary
     return result
   end
 
@@ -69,10 +73,14 @@ class User
 
   def ==(other)
     return false unless other.is_a? User
-    return other.username == @key
+    return other.username == self.username
   end
 
 # Fields
+  def id
+    return @data[:id]
+  end
+
   def email
     return @data[:email]
   end
@@ -81,7 +89,7 @@ class User
   end
 
   def username
-    return @key
+    return @data[:username]
   end
 
   def password
@@ -91,8 +99,8 @@ class User
     @data[:password] = (User.hash_password plaintext, @data[:pepper])
   end
 
-  def forms(get_form_data = false)
-    Form.find_by_user(self, get_form_data)
+  def forms
+    Form.find_by_user(self)
   end
 
   def is_admin?
@@ -114,12 +122,8 @@ class User
   end
 
 private
-  def initialize(key, data)
-    @key, @data = key, data
-  end
-
-  def id
-    return @data[:id]
+  def initialize(data)
+    @data = data
   end
 
   def self.hash_password(plaintext, pepper)
@@ -131,7 +135,7 @@ private
   end
 
   def row
-    return User.table.filter( :username => @key )
+    return User.table.filter( :username => self.username )
   end
 end
 
