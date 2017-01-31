@@ -10,6 +10,7 @@ gem 'pg', '>= 0.18'
 gem 'sinatra', '1.2.6'
 gem 'pony', '1.3'
 gem 'warden', '1.0.6'
+gem 'deep_merge', '1.1.1'
 
 gem 'riot', '0.12.1'
 gem 'mocha', '0.9.12'
