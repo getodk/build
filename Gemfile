@@ -9,17 +9,20 @@ gem 'sinatra', '1.2.6'
 gem 'pony', '1.3'
 gem 'warden', '1.0.6'
 gem 'deep_merge', '1.1.1'
-
-gem 'riot', '0.12.1'
-gem 'mocha', '0.9.12'
-gem 'rack-test', '0.5.7'
 gem 'net-http-digest_auth', '1.4'
+gem 'unicorn'
 
-gem 'yui-compressor', '0.9.3'
+group :development, :test do
+  gem 'riot', '0.12.1'
+  gem 'mocha', '0.9.12'
+  gem 'rack-test', '0.5.7'
+end
 
 group :development do
   gem 'ruby-tokyotyrant', '0.5.2' # rm
   gem 'rufus-tokyo', '1.0.7', :require => 'rufus/tokyo' # rm
+  gem 'yui-compressor', '0.9.3'
+
   gem 'shotgun'
   gem 'thin'
 end
