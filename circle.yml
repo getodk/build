@@ -16,7 +16,7 @@ compile:
     - "cp config.yml.sample config.yml"
     - "bundle exec rake deploy:build"
     - "echo $CIRCLE_SHA1 > .build_rev"
-    - "tar jcf build.tar.bz2 * .build_rev"
+    - "tar jcf build.tar.bz2 * .build_rev .build_time"
 general:
   artifacts:
     - "build.tar.bz2"
