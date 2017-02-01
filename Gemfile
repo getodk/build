@@ -3,8 +3,6 @@ source 'https://rubygems.org'
 gem 'rake'
 
 gem 'ffi', '1.0.9'
-gem 'ruby-tokyotyrant', '0.5.2' # rm
-gem 'rufus-tokyo', '1.0.7', :require => 'rufus/tokyo' # rm
 gem 'sequel', '>= 4.42'
 gem 'pg', '>= 0.18'
 gem 'sinatra', '1.2.6'
@@ -20,6 +18,8 @@ gem 'net-http-digest_auth', '1.4'
 gem 'yui-compressor', '0.9.3'
 
 group :development do
+  gem 'ruby-tokyotyrant', '0.5.2' # rm
+  gem 'rufus-tokyo', '1.0.7', :require => 'rufus/tokyo' # rm
   gem 'shotgun'
   gem 'thin'
 end
