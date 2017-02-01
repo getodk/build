@@ -2,12 +2,9 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'yaml'
-require 'yui/compressor'
 require 'json'
 
 require 'sequel'
-
-require 'rake/testtask'
 
 require './config_manager'
 
@@ -22,6 +19,8 @@ ConfigManager.load
 namespace :deploy do
   desc 'Compile and bundle assets for the application'
   task :build do
+    require 'yui/compressor'
+
     root = File.dirname __FILE__
     assets = YAML.load_file("#{root}/assets.yml")
     out = File.open "#{root}/public/javascripts/build.js", 'w'
@@ -95,6 +94,8 @@ end
 
 desc "Run all tests"
 task :test do
+  require 'rake/testtask'
+
   Rake::TestTask.new do |t|
     t.libs << "test"
     t.pattern = "test/**/*_test.rb"
