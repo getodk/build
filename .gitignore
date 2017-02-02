@@ -2,4 +2,5 @@
 *.swo
 *.swp
 *.retry
+.vagrant
 /config/build.yml
