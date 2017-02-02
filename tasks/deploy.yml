@@ -79,6 +79,8 @@
     state: started
 
 - name: Load new application into Unicorn
+  become: true
+  become_user: root
   shell: "systemctl kill -s HUP build-server"
   when: (not current_dir.stat.exists) or (last_build_time.stdout != build_time.stdout)
 

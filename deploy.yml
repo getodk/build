@@ -4,7 +4,7 @@
   vars_files:
     - config/build.yml
 
-  user: ansible
+  user: "{{users.provisioning_user}}"
   become: true
 
   gather_facts: false

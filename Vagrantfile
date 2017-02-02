@@ -57,6 +57,9 @@ Vagrant.configure("2") do |config|
     # Prevent log file from being written in pwd
     vb.customize ["modifyvm", :id, "--uartmode1", "file", "/tmp/" + vb.name + ".log"]
   end
+  config.vm.provider "vmware_fusion" do |vmw|
+    vmw.vmx["memsize"] = "1536"
+  end
   #
   # View the documentation for the provider you are using for more
   # information on available options.

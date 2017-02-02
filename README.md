@@ -6,17 +6,23 @@ This branch is for committing and tracking a set of deployment scripts that use 
 
 # Setup and Execution
 
+## Manually provisioning an extant target
+
 1. We recommend taking a look at the [Ansible getting started guide](http://docs.ansible.com/ansible/intro_getting_started.html) to make sure you understand and are set up for the basics of Ansible.
 2. Once you are, copy `config/build.yml.sample` to `config/build.yml` and take a look at it for information you need to plug in.
 3. Your target machine _must_ have the following configured:
     * Ubuntu 16.x LTS. Other distributions or version may work but are not officially supported.
     * An OpenSSH server (`apt-get install openssh-server`).
-    * An `ansible` user with sudo privilges.
+    * A provisioning user with sudo privileges; this username is in `config/build.yml` as `users.provisioning_user`.
     * Either non-password (`NOPASSWD`) sudo on said user, or a password with which to sudo (in which case add `--ask-sudo-pass` to your `ansible-playbook` command).
-    * A way to SSH into your target machine with said `ansible` user.
+    * A way to SSH into your target machine with said provisioning user.
 4. Fetch the required Ansible Galaxy roles: `ansible-galaxy install -r requirements.yml -p roles`.
 5. Then run `ansible-playbook -i hosts playbook.yml` to kick it all off. You'll have to create the `hosts` file yourself.
     * Once your machine is successfully set up, you can use `deploy.yml` instead of `playbook.yml` to push new versions of Build to your targets.
+
+## Provisioning a test machine via Vagrant
+
+Everything should be set up already; just `vagrant up`. The `Vagrantfile` allocates the machine at the local bridge IP `192.168.33.10`, which you can hit after successful provisioning to access the application.
 
 # Important notes
 

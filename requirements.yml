@@ -1,16 +1,16 @@
 ---
 
 - src: ANXS.generic-users
-  version: 1.1.0
+  version: v1.1.0
 
 - src: ANXS.monit
-  version: 1.1.0
+  version: v1.1.0
 
 - name: ANXS.nginx
   src: https://github.com/clint-tseng/ansible-ANXS-nginx
   version: 11223c2148a149ae2b4aa4e269db31b7aa64edce
 
-- name: ANXS.postgres
+- name: ANXS.postgresql
   src: https://github.com/ANXS/postgresql
   version: b6b105cd3863ecfc0c3ba79c26ab6e73681934c8
 

@@ -4,7 +4,7 @@
   vars_files:
     - config/build.yml
 
-  user: ansible
+  user: "{{users.provisioning_user}}"
   become: true
 
   gather_facts: false
@@ -16,6 +16,7 @@
     - name: Ensure Postgres extensions for Build
       apt:
         name: libpq-dev
+        update_cache: true
     - name: Ensure libgmp for native gem compilation
       apt:
         name: libgmp-dev
@@ -24,7 +25,6 @@
 
   roles:
     - role: ANXS.generic-users
-      when: false
       genericusers_users:
         - name: "{{users.build_user}}"
           comment: "Build application user"
@@ -33,7 +33,6 @@
           system: true
 
     - role: rvm_io.ruby
-      when: false
       rvm1_rubies: 
         - "{{app.ruby_version}}"
       rvm1_install_flags: "--auto-dotfiles"
@@ -42,12 +41,10 @@
       become: true
 
     - role: ANXS.monit
-      when: false
       monit_email_enable: true
       monit_notify_email: "{{monitoring.email}}"
 
     - role: ANXS.postgresql
-      when: false
       postgresql_version: 9.5
       monit_protection: true
       postgresql_wal_level: archive
@@ -79,8 +76,7 @@
           method: trust
 
     - role: Stouts.wale
-      when: false
-      #when: "database.backup.s3_access_key != ''"
+      when: "database.backup.s3_access_key != ''"
       postgresql_version: 9.5
       wale_aws_access_key_id: "{{database.backup.s3_access_key}}"
       wale_aws_secret_access_key: "{{database.backup.s3_secret_key}}"
