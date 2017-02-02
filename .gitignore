@@ -1,0 +1,5 @@
+.DS_Store
+*.swo
+*.swp
+*.retry
+/config/build.yml

@@ -1,0 +1,90 @@
+---
+- name: Create working directory
+  shell: mktemp -d
+  register: deploy_tmpdir
+
+- name: Fetch and extract latest artifact
+  shell: "curl \"https://circleci.com/api/v1/project/{{odkbuild_ci_project}}/latest/artifacts?branch={{odkbuild_ci_branch}}\" | grep -o 'https://[^\"]*' | xargs curl | tar jxf -"
+  args:
+    chdir: "{{deploy_tmpdir.stdout}}"
+
+- name: Check for existing deployment
+  stat:
+    path: "{{odkbuild_app_root}}/current"
+  register: current_dir
+
+- name: Check timestamp on existing deployment
+  command: cat {{odkbuild_app_root}}/current/.build_time
+  register: last_build_time
+  when: current_dir.stat.exists
+
+- name: Check timestamp on artifact
+  command: cat {{deploy_tmpdir.stdout}}/.build_time
+  register: build_time
+
+- name: Check for partially run release
+  stat:
+    path: "{{odkbuild_app_root}}/releases/{{build_time.stdout}}"
+  register: existing_release
+  when: (not current_dir.stat.exists) or (last_build_time.stdout != build_time.stdout)
+
+- name: Create release directory
+  file:
+    path: "{{odkbuild_app_root}}/releases/{{build_time.stdout}}"
+    state: directory
+    owner: "{{odkbuild_app_owner}}"
+    mode: 0755
+  when: (not current_dir.stat.exists) or ((last_build_time.stdout != build_time.stdout) and (not existing_release.stat.exists))
+
+- name: Copy artifact files
+  shell: "mv {{deploy_tmpdir.stdout}}/{{item}} {{odkbuild_app_root}}/releases/{{build_time.stdout}}"
+  when: (not current_dir.stat.exists) or ((last_build_time.stdout != build_time.stdout) and (not existing_release.stat.exists))
+  with_items:
+    - "*"
+    - ".build_time"
+    - ".build_rev"
+
+# ideally, we would vendor-package the gems on CI and simply rely on them here.
+# however, circle-ci is on ubuntu 14.x and we are on 16.x, and with the presence
+# of ffi/native gems this approach feels dangerous, so we install here instead.
+- name: Install release gems
+  bundler:
+    chdir: "{{odkbuild_app_root}}/releases/{{build_time.stdout}}"
+    deployment_mode: true
+    exclude_groups:
+      - development
+      - test
+  when: (not current_dir.stat.exists) or (last_build_time.stdout != build_time.stdout)
+
+- name: Run database migrations
+  shell: "bundle exec rake db:migrate"
+  args:
+    chdir: "{{odkbuild_app_root}}/releases/{{build_time.stdout}}"
+  when: (not current_dir.stat.exists) or (last_build_time.stdout != build_time.stdout)
+
+- name: Link release to current
+  file:
+    src: "{{odkbuild_app_root}}/releases/{{build_time.stdout}}"
+    dest: "{{odkbuild_app_root}}/current"
+    owner: "{{odkbuild_app_owner}}"
+    state: link
+  when: (not current_dir.stat.exists) or (last_build_time.stdout != build_time.stdout)
+
+- name: Ensure Unicorn is running
+  become: true
+  become_user: root
+  systemd:
+    name: build-server
+    daemon_reload: true
+    state: started
+
+- name: Load new application into Unicorn
+  shell: "systemctl kill -s HUP build-server"
+  when: (not current_dir.stat.exists) or (last_build_time.stdout != build_time.stdout)
+
+- name: Prune old releases
+  shell: "ls | sort -nr | tail -n +{{odkbuild_keep_releases|int + 1}} | xargs rm -rf"
+  args:
+    chdir: "{{odkbuild_app_root}}/releases"
+  when: (not current_dir.stat.exists) or (last_build_time.stdout != build_time.stdout)
+

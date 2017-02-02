@@ -1,0 +1,12 @@
+[Unit]
+Description=ODK Build Unicorn server
+
+[Service]
+Type=simple
+User={{unicorn_user}}
+Group={{unicorn_user}}
+WorkingDirectory={{unicorn_app_root}}/current
+Environment=RAILS_ENV=production
+ExecStart={{bundler_path.stdout}} exec unicorn -E production -c {{unicorn_app_root}}/shared/unicorn.rb
+TimeoutSec=30
+

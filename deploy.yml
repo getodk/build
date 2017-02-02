@@ -1,0 +1,22 @@
+---
+
+- hosts: all
+  vars_files:
+    - config/build.yml
+
+  user: ansible
+  become: true
+
+  gather_facts: false
+
+  tasks:
+    - include: tasks/deploy.yml
+      become_user: "{{odkbuild_app_owner}}"
+      become: true
+      vars:
+        odkbuild_app_root: "{{app.root_dir}}"
+        odkbuild_app_owner: "{{users.build_user}}"
+        odkbuild_ci_project: "{{ci.project}}"
+        odkbuild_ci_branch: "{{ci.branch}}"
+        odkbuild_keep_releases: "{{ci.keep_old_releases}}"
+

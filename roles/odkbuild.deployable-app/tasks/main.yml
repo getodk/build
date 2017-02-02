@@ -1,0 +1,48 @@
+---
+
+- name: Create application root directory
+  file:
+    path: "{{odkbuild_app_root}}"
+    state: directory
+    owner: "{{odkbuild_app_owner}}"
+    mode: 0755
+
+- name: Create application releases directory
+  file:
+    path: "{{odkbuild_app_root}}/releases"
+    state: directory
+    owner: "{{odkbuild_app_owner}}"
+    mode: 0755
+
+- name: Create application shared directory
+  file:
+    path: "{{odkbuild_app_root}}/shared"
+    state: directory
+    owner: "{{odkbuild_app_owner}}"
+    mode: 0755
+
+- name: Check for /etc/odkbuild/config.yml
+  stat:
+    path: /etc/odkbuild/config.yml
+  register: config_file
+
+- name: Generate cookie secret
+  shell: "head /dev/urandom | tr -dc A-Za-z0-9 | head -c 60 ; echo ''"
+  when: not config_file.stat.exists
+  register: cookie_secret
+
+- name: Create /etc/odkbuild
+  file:
+    path: /etc/odkbuild
+    state: directory
+    owner: "{{odkbuild_app_owner}}"
+    mode: 0755
+
+- name: Create /etc/odkbuild/config.yml
+  template:
+    src: config.yml.j2
+    dest: /etc/odkbuild/config.yml
+    owner: "{{odkbuild_app_owner}}"
+    group: "{{odkbuild_app_owner}}"
+  when: not config_file.stat.exists
+

@@ -1,0 +1,9 @@
+worker_processes 4
+
+working_directory "{{unicorn_app_root}}/current"
+
+listen "/var/odkbuild/build-server.sock", :backlog => 64
+pid "/var/odkbuild/build-server.pid"
+
+preload_app true
+

@@ -1,0 +1,7 @@
+*
+!.gitignore
+!odkbuild.*/
+!odkbuild.*/**/*
+.DS_Store
+*.swp
+*.swo

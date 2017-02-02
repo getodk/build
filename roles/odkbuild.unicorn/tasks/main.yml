@@ -1,0 +1,29 @@
+---
+# this seems absolutely awful but:
+# 1. which doesn't work directly because there is no shell env.
+# 2. systemd demands an absolute path.
+- name: Get Bundler path
+  shell: gem which bundler | sed 's/gems\/bundler.*/wrappers\/bundle/'
+  register: bundler_path
+
+- name: Create unicorn config file
+  template:
+    src: unicorn.rb.j2
+    dest: "{{unicorn_app_root}}/shared/unicorn.rb"
+    owner: "{{unicorn_user}}"
+    group: "{{unicorn_user}}"
+
+- name: Create /var/odkbuild
+  file:
+    path: "/var/odkbuild"
+    state: directory
+    owner: "{{unicorn_user}}"
+    mode: 0755
+
+- name: Create systemd service for Unicorn
+  template:
+    src: build-server.service.j2
+    dest: /lib/systemd/system/build-server.service
+    owner: root
+    group: root
+

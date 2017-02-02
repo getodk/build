@@ -1,0 +1,133 @@
+---
+
+- hosts: all
+  vars_files:
+    - config/build.yml
+
+  user: ansible
+  become: true
+
+  gather_facts: false
+  pre_tasks:
+    - name: Ensure Python for Ansible
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      register: python_result
+      changed_when: python_result.stdout != ""
+    - name: Ensure Postgres extensions for Build
+      apt:
+        name: libpq-dev
+    - name: Ensure libgmp for native gem compilation
+      apt:
+        name: libgmp-dev
+    - setup: # (gather_facts)
+
+
+  roles:
+    - role: ANXS.generic-users
+      when: false
+      genericusers_users:
+        - name: "{{users.build_user}}"
+          comment: "Build application user"
+          groups: []
+          ssh_keys: []
+          system: true
+
+    - role: rvm_io.ruby
+      when: false
+      rvm1_rubies: 
+        - "{{app.ruby_version}}"
+      rvm1_install_flags: "--auto-dotfiles"
+      rvm1_install_path: "/usr/local/rvm"
+      rvm1_user: root
+      become: true
+
+    - role: ANXS.monit
+      when: false
+      monit_email_enable: true
+      monit_notify_email: "{{monitoring.email}}"
+
+    - role: ANXS.postgresql
+      when: false
+      postgresql_version: 9.5
+      monit_protection: true
+      postgresql_wal_level: archive
+      postgresql_archive_mode: on
+      postgresql_archive_command: '/etc/wale/wale.sh wal-push %p'
+      postgresql_users:
+        - name: "{{database.application_user.name}}"
+          pass: "{{database.application_user.pass}}"
+          encrypted: false
+      postgresql_databases:
+        - name: "{{database.name}}"
+          owner: "{{database.application_user.name}}"
+          encoding: "UTF-8"
+      postgresql_pg_hba_default:
+        - type: local
+          database: all
+          user: postgres
+          address: ""
+          method: trust
+        - type: host
+          database: "{{database.name}}"
+          user: "{{database.application_user.name}}"
+          address: "127.0.0.1/32"
+          method: trust
+        - type: host
+          database: "{{database.name}}"
+          user: "{{database.application_user.name}}"
+          address: "::1/128"
+          method: trust
+
+    - role: Stouts.wale
+      when: false
+      #when: "database.backup.s3_access_key != ''"
+      postgresql_version: 9.5
+      wale_aws_access_key_id: "{{database.backup.s3_access_key}}"
+      wale_aws_secret_access_key: "{{database.backup.s3_secret_key}}"
+      wale_aws_region: "{{database.backup.s3_region}}"
+      wale_aws_s3_prefix: "{{database.backup.s3_destination_prefix}}"
+      wale_latest: false
+
+    - role: odkbuild.deployable-app
+      odkbuild_app_root: "{{app.root_dir}}"
+      odkbuild_app_owner: "{{users.build_user}}"
+      odkbuild_db_name: "{{database.name}}"
+      odkbuild_db_user: "{{database.application_user.name}}"
+      odkbuild_db_pass: "{{database.application_user.pass}}"
+
+    - role: odkbuild.unicorn
+      unicorn_user: "{{users.build_user}}"
+      unicorn_app_root: "{{app.root_dir}}"
+
+    - role: ANXS.nginx
+      monit_protection: true
+      nginx_install_method: package
+      nginx_default_enable: false
+      nginx_sites:
+        - server:
+            name: http
+            listen: 80
+            server_name: "{{http.host_name}}"
+            location1:
+              name: "~ ^/(user.*|form.*|login|logout|unauthenticated|reset_password|download|binary/.*|aggregate/.*|images/.*|javascripts/.*|stylesheets/.*)?$"
+              proxy_pass: "http://unix:/var/odkbuild/build-server.sock"
+      nginx_enabled_sites:
+        - http
+
+  post_tasks:
+    - include: tasks/deploy.yml
+      become_user: "{{odkbuild_app_owner}}"
+      become: true
+      vars:
+        odkbuild_app_root: "{{app.root_dir}}"
+        odkbuild_app_owner: "{{users.build_user}}"
+        odkbuild_ci_project: "{{ci.project}}"
+        odkbuild_ci_branch: "{{ci.branch}}"
+        odkbuild_keep_releases: "{{ci.keep_old_releases}}"
+
+    - name: Enable and start Unicorn server
+      systemd:
+        name: build-server
+        enabled: true
+        state: started
+

@@ -1,0 +1,26 @@
+---
+users:
+  build_user: build
+database:
+  name: odkbuild
+  application_user:
+    name: odkbuild
+    pass: odkbuild
+  backup:
+    s3_access_key: ""
+    s3_secret_key: ""
+    s3_region: ""
+    s3_destination_prefix: ""
+app:
+  ruby_version: "ruby-2.3.1"
+  process_name: "build-server"
+  root_dir: "/srv/odkbuild"
+http:
+  host_name: "build.opendatakit.org"
+ci:
+  project: opendatakit/build
+  branch: release
+  keep_old_releases: 5
+monitoring:
+  email: ""
+
