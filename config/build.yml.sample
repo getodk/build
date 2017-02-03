@@ -1,6 +1,7 @@
 ---
 users:
   build_user: build
+  provisioning_user: ubuntu
 database:
   name: odkbuild
   application_user:
