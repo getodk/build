@@ -87,6 +87,7 @@
     - role: odkbuild.deployable-app
       odkbuild_app_root: "{{app.root_dir}}"
       odkbuild_app_owner: "{{users.build_user}}"
+      odkbuild_db_host: "{{database.host}}"
       odkbuild_db_name: "{{database.name}}"
       odkbuild_db_user: "{{database.application_user.name}}"
       odkbuild_db_pass: "{{database.application_user.pass}}"
