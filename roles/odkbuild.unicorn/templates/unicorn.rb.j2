@@ -2,6 +2,9 @@ worker_processes 4
 
 working_directory "{{unicorn_app_root}}/current"
 
+stderr_path "/var/log/odkbuild/stderr.log"
+stdout_path "/var/log/odkbuild/stdout.log"
+
 listen "/var/odkbuild/build-server.sock", :backlog => 64
 pid "/var/odkbuild/build-server.pid"
 

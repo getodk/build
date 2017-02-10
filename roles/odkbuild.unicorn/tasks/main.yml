@@ -20,6 +20,13 @@
     owner: "{{unicorn_user}}"
     mode: 0755
 
+- name: Create /var/log/odkbuild
+  file:
+    path: "/var/log/odkbuild"
+    state: directory
+    owner: "{{unicorn_user}}"
+    mode: 0755
+
 - name: Create systemd service for Unicorn
   template:
     src: build-server.service.j2
