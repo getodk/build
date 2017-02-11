@@ -19,6 +19,7 @@ app:
   root_dir: "/srv/odkbuild"
 http:
   host_name: "build.opendatakit.org"
+  ssl: false
 ci:
   project: opendatakit/build
   branch: release
