@@ -20,6 +20,7 @@ app:
 http:
   host_name: "build.opendatakit.org"
   ssl: false
+  force_ssl: false
 ci:
   project: opendatakit/build
   branch: release

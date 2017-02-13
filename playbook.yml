@@ -106,9 +106,12 @@
             listen: 80
             server_name: "{{http.host_name}}"
             location1:
-              name: "~ ^/(user.*|form.*|login|logout|unauthenticated|reset_password|download|binary/.*|aggregate/.*|images/.*|javascripts/.*|stylesheets/.*)?$"
-              proxy_pass: "http://unix:/var/odkbuild/build-server.sock"
+              name: "{{http.force_ssl | ternary('~ ^/(user.*|form.*|login|logout|unauthenticated|reset_password|download|binary/.*|aggregate/.*|images/.*|javascripts/.*|stylesheets/.*)?$', '_nonexistent')}}"
+              return: "301 https://$host$request_uri"
             location2:
+              name: "{{http.force_ssl | ternary('_nonexistent', '~ ^/(user.*|form.*|login|logout|unauthenticated|reset_password|download|binary/.*|aggregate/.*|images/.*|javascripts/.*|stylesheets/.*)?$')}}"
+              proxy_pass: "http://unix:/var/odkbuild/build-server.sock"
+            location3:
               name: "~ ^/.well-known"
               root: "/var/www/letsencrypt"
               error_page: "404 =500 @500"
@@ -120,7 +123,7 @@
             ssl_certificate: "/etc/letsencrypt/live/{{http.host_name}}/fullchain.pem"
             ssl_certificate_key: "/etc/letsencrypt/live/{{http.host_name}}/privkey.pem"
             location1:
-              name: "~ ^/(user.*|form.*|login|logout|unauthenticated|reset_password|download|binary/.*|aggregate/.*|images/.*|javascripts/.*|stylesheets/.*)?$"
+              name: "/"
               proxy_pass: "http://unix:/var/odkbuild/build-server.sock"
       nginx_enabled_sites:
         - http
