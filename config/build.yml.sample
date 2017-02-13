@@ -3,7 +3,7 @@ users:
   build_user: build
   provisioning_user: ubuntu
 database:
-  host: "::1"
+  host: '"::1"'
   name: odkbuild
   application_user:
     name: odkbuild
