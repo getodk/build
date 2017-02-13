@@ -3,6 +3,7 @@ require 'bundler/setup'
 
 require 'rack'
 
+require './tls_odkbuild'
 require './warden_odkbuild'
 
 require './model/connection_manager'
@@ -17,6 +18,10 @@ AssetManager.load
 
 # middleware
 use Rack::CommonLogger
+
+if ConfigManager['cookie_ssl_only']
+  use Build::TLS
+end
 
 use Rack::Session::Cookie,
   :secret => ConfigManager['cookie_secret']

@@ -1,5 +1,6 @@
 development:
   cookie_secret: sample
+  cookie_ssl_only: false
   database:
     host: localhost
     database: odkbuild
