@@ -1,5 +1,6 @@
 production:
   cookie_secret: {{cookie_secret.stdout}}
+  cookie_ssl_only: {{odkbuild_ssl_only | to_json}}
   database:
     host: {{odkbuild_db_host}}
     database: {{odkbuild_db_name}}

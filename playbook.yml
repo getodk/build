@@ -91,6 +91,7 @@
       odkbuild_db_name: "{{database.name}}"
       odkbuild_db_user: "{{database.application_user.name}}"
       odkbuild_db_pass: "{{database.application_user.pass}}"
+      odkbuild_ssl_only: "{{http.force_ssl}}"
 
     - role: odkbuild.unicorn
       unicorn_user: "{{users.build_user}}"
