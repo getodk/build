@@ -50,6 +50,8 @@
       postgresql_wal_level: archive
       postgresql_archive_mode: on
       postgresql_archive_command: '/etc/wale/wale.sh wal-push %p'
+      postgresql_listen_addresses:
+        - "*"
       postgresql_users:
         - name: "{{database.application_user.name}}"
           pass: "{{database.application_user.pass}}"
@@ -131,7 +133,7 @@
               proxy_pass: "http://unix:/var/odkbuild/build-server.sock"
       nginx_enabled_sites:
         - http
-        - https
+        - "{{http.ssl | ternary('https', 'http')}}"
 
     - role: thefinn93.letsencrypt
       when: "http.ssl == true"
