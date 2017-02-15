@@ -10,7 +10,7 @@ module Build
         headers = response[1]
 
         # add HSTS
-        headers['Strict-Transport-Security'] = 'max-age=778000'
+        headers['Strict-Transport-Security'] = 'max-age=7776000'
 
         # mark cookie as secure:
         headers['Set-Cookie'] += '; secure' unless headers['Set-Cookie'].nil?
