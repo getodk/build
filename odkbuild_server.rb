@@ -44,6 +44,7 @@ class OdkBuild < Sinatra::Application
     return error_validation_failed if User.find params[:username]
 
     user = User.create params
+    user.log_login_audit!
     env['warden'].authenticate(:odkbuild)
 
     return user.data.to_json
