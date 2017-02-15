@@ -10,15 +10,15 @@ Build is a combination between a Ruby Rack-based application built on Sinatra an
 
 ### Dependencies
 
-The project has one native dependency: Tokyo Tyrant. We use this as our datastore. You'll have to build it natively for any system you want to run the server on. See [http://fallabs.com/tokyotyrant/](http://fallabs.com/tokyotyrant/) for details.
+All Rubygem dependencies are managed by Ruby Bundler. Make sure you have at least version 1.0.0 of Bundler installed (`gem update --system && gem install bundler` if you don't have it already). Then run `bundle install` in the application root to resolve and install the appropriate dependencies.
 
-All Rubygem dependencies are managed by Ruby Bundler. Make sure you have at least version 1.0.0 of Bundler installed (`gem update --system && gem install bundler` if you don't have it already). On a Mac, you will need to install the Tokyo Tyrant gem separately as described [here](https://github.com/opendatakit/build/wiki/Installing-Tokyo-Tyrant-gem-(on-Mac)). Then run `bundle install` in the application root to resolve and install the appropriate dependencies.
+We depend on one native binding, to connect to a PostgreSQL database. To satisfy the binding, you can install `libpq-dev` on apt, or `postgresql` on homebrew.
 
 ### Setup and Execution
 
 Now that you have resolved all the appropriate dependencies, you'll need to set up the configuration by copying `config.yml.sample` to `config.yml`. This file contains a number of secret keys and tokens, so be sure not to check it into source control once you put your own keys into it.
 
-Next, you want to start up your databases. You'll need to start four Tokyo Tyrant instances, one for each listing in the configuration file. If you're working from a development environment, you can do this simply by running `rake db:dev:start`, and `rake db:dev:stop` to stop them again.
+Next, you want to start up your databases. Create a database in your Postgres instance according to how you populated `config.yml`, then run `rake db:migrate` to run migrations against that database. Ideally, create the database with an encoding of `UTF8`.
 
 Finally, you'll want to run `bundle exec rackup config.ru` to start the server, or `bundle exec shotgun config.ru` if you want the application to automatically detect your changes to source code and load them up when you refresh the app in your web browser.
 
@@ -31,3 +31,4 @@ Pull requests are welcome! Please be sure you follow existing conventions: brace
 ### License
 
 Build is licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
+
