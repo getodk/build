@@ -6,6 +6,10 @@ This branch is for committing and tracking a set of deployment scripts that use 
 
 # Setup and Execution
 
+## Provisioning a local test VM via Vagrant
+
+Everything should be set up already; just `vagrant up`. The `Vagrantfile` allocates the machine at the local bridge IP `192.168.33.10`, which you can hit after successful provisioning to access the application. VMware is supported; simply change `ubuntu/xenial64` to `velocity42/xenial64`.
+
 ## Manually provisioning an extant target
 
 1. We recommend taking a look at the [Ansible getting started guide](http://docs.ansible.com/ansible/intro_getting_started.html) to make sure you understand and are set up for the basics of Ansible.
@@ -19,10 +23,6 @@ This branch is for committing and tracking a set of deployment scripts that use 
 4. Fetch the required Ansible Galaxy roles: `ansible-galaxy install -r requirements.yml -p roles`.
 5. Then run `ansible-playbook -i hosts playbook.yml` to kick it all off. You'll have to create the `hosts` file yourself.
     * Once your machine is successfully set up, you can use `deploy.yml` instead of `playbook.yml` to push new versions of Build to your targets.
-
-## Provisioning a test machine via Vagrant
-
-Everything should be set up already; just `vagrant up`. The `Vagrantfile` allocates the machine at the local bridge IP `192.168.33.10`, which you can hit after successful provisioning to access the application.
 
 # Important notes
 
@@ -40,7 +40,4 @@ Pull requests are welcome! If you have changes to make the setup more robust, de
 # License
 
 Build is licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
-
-
-ansible-galaxy install -r Rolefile.yml
 
