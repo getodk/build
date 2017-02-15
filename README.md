@@ -2,7 +2,7 @@
 
 ODK Build is a web-based, drag-and-drop service for creating forms used with data collection tools such as [ODK Collect](https://opendatakit.org/use/collect/). ODK Build is part of Open Data Kit (ODK), a free and open-source set of tools which help organizations author, field, and manage mobile data collection solutions. Learn more about the Open Data Kit project and its history [here](https://opendatakit.org/about/) and read about example ODK deployments [here](https://opendatakit.org/about/deployments/).
 
-Unless you mean to do development on ODK Build, just go to [http://build.opendatakit.org](http://build.opendatakit.org) to give it a try, or to the [releases page](https://github.com/opendatakit/build/releases) to download a local copy.
+Unless you mean to do development on ODK Build, just go to [https://build.opendatakit.org](https://build.opendatakit.org) to give it a try, or to the [releases page](https://github.com/opendatakit/build/releases) to download a local copy.
 
 ## Development
 
@@ -16,7 +16,7 @@ All Rubygem dependencies are managed by Ruby Bundler. Make sure you have at leas
 
 ### Setup and Execution
 
-Now that you have resolved all the appropriate dependencies, you'll need to set up the configuration by copying `config.yml.sample` to `config.yml`. This file contains a number of secret keys and tokens, so be sure not to check it into source control once you put your own keys into it.
+Now that you have resolved all the appropriate dependencies, you'll need to set up the configuration by copying `config.yml.sample` to `config.yml`. This file contains a number of secret keys and tokens, so be sure not to check it into source control once you put your own keys into it. Note that the `cookie_ssl_only` flag should only be set to true if you are serving your requests on HTTPS; it should likely remain off for local development.
 
 Next, you want to start up your databases. You'll need to start four Tokyo Tyrant instances, one for each listing in the configuration file. If you're working from a development environment, you can do this simply by running `rake db:dev:start`, and `rake db:dev:stop` to stop them again.
 
