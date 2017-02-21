@@ -22,5 +22,7 @@
   src: https://github.com/carlosfunk/Stouts.wale
   version: d3c1d1b24fb5636f072920077df5b18e2cffbb17
 
+- src: thefinn93.letsencrypt
+
 - src: geerlingguy.postfix
 
