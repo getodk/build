@@ -24,6 +24,8 @@
 
 
   roles:
+    - role: ANXS.hostname
+
     - role: ANXS.generic-users
       genericusers_users:
         - name: "{{users.build_user}}"
@@ -145,6 +147,8 @@
         day: 15
         hour: 0
         minute: 0
+
+    - role: geerlingguy.postfix
 
   post_tasks:
     - include: tasks/deploy.yml

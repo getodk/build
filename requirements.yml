@@ -6,6 +6,8 @@
 - src: ANXS.monit
   version: v1.1.0
 
+- src: ANXS.hostname
+
 - name: ANXS.nginx
   src: https://github.com/clint-tseng/ansible-ANXS-nginx
   version: 11223c2148a149ae2b4aa4e269db31b7aa64edce
@@ -19,4 +21,6 @@
 - name: Stouts.wale
   src: https://github.com/carlosfunk/Stouts.wale
   version: d3c1d1b24fb5636f072920077df5b18e2cffbb17
+
+- src: geerlingguy.postfix
 
