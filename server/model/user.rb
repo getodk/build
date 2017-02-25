@@ -21,6 +21,12 @@ class User
     return (User.new data)
   end
 
+  def self.find_by_login_or_email(x)
+    # we perform two separate queries rather than formulate a new one to ensure
+    # the username has precedence.
+    return self.find(x) || self.find_by_email(x)
+  end
+
   def self.find_by_id(id)
     data = User.table.filter( :id => id ).first
 

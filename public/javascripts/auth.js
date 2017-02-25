@@ -80,11 +80,13 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
             {
                 $(this).text('Never mind, I have an account.');
                 $('.signinDialog h3').text('Sign up');
+                $('.signinDialog .emailHint').hide();
             }
             else
             {
                 $(this).text('Don\'t yet have an account?');
                 $('.signinDialog h3').text('Sign in');
+                $('.signinDialog .emailHint').show();
             }
         });
         $('.signinDialog .togglePasswordLink').click(function(event)
