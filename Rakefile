@@ -6,13 +6,13 @@ require 'json'
 
 require 'sequel'
 
-require './config_manager'
+require './server/config_manager'
 
-require './model/user'
-require './model/form'
-require './model/connection_manager'
+require './server/model/user'
+require './server/model/form'
+require './server/model/connection_manager'
 
-require './lib/extensions'
+require './server/lib/extensions'
 
 ConfigManager.load
 
@@ -22,7 +22,7 @@ namespace :deploy do
     require 'yui/compressor'
 
     root = File.dirname __FILE__
-    assets = YAML.load_file("#{root}/assets.yml")
+    assets = YAML.load_file("#{root}/server/assets.yml")
     out = File.open "#{root}/public/javascripts/build.js", 'w'
 
     # javascript
@@ -47,7 +47,7 @@ namespace :db do
   task :migrate do
     Sequel.extension :migration, :core_extensions
     db = ConnectionManager.rackless_connection
-    Sequel::Migrator.apply(db, 'model/migrations')
+    Sequel::Migrator.apply(db, 'server/model/migrations')
     db.disconnect
 
     puts "migrated successfully."

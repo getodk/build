@@ -9,11 +9,11 @@ require 'date'
 require 'uri'
 require 'net/https'
 require 'net/http/digest_auth'
-require './lib/multipart'
+require './server/lib/multipart'
 
-require './model/user'
-require './model/form'
-require './model/connection_manager'
+require './server/model/user'
+require './server/model/form'
+require './server/model/connection_manager'
 
 class OdkBuild < Sinatra::Application
   disable :run

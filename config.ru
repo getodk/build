@@ -3,14 +3,14 @@ require 'bundler/setup'
 
 require 'rack'
 
-require './tls_odkbuild'
-require './warden_odkbuild'
+require './server/tls_odkbuild'
+require './server/warden_odkbuild'
 
-require './model/connection_manager'
-require './config_manager'
-require './asset_manager'
+require './server/model/connection_manager'
+require './server/config_manager'
+require './server/asset_manager'
 
-require './odkbuild_server'
+require './server/odkbuild_server'
 
 # load configuration files
 ConfigManager.load

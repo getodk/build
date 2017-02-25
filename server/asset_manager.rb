@@ -12,7 +12,7 @@ class AssetManager
   end
 
   def self.load
-    @@assets = YAML.load_file('assets.yml') || {}
+    @@assets = YAML.load_file('./server/assets.yml') || {}
     begin
       @@build_rev = File.read '.build_rev'
     rescue Errno::ENOENT

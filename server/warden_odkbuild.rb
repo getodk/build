@@ -1,6 +1,6 @@
 require 'warden'
 
-require './model/user'
+require './server/model/user'
 
 Warden::Manager.before_failure do |env, opts|
   # Sinatra is very sensitive to the request method
