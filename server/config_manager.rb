@@ -1,7 +1,7 @@
 require 'yaml'
 require 'deep_merge'
 
-LOCAL_CONFIG_PATH = File.join(File.dirname(__FILE__), 'config.yml')
+LOCAL_CONFIG_PATH = File.join(File.dirname(__FILE__), '..', 'config.yml')
 GLOBAL_CONFIG_PATH = '/etc/odkbuild/config.yml'
 
 class ConfigManager
