@@ -1,0 +1,11 @@
+[Unit]
+Description=ODK Build XLS conversion service
+
+[Service]
+Type=simple
+User={{service_owner}}
+Group={{service_owner}}
+WorkingDirectory={{service_root}}/current
+ExecStart=/usr/bin/nodejs {{service_root}}/current/lib/server.js
+TimeoutSec=30
+

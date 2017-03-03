@@ -1,0 +1,30 @@
+---
+
+- name: Create service root directory
+  file:
+    path: "{{service_root}}"
+    state: directory
+    owner: "{{service_owner}}"
+    mode: 0755
+
+- name: Create service releases directory
+  file:
+    path: "{{service_root}}/releases"
+    state: directory
+    owner: "{{service_owner}}"
+    mode: 0755
+
+- name: Create service shared directory
+  file:
+    path: "{{service_root}}/shared"
+    state: directory
+    owner: "{{service_owner}}"
+    mode: 0755
+
+- name: Create systemd service for nodejs
+  template:
+    src: xls-service.service.j2
+    dest: /lib/systemd/system/xls-service.service
+    owner: root
+    group: root
+
