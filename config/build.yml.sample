@@ -1,6 +1,9 @@
 ---
+system:
+  hostname: "odkbuild-development"
 users:
   build_user: build
+  xls_service_user: xls_service
   provisioning_user: ubuntu
 database:
   host: '"::1"'
@@ -17,6 +20,10 @@ app:
   ruby_version: "ruby-2.3.1"
   process_name: "build-server"
   root_dir: "/srv/odkbuild"
+xls_service:
+  release_version: "1.0"
+  process_name: "xls-service"
+  root_dir: "/srv/xls_service"
 http:
   host_name: "build.opendatakit.org"
   ssl: false

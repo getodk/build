@@ -1,0 +1,20 @@
+---
+
+- hosts: all
+  vars_files:
+    - config/build.yml
+
+  user: "{{users.provisioning_user}}"
+  become: true
+
+  gather_facts: false
+
+  tasks:
+    - include: tasks/deploy-xls.yml
+      become_user: "{{service_owner}}"
+      become: true
+      vars:
+        service_root: "{{xls_service.root_dir}}"
+        service_owner: "{{users.xls_service_user}}"
+        service_version: "{{xls_service.release_version}}"
+

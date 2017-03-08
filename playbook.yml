@@ -33,6 +33,11 @@
           groups: []
           ssh_keys: []
           system: true
+        - name: "{{users.xls_service_user}}"
+          comment: "XLS conversion service user"
+          groups: []
+          ssh_keys: []
+          system: true
 
     - role: rvm_io.ruby
       rvm1_rubies: 
@@ -41,6 +46,9 @@
       rvm1_install_path: "/usr/local/rvm"
       rvm1_user: root
       become: true
+
+    - role: nodesource.node
+      nodejs_version: "6.x"
 
     - role: ANXS.monit
       monit_email_enable: true
@@ -101,6 +109,10 @@
       unicorn_user: "{{users.build_user}}"
       unicorn_app_root: "{{app.root_dir}}"
 
+    - role: odkbuild.xls-service
+      service_root: "{{xls_service.root_dir}}"
+      service_owner: "{{users.xls_service_user}}"
+
     - role: ANXS.nginx
       monit_protection: true
       nginx_install_method: package
@@ -117,6 +129,9 @@
               name: "{{http.force_ssl | ternary('_nonexistent', '~ ^/(user.*|form.*|login|logout|unauthenticated|reset_password|download|binary/.*|aggregate/.*|images/.*|javascripts/.*|stylesheets/.*)?$')}}"
               proxy_pass: "http://unix:/var/odkbuild/build-server.sock"
             location3:
+              name: "~ ^/convert"
+              proxy_pass: "http://[::1]:8686"
+            location4:
               name: "~ ^/.well-known"
               root: "/var/www/letsencrypt"
               error_page: "404 =500 @500"
@@ -133,6 +148,9 @@
             location1:
               name: "/"
               proxy_pass: "http://unix:/var/odkbuild/build-server.sock"
+            location2:
+              name: "~ ^/convert"
+              proxy_pass: "http://[::1]:8686"
       nginx_enabled_sites:
         - http
         - "{{http.ssl | ternary('https', 'http')}}"
@@ -161,9 +179,23 @@
         odkbuild_ci_branch: "{{ci.branch}}"
         odkbuild_keep_releases: "{{ci.keep_old_releases}}"
 
+    - include: tasks/deploy-xls.yml
+      become_user: "{{service_owner}}"
+      become: true
+      vars:
+        service_owner: "{{users.xls_service_user}}"
+        service_root: "{{xls_service.root_dir}}"
+        service_version: "{{xls_service.release_version}}"
+
     - name: Enable and start Unicorn server
       systemd:
         name: build-server
+        enabled: true
+        state: started
+
+    - name: Enable and start xls service
+      systemd:
+        name: xls-service
         enabled: true
         state: started
 

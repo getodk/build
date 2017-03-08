@@ -1,0 +1,35 @@
+---
+- name: Check for existing deployment
+  stat:
+    path: "{{service_root}}/releases/{{service_version}}"
+  register: current_dir
+
+- name: Create release directory
+  file:
+    path: "{{service_root}}/releases/{{service_version}}"
+    state: directory
+    owner: "{{service_owner}}"
+    mode: 0755
+  when: (not current_dir.stat.exists)
+
+- name: Fetch and extract latest artifact
+  shell: "curl -L \"https://github.com/clint-tseng/build2xlsform/releases/download/{{service_version}}/build2xlsform.tar.bz2\" | tar jxf -"
+  args:
+    chdir: "{{service_root}}/releases/{{service_version}}"
+  when: (not current_dir.stat.exists)
+
+- name: Link release to current
+  file:
+    src: "{{service_root}}/releases/{{service_version}}"
+    dest: "{{service_root}}/current"
+    owner: "{{service_owner}}"
+    state: link
+
+- name: Ensure service is running
+  become: true
+  become_user: root
+  systemd:
+    name: xls-service
+    daemon_reload: true
+    state: started
+
