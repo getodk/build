@@ -178,7 +178,7 @@ class OdkBuild < Sinatra::Application
   end
 
   post '/reset_password' do
-    user = User.find params[:username]
+    user = User.find_by_login_or_email params[:username]
     new_password = user.reset_password!
     user.save
 

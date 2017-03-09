@@ -40,11 +40,11 @@ Warden::Strategies.add(:odkbuild) do
       as_username = nil
     end
 
-    user = User.find username
+    user = User.find_by_login_or_email username
     return nil, nil if user.nil?
 
-    user = User.find params['username'] unless user.is_admin?
-    as_user = User.find as_username if !user.nil? && user.is_admin?
+    user = User.find_by_login_or_email params['username'] unless user.is_admin?
+    as_user = User.find_by_login_or_email as_username if !user.nil? && user.is_admin?
     return user, as_user
   end
 end
