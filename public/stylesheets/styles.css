@@ -792,6 +792,10 @@ body > .control.last .controlFlowArrow,
     background-position: 0 -30px;
 }
 
+.property-length .inclusiveCtrl {
+    display: none;
+}
+
 /**********
  * MODALS *
  **********/

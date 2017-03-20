@@ -15,7 +15,8 @@
         {
             var $this = $(this);
             var $editor = $('#templates .editors .' + property.type).clone();
-            $editor.attr('data-name', name);
+            $editor.attr('data-name', name).addClass('property-' + name);
+            
             $this.empty().append($editor);
 
             $.fn.propertyEditor.editors[property.type](property, $editor, $parent, name);
