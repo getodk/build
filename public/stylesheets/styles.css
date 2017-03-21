@@ -792,7 +792,7 @@ body > .control.last .controlFlowArrow,
     background-position: 0 -30px;
 }
 
-.property-length .inclusiveCtrl {
+.property-length .inclusiveCtrl, .property-count .inclusiveCtrl {
     display: none;
 }
 
