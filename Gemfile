@@ -19,8 +19,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'ruby-tokyotyrant', '0.5.2' # rm
-  gem 'rufus-tokyo', '1.0.7', :require => 'rufus/tokyo' # rm
   gem 'yui-compressor', '0.9.3'
 
   gem 'shotgun'
