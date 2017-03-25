@@ -94,7 +94,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
             }
         }).append('<div class="modalLoadingOverlay"><div class="loadingSpinner"></div></div>');
 
-        $.live('a[rel=modal]', 'click', function(event)
+        $('body').on('click', 'a[rel=modal]', function(event)
         {
             event.preventDefault();
             var $this = $(this);

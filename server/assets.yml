@@ -1,7 +1,7 @@
 javascripts:
 - underscore.min
 - json2
-- jquery.jqmodal.min
+- jquery.jqmodal
 - ajaxupload
 - kor.events
 - awesomemarkup
