@@ -184,7 +184,7 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
         var languages = [{ id: 'value', name: 'Underlying Value'}].concat(
             _.map(odkmaker.i18n.activeLanguages(), function(lang)
             {
-                return { id: lang, name: odkmaker.i18n.getFriendlyName(lang) };
+                return { id: lang, name: odkmaker.i18n.activeLanguages()[lang] };
             }));
 
         // update ui

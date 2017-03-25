@@ -57,7 +57,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             title: $('h1').text(),
             controls: extractRecurse($('.workspace')),
             metadata: {
-                activeLanguages: odkmaker.i18n.activeLanguages(),
+                version: odkmaker.data.currentVersion,
+                activeLanguages: odkmaker.i18n.activeLanguageData(),
                 optionsPresets: odkmaker.options.presets
             }
         };
@@ -89,8 +90,22 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 loadRecurse($control.find('.workspaceInner'), control.children);
         });
     };
+    // forms without a version are assumed to be version 0. any form at a version less than
+    // the current will be upgraded. to define an upgrade, add an upgrade object to any module
+    // whose keys are the number of the version to be upgraded to and values are the functions
+    // that take the form data and update it to conform with that version.
+    odkmaker.data.currentVersion = 1;
     odkmaker.data.load = function(formObj)
     {
+        var version = formObj.metadata.version || 0;
+        while (version < odkmaker.data.currentVersion)
+        {
+            formObj.metadata.version = ++version;
+            for (var module in odkmaker)
+              if ((odkmaker[module].upgrade != null) && (odkmaker[module].upgrade[version] != null))
+                  odkmaker[module].upgrade[version](formObj);
+        }
+
         $('h1').text(formObj.title);
         $('.control').trigger('odkControl-removing');
         $('.control').trigger('odkControl-removed');
