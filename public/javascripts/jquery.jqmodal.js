@@ -26,6 +26,7 @@
 		return this.each(function(){
 			var jqm = $(this).data('jqm') || $.extend({ID: I++}, $.jqm.params),
 		      o = $.extend(jqm,options);
+                  console.log(this);
 
 			// add/extend options to modal and mark as initialized
 			$(this).data('jqm',o).addClass('jqm-init')[0]._jqmID = o.ID;

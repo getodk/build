@@ -85,6 +85,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                         callback(jqm.w, jqm.t);
                 });
                 jqm.w.fadeIn('slow');
+                jqm.o.prependTo('body');
                 jqm.o.fadeIn('slow');
             },
             onHide: function(jqm)
