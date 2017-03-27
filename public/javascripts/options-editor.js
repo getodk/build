@@ -182,9 +182,9 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
     {
         // get languages
         var languages = [{ id: 'value', name: 'Underlying Value'}].concat(
-            _.map(odkmaker.i18n.activeLanguages(), function(lang)
+            _.map(odkmaker.i18n.activeLanguages(), function(lang, code)
             {
-                return { id: lang, name: odkmaker.i18n.activeLanguages()[lang] };
+                return { id: code, name: lang };
             }));
 
         // update ui
@@ -202,7 +202,7 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
                 langOptions = _.map(source, function(property) { return property.text[lang.id] || ''; });
             langOptions.push(''); // add an empty row at the end
 
-            var $listItem = $('<li data-lang="' + lang.id + '"/>');
+            var $listItem = $('<li data-lang="' + $.h(lang.id) + '"/>');
             _.each(langOptions, function(langOption)
             {
                 $listItem.append('<input type="text" value="' + $.h(langOption) + '"/>');

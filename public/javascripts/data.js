@@ -142,7 +142,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         _.each(translations.children, function(translation)
         {
             var result = [];
-            var itext = obj[translation.attrs.lang];
+            var itext = obj[translation._languageCode];
 
             if (itext)
             {
@@ -599,10 +599,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             ]
         };
 
-        _.each(odkmaker.i18n.activeLanguages(), function(language)
+        _.each(odkmaker.i18n.activeLanguages(), function(language, code)
         {
             translations.children.push({
                 name: 'translation',
+                _languageCode: code,
                 attrs: {
                     'lang': language
                 },
