@@ -144,8 +144,26 @@
     // it needs in order to properly process its validation. each interest can
     // consist of a property, the type, or the whole control of a scoped class
     // of its peer controls.
+    var globalSubscriptionCache = {};
     var subscribe = function($control, scope, type, param, f)
     {
+        // before we begin we check if we are a cacheable global scope subscription.
+        if ((scope === 'all') && (type === 'property'))
+        {
+            if (globalSubscriptionCache[param] == null)
+            {
+                // not yet a subscription for this param type; register the given f and
+                // replace it with our own handler.
+                globalSubscriptionCache[param] = [ f ];
+                f = function(xs) { globalSubscriptionCache[param].forEach(function(f) { f(xs); }); };
+            }
+            else
+            {
+                globalSubscriptionCache[param].push(f);
+                return;
+            }
+        }
+
         // first we figure out what to do with the controls we get back. this is
         // dependent on the type.
         var handle = null;
