@@ -105,8 +105,13 @@
                 properties = defaultProperties ||
                     $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
                                    $.fn.odkControl.controlProperties[type]);
+
+            var match = null;
             if (properties.name.value == 'untitled')
                 properties.name.value += (untitledCount() + 1);
+            else if ((match = /^untitled(\d+)$/.exec(properties.name.value)) != null)
+                untitledCount_ = parseInt(match[1]);
+
             _.each(properties, function(property, name)
             {
                 property.id = name;
