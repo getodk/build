@@ -60,7 +60,7 @@ class Form
 
   def update(data)
     self.title = data[:title] unless data[:title].nil?
-    @blob = data[:data].to_json unless data[:data].nil?
+    self.blob = { :controls => data[:controls], :metadata => data[:metadata] }
   end
 
   def delete!
@@ -80,7 +80,7 @@ class Form
   def save
     ConnectionManager.db.transaction do
       row.update(@data)
-      blob_row.update({ :data => { :controls => @blob[:controls], :metadata => @blob[:metadata] }.to_json }) unless @blob.nil?
+      blob_row.update({ :data => @blob.to_json }) unless @blob.nil?
     end
     self.log_audit!('update')
   end
@@ -137,6 +137,10 @@ private
 
   def row
     return Form.table.filter( :uid => self.uid, :deleted_at => nil )
+  end
+
+  def blob_row
+    return Form.blob_table.filter( :form_id => self.id )
   end
 end
 
