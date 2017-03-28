@@ -26,7 +26,7 @@
                 event.preventDefault();
                 var $control = createOdkControl($this.attr('rel'));
                 $('.workspace').append($control);
-                $control.trigger('odkControl-added');
+                $control.trigger('odkControl-added').trigger('click');
             });
 
             $this.workspaceDraggable({
@@ -57,7 +57,7 @@
                     {
                         var $control = createOdkControl($this.attr('rel'))
                         $placeholder.replaceWith($control);
-                        $control.trigger('odkControl-added');
+                        $control.trigger('odkControl-added').trigger('click');
                     }
                 },
                 draggableOptions: {

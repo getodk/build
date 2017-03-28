@@ -98,7 +98,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadRecurse($('.workspace'), formObj.controls);
-        $('.workspace .control:first').trigger('odkControl-select');
+        $('.workspace .control:first').trigger('click');
 
         kor.events.fire({ subject: formObj, verb: 'form-load' });
     };

@@ -132,7 +132,6 @@
                 event.stopPropagation();
                 selectControl($this, type, options, properties);
             });
-            selectControl($this, type, options, properties);
 
             $this.bind('odkControl-validationChanged', function(event, property, hasError)
             {
