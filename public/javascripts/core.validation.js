@@ -263,7 +263,7 @@
                 passed = validationObj.check.apply(null, params);
             }
 
-            console.log('%c' + property.id + ': ' + validation + ' -> ' + passed, 'color:' + (passed === false ? 'red;font-weight:bold' : '#444'));
+            //console.log('%c' + property.id + ': ' + validation + ' -> ' + passed, 'color:' + (passed === false ? 'red;font-weight:bold' : '#444'));
 
             result.hasError = !passed;
             if (lastHasError !== result.hasError) $control.trigger('odkControl-validationChanged', [ property, result.hasError ]);
