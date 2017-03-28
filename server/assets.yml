@@ -7,7 +7,6 @@ javascripts:
 - awesomemarkup
 - namespace
 - util
-- triangle
 - auth
 - data
 - data-ui

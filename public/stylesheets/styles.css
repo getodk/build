@@ -557,11 +557,12 @@ body
 }
 .control .controlFlowArrow
 {
-    height: 28px;
+    border: 2em solid transparent;
+    border-bottom-width: 0;
+    border-top-color: #646464;
     left: 50%;
-    margin-left: -14px;
+    margin-left: -1em;
     position: absolute;
-    width: 28px;
     z-index: 1;
 }
 .collapsed .control .controlFlowArrow
@@ -570,53 +571,28 @@ body
     margin-left: -8px;
     width: 16px;
 }
-.control .controlFlowArrow .slice
-{
-    background: #777 url(/images/control_arrow_tint.png) repeat-x;
-}
-.control:hover > .controlInfo,
-.control:hover > .controlFlowArrow .slice
-{
-    background-color: #888;
-}
-.control.selected > .controlInfo,
-.control.selected > .controlFlowArrow .slice
-{
-    background-color: #ab842c;
-}
-.control.group > .controlInfo,
-.control.group > .controlFlowArrow .slice,
-.control.group > .groupFooter
-{
-    background-color: #607a60;
-}
-.control.group:hover > .controlInfo,
-.control.group:hover > .controlFlowArrow .slice,
-.control.group:hover > .groupFooter
-{
-    background-color: #6f8d6e;
-}
-.control.group.selected > .controlInfo,
-.control.group.selected > .controlFlowArrow .slice,
-.control.group.selected > .groupFooter
-{
-    background-color: #73823f;
-}
-.control.error > .controlInfo,
-.control.group.error > .controlInfo,
-.control.error > .controlFlowArrow .slice,
-.control.group.error > .controlFlowArrow .slice,
-.control.error > .groupFooter,
-.control.group.error > .groupFooter
-{
-    background-color: #a20f0f;
-}
-.control.error:hover > .controlInfo,
-.control.error:hover > .controlFlowArrow .slice,
-.control.error:hover > .groupFooter
-{
-    background-color: #c34141;
-}
+.control:hover > .controlInfo { background-color: #888; }
+.control:hover > .controlFlowArrow { border-top-color: #727272; }
+
+.control.selected > .controlInfo { background-color: #ab842c; }
+.control.selected > .controlFlowArrow { border-top-color: #8f6f25; }
+
+.control.group > .controlInfo, .control.group > .groupFooter { background-color: #607a60; }
+.control.group > .controlFlowArrow { border-top-color: #516651; }
+
+.control.group:hover > .controlInfo, .control.group:hover > .groupFooter { background-color: #6f8d6e; }
+.control.group:hover > .controlFlowArrow { border-top-color: #5d765c; }
+
+.control.group.selected > .controlInfo, .control.group.selected > .groupFooter { background-color: #73823f; }
+.control.group.selected > .controlFlowArrow { border-top-color: #616d35; }
+
+.control.error > .controlInfo, .control.group.error > .controlInfo,
+.control.error > .groupFooter, .control.group.error > .groupFooter { background-color: #a20f0f; }
+.control.error > .controlFlowArrow, .control.group.error > .controlFlowArrow { border-top-color: #880d0d; }
+
+.control.error:hover > .controlInfo, .control.error:hover > .groupFooter { background-color: #c34141; }
+.control.error:hover > .controlFlowArrow { border-top-color: #a43737; }
+
 .control.ui-draggable-dragging
 {
     z-index: 5;
