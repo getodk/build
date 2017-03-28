@@ -197,6 +197,8 @@
             handle = function(controls) { f($(controls)); };
         else if (type === 'property')
         {
+            var go = null;
+            var scheduled = false;
             var id = _.uniqueId();
             propertiesRouting[param] = propertiesRouting[param] || {};
             propertiesRouting[param][id] = {};
@@ -209,9 +211,17 @@
                 else
                     _.each(controls, function(control) { propertiesRouting[param][id][$(control).data('odkControl-id')] = true; });
 
-                var go = function() { f(_.map(controls, function(control) { return $(control).data('odkControl-properties')[param].value; })); };
-                propertiesRouting[param][id].f = go;
-                _.defer(go);
+                propertiesRouting[param][id].f = go = function()
+                {
+                    f(_.map(controls, function(control) { return $(control).data('odkControl-properties')[param].value; }));
+                    scheduled = false;
+                };
+
+                if (scheduled === false)
+                {
+                    _.defer(function() { go(); });
+                    scheduled = true;
+                }
             };
         }
         else if (type === 'type')
@@ -278,7 +288,7 @@
             subscribe($control, it.scope, it.type, it.param, function(x)
             {
                 params[idx] = x;
-                apply()
+                apply();
             });
         });
         var lastHasError = false;
