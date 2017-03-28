@@ -76,7 +76,6 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
     $(function()
     {
         $('.modal').jqm({
-            modal: true,
             onShow: function(jqm)
             {
                 _.each(handlers, function(callback, key)
