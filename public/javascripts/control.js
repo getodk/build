@@ -56,15 +56,16 @@
 
         // clear out and reconstruct property list
         var $propertyList = $('.propertyList');
+        var wasExpanded = $propertyList.find('.advanced > .toggle').hasClass('expanded');
         $propertyList.empty();
 
         var $advancedContainer = $.tag({
             _: 'li', 'class': 'advanced', contents: [
-                { _: 'a', 'class': 'toggle', href: '#advanced', contents: [
+                { _: 'a', 'class': [ 'toggle', { i: wasExpanded, t: 'expanded' } ], href: '#advanced', contents: [
                     { _: 'div', 'class': 'icon' },
                     'Advanced'
                 ] },
-                { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: 'none' } }
+                { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: { i: wasExpanded, t: 'block', e: 'none' } } }
             ]
         });
         var $advancedList = $advancedContainer.find('.advancedProperties');
