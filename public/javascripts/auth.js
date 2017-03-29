@@ -202,7 +202,7 @@ var authNS = odkmaker.namespace.load('odkmaker.auth');
         });
 
         // Sign out link
-        $.live('.signoutLink', 'click', function(event)
+        $('.accountStatus').on('click', '.signoutLink', function(event)
         {
             event.preventDefault();
 

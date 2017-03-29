@@ -76,7 +76,6 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
     $(function()
     {
         $('.modal').jqm({
-            modal: true,
             onShow: function(jqm)
             {
                 _.each(handlers, function(callback, key)
@@ -85,6 +84,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                         callback(jqm.w, jqm.t);
                 });
                 jqm.w.fadeIn('slow');
+                jqm.o.prependTo('body');
                 jqm.o.fadeIn('slow');
             },
             onHide: function(jqm)
@@ -94,7 +94,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
             }
         }).append('<div class="modalLoadingOverlay"><div class="loadingSpinner"></div></div>');
 
-        $.live('a[rel=modal]', 'click', function(event)
+        $('body').on('click', 'a[rel=modal]', function(event)
         {
             event.preventDefault();
             var $this = $(this);

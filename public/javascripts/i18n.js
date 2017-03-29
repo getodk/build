@@ -261,7 +261,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
     // set up translation dialog
     $(function()
     {
-        $.live('.manageTranslations', 'click', function(event)
+        $('.manageTranslations').on('click', function(event)
         {
             event.preventDefault();
             updateDialog(); 
@@ -294,7 +294,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             $('.workspace .control.selected').trigger('odkControl-reloadProperties');
         });
 
-        $.live('.translationsDialog .removeTranslation', 'click', function(event)
+        $('.translationsDialog').on('click', '.removeTranslation', function(event)
         {
             event.preventDefault();
 
