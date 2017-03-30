@@ -265,6 +265,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
         {
             event.preventDefault();
             updateDialog(); 
+            odkmaker.data.clean = false; // a little aggressive, but the corner case isn't worth more-complex code.
         });
 
         $('.translationsDialog .addTranslation').click(function(event)

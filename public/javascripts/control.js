@@ -123,6 +123,7 @@
             $this.bind('odkControl-propertiesUpdated', function(event)
             {
                 event.stopPropagation();
+                kor.events.fire({ subject: $this, verb: 'properties-updated' });
                 refreshFromProperties($this, type, options, properties);
             });
             $this.trigger('odkControl-propertiesUpdated');

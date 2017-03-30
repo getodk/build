@@ -91,14 +91,18 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
     odkmaker.data.load = function(formObj)
     {
-        $('h1').text(formObj.title);
         $('.control').trigger('odkControl-removing');
         $('.control').trigger('odkControl-removed');
         $('.workspace').empty();
+
+        $('h1').text(formObj.title);
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadRecurse($('.workspace'), formObj.controls);
         $('.workspace .control:first').trigger('odkControl-select');
+
+        odkmaker.data.currentForm = formObj;
+        odkmaker.data.clean = true;
 
         kor.events.fire({ subject: formObj, verb: 'form-load' });
     };

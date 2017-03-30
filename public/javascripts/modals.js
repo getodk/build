@@ -106,7 +106,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
             }
             else if ($this.hasClass('destructive'))
             {
-                if (!confirm('Are you sure? You will lose unsaved changes to the current form.'))
+                if ((odkmaker.data.clean === false) && !confirm('Are you sure? You will lose unsaved changes to the current form.'))
                     return;
             }
 
