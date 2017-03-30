@@ -567,9 +567,9 @@ body
 }
 .collapsed .control .controlFlowArrow
 {
-    height: 16px;
-    margin-left: -8px;
-    width: 16px;
+    border-width: 1.4em;
+    border-bottom-width: 0;
+    margin-left: -0.7em;
 }
 .control:hover > .controlInfo { background-color: #888; }
 .control:hover > .controlFlowArrow { border-top-color: #727272; }
