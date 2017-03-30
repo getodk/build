@@ -824,12 +824,20 @@ body > .control.last .controlFlowArrow,
     padding-top: 1em;
 }
 
+.propertiesPane .propertyList li .optionsList
+{
+    padding-left: 1em;
+}
+.propertiesPane .propertyList li .optionsList li
+{
+    margin-bottom: 0.5em;
+}
 .propertiesPane .propertyList li .addOption
 {
+    display: block;
     font-size: 1.2em;
     letter-spacing: -1px;
-    margin-top: 0.5em;
-    padding: 0.5em;
+    padding: 0.5em 0;
 }
 .propertiesPane .propertyList li .removeOption
 {
@@ -883,6 +891,7 @@ body > .control.last .controlFlowArrow,
     position: absolute;
     right: 0.5em;
     width: 29em;
+    z-index: 1;
 }
 .suppressInformation .helpPane
 {
@@ -913,6 +922,12 @@ body > .control.last .controlFlowArrow,
 {
     font-size: 1.2em;
     line-height: 1.1em;
+}
+.helpPane li
+{
+    color: #555;
+    font-size: 1.1em;
+    padding-top: 0.6em;
 }
 
 /**********

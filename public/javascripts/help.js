@@ -16,7 +16,7 @@ $(function()
     };
 
     var $helpProperty = $helpPane.find('.helpProperty');
-    $('.propertiesPane').on('focus', 'input', function(event)
+    $('.propertiesPane').on('focus', 'input, select, a, label', function(event)
     {
         var $target = $(event.target);
 
@@ -34,7 +34,7 @@ $(function()
         $tips.empty();
         _.each(property.tips || [], function(tip) { $tips.append($('<li/>').html(tip)); });
 
-        updateHeight();
+        _.defer(updateHeight);
     });
 
     updateHeight();
