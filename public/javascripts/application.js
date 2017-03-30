@@ -12,7 +12,7 @@ applicationNS.newForm = function()
     $('.control').trigger('odkControl-removed');
     $('.workspace').empty();
     $('.header h1').text('Untitled Form');
-    $('.propertiesPane .propertylist')
+    $('.propertiesPane .propertyList')
         .empty()
         .append('<li class="emptyData">First add a control, then select it to view its properties here.</li>');
     odkmaker.data.currentForm = null;
