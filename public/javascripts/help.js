@@ -15,27 +15,39 @@ $(function()
         $propertiesPane.animate({ bottom: height });
     };
 
-    var $helpProperty = $helpPane.find('.helpProperty');
-    $('.propertiesPane').on('focus', 'input, select, a, label', function(event)
+    var showBasicInformation = function(information)
     {
-        var $target = $(event.target);
-
-        var property = $target.closest('.propertyItem').data('odkProperty');
-        if (property == null) return;
-
         $helpPane.addClass('hasHelp');
         $helpPane.find('.helpItem').hide();
-        $helpProperty.show();
+        $helpBasic.show();
 
-        $helpPane.find('.helpPane-subtitle').text(property.name);
-        $helpProperty.find('.helpProperty-description').html(property.description);
+        $helpPane.find('.helpPane-subtitle').text(information.name);
+        $helpBasic.find('.helpBasic-description').html(information.description);
 
-        var $tips = $helpProperty.find('.helpProperty-tips');
+        var $tips = $helpBasic.find('.helpBasic-tips');
         $tips.empty();
-        _.each(property.tips || [], function(tip) { $tips.append($('<li/>').html(tip)); });
+        if (information.tips != null)
+            _.each(information.tips, function(tip) { $tips.append($('<li/>').html(tip)); });
 
         _.defer(updateHeight);
+    };
+
+    var $helpBasic = $helpPane.find('.helpBasic');
+    $('.propertiesPane').on('focus', 'input, select, a, label', function(event)
+    {
+        var property = $(event.target).closest('.propertyItem').data('odkProperty');
+        if (property == null) return;
+
+        showBasicInformation(property);
     });
+
+    kor.events.listen({ verb: 'control-selected', callback: function(options)
+    {
+        var information = $.fn.odkControl.controlInformation[options.object.type];
+        if (information == null) return;
+
+        showBasicInformation(information);
+    } });
 
     updateHeight();
 });

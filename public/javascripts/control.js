@@ -54,6 +54,9 @@
         $('.workspace .control.selected').removeClass('selected');
         $this.addClass('selected');
 
+        // signal a selection.
+        kor.events.fire({ subject: $this, verb: 'control-selected', object: { type: type } });
+
         // clear out and reconstruct property list
         var $propertyList = $('.propertyList');
         $propertyList.empty();
@@ -479,4 +482,86 @@
                         value: 'Device ID',
                         summary: true } },
     };
+
+    // TODO: combine this and the above hash into one when all these declarations move out into an impl file.
+    $.fn.odkControl.controlInformation = {
+        inputText: {
+            name: 'Text',
+            description: 'Collects textual information. Use this for names, long-form responses, and other free text information.'
+        },
+        inputNumeric: {
+            name: 'Number',
+            description: 'Collects numeric information. An appropriate keyboard will be presented on mobile devices.',
+            tips: [
+                'You can choose between integer-only or decimal-allowed responses with the Kind property.',
+                'If you wish to collect numeric codes, particularly with leading zeroes, you may wish to use Text instead.'
+            ]
+        },
+        inputDate: {
+            name: 'Date/Time',
+            description: 'Collects a calendar date. You can choose the granularity from year-only through full date and time.',
+            tips: [
+                'An appropriate calendar/time widget will be presented on mobile devices.',
+                'If you wish to collect only a time, use the Time type instead.'
+            ]
+        },
+        inputTime: {
+            name: 'Time',
+            description: 'Collects just a time of day. If you wish to collect a time on a certain date, use Date/Time instead.',
+            tips: [ 'An appropriate time widget will be presented on mobile devices.' ]
+        },
+        inputLocation: {
+            name: 'Location',
+            description: 'Collects a geospatial point, path, or shape on the Earth. Use the Kind property to specify which.',
+            tips: [
+                'You can choose whether information is gathered automatically with the GPS location of the collection device ' +
+                'or selected manually on a map with the Style property.'
+            ]
+        },
+        inputMedia: {
+            name: 'Media',
+            description: 'Takes a photo, or records an audio or video recording with the collection device.'
+        },
+        inputBarcode: {
+            name: 'Barcode',
+            description: 'Scans a barcode with an appropriate application on the collection device and stores the result.',
+            tips: [
+                'You will need a third-party application like the <a href="https://play.google.com/store/apps/details?id=com.google.zxing.client.android" rel="external">Zxing Barcode Scanner</a> installed on the collection device to use this feature.'
+            ]
+        },
+        inputSelectOne: {
+            name: 'Choose One',
+            description: 'Allows the form filler to choose one from a set of predetermined choices.',
+            tips: [
+                // TODO: someday maybe create a feature that automatically fudges this in more easily for the form author.
+                // (probably wouldn't be hard, actually.)
+                'To create a freeform "Other" option, add one here, then follow it up with a Text question with the Relevance ' +
+                'property set to reference this question; for example: <code>${/xpath/to/this/choose/one} = \'other\'</code>'
+            ]
+        },
+        inputSelectMany: {
+            name: 'Select Many',
+            description: 'Allows the form filler to select multiple options from a set of predetermined options.',
+            tips: [
+                // TODO: ditto.
+                'To create a freeform "Other" option, add one here, then follow it up with a Text question with the Relevance ' +
+                'property set to reference this question; for example: <code>${/xpath/to/this/select/many} = \'other\'</code>',
+                'You can specify how many options the form filler is allowed to choose with the Response Count property.'
+            ]
+        },
+        group: {
+            name: 'Group',
+            description: 'Groups many questions together into a logical block.',
+            tips: [
+                'You can use groups to create looping sets of questions using the Looped option.',
+                'You can also display multiple questions at a time using the Display On One Screen option, but be careful ' +
+                'using Relevance declarations if you do so; they may not work as you expect.'
+            ]
+        },
+        metadata: {
+            name: 'Metadata',
+            description: 'Metadata questions silently and automatically collect information about the session.',
+        }
+    };
+
 })(jQuery);
