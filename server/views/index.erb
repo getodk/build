@@ -99,6 +99,8 @@
         <li>
           <span>Help</span>
           <ul class="submenu">
+            <li class="checkbox selected"><a href="#toggleInformation" class="toggleInformation"><span class="icon"></span>Show Information</a></li>
+            <li class="divider"></li>
             <li><a href="#aboutDialog" rel="modal">About ODK Build...</a></li>
           </ul>
         </li>
@@ -134,6 +136,18 @@
         <ul class="propertyList">
           <li class="emptyData">First add a control, then select it to view its properties here.</li>
         </ul>
+      </div>
+      <div class="helpPane">
+        <div class="helpPane-contents">
+          <h3><span class="helpPane-title">Information</span> <span class="helpPane-subtitle"></span></h3>
+          <div class="helpItem helpNone">
+            <p>Select something to learn more about it here.</p>
+          </div>
+          <div class="helpItem helpProperty">
+            <p class="helpProperty-description"></p>
+            <ul class="helpProperty-tips"></ul>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -390,21 +404,21 @@
       <div class="editors">
         <div class="text">
           <h4></h4>
-          <p></p>
           <input type="text" class="editorTextfield"/>
         </div>
 
         <div class="bool">
-          <input type="checkbox" class="editorCheckbox"/>
-          <label></label>
-          <p></p>
+          <label>
+            <input type="checkbox" class="editorCheckbox"/>
+            <span></span>
+          </label>
         </div>
 
         <div class="numericRange dateRange">
-          <h4></h4>
-          <p></p>
-          <input id="property_range_enabled" type="checkbox" class="editorCheckbox editorEnabled"/>
-          <label for="property_range_enabled">Enable</label>
+          <label>
+            <input id="property_range_enabled" type="checkbox" class="editorCheckbox editorEnabled"/>
+            <span></span>
+          </label>
           <h5>Minimum</h5>
           <input type="text" class="editorTextfield min"/>
           <input id="property_range_min_inclusive" type="checkbox" class="editorCheckbox inclusive minInclusive inclusiveCtrl"/>
@@ -417,7 +431,6 @@
 
         <div class="uiText">
           <h4></h4>
-          <p></p>
           <ul class="translations"></ul>
         </div>
           <li class="uiText-translation">
@@ -427,14 +440,12 @@
 
         <div class="enum">
           <h4></h4>
-          <p></p>
           <select class="editorSelect"></select>
         </div>
 
         <div class="optionsEditor">
           <a href="#optionsEditorDialog" rel="modal" class="optionsEditorLink">Bulk Edit</a>
           <h4></h4>
-          <p></p>
           <ul class="optionsList"></ul>
           <a class="addOption" href="#addOption">Add Option</a>
         </div>

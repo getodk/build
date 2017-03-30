@@ -33,6 +33,11 @@ $(function()
         event.preventDefault();
         $('.workspace').toggleClass('collapsed');
     });
+    $('.header .menu .toggleInformation').click(function(event)
+    {
+        event.preventDefault();
+        $('body').toggleClass('suppressInformation');
+    });
 
     // wire up header actions
     $('#editTitleLink').click(function(event)

@@ -72,7 +72,7 @@
         // add our hero's properties
         _.each(properties, function(property, name)
         {
-            $('<li/>')
+            $('<li class="propertyItem"/>')
                 .propertyEditor(property, name, $this)
                 .appendTo((property.advanced === true) ? $advancedList : $propertyList);
         });
@@ -239,7 +239,7 @@
                         required: true,
                         value: 'untitled',
                         summary: false },
-        label:        { name: 'Data Label',
+        label:        { name: 'Label',
                         type: 'uiText',
                         description: 'The text that is presented to the user filling the form.',
                         required: true,
@@ -401,7 +401,7 @@
                         required: true,
                         value: 'untitled',
                         summary: false },
-          label:      { name: 'Data Label',
+          label:      { name: 'Label',
                         type: 'uiText',
                         description: 'The text that is presented to the user filling the form.',
                         required: true,
