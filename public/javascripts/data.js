@@ -10,7 +10,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 ;(function($)
 {
     // gets just the pure data for any one control
-    var getDataRepresentation = function($control)
+    var getDataRepresentation = odkmaker.data.extractOne = function($control)
     {
         var data = {};
         _.each($control.data('odkControl-properties'), function(property, name)
@@ -64,27 +64,31 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         };
     };
 
+    var loadOne = odkmaker.data.loadOne = function(control)
+    {
+        var properties = null;
+        if ((control.type == 'group') || (control.type == 'branch') || (control.type == 'metadata'))
+            properties = $.extend(true, {}, $.fn.odkControl.controlProperties[control.type]);
+        else
+            properties = $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
+                                        $.fn.odkControl.controlProperties[control.type]);
+        _.each(properties, function(property, key)
+        {
+            property.value = control[key];
+        });
+
+        return $('#templates .control')
+            .clone()
+            .addClass(control.type)
+            .odkControl(control.type, null, properties)
+            .trigger('odkControl-added');
+    };
+
     var loadRecurse = function($root, controls)
     {
         _.each(controls, function(control)
         {
-            var properties = null;
-            if ((control.type == 'group') || (control.type == 'branch') || (control.type == 'metadata'))
-                properties = $.extend(true, {}, $.fn.odkControl.controlProperties[control.type]);
-            else
-                properties = $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
-                                            $.fn.odkControl.controlProperties[control.type]);
-            _.each(properties, function(property, key)
-            {
-                property.value = control[key];
-            });
-
-            var $control = $('#templates .control')
-                               .clone()
-                               .addClass(control.type)
-                               .odkControl(control.type, null, properties)
-                               .appendTo($root)
-                               .trigger('odkControl-added');
+            loadOne(control).appendTo($root);
 
             if (control.type == 'group')
                 loadRecurse($control.find('.workspaceInner'), control.children);

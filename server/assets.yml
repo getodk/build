@@ -16,7 +16,7 @@ javascripts:
 - options-editor
 - modals
 - property-editor
-- workspace-draggable
+- draggable
 - control
 - toolbutton
 - dropdown-menu

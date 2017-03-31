@@ -64,6 +64,9 @@ $(function()
     // Wire up toolpane
     $('.toolPalette a').toolButton();
 
+    // Wire up workspace dropzone
+    $('.workspace').droppable();
+
     // Kick off a new form by default
     applicationNS.newForm();
 

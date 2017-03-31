@@ -670,9 +670,9 @@ body
 .control.error:hover > .controlFlowArrow { border-top-color: #a43737; }
 .control.error:hover > .groupFooter { background-color: #a43737; }
 
-.control.ui-draggable-dragging
+.control.dragging
 {
-    z-index: 5;
+    opacity: 0.4;
 }
 body > .control.last .controlFlowArrow,
 .workspace .control:last-child > .controlFlowArrow
@@ -680,39 +680,26 @@ body > .control.last .controlFlowArrow,
     display: none;
 }
 
-.placeholder
+#placeholder
 {
-    background: #777;
-    height: 88px;
-    margin-bottom: 1.5em;
-    opacity: 0.4;
-    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)"; /* thank you msft */
-    filter: alpha(opacity=40);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    bottom: 0.8em;
+    margin-bottom: -2px;
+    pointer-events: none;
     position: relative;
-    text-indent: -9999px;
-}
-.placeholder .flowArrow
-{
-    height: 28px;
-    left: 50%;
-    margin-left: -14px;
-    position: absolute;
-    top: 88px;
-    width: 28px;
     z-index: 1;
 }
-.placeholder .flowArrow .slice
-{
-    background-color: #777;
-}
-.workspace > .placeholder:last-child .flowArrow
-{
-    display: none;
-}
 
-.placeholder.hidden
+#placeholder:after
 {
-    background: none;
+    border: 0.8em solid transparent;
+    border-left-width: 0;
+    border-right-color: rgba(0, 0, 0, 0.4);
+    content: '';
+    display: block;
+    position: absolute;
+    left: calc(100% + 0.2em);
+    top: -0.7em;
 }
 
 .propertiesPane

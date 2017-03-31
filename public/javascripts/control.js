@@ -97,7 +97,9 @@
         {
             var $this = $(this);
 
-            $this.data('odkControl-id', _.uniqueId());
+            var id = _.uniqueId()
+            $this.data('odkControl-id', id);
+            $this.attr('id', 'control' + id);
             $this.data('odkControl-type', type);
 
             // Deep clone the properties if relevant
@@ -171,59 +173,12 @@
                 });
             });
 
-            var cachedHeight = 0;
+            // set up dragging
             $this.one('mouseenter', function()
             {
-                $this.workspaceDraggable({
-                    draggableOptions: {
-                        start: function(event, ui)
-                        {
-                            $this.trigger('odkControl-removing');
-                            _.defer(function() { $this.trigger('odkControl-removed'); });
-                            ui.helper.width($this.width());
-                            cachedHeight = $this.outerHeight(true);
-                            $this
-                                .after(
-                                    $('<div class="placeholder hidden"></div>')
-                                        .css('height', cachedHeight + 'px'))
-                                .hide()
-                                .appendTo($('body'));
-                        }
-                    },
-                    dragCallback: function($control, direction)
-                    {
-                        $('.workspace .placeholder.hidden')
-                            .addClass('closing')
-                            .stop()
-                            .slideUp('fast', function()
-                            {
-                                $(this).remove();
-                            });
-
-                        $('.control.ui-draggable-dragging')
-                            .toggleClass('last', $control.is(':last-child') && (direction > 0))
-
-                        var $placeholder = $('<div class="placeholder hidden"></div>')
-                                            .css('height', cachedHeight + 'px')
-                                            .slideDown('fast');
-                        if (direction < 0)
-                            $control.before($placeholder);
-                        else if (direction == 0)
-                            $control.append($placeholder);
-                        else if (direction > 0)
-                            $control.after($placeholder);
-                    },
-                    dropCallback: function($helper)
-                    {
-                        var $target = $('.workspace .placeholder:not(.closing)');
-                        if ($target.length == 1)
-                            $target.replaceWith($this);
-                        else
-                            $this.appendTo('.workspace');
-                        $this.trigger('odkControl-added');
-                        $this.show();
-                    },
-                    insertPlaceholder: false
+                $this.draggable({
+                    artifact: function() { return $this; },
+                    handleAddedClass: 'dragging'
                 });
             });
         });
