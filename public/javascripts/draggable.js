@@ -38,9 +38,15 @@ var scheduleReapCheck = function(at, $artifact)
 
 var reap = function($artifact)
 {
-    $artifact.trigger('odkControl-removing');
-    $artifact.remove();
-    $artifact.trigger('odkControl-removed');
+    $artifact.find('.control')
+        .trigger('odkControl-removing')
+        .remove()
+        .trigger('odkControl-removed');
+
+    $artifact
+        .trigger('odkControl-removing')
+        .remove()
+        .trigger('odkControl-removed');
 };
 
 $.fn.draggable = function(options)
@@ -53,6 +59,10 @@ $.fn.draggable = function(options)
 
         $this.on('dragstart', function(event)
         {
+            // bail if we've already started dragging on a inner element.
+            if (event.originalEvent.dataTransfer.types.indexOf(mimeType) >= 0)
+                return;
+
             var $artifact = options.artifact();
             wasDroppedHere = false;
 
@@ -126,8 +136,11 @@ $.fn.droppable = function(options)
             // have to prevent default here as well to maintain the drag.
             event.preventDefault();
 
-            if (event.originalEvent === currentEvent)
-                return; // we've already handled this event at the deepest level and it's now bubbling; ignore.
+            // we've already handled this event at the deepest level and it's now bubbling;
+            // ignore /unless/ the eventing element is currently being dragged, in which case
+            // use that element instead to prevent groups from being dragged into themselves.
+            if ((event.originalEvent === currentEvent) && !(/dragging/i.test(this.className)))
+                return;
 
             currentEvent = event.originalEvent;
             target = this;
@@ -152,7 +165,37 @@ $.fn.droppable = function(options)
                 var third = targetHeight / 3;
                 var mouseY = event.originalEvent.clientY;
 
-                if (mouseY < (targetTop + third))
+                if ($target.hasClass('group') && !$target.hasClass('dragging'))
+                {
+                    // groups require special handling.
+                    var infoHeight = $target.children('.controlInfo').outerHeight(true);
+                    var workspaceWrapperHeight = $target.children('.workspaceInnerWrapper').outerHeight(true);
+                    if (mouseY < (targetTop + infoHeight))
+                    {
+                        // anywhere within the info section we'll hedge to "before".
+                        $target.before($placeholder);
+                    }
+                    else if (mouseY > (targetTop + infoHeight + workspaceWrapperHeight))
+                    {
+                        // if we're past the subspace area, hedge to "after".
+                        $target.after($placeholder);
+                    }
+                    else
+                    {
+                        // we're somewhere inside the subspace area, but for whatever reason we don't
+                        // have a target within the group to point at. this means the drag is either
+                        // off-scale low or off-scale high, or there are no controls in this group.
+                        // just split the whole thing in half and use that to determine our path.
+                        //
+                        // the if clause keeps us from allowing a group to be dragged into itself.
+                        var $workspace = $target.find('> .workspaceInnerWrapper > .workspaceInner');
+                        if (mouseY < (targetTop + infoHeight + (workspaceWrapperHeight / 2)))
+                            $workspace.prepend($placeholder);
+                        else
+                            $workspace.append($placeholder);
+                    }
+                }
+                else if (mouseY < (targetTop + third))
                 {
                     // we're in the top third; we want to place the drop target above this control.
                     $target.before($placeholder);
@@ -222,7 +265,8 @@ $.fn.droppable = function(options)
                 odkmaker.data.loadOne(controlData)
                     .insertAfter($placeholder)
                     .trigger('odkControl-added')
-                    .trigger('odkControl-select');
+                    .trigger('odkControl-select')
+                        .find('.control').trigger('odkControl-added');
 
                 // if we're chrome, write a key to localStorage to inform the original source of the user's
                 // intentions.

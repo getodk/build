@@ -17,45 +17,26 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         {
             data[name] = property.value;
         });
+
         data.type = $control.data('odkControl-type');
+        if (data.type == 'group')
+            data.children = extractMany($control.children('.workspaceInnerWrapper').children('.workspaceInner'));
+
         return data;
     };
 
     // gets the pure data tree for any workspace DOM node
-    var extractRecurse = function($root)
+    var extractMany = function($root)
     {
         var result = [];
-        $root.children('.control').each(function()
-        {
-            var $this = $(this);
-
-            var data = getDataRepresentation($this);
-
-            if (data.type == 'group')
-            {
-                data.children = extractRecurse($this.children('.workspaceInnerWrapper').children('.workspaceInner'));
-            }
-            else if (data.type == 'branch')
-            {
-                data.branches = [];
-                $this.find('.workspaceInner').each(function()
-                {
-                    var branch = {};
-                    branch.conditions = $(this).data('odkmaker-branchConditions');
-                    branch.children = extractRecurse($(this));
-                    data.branches.push(branch);
-                });
-            }
-
-            result.push(data);
-        });
+        $root.children('.control').each(function() { result.push(getDataRepresentation($(this))); });
         return result;
     };
     odkmaker.data.extract = function()
     {
         return {
             title: $('h1').text(),
-            controls: extractRecurse($('.workspace')),
+            controls: extractMany($('.workspace')),
             metadata: {
                 version: odkmaker.data.currentVersion,
                 activeLanguages: odkmaker.i18n.activeLanguageData(),
@@ -77,22 +58,21 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             property.value = control[key];
         });
 
-        return $('#templates .control')
+        var $result = $('#templates .control')
             .clone()
             .addClass(control.type)
             .odkControl(control.type, null, properties)
             .trigger('odkControl-added');
+
+        if (control.type == 'group')
+            loadMany($result.find('.workspaceInner'), control.children);
+
+        return $result;
     };
 
-    var loadRecurse = function($root, controls)
+    var loadMany = function($root, controls)
     {
-        _.each(controls, function(control)
-        {
-            loadOne(control).appendTo($root);
-
-            if (control.type == 'group')
-                loadRecurse($control.find('.workspaceInner'), control.children);
-        });
+        _.each(controls, function(control) { loadOne(control).appendTo($root); });
     };
     // forms without a version are assumed to be version 0. any form at a version less than
     // the current will be upgraded. to define an upgrade, add an upgrade object to any module
@@ -116,7 +96,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('.workspace').empty();
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
-        loadRecurse($('.workspace'), formObj.controls);
+        loadMany($('.workspace'), formObj.controls);
         $('.workspace .control:first').trigger('click');
 
         kor.events.fire({ subject: formObj, verb: 'form-load' });
