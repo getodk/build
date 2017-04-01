@@ -10,10 +10,15 @@ applicationNS.newForm = function()
 {
     $('.workspace').empty();
     $('.header h1').text('Untitled Form');
-    $('.propertiesPane .propertylist')
+    applicationNS.clearProperties();
+    odkmaker.data.currentForm = null;
+};
+
+applicationNS.clearProperties = function()
+{
+    $('.propertiesPane .propertyList')
         .empty()
         .append('<li class="emptyData">First add a control, then select it to view its properties here.</li>');
-    odkmaker.data.currentForm = null;
 };
 
 // ugh; see the commit message @c1c897e for more details.

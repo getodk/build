@@ -47,6 +47,8 @@ var reap = function($artifact)
         .trigger('odkControl-removing')
         .remove()
         .trigger('odkControl-removed');
+
+    odkmaker.application.clearProperties();
 };
 
 $.fn.draggable = function(options)
@@ -113,6 +115,8 @@ $.fn.droppable = function(options)
         var $this = $(this);
 
         var currentDataTransfer = null;
+        var currentEvent = null;
+        var target = null;
         $this.on('dragenter', function(event)
         {
             if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
@@ -121,13 +125,11 @@ $.fn.droppable = function(options)
             // preventing default indicates that we can drop the object here.
             event.preventDefault();
             currentDataTransfer = event.originalEvent.dataTransfer;
+            target = null;
         });
 
         // we track drag events on contained controls as a really cheap way of
-        // determining where the mouse is at. we track current and previous to
-        // help determine neutral float direction in the middle third.
-        var currentEvent = null;
-        var target = null;
+        // determining where the mouse is at.
         $this.on('dragover', '.control', function(event)
         {
             if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
