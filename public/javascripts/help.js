@@ -49,6 +49,17 @@ $(function()
         showBasicInformation(information);
     } });
 
+    var $helpDrag = $helpPane.find('.helpDrag');
+    kor.events.listen({ verb: 'control-drag-start', callback: function(options)
+    {
+        $helpPane.addClass('hasHelp');
+        $helpPane.find('.helpItem').hide();
+
+        $helpPane.find('.helpPane-subtitle').text('Dragging');
+        $helpDrag.show();
+        updateHeight();
+    } });
+
     updateHeight();
 });
 

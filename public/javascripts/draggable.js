@@ -66,6 +66,8 @@ $.fn.draggable = function(options)
 
             if (options.handleAddedClass != null)
                 $this.addClass(options.handleAddedClass);
+
+            kor.events.fire({ subject: $artifact, verb: 'control-drag-start' });
         });
         $this.on('dragend', function(event)
         {

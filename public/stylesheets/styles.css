@@ -916,6 +916,16 @@ body > .control.last .controlFlowArrow,
     font-size: 1.1em;
     padding-top: 0.6em;
 }
+.helpPane .key
+{
+    background: #fff;
+    border-radius: 0.2em;
+    box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.2);
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 0.2em;
+    padding: 0.2em 0.4em;
+}
 
 /**********
  * MODALS *
