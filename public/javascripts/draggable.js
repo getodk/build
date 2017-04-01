@@ -62,7 +62,8 @@ $.fn.draggable = function(options)
         $this.on('dragstart', function(event)
         {
             // bail if we've already started dragging on a inner element.
-            if (event.originalEvent.dataTransfer.types.indexOf(mimeType) >= 0)
+            var dataTransfer = event.originalEvent.dataTransfer;
+            if (_.isArray(dataTransfer.types) && (dataTransfer.types.indexOf(mimeType) >= 0))
                 return;
 
             var $artifact = options.artifact();
@@ -72,9 +73,9 @@ $.fn.draggable = function(options)
             lastDragStartAt = (new Date()).getTime();
             var data = { id: $artifact.data('odkControl-id'), control: odkmaker.data.extractOne($artifact), at: lastDragStartAt };
 
-            event.originalEvent.dataTransfer.setData(mimeType, JSON.stringify(data));
-            event.originalEvent.dataTransfer.effectAllowed = 'copyMove';
-            event.originalEvent.dataTransfer.dropEffect = 'move';
+            dataTransfer.setData(mimeType, JSON.stringify(data));
+            dataTransfer.effectAllowed = 'copyMove';
+            dataTransfer.dropEffect = 'move';
 
             if (options.handleAddedClass != null)
                 $this.addClass(options.handleAddedClass);
@@ -113,23 +114,23 @@ $.fn.droppable = function(options)
     this.each(function()
     {
         var $this = $(this);
-
-        var currentDataTransfer = null;
-        var currentEvent = null;
         var target = null;
+
         $this.on('dragenter', function(event)
         {
+            if ($this[0] !== event.target)
+                return; // this is some subelement bubbling. just forget about it.
+
             if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
                 return; // longer bit of logic to be consistent with dragover.
 
             // preventing default indicates that we can drop the object here.
             event.preventDefault();
-            currentDataTransfer = event.originalEvent.dataTransfer;
-            target = null;
         });
 
         // we track drag events on contained controls as a really cheap way of
         // determining where the mouse is at.
+        var currentOverEvent = null;
         $this.on('dragover', '.control', function(event)
         {
             if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
@@ -138,13 +139,22 @@ $.fn.droppable = function(options)
             // have to prevent default here as well to maintain the drag.
             event.preventDefault();
 
-            // we've already handled this event at the deepest level and it's now bubbling;
-            // ignore /unless/ the eventing element is currently being dragged, in which case
+            // no matter anything below, if the eventing element is currently being dragged,
             // use that element instead to prevent groups from being dragged into themselves.
-            if ((event.originalEvent === currentEvent) && !(/dragging/i.test(this.className)))
+            if (/dragging/i.test(this.className))
+                target = this;
+
+            // we've already handled this event at the deepest level and it's now bubbling; ignore.
+            if (event.originalEvent === currentOverEvent)
+                return;
+            currentOverEvent = event.originalEvent;
+
+            // if we drag into the gap between controls nested within a group (ie we drag onto the
+            // workspace area of a group but the last thing we dragged onto was a control in that
+            // group), we want to ignore the group itself and just go with whatever we had before.
+            if (/group/i.test(this.className) && this.contains(target) && $(this).children('.workspaceInnerWrapper')[0].contains(event.target))
                 return;
 
-            currentEvent = event.originalEvent;
             target = this;
         });
 
@@ -159,7 +169,7 @@ $.fn.droppable = function(options)
 
             // the above dragover handler for contained controls always fires before this one, so
             // by the time we get here we have up-to-date information on targets.
-            if (target != null)
+            if ((target != null) && (document.body.contains(target)))
             {
                 var $target = $(target);
                 var targetTop = $target.offset().top;
