@@ -1,12 +1,47 @@
 ;(function($) {
 
-var mimeTypeId = 'application/x-odkbuild-control-id';
-var mimeTypeFull = 'application/x-odkbuild-control-data';
+var mimeType = 'application/x-odkbuild-control';
 
-// our one shameful global variable. but you can really only drag+drop one thing on your entire
-// machine at once anyway. we use this to track whether a successful drop happened here or in
-// some other window.
+// our two shameful global variables. but you can really only drag+drop one thing on your entire
+// machine at once anyway. we use these to track whether a successful drop happened here or in
+// some other window, and to fix awfulness with Chrome.
 var wasDroppedHere = null;
+var lastDragStartAt = null;
+
+// you're welcome, chrome:
+var scheduleReapCheck = function(at, $artifact)
+{
+    var timer = null;
+    var count = 0;
+    var check = function()
+    {
+        count++;
+
+        var message = window.localStorage.getItem(at);
+        if (!$.isBlank(message))
+        {
+            window.localStorage.removeItem(at);
+            window.clearInterval(timer);
+
+            if (message === 'move')
+                reap($artifact);
+        }
+        else if (count > 10)
+        {
+            // we don't know what happened; either the message is being slow to come or (more likely)
+            // the user cancelled the drag operation. either way, do the safe thing, which is nothing.
+            window.clearInterval(timer);
+        }
+    };
+    window.setInterval(check, 50); // check every 50ms for up to half a second.
+};
+
+var reap = function($artifact)
+{
+    $artifact.trigger('odkControl-removing');
+    $artifact.remove();
+    $artifact.trigger('odkControl-removed');
+};
 
 $.fn.draggable = function(options)
 {
@@ -18,13 +53,14 @@ $.fn.draggable = function(options)
 
         $this.on('dragstart', function(event)
         {
+            var $artifact = options.artifact();
             wasDroppedHere = false;
 
-            var $artifact = options.artifact();
-            var data = odkmaker.data.extractOne($artifact);
+            // track dragstart millisecond time as a UUID for the sake of chrome.
+            lastDragStartAt = (new Date()).getTime();
+            var data = { id: $artifact.data('odkControl-id'), control: odkmaker.data.extractOne($artifact), at: lastDragStartAt };
 
-            event.originalEvent.dataTransfer.setData(mimeTypeId, $artifact.data('odkControl-id'));
-            event.originalEvent.dataTransfer.setData(mimeTypeFull, JSON.stringify(data));
+            event.originalEvent.dataTransfer.setData(mimeType, JSON.stringify(data));
             event.originalEvent.dataTransfer.effectAllowed = 'copyMove';
             event.originalEvent.dataTransfer.dropEffect = 'move';
 
@@ -37,12 +73,15 @@ $.fn.draggable = function(options)
             if (options.handleAddedClass != null)
                 $this.removeClass(options.handleAddedClass);
 
-            if (options.removeIfMoved && (event.originalEvent.dataTransfer.dropEffect === 'move') && !wasDroppedHere)
+            // if we've been moved rather than copied into some other window, remove the original
+            // source. but because chrome doesn't appropriately set the dropEffect property, we have
+            // to rig up our own IPC.
+            if (!wasDroppedHere && options.removeIfMoved)
             {
-                // we've been dropped into some other window; remove this artifact.
-                $this.trigger('odkControl-removing');
-                $this.remove();
-                $this.trigger('odkControl-removed');
+                if ($.isChrome)
+                    scheduleReapCheck(lastDragStartAt, $this);
+                else if (event.originalEvent.dataTransfer.dropEffect === 'move')
+                    reap($this);
             }
         });
 
@@ -64,7 +103,7 @@ $.fn.droppable = function(options)
         var currentDataTransfer = null;
         $this.on('dragenter', function(event)
         {
-            if (event.originalEvent.dataTransfer.types.indexOf(mimeTypeFull) < 0)
+            if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
                 return; // longer bit of logic to be consistent with dragover.
 
             // preventing default indicates that we can drop the object here.
@@ -79,7 +118,7 @@ $.fn.droppable = function(options)
         var target = null;
         $this.on('dragover', '.control', function(event)
         {
-            if (event.originalEvent.dataTransfer.types.indexOf(mimeTypeFull) < 0)
+            if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
                 return;
 
             // have to prevent default here as well to maintain the drag.
@@ -95,7 +134,7 @@ $.fn.droppable = function(options)
         var $placeholder = $('<div id="placeholder"/>');
         $this.on('dragover', function(event)
         {
-            if (event.originalEvent.dataTransfer.types.indexOf(mimeTypeFull) < 0)
+            if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
                 return;
 
             // have to prevent default here as well to maintain the drag.
@@ -149,15 +188,22 @@ $.fn.droppable = function(options)
         $this.on('drop', function(event)
         {
             var dataTransfer = event.originalEvent.dataTransfer;
-            var controlId = dataTransfer.getData(mimeTypeId);
-            if ($.isBlank(controlId)) return;
+            var data = dataTransfer.getData(mimeType);
+            if ($.isBlank(data)) return;
 
             wasDroppedHere = true;
-            var controlData = JSON.parse(dataTransfer.getData(mimeTypeFull));
+            var parsed = JSON.parse(data);
+            var controlId = parsed.id;
+            var controlData = parsed.control;
 
-            console.log(dataTransfer.dropEffect);
             var $extant = $('#control' + controlId);
-            if (($extant.length > 0) && (dataTransfer.dropEffect === 'move'))
+            // break this logic out because chrome makes it all terrible (see commit message @c1c897e).
+            // at this point, i'm to incensed to figure out unreliable platform detection and carefully
+            // react to ctrl on Win and opt on Mac so they both work.
+            var isExtant = $extant.length > 0;
+            var intendsCopy = $.isChrome ? (event.ctrlKey || event.altKey) : (dataTransfer.dropEffect === 'copy');
+
+            if (isExtant && !intendsCopy)
             {
                 // if our drag source is in the same document and we're supposed to move it,
                 // then do so directly rather than cloning data.
@@ -175,6 +221,10 @@ $.fn.droppable = function(options)
                     .insertAfter($placeholder)
                     .trigger('odkControl-added')
                     .trigger('odkControl-select');
+
+                // if we're chrome, write a key to localStorage to inform the original source of the user's
+                // intentions.
+                if ($.isChrome && !isExtant) window.localStorage.setItem(parsed.at, intendsCopy ? 'copy' : 'move');
             }
 
             $placeholder.detach();

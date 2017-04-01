@@ -16,6 +16,9 @@ applicationNS.newForm = function()
     odkmaker.data.currentForm = null;
 };
 
+// ugh; see the commit message @c1c897e for more details.
+$.isChrome = Boolean(window.chrome);
+
 $(function()
 {
     // Wire up menu
