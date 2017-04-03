@@ -528,10 +528,17 @@ body
 {
     margin-bottom: 1.5em;
     position: relative;
+    transition: 0.3s margin, 0.5s opacity;
 }
 .collapsed .control
 {
     margin-bottom: 0.8em;
+}
+.control.dropped
+{
+    margin-bottom: -1.5em;
+    margin-top: -0.5em;
+    opacity: 0.7;
 }
 .control .controlInfo
 {

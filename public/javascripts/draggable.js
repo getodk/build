@@ -260,6 +260,7 @@ $.fn.droppable = function(options)
             var isExtant = $extant.length > 0;
             var intendsCopy = $.isChrome ? (event.ctrlKey || event.altKey) : (dataTransfer.dropEffect === 'copy');
 
+            var $added = null;
             if (isExtant && !intendsCopy)
             {
                 // if our drag source is in the same document and we're supposed to move it,
@@ -268,22 +269,23 @@ $.fn.droppable = function(options)
                 $extant.detach();
                 $extant.trigger('odkControl-removed');
                 $extant.insertAfter($placeholder);
-                $extant.trigger('odkControl-added');
+                $added = $extant;
             }
             else
             {
                 // if our drag source is some other document or we're supposed to copy rather
                 // than move, then inflate and insert from data.
-                odkmaker.data.loadOne(controlData)
-                    .insertAfter($placeholder)
-                    .trigger('odkControl-added')
-                    .trigger('odkControl-select')
-                        .find('.control').trigger('odkControl-added');
+                $added = odkmaker.data.loadOne(controlData)
+                $added.insertAfter($placeholder);
 
                 // if we're chrome, write a key to localStorage to inform the original source of the user's
                 // intentions.
                 if ($.isChrome && !isExtant) window.localStorage.setItem(parsed.at, intendsCopy ? 'copy' : 'move');
             }
+
+            $added.trigger('odkControl-added')
+                .bumpClass('dropped')
+                .find('.control').trigger('odkControl-added');
 
             $placeholder.detach();
             event.preventDefault();

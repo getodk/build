@@ -85,4 +85,14 @@
             result = $this.parent().debugName() + ' ' + result;
         return result;
     };
+
+    $.fn.bumpClass = function(className, interval)
+    {
+        var self = this;
+        self.addClass(className);
+        setTimeout(function() { self.removeClass(className); }, (_.isNumber(interval) ? interval : 10));
+        return self;
+    };
+
 })(jQuery);
+
