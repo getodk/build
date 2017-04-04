@@ -51,9 +51,9 @@ var reap = function($artifact)
     odkmaker.application.clearProperties();
 };
 
-$.fn.draggable = function(options)
+$.fn.draggable = function(passedOptions)
 {
-    var options = $.extend({}, $.fn.draggable.defaults, options);
+    var options = $.extend({}, $.fn.draggable.defaults, passedOptions);
 
     this.each(function()
     {
@@ -109,8 +109,10 @@ $.fn.draggable.defaults = {
     removeIfMoved: true
 };
 
-$.fn.droppable = function(options)
+$.fn.droppable = function(passedOptions)
 {
+    var options = $.extend({}, $.fn.droppable.defaults, passedOptions);
+
     this.each(function()
     {
         var $this = $(this);
@@ -159,6 +161,7 @@ $.fn.droppable = function(options)
         });
 
         var $placeholder = $('<div id="placeholder"/>');
+        var $scrollParent = $this.closest(options.scrollParent);
         $this.on('dragover', function(event)
         {
             if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
@@ -235,15 +238,61 @@ $.fn.droppable = function(options)
                 // if we have no target, we assume we're at the very end of the stack.
                 $('.workspace').append($placeholder);
             }
+
+            // now we may have to scroll things about depending on what browser we're in.
+            // scroll behaviour adapted from: https://github.com/clint-tseng/awesomereorder
+            // (tbh i think this is a nicer scrollspeed calculation than Chrome's)
+            if (($.isFirefox || $.isSafari) && ($scrollParent.length !== 0))
+            {
+                var mouseY = event.originalEvent.clientY;
+                var workspaceTop = $scrollParent.offset().top;
+                var workspaceHeight = null; // gets calculated only if necessary; expensive.
+
+                // see if we are within the upper scroll margin.
+                if (mouseY < (workspaceTop + options.scrollMargin))
+                {
+                    setScroll();
+                    var delta = workspaceTop + options.scrollMargin - mouseY; // distance from initiation point
+                    scrollSpeed = -1 * options.scrollSpeed * // base speed
+                        Math.min(Math.pow(delta / options.scrollMargin, options.scrollCurve), // power factor
+                        1); // minimum factor
+                }
+                else if (mouseY > (workspaceTop + (workspaceHeight = $scrollParent.outerHeight(false)) - options.scrollMargin))
+                {
+                    setScroll();
+                    var delta = mouseY - (workspaceTop + workspaceHeight - options.scrollMargin); // distance from initiation point
+                    scrollSpeed = options.scrollSpeed * // base speed
+                        Math.min(Math.pow(delta / options.scrollMargin, options.scrollCurve), // power factor
+                        1); // minimum factor
+                }
+                else
+                {
+                    clearScroll();
+                }
+            }
         });
+
+        // these will get lifted, so put them below drag event in their own block for organization.
+        var scrollSpeed = 0;
+        var scrollTimer = null;
+        var setScroll = function() { if (scrollTimer == null) { scrollTimer = setInterval(scroll, 10); } };
+        var scroll = function() { $scrollParent.scrollTop($scrollParent.scrollTop() + scrollSpeed); };
+        var clearScroll = function()
+        {
+            clearInterval(scrollTimer);
+            scrollTimer = null;
+        };
 
         $this.on('dragleave', function(event)
         {
+            clearScroll(); // safe to blithely call.
             $placeholder.detach();
         });
 
         $this.on('drop', function(event)
         {
+            clearScroll(); // safe to blithely call.
+
             var dataTransfer = event.originalEvent.dataTransfer;
             var data = dataTransfer.getData(mimeType);
             if ($.isBlank(data)) return;
@@ -293,6 +342,12 @@ $.fn.droppable = function(options)
 
     });
 };
+$.fn.droppable.defaults = {
+    scrollCurve: 3,
+    scrollMargin: 75,
+    scrollSpeed: 25,
+    scrollParent: null
+}
 
 })(jQuery);
 
