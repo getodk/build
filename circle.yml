@@ -22,7 +22,7 @@ general:
     - "build.tar.bz2"
 notify:
   webhooks:
-    - url: "http://build.opendatakit.org:5566/deploy"
+    - url: "http://staging.build.opendatakit.org:5566/deploy"
 experimental:
   notify:
     branches:
