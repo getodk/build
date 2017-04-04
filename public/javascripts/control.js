@@ -85,6 +85,7 @@
     };
 
     // Constructor
+    var loadTime = (new Date()).getTime(); // get time in nanos to ensure universal uniqueness of id.
     $.fn.odkControl = function(type, options, defaultProperties)
     {
         // Abort for unknown types
@@ -97,7 +98,7 @@
         {
             var $this = $(this);
 
-            var id = _.uniqueId()
+            var id = loadTime + '_' + _.uniqueId();
             $this.data('odkControl-id', id);
             $this.attr('id', 'control' + id);
             $this.data('odkControl-type', type);
