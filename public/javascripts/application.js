@@ -21,18 +21,6 @@ applicationNS.clearProperties = function()
         .append('<li class="emptyData">First add a control, then select it to view its properties here.</li>');
 };
 
-// browser detection, because standards are apparently for suckers. based on:
-// http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser/9851769#9851769
-// ugh; see the commit message @c1c897e for more details.
-$.isChrome = Boolean(window.chrome) && Boolean(window.chrome.webstore);
-
-// and these are necessary because Firefox and Safari alone do not auto-scroll
-// near margins when dragging whilst other browsers do, and neither behaviour is
-// easily detectable without causing some artifacts.
-$.isFirefox = ((typeof InstallTrigger) !== 'undefined');
-//$.isFirefox = Boolean(window.netscape) && / rv:/i.test(navigator.userAgent); // keeping this alternative in case the above stops working.
-$.isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
-
 $(function()
 {
     // Wire up menu

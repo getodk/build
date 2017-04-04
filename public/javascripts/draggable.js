@@ -304,10 +304,9 @@ $.fn.droppable = function(passedOptions)
 
             var $extant = $('#control' + controlId);
             // break this logic out because chrome makes it all terrible (see commit message @c1c897e).
-            // at this point, i'm to incensed to figure out unreliable platform detection and carefully
-            // react to ctrl on Win and opt on Mac so they both work.
+            // don't depend on key detection when we can help it because it's less reliable.
             var isExtant = $extant.length > 0;
-            var intendsCopy = $.isChrome ? (event.ctrlKey || event.altKey) : (dataTransfer.dropEffect === 'copy');
+            var intendsCopy = $.isChrome ? $.isDuplicate(event) : (dataTransfer.dropEffect === 'copy');
 
             var $added = null;
             if (isExtant && !intendsCopy)

@@ -1,5 +1,43 @@
 ;(function($)
 {
+
+    // browser detection, because standards are apparently for suckers. based on:
+    // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser/9851769#9851769
+    // ugh; see the commit message @c1c897e for more details.
+    $.isChrome = Boolean(window.chrome) && Boolean(window.chrome.webstore);
+
+    // and these are necessary because Firefox and Safari alone do not auto-scroll
+    // near margins when dragging whilst other browsers do, and neither behaviour is
+    // easily detectable without causing some artifacts.
+    $.isFirefox = ((typeof InstallTrigger) !== 'undefined');
+    //$.isFirefox = Boolean(window.netscape) && / rv:/i.test(navigator.userAgent); // keeping this alternative in case the above stops working.
+    $.isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
+
+    // OS detection, because command vs option vs ctrl are different per platform.
+    // if we're not sure, assume we might be either. yes, there is linux, but detecting
+    // linux is really difficult as there is no standardization.
+    $.isWindows = /win/i.test(navigator.platform);
+    $.isMac = /mac/i.test(navigator.platform);
+    if (!($.isWindows || $.isMac))
+        $.isWindows = $.isMac = true;
+
+    // use the above OS flags to create a globally available tracking of current modifiers.
+    // colloquially, selectMany = shift, selectOne = ctrl (win), cmd (mac), and duplicate = ctrl (win), option (mac).
+    // don't depend on this unless you must; keychanges off-browser will not be detected and
+    // can result in stuck keys.
+    $.keys = { selectMany: false, selectOne: false, duplicate: false };
+    $(function()
+    {
+        $(window).on('keydown keyup', function(event)
+        {
+            $.keys.selectMany = event.shiftKey;
+            $.keys.selectOne = $.isSelectOne(event);
+            $.keys.duplicate = $.isDuplicate(event);
+        });
+    });
+    $.isSelectOne = function(event) { return ($.isWindows && event.ctrlKey) || ($.isMac && event.metaKey); };
+    $.isDuplicate = function(event) { return ($.isWindows && event.ctrlKey) || ($.isMac && event.altKey); };
+
     $.fn.spacingTop = function()
     {
         var $this = $(this);
