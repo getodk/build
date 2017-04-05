@@ -18,7 +18,7 @@ applicationNS.clearProperties = function()
 {
     $('.propertiesPane .propertyList')
         .empty()
-        .append('<li class="emptyData">First add a control, then select it to view its properties here.</li>');
+        .append('<li class="emptyData">First add a question, then select it to view its properties here.</li>');
 };
 
 $(function()

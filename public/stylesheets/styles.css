@@ -926,9 +926,14 @@ body > .control.last .controlFlowArrow,
 }
 .helpPane li
 {
+    border-bottom: 1px solid #ccc;
     color: #555;
     font-size: 1.1em;
-    padding-top: 0.6em;
+    padding: 0.5em 0 0.7em;
+}
+.helpPane li:last-child
+{
+    border-bottom: none;
 }
 .helpPane .key
 {

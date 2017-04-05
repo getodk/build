@@ -11,8 +11,8 @@ $(function()
     var updateHeight = function()
     {
         var height = $contents.outerHeight(true);
-        $helpPane.animate({ height: height });
-        $propertiesPane.animate({ bottom: height });
+        $helpPane.stop(true).animate({ height: height });
+        $propertiesPane.stop(true).animate({ bottom: height });
     };
 
     var showBasicInformation = function(information)
@@ -29,7 +29,17 @@ $(function()
         if (information.tips != null)
             _.each(information.tips, function(tip) { $tips.append($('<li/>').html(tip)); });
 
-        _.defer(updateHeight);
+        updateHeight();
+    };
+
+    var showSection = function(title, $section)
+    {
+        $helpPane.addClass('hasHelp');
+        $helpPane.find('.helpItem').hide();
+
+        $helpPane.find('.helpPane-subtitle').text(title);
+        $helpMulti.show();
+        updateHeight();
     };
 
     var $helpBasic = $helpPane.find('.helpBasic');
@@ -41,23 +51,24 @@ $(function()
         showBasicInformation(property);
     });
 
+    var $helpMulti = $helpPane.find('.helpMultiselect');
     kor.events.listen({ verb: 'control-selected', callback: function(options)
     {
-        var information = $.fn.odkControl.controlInformation[options.object.type];
-        if (information == null) return;
+        if ($('.control.selected').length === 1)
+        {
+            var information = $.fn.odkControl.controlInformation[options.subject.data('odkControl-type')];
+            if (information == null) return;
 
-        showBasicInformation(information);
+            showBasicInformation(information);
+        }
+        else
+            showSection('Multiple selection', $helpMulti);
     } });
 
     var $helpDrag = $helpPane.find('.helpDrag');
     kor.events.listen({ verb: 'control-drag-start', callback: function(options)
     {
-        $helpPane.addClass('hasHelp');
-        $helpPane.find('.helpItem').hide();
-
-        $helpPane.find('.helpPane-subtitle').text('Dragging');
-        $helpDrag.show();
-        updateHeight();
+        showSection('Dragging', $helpDrag);
     } });
 
     updateHeight();

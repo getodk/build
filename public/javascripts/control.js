@@ -11,11 +11,58 @@
 {
     var validationNS = odkmaker.namespace.load('odkmaker.validation');
 
+    // Globally active singleton facilities:
+    var $propertyList = $('.propertyList');
+    var drawPropertyList = function($this, properties)
+    {
+            // clear out and reconstruct property list
+            var wasExpanded = $propertyList.find('.advanced > .toggle').hasClass('expanded');
+            $propertyList.empty();
+
+            var $advancedContainer = $.tag({
+                _: 'li', 'class': 'advanced', contents: [
+                    { _: 'a', 'class': [ 'toggle', { i: wasExpanded, t: 'expanded' } ], href: '#advanced', contents: [
+                        { _: 'div', 'class': 'icon' },
+                        'Advanced'
+                    ] },
+                    { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: { i: wasExpanded, t: 'block', e: 'none' } } }
+                ]
+            });
+            var $advancedList = $advancedContainer.find('.advancedProperties');
+
+            // add our hero's properties
+            _.each(properties, function(property, name)
+            {
+                $('<li class="propertyItem"/>')
+                    .propertyEditor(property, name, $this)
+                    .appendTo((property.advanced === true) ? $advancedList : $propertyList);
+            });
+
+            // drop in advanced
+            $propertyList.append($advancedContainer);
+    };
+    kor.events.listen({ verb: 'control-selected', callback: function(event)
+    {
+        var numSelected = $('.control.selected').length;
+        if (numSelected === 1)
+            drawPropertyList(event.subject, event.subject.data('odkControl-properties'));
+        else
+            $propertyList
+                .empty()
+                .append('<li class="emptyData">(multiple questions selected)</li>');
+    } });
+    kor.events.listen({ verb: 'control-deselected', callback: function(event)
+    {
+        if ($('.control.selected').length === 0)
+            odkmaker.application.clearProperties();
+    } });
+
+    // Private methods
+
     // our own incrementing counter:
     var untitledCount_ = 1;
     var untitledCount = function() { return untitledCount_++; };
 
-    // Private methods
     var refreshFromProperties = function($this, type, options, properties)
     {
         var $info = $this.children('.controlInfo');
@@ -28,7 +75,7 @@
         }
         else if (type == 'metadata')
         {
-            // do nothing for now
+            $headline.children('.controlLabel').text(properties.kind.value);
         }
         else
         {
@@ -49,39 +96,150 @@
         });
     };
 
-    var selectControl = function($this, type, options, properties)
+    // gets all controls "between" two given controls, stepping in and out of groups
+    // as necessary. root and target themselves are never part of the set.
+    var getStack = function($root, $target)
     {
-        $('.workspace .control.selected').removeClass('selected');
-        $this.addClass('selected');
+        var $result = null;
 
-        // signal a selection.
-        kor.events.fire({ subject: $this, verb: 'control-selected', object: { type: type } });
-
-        // clear out and reconstruct property list
-        var $propertyList = $('.propertyList');
-        $propertyList.empty();
-
-        var $advancedContainer = $.tag({
-            _: 'li', 'class': 'advanced', contents: [
-                { _: 'a', 'class': 'toggle', href: '#advanced', contents: [
-                    { _: 'div', 'class': 'icon' },
-                    'Advanced'
-                ] },
-                { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: 'none' } }
-            ]
-        });
-        var $advancedList = $advancedContainer.find('.advancedProperties');
-
-        // add our hero's properties
-        _.each(properties, function(property, name)
+        if ($root.is($target))
         {
-            $('<li class="propertyItem"/>')
-                .propertyEditor(property, name, $this)
-                .appendTo((property.advanced === true) ? $advancedList : $propertyList);
-        });
+            return $root;
+        }
+        else if ($root.siblings().is($target))
+        {
+            // root and target are siblings.
+            $result = $root.prevAll().is($target) ? $root.prevUntil($target) : $root.nextUntil($target);
+        }
+        else
+        {
+            // not siblings; compare the hierarchies to figure out the closest common parent.
+            var $rootParents = $($root.parents('.workspace, .control').get().reverse());
+            var $targetParents = $($target.parents('.workspace, .control').get().reverse());
 
-        // drop in advanced
-        $propertyList.append($advancedContainer);
+            // to figure out directionality, we have to first get pair of siblings to compare.
+            var $commonContainer = null;
+            var divergentIdx = null;
+            for (var i = 0; i < $rootParents.length; i++)
+            {
+                if ($rootParents[i] === $targetParents[i])
+                {
+                    $commonContainer = $rootParents[i];
+                    divergentIdx = i + 1;
+                }
+                else
+                    break;
+            }
+            var $rootDiverge = $rootParents.eq(divergentIdx);
+            if ($rootDiverge.length === 0) $rootDiverge = $root;
+            var $targetDiverge = $targetParents.eq(divergentIdx);
+            if ($targetDiverge.length === 0) $targetDiverge = $target;
+
+            // first deal with everything at common-container level.
+            $result = getStack($rootDiverge, $targetDiverge);
+
+            // now select the head or tail of all intervening containers as appropriate.
+            // first we determine the direction.
+            if ($rootDiverge.nextAll().is($targetDiverge))
+            {
+                var $before = $rootParents.add($root);
+                var $after = $targetParents.add($target);
+            }
+            else
+            {
+                var $before = $targetParents.add($target);
+                var $after = $rootParents.add($root);
+            }
+
+            // we start with the container nested within the divergent one.
+            for (var i = (divergentIdx + 1); i < $before.length; i++)
+                $result = $result.add($before.eq(i).nextAll());
+
+            for (var i = (divergentIdx + 1); i < $after.length; i++)
+                $result = $result.add($after.eq(i).prevAll());
+
+        }
+
+        // find any containers within the linear selections and select their contents.
+        $result = $result.add($result.find('.control'));
+
+        return $result;
+    };
+
+    var select = function()
+    {
+        var $this = $(this);
+        $this.addClass('selected');
+        kor.events.fire({ subject: $this, verb: 'control-selected' });
+    };
+    var deselect = function()
+    {
+        var $this = $(this);
+        $this.removeClass('selected');
+        kor.events.fire({ subject: $this, verb: 'control-deselected' });
+    };
+
+    // perform a selection action. this might mean modifying an active multi-selection.
+    var $initiator = null; // the last control the user selected singly.
+    var $endStop = null;
+    var performSelection = function($this, type, options, properties, selectMany, selectOne)
+    {
+        if (selectMany === true)
+        {
+            if ($initiator == null)
+                // not sure what to do; just pretend shift isn't held.
+                return performSelection($this, type, options, properties, false, false);
+
+            if ($endStop == null)
+            {
+                // if we have no endstop, simply select from the initiator through target.
+                getStack($initiator, $this).add($this).each(select);
+            }
+            else if ($endStop.is($this))
+            {
+                // nothing would happen anyway; don't bother with computing it.
+                return;
+            }
+            else if (getStack($initiator, $endStop).is($this))
+            {
+                // if we are selecting somewhere inside the active range, deselect the now-excess.
+                getStack($endStop, $this).add($endStop).each(deselect);
+            }
+            else
+            {
+                // we are somewhere outside the active range entirely. the easiest thing to do
+                // rather than do a bunch of work determining where exactly is just to nuke it
+                // and start over.
+                getStack($initiator, $endStop).add($endStop).each(deselect);
+                getStack($initiator, $this).add($this).each(select);
+            }
+
+            if ($initiator.is($this))
+                $endStop = null;
+            else
+                $endStop = $this;
+        }
+        else if (selectOne === true)
+        {
+            if ($this.hasClass('selected'))
+                $this.each(deselect);
+            else
+            {
+                select($this);
+                $initiator = $this;
+                $endStop = null;
+            }
+        }
+        else
+        {
+            $('.workspace .control.selected').each(deselect);
+
+            $this.addClass('selected');
+            kor.events.fire({ subject: $this, verb: 'control-selected' });
+
+            $initiator = $this;
+            $endStop = null;
+        }
     };
 
     // Constructor
@@ -129,14 +287,14 @@
 
             validationNS.controlCreated($this, properties);
 
-            $this.bind('odkControl-reloadProperties', function(event)
+            $this.bind('odkControl-reloadProperties odkControl-select', function(event)
             {
-                selectControl($this, type, options, properties);
+                performSelection($this, type, options, properties);
             });
             $this.click(function(event)
             {
                 event.stopPropagation();
-                selectControl($this, type, options, properties);
+                performSelection($this, type, options, properties, $.keys.selectMany, $.keys.selectOne);
             });
 
             $this.bind('odkControl-validationChanged', function(event, property, hasError)
@@ -164,7 +322,7 @@
                 $this.slideUp('normal', function()
                 {
                     if ($this.is('.selected'))
-                        $('.propertyList').empty();
+                        $propertyList.empty();
 
                     var $thisAndChildren = $this.find('.control').add($this);
                     $thisAndChildren.each(function() { validationNS.controlDestroyed($(this), properties); });
