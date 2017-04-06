@@ -10,7 +10,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
 {
     var languages = { aar: 'Afar', abk: 'Abkhazian', ave: 'Avestan', afr: 'Afrikaans', aka: 'Akan', amh: 'Amharic', arg: 'Aragonese', ara: 'Arabic', asm: 'Assamese', ava: 'Avaric', aym: 'Aymara', aze: 'Azerbaijani', bak: 'Bashkir', bel: 'Belarusian', bul: 'Bulgarian', bih: 'Bihari', bis: 'Bislama', bam: 'Bambara', ben: 'Bengali', bod: 'Tibetan', bre: 'Breton', bos: 'Bosnian', cat: 'Catalan, Valencian', che: 'Chechen', cha: 'Chamorro', cos: 'Corsican', cre: 'Cree', ces: 'Czech', chu: 'Church Slavic', chv: 'Chuvash', cym: 'Welsh', dan: 'Danish', deu: 'German', div: 'Divehi', dzo: 'Dzongkha', ewe: 'Ewe', ell: 'Modern Greek', eng: 'English', epo: 'Esperanto', spa: 'Spanish', est: 'Estonian', eus: 'Basque', fas: 'Persian', ful: 'Fulah', fin: 'Finnish', fij: 'Fijian', fao: 'Faroese', fra: 'French', fry: 'Western Frisian', gle: 'Irish', gla: 'Gaelic', glg: 'Galician', grn: 'Guaraní', guj: 'Gujarati', glv: 'Manx', hau: 'Hausa', heb: 'Modern Hebrew', hin: 'Hindi', hmo: 'Hiri Motu', hrv: 'Croatian', hat: 'Haitian', hun: 'Hungarian', hye: 'Armenian', her: 'Herero', ina: 'Interlingua', ind: 'Indonesian', ile: 'Interlingue', ibo: 'Igbo', iii: 'Sichuan Yi', ipk: 'Inupiaq', ido: 'Ido', isl: 'Icelandic', ita: 'Italian', iku: 'Inuktitut', jpn: 'Japanese', jav: 'Javanese', kat: 'Georgian', kon: 'Kongo', kik: 'Kikuyu', kua: 'Kwanyama', kaz: 'Kazakh', kal: 'Kalaallisut', khm: 'Central Khmer', kan: 'Kannada', kor: 'Korean', kau: 'Kanuri', kas: 'Kashmiri', kur: 'Kurdish', kom: 'Komi', cor: 'Cornish', kir: 'Kirghiz', lat: 'Latin', ltz: 'Luxembourgish', lug: 'Ganda', lim: 'Limburgish', lin: 'Lingala', lao: 'Lao', lit: 'Lithuanian', lub: 'Luba-Katanga', lav: 'Latvian', mlg: 'Malagasy', mah: 'Marshallese', mri: 'Māori', mkd: 'Macedonian', mal: 'Malayalam', mon: 'Mongolian', mar: 'Marathi', msa: 'Malay', mlt: 'Maltese', mya: 'Burmese', nau: 'Nauru', nob: 'Norwegian Bokmål', nde: 'North Ndebele', nep: 'Nepali', ndo: 'Ndonga', nld: 'Dutch, Flemish', nno: 'Norwegian Nynorsk', nor: 'Norwegian', nbl: 'South Ndebele', nav: 'Navajo', nya: 'Chichewa', oci: 'Occitan', oji: 'Ojibwa', orm: 'Oromo', ori: 'Oriya', oss: 'Ossetian', pan: 'Panjabi', pli: 'Pāli', pol: 'Polish', pus: 'Pashto', por: 'Portuguese', que: 'Quechua', roh: 'Romansh', run: 'Rundi', ron: 'Romanian, Moldavian', rus: 'Russian', kin: 'Kinyarwanda', san: 'Sanskrit', srd: 'Sardinian', snd: 'Sindhi', sme: 'Northern Sami', sag: 'Sango', sin: 'Sinhala', slk: 'Slovak', slv: 'Slovene', smo: 'Samoan', sna: 'Shona', som: 'Somali', sqi: 'Albanian', srp: 'Serbian', ssw: 'Swati', sot: 'Southern Sotho', sun: 'Sundanese', swe: 'Swedish', swa: 'Swahili', tam: 'Tamil', tel: 'Telugu', tgk: 'Tajik', tha: 'Thai', tir: 'Tigrinya', tuk: 'Turkmen', tgl: 'Tagalog', tsn: 'Tswana', ton: 'Tonga', tur: 'Turkish', tso: 'Tsonga', tat: 'Tatar', twi: 'Twi', tah: 'Tahitian', uig: 'Uighur', ukr: 'Ukrainian', urd: 'Urdu', uzb: 'Uzbek', ven: 'Venda', vie: 'Vietnamese', vol: 'Volapük', wln: 'Walloon', wol: 'Wolof', xho: 'Xhosa', yid: 'Yiddish', yor: 'Yoruba', zha: 'Zhuang', zho: 'Chinese', zul: 'Zulu' };
 
-    var defaultLanguages = function() { return { 0: 'English', _counter: 0, _display: 0 }; };
+    var defaultLanguages = function() { return { 0: 'English', _counter: 0, _display: '0' }; };
     var active = defaultLanguages();
     i18nNS.activeLanguages = function()
     {
@@ -27,7 +27,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
         updateMenu();
     };
 
-    var display = 0;
+    var display = '0';
     i18nNS.displayLanguage = function(value)
     {
         if (value !== undefined)
@@ -108,7 +108,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             if (_.any(_.values(active), function(activeLang) { return language === activeLang; }))
                 return;
 
-            var code = ++active._counter;
+            var code = (++active._counter).toString();
             active[code] = language;
 
             // update dialog ui
