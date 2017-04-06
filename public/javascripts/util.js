@@ -85,9 +85,12 @@
 
     $.removeFromArray = function(elem, array)
     {
-        var result = array.splice($.inArray(elem, array), 1);
-        if (result != null && result.length > 0)
+        var idx = $.inArray(elem, array);
+        if (idx >= 0)
+        {
+            var result = array.splice(idx, 1);
             return result[0];
+        }
     };
 
     $.toast = function(message)
