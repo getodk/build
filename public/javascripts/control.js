@@ -201,6 +201,10 @@
                 getStack($initiator, $this).add($this).each(select);
             }
 
+            // if either endpoint is a container itself, now is the time to also select them.
+            $initiator.find('.control').each(select);
+            $this.find('.control').each(select);
+
             if ($initiator.is($this))
                 $endStop = null;
             else
@@ -230,7 +234,7 @@
     };
 
     // Constructor
-    var loadTime = (new Date()).getTime(); // get time in nanos to ensure universal uniqueness of id.
+    var loadTime = (new Date()).getTime(); // get time in nanos to ~ensure universal uniqueness of id.
     $.fn.odkControl = function(type, options, defaultProperties)
     {
         // Abort for unknown types
