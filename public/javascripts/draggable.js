@@ -91,6 +91,14 @@ $.fn.draggable = function(passedOptions)
             dataTransfer.effectAllowed = 'copyMove';
             dataTransfer.dropEffect = 'move';
 
+            // if we have multiple items, set the drag image to something more appropriate.
+            if ($dragging.length > 1)
+            {
+                var $dragIcon = $('#dragIcon');
+                $dragIcon.find('.count').text($dragging.length);
+                dataTransfer.setDragImage($dragIcon[0], -10, -10);
+            }
+
             // set class.
             if (options.handleAddedClass != null)
                 $dragging.addClass(options.handleAddedClass);

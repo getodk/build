@@ -694,6 +694,46 @@ body > .control.last .controlFlowArrow,
     display: none;
 }
 
+#dragIcon
+{
+    left: -10em;
+    position: absolute;
+    top: -10em;
+}
+#dragIcon .miniControl
+{
+    background-color: #777;
+    box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.2);
+    height: 1.4em;
+    position: relative;
+    width: 3em;
+}
+#dragIcon .miniControl:after
+{
+    border: 0.6em solid transparent;
+    border-bottom-width: 0;
+    border-top-color: #777;
+    content: '';
+    display: block;
+    left: calc(50% - 0.6em);
+    position: absolute;
+    top: 100%;
+}
+#dragIcon .count
+{
+    background: #a20f0f;
+    border-radius: 99em;
+    box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.3);
+    color: #fff;
+    font-weight: bold;
+    left: 2.5em;
+    min-width: 0.8em;
+    padding: 0.2em 0.3em;
+    position: absolute;
+    text-align: center;
+    top: 0.8em;
+}
+
 #placeholder
 {
     border-bottom: 2px solid rgba(0, 0, 0, 0.4);
