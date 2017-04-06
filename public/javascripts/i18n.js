@@ -160,6 +160,15 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             // TODO: someday make this more efficient
             $('.workspace .control.selected').trigger('odkControl-reloadProperties');
         });
+
+        $('.translationsDialog').on('change', '.translationName', function(event)
+        {
+            var $this = $(this);
+            active[$this.closest('li').data('code')] = $this.val();
+            updateMenu();
+            // TODO: someday make this more efficient
+            $('.workspace .control.selected').trigger('odkControl-reloadProperties');
+        });
     });
 
     i18nNS.upgrade = {
