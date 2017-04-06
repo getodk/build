@@ -66,27 +66,46 @@ $.fn.draggable = function(passedOptions)
             if (_.isArray(dataTransfer.types) && (dataTransfer.types.indexOf(mimeType) >= 0))
                 return;
 
-            var $artifact = options.artifact();
-            wasDroppedHere = false;
+            // determine what it is that we are dragging:
+            if (options.artifact != null)
+                // if we are given an explicit artifact to drag, use that.
+                var $dragging = options.artifact();
+            else if ($this.hasClass('selected'))
+                // we are selected; drag everything that is selected that isn't already nested in a selected container.
+                var $dragging = $('.control.selected').filter(function() { return $(this).parents('.selected:first').length === 0; });
+            else
+                // we are being dragged but we are not selected. drag just this thing.
+                var $dragging = $this;
+            $this.data('draggable-dragging', $dragging);
 
             // track dragstart millisecond time as a UUID for the sake of chrome.
             lastDragStartAt = (new Date()).getTime();
-            var data = { id: $artifact.data('odkControl-id'), control: odkmaker.data.extractOne($artifact), at: lastDragStartAt };
 
+            // set up the data transfer for the drag.
+            var data = {
+                ids: $dragging.map(function() { return $(this).data('odkControl-id') }).get(),
+                controls: $dragging.map(function() { return odkmaker.data.extractOne($(this)); }).get(),
+                at: lastDragStartAt
+            };
             dataTransfer.setData(mimeType, JSON.stringify(data));
             dataTransfer.effectAllowed = 'copyMove';
             dataTransfer.dropEffect = 'move';
 
+            // set class.
             if (options.handleAddedClass != null)
-                $this.addClass(options.handleAddedClass);
+                $dragging.addClass(options.handleAddedClass);
 
-            kor.events.fire({ subject: $artifact, verb: 'control-drag-start' });
+            // some housekeeping.
+            wasDroppedHere = false;
+            kor.events.fire({ subject: $dragging, verb: 'control-drag-start' });
         });
         $this.on('dragend', function(event)
         {
+            var $dragging = $this.data('draggable-dragging');
+
             // n.b. according to spec this fires /after/ drop.
             if (options.handleAddedClass != null)
-                $this.removeClass(options.handleAddedClass);
+                $dragging.removeClass(options.handleAddedClass);
 
             // if we've been moved rather than copied into some other window, remove the original
             // source. but because chrome doesn't appropriately set the dropEffect property, we have
@@ -94,17 +113,20 @@ $.fn.draggable = function(passedOptions)
             if (!wasDroppedHere && options.removeIfMoved)
             {
                 if ($.isChrome)
-                    scheduleReapCheck(lastDragStartAt, $this);
+                    scheduleReapCheck(lastDragStartAt, $dragging);
                 else if (event.originalEvent.dataTransfer.dropEffect === 'move')
-                    reap($this);
+                    reap($dragging);
             }
+
+            // don't bubble.
+            event.stopPropagation();
         });
 
         $this.prop('draggable', true);
     });
 };
 $.fn.draggable.defaults = {
-    artifact: function() {},
+    artifact: null,
     handleAddedClass: null, // set to attach a class to the original drag source during the drag.
     removeIfMoved: true
 };
@@ -299,13 +321,13 @@ $.fn.droppable = function(passedOptions)
 
             wasDroppedHere = true;
             var parsed = JSON.parse(data);
-            var controlId = parsed.id;
-            var controlData = parsed.control;
+            var controlIds = parsed.ids;
+            var controlData = parsed.controls;
 
-            var $extant = $('#control' + controlId);
+            var $extant = $(_.compact(_.map(controlIds, function(id) { return document.getElementById('control' + id); })));
             // break this logic out because chrome makes it all terrible (see commit message @c1c897e).
             // don't depend on key detection when we can help it because it's less reliable.
-            var isExtant = $extant.length > 0;
+            var isExtant = ($extant.length === controlIds.length);
             var intendsCopy = $.isChrome ? $.isDuplicate(event) : (dataTransfer.dropEffect === 'copy');
 
             var $added = null;
@@ -313,17 +335,23 @@ $.fn.droppable = function(passedOptions)
             {
                 // if our drag source is in the same document and we're supposed to move it,
                 // then do so directly rather than cloning data.
-                $extant.trigger('odkControl-removing');
-                $extant.detach();
-                $extant.trigger('odkControl-removed');
-                $extant.insertAfter($placeholder);
+                $extant.each(function()
+                {
+                    var $moving = $(this);
+                    $moving.trigger('odkControl-removing')
+                        .find('.control').trigger('odkControl-removing');
+                    $moving.detach();
+                    $moving.trigger('odkControl-removed')
+                        .find('.control').trigger('odkControl-removed');
+                    $moving.insertAfter($placeholder);
+                });
                 $added = $extant;
             }
             else
             {
                 // if our drag source is some other document or we're supposed to copy rather
                 // than move, then inflate and insert from data.
-                $added = odkmaker.data.loadOne(controlData)
+                $added = $(_.map(controlData, function(data) { return odkmaker.data.loadOne(data)[0]; }));
                 $added.insertAfter($placeholder);
 
                 // if we're chrome, write a key to localStorage to inform the original source of the user's
@@ -331,9 +359,12 @@ $.fn.droppable = function(passedOptions)
                 if ($.isChrome && !isExtant) window.localStorage.setItem(parsed.at, intendsCopy ? 'copy' : 'move');
             }
 
-            $added.trigger('odkControl-added')
+            $added
                 .bumpClass('dropped')
+                .trigger('odkControl-added')
                 .find('.control').trigger('odkControl-added');
+            $added.eq(0).bumpClass('droppedHead');
+            $added.eq($added.length - 1).bumpClass('droppedTail');
 
             $placeholder.detach();
             event.preventDefault();

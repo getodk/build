@@ -534,11 +534,17 @@ body
 {
     margin-bottom: 0.8em;
 }
+.control.droppedHead
+{
+    margin-top: -0.5em;
+}
 .control.dropped
 {
-    margin-bottom: -1.5em;
-    margin-top: -0.5em;
     opacity: 0.7;
+}
+.control.droppedTail
+{
+    margin-bottom: -1.5em;
 }
 .control .controlInfo
 {

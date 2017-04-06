@@ -326,10 +326,7 @@
             // set up dragging
             $this.one('mouseenter', function()
             {
-                $this.draggable({
-                    artifact: function() { return $this; },
-                    handleAddedClass: 'dragging'
-                });
+                $this.draggable({ handleAddedClass: 'dragging' });
             });
         });
     };
