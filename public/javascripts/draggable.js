@@ -40,15 +40,15 @@ var reap = function($artifact)
 {
     $artifact.find('.control')
         .trigger('odkControl-removing')
+        .trigger('odkControl-deselect')
         .remove()
         .trigger('odkControl-removed');
 
     $artifact
         .trigger('odkControl-removing')
+        .trigger('odkControl-deselect')
         .remove()
         .trigger('odkControl-removed');
-
-    odkmaker.application.clearProperties();
 };
 
 $.fn.draggable = function(passedOptions)

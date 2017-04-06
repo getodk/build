@@ -53,8 +53,11 @@
     } });
     kor.events.listen({ verb: 'control-deselected', callback: function(event)
     {
-        if ($('.control.selected').length === 0)
+        var $selected = $('.control.selected');
+        if ($selected.length === 0)
             odkmaker.application.clearProperties();
+        else if ($selected.length === 1)
+            drawPropertyList($selected.eq(0), $selected.eq(0).data('odkControl-properties'));
     } });
 
     // Private methods
@@ -282,6 +285,7 @@
             {
                 performSelection($this, type, options, properties);
             });
+            $this.bind('odkControl-deselect', deselect);
             $this.click(function(event)
             {
                 event.stopPropagation();
@@ -312,11 +316,9 @@
                 event.preventDefault();
                 $this.slideUp('normal', function()
                 {
-                    if ($this.is('.selected'))
-                        $propertyList.empty();
-
                     var $thisAndChildren = $this.find('.control').add($this);
                     $thisAndChildren.each(function() { validationNS.controlDestroyed($(this), properties); });
+                    $thisAndChildren.each(deselect);
                     $thisAndChildren.trigger('odkControl-removing');
                     $this.remove();
                     $thisAndChildren.trigger('odkControl-removed');
