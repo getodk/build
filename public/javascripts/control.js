@@ -114,26 +114,19 @@
         else
         {
             // not siblings; compare the hierarchies to figure out the closest common parent.
-            var $rootParents = $($root.parents('.workspace, .control').get().reverse());
-            var $targetParents = $($target.parents('.workspace, .control').get().reverse());
+            var $rootLevels = $($root.parents('.workspace, .control').get().reverse()).add($root);
+            var $targetLevels = $($target.parents('.workspace, .control').get().reverse()).add($target);
 
             // to figure out directionality, we have to first get pair of siblings to compare.
             var $commonContainer = null;
-            var divergentIdx = null;
-            for (var i = 0; i < $rootParents.length; i++)
+            for (var i = 0; i < $rootLevels.length; i++)
             {
-                if ($rootParents[i] === $targetParents[i])
-                {
-                    $commonContainer = $rootParents[i];
-                    divergentIdx = i + 1;
-                }
-                else
-                    break;
+                if ($rootLevels[i] !== $targetLevels[i]) break;
+                $commonContainer = $rootLevels[i];
             }
-            var $rootDiverge = $rootParents.eq(divergentIdx);
-            if ($rootDiverge.length === 0) $rootDiverge = $root;
-            var $targetDiverge = $targetParents.eq(divergentIdx);
-            if ($targetDiverge.length === 0) $targetDiverge = $target;
+            var divergentIdx = i;
+            var $rootDiverge = $rootLevels.eq(divergentIdx);
+            var $targetDiverge = $targetLevels.eq(divergentIdx);
 
             // first deal with everything at common-container level.
             $result = getStack($rootDiverge, $targetDiverge);
@@ -141,15 +134,9 @@
             // now select the head or tail of all intervening containers as appropriate.
             // first we determine the direction.
             if ($rootDiverge.nextAll().is($targetDiverge))
-            {
-                var $before = $rootParents.add($root);
-                var $after = $targetParents.add($target);
-            }
+                var $before = $rootLevels, $after = $targetLevels;
             else
-            {
-                var $before = $targetParents.add($target);
-                var $after = $rootParents.add($root);
-            }
+                var $before = $targetLevels, $after = $rootLevels;
 
             // we start with the container nested within the divergent one.
             for (var i = (divergentIdx + 1); i < $before.length; i++)
