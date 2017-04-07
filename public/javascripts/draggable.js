@@ -3,7 +3,10 @@
 // we prefer to use the full mimetype so that dragging over textboxes in the browser
 // or elsewhere do not incorrectly imply a valid drop point. but IE chokes on anything
 // other than "text" and "url" so we fall back if we must.
-var mimeType = $.isMsft ? 'text/plain' : 'application/x-odkbuild-control';
+// but also also edge forces "text" to become "text/plain" so we need to set that to
+// compare against the right thing. but IE doesn't even support "text/plain", and if
+// you set "text" like they recommend the browser changes it to "Text".
+var mimeType = $.isMsft ? ($.isIE ? 'Text' : 'text/plain') : 'application/x-odkbuild-control';
 var checkForMimeType = function(dataTransfer)
 {
     // safari doesn't set types at first:
@@ -240,6 +243,8 @@ $.fn.droppable = function(passedOptions)
                 var third = targetHeight / 3;
                 var mouseY = event.originalEvent.clientY;
 
+                // fall through if the group is being dragged; we don't want to allow dragging a group
+                // into itself.
                 if ($target.hasClass('group') && !$target.hasClass('dragging'))
                 {
                     // groups require special handling.
@@ -261,8 +266,6 @@ $.fn.droppable = function(passedOptions)
                         // have a target within the group to point at. this means the drag is either
                         // off-scale low or off-scale high, or there are no controls in this group.
                         // just split the whole thing in half and use that to determine our path.
-                        //
-                        // the if clause keeps us from allowing a group to be dragged into itself.
                         var $workspace = $target.find('> .workspaceInnerWrapper > .workspaceInner');
                         if (mouseY < (targetTop + infoHeight + (workspaceWrapperHeight / 2)))
                             $workspace.prepend($placeholder);
@@ -361,6 +364,11 @@ $.fn.droppable = function(passedOptions)
             var parsed = JSON.parse(data);
             var controlIds = parsed.ids;
             var controlData = parsed.controls;
+
+            // in only IE (but not edge) the dropEffect setting is lost between dragover
+            // and drop, so we have to check and set it one last time:
+            if ($.isIE)
+                event.originalEvent.dataTransfer.dropEffect = $.isDuplicate(event) ? 'copy' : 'move';
 
             var $extant = $(_.compact(_.map(controlIds, function(id) { return document.getElementById('control' + id); })));
             // break this logic out because chrome makes it all terrible (see commit message @c1c897e).
