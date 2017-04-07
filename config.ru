@@ -39,6 +39,8 @@ use Warden::Manager do |manager|
   end
 end
 
+use Rack::Static, :urls => [ '/stylesheets', '/javascripts', '/images' ], :root => 'public'
+
 # app
 run OdkBuild
 
