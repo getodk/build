@@ -1,6 +1,32 @@
 ;(function($) {
 
-var mimeType = 'application/x-odkbuild-control';
+// we prefer to use the full mimetype so that dragging over textboxes in the browser
+// or elsewhere do not incorrectly imply a valid drop point. but IE chokes on anything
+// other than "text" and "url" so we fall back if we must.
+var mimeType = $.isMsft ? 'text/plain' : 'application/x-odkbuild-control';
+var checkForMimeType = function(dataTransfer)
+{
+    // safari doesn't set types at first:
+    if (dataTransfer.types == null)
+        return false;
+
+    // for most browsers, which use a plain array:
+    if (dataTransfer.types.indexOf != null)
+        return dataTransfer.types.indexOf(mimeType) >= 0;
+
+    // for IE/Edge, which use a DomStringList:
+    if (dataTransfer.types.contains != null)
+        return dataTransfer.types.contains(mimeType);
+
+    // for ??:
+    if (dataTransfer.types.length != null)
+        for (var i = 0; i < dataTransfer.types.length; i++)
+            if (dataTransfer.types[i] === mimeType)
+                return true;
+
+    // we've run out of ideas:
+    return false;
+};
 
 // our two shameful global variables. but you can really only drag+drop one thing on your entire
 // machine at once anyway. we use these to track whether a successful drop happened here or in
@@ -63,8 +89,7 @@ $.fn.draggable = function(passedOptions)
         {
             // bail if we've already started dragging on a inner element.
             var dataTransfer = event.originalEvent.dataTransfer;
-            if (_.isArray(dataTransfer.types) && (dataTransfer.types.indexOf(mimeType) >= 0))
-                return;
+            if (checkForMimeType(dataTransfer)) return;
 
             // determine what it is that we are dragging:
             if (options.artifact != null)
@@ -92,7 +117,8 @@ $.fn.draggable = function(passedOptions)
             dataTransfer.dropEffect = 'move';
 
             // if we have multiple items, set the drag image to something more appropriate.
-            if ($dragging.length > 1)
+            // ...but not in IE/Edge, which don't support setDragImage at all.
+            if (($dragging.length > 1) && !$.isMsft)
             {
                 var $dragIcon = $('#dragIcon');
                 $dragIcon.find('.count').text($dragging.length);
@@ -153,7 +179,7 @@ $.fn.droppable = function(passedOptions)
             if ($this[0] !== event.target)
                 return; // this is some subelement bubbling. just forget about it.
 
-            if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
+            if (!checkForMimeType(event.originalEvent.dataTransfer))
                 return; // longer bit of logic to be consistent with dragover.
 
             // preventing default indicates that we can drop the object here.
@@ -165,7 +191,7 @@ $.fn.droppable = function(passedOptions)
         var currentOverEvent = null;
         $this.on('dragover', '.control', function(event)
         {
-            if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
+            if (!checkForMimeType(event.originalEvent.dataTransfer))
                 return;
 
             // have to prevent default here as well to maintain the drag.
@@ -194,11 +220,15 @@ $.fn.droppable = function(passedOptions)
         var $scrollParent = $this.closest(options.scrollParent);
         $this.on('dragover', function(event)
         {
-            if (event.originalEvent.dataTransfer.types.indexOf(mimeType) < 0)
+            if (!checkForMimeType(event.originalEvent.dataTransfer))
                 return;
 
             // have to prevent default here as well to maintain the drag.
             event.preventDefault();
+
+            // IE/Edge don't automatically set OS defaults for copy vs move so we have to do it:
+            if ($.isMsft)
+                event.originalEvent.dataTransfer.dropEffect = $.isDuplicate(event) ? 'copy' : 'move';
 
             // the above dragover handler for contained controls always fires before this one, so
             // by the time we get here we have up-to-date information on targets.

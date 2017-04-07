@@ -832,7 +832,7 @@ body > .control.last .controlFlowArrow,
 }
 .propertiesPane .propertyList input[type="text"]
 {
-    width: 21em;
+    width: calc(100% - 0.5em);
 }
 .propertiesPane .propertyList li .bool,
 .propertiesPane .propertyList li .numericRange

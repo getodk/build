@@ -13,6 +13,12 @@
     //$.isFirefox = Boolean(window.netscape) && / rv:/i.test(navigator.userAgent); // keeping this alternative in case the above stops working.
     $.isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
 
+    // and these are necessary because IE/Edge do not support full mimetype specification
+    // on the dataTransfer object.
+    $.isIE = /*@cc_on!@*/false || Boolean(document.documentMode);
+    $.isEdge = !$.isIE && Boolean(window.StyleMedia);
+    $.isMsft = $.isIE || $.isEdge;
+
     // OS detection, because command vs option vs ctrl are different per platform.
     // if we're not sure, assume we might be either. yes, there is linux, but detecting
     // linux is really difficult as there is no standardization.
