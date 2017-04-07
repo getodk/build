@@ -15,7 +15,11 @@
 
     // and these are necessary because IE/Edge do not support full mimetype specification
     // on the dataTransfer object.
-    $.isIE = /*@cc_on!@*/false || Boolean(document.documentMode);
+    $.isIE = (function()
+    {
+        'use strict';
+        return (new Function("return /*@cc_on!@*/false || Boolean(document.documentMode);"))() || false;
+    })();
     $.isEdge = !$.isIE && Boolean(window.StyleMedia);
     $.isMsft = $.isIE || $.isEdge;
 
