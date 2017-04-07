@@ -218,7 +218,7 @@
     // helper for optionsEditor
     var newOptionRow = function(property, data, index, $parent)
     {
-        var $removeLink = $('<a href="#removeOption" class="removeOption">Remove Option</a>')
+        var $removeLink = $('<a href="#removeOption" class="icon removeOption">Remove Option</a>')
         $removeLink.click(function(event)
         {
             event.preventDefault();
