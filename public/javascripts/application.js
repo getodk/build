@@ -25,7 +25,7 @@ $(function()
     $('.header .menu .displayLanguages').on('click', 'a', function(event)
     {
         event.preventDefault();
-        odkmaker.i18n.displayLanguage($(this).attr('rel'));
+        odkmaker.i18n.displayLanguage($(this).closest('li').data('code'));
         $('.workspace .control').trigger('odkControl-propertiesUpdated');
     });
     $('.header .menu .toggleCollapsed').click(function(event)

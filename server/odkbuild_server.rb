@@ -222,6 +222,20 @@ class OdkBuild < Sinatra::Application
     return result
   end
 
+  # bounce a payload through to a local build2xlsform instance for dev env. in prod, this ought
+  # to be done at the apache/nginx/etc level via proxypass.
+  post '/convert' do
+    http = Net::HTTP.new('localhost', 8686)
+    req = Net::HTTP::Post.new('/convert')
+    req['Content-Type'] = 'application/json'
+    req.body = request.body.read.to_s
+
+    res = http.request(req)
+
+    status 200
+    return res.body
+  end
+
   # bounce a payload through the server to aggregate
   post '/aggregate/post' do
     # make sure we're good to go
