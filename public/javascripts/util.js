@@ -50,17 +50,6 @@
         return str.replace(/([^a-z0-9]+)/ig, '-');
     };
 
-    $.live = function(selector, type, callback)
-    {
-        var obj = $([]);
-        obj.selector = selector;
-        obj.context = document;
-        if (type && callback) {
-            obj.live(type, callback);
-        }
-        return obj;
-    };
-
     $.removeFromArray = function(elem, array)
     {
         var result = array.splice($.inArray(elem, array), 1);

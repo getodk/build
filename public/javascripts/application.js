@@ -25,17 +25,16 @@ $(function()
     $('.header .menu li').dropdownMenu();
 
     // Wire up menu actions
-    $.live('.header .menu .displayLanguages a', 'click', function(event)
+    $('.header .menu .displayLanguages').on('click', 'a', function(event)
     {
         event.preventDefault();
-        odkmaker.i18n.displayLanguage($(this).attr('rel'));
+        odkmaker.i18n.displayLanguage($(this).closest('li').data('code'));
         $('.workspace .control').trigger('odkControl-propertiesUpdated');
     });
     $('.header .menu .toggleCollapsed').click(function(event)
     {
         event.preventDefault();
         $('.workspace').toggleClass('collapsed');
-        $('.controlFlowArrow').empty().triangle();
     });
 
     // wire up header actions
@@ -68,7 +67,7 @@ $(function()
     applicationNS.newForm();
 
     // Toggles
-    $.live('a.toggle', 'click', function(event)
+    $('body').on('click', 'a.toggle', function(event)
     {
         event.preventDefault();
         $(this)
