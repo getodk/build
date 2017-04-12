@@ -56,15 +56,16 @@
 
         // clear out and reconstruct property list
         var $propertyList = $('.propertyList');
+        var wasExpanded = $propertyList.find('.advanced > .toggle').hasClass('expanded');
         $propertyList.empty();
 
         var $advancedContainer = $.tag({
             _: 'li', 'class': 'advanced', contents: [
-                { _: 'a', 'class': 'toggle', href: '#advanced', contents: [
+                { _: 'a', 'class': [ 'toggle', { i: wasExpanded, t: 'expanded' } ], href: '#advanced', contents: [
                     { _: 'div', 'class': 'icon' },
                     'Advanced'
                 ] },
-                { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: 'none' } }
+                { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: { i: wasExpanded, t: 'block', e: 'none' } } }
             ]
         });
         var $advancedList = $advancedContainer.find('.advancedProperties');
@@ -105,8 +106,13 @@
                 properties = defaultProperties ||
                     $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
                                    $.fn.odkControl.controlProperties[type]);
+
+            var match = null;
             if (properties.name.value == 'untitled')
                 properties.name.value += (untitledCount() + 1);
+            else if ((match = /^untitled(\d+)$/.exec(properties.name.value)) != null)
+                untitledCount_ = parseInt(match[1]);
+
             _.each(properties, function(property, name)
             {
                 property.id = name;
@@ -117,6 +123,7 @@
             $this.bind('odkControl-propertiesUpdated', function(event)
             {
                 event.stopPropagation();
+                kor.events.fire({ subject: $this, verb: 'properties-updated' });
                 refreshFromProperties($this, type, options, properties);
             });
             $this.trigger('odkControl-propertiesUpdated');
@@ -368,7 +375,7 @@
           options:    { name: 'Options',
                         type: 'optionsEditor',
                         validation: [ 'underlyingRequired', 'underlyingLegalChars', 'underlyingLength', 'hasOptions' ],
-                        value: [],
+                        value: [{ text: {}, val: 'untitled' }],
                         summary: false },
           appearance: { name: 'Style',
                         type: 'enum',
@@ -380,7 +387,7 @@
           options:    { name: 'Options',
                         type: 'optionsEditor',
                         validation: [ 'underlyingRequired', 'underlyingLegalChars', 'underlyingLength', 'hasOptions' ],
-                        value: [],
+                        value: [{ text: {}, val: 'untitled' }],
                         summary: false },
           count:      { name: 'Response Count',
                         type: 'numericRange',

@@ -191,7 +191,7 @@
             $editor.find('.addOption').click(function(event)
             {
                 event.preventDefault();
-                var newOption = {text: {}};
+                var newOption = { text: {}, val: 'untitled' };
                 property.value.push(newOption);
                 $optionsList.append(newOptionRow(property, newOption, $optionsList.children().length, $parent));
                 $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);

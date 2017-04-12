@@ -16,6 +16,11 @@
             return value || '&nbsp;'
     };
 
+    $.isBlank = function(str)
+    {
+        return (str == null) || (str === '');
+    };
+
     $.emptyString = function(str, prompt)
     {
         if ((str === null) || (str === undefined) || (str === ''))
