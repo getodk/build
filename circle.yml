@@ -2,15 +2,8 @@ dependencies:
   override:
     - "sudo apt-get install zlib1g-dev"
     - "sudo apt-get install libbz2-dev"
-    - "wget http://fallabs.com/tokyocabinet/tokyocabinet-1.4.48.tar.gz && tar xzf tokyocabinet-1.4.48.tar.gz"
-    - "cd tokyocabinet-1.4.48 && ./configure && make && sudo make install"
-    - "wget http://fallabs.com/tokyotyrant/tokyotyrant-1.1.41.tar.gz && tar xzf tokyotyrant-1.1.41.tar.gz"
-    - "cd tokyotyrant-1.1.41 && ./configure && make && sudo make install"
     - "gem install bundler"
     - "bundle install"
-  cache_directories:
-    - "tokyocabinet-1.4.48"
-    - "tokyotyrant-1.1.41"
 compile:
   override:
     - "cp config.yml.sample config.yml"
