@@ -90,14 +90,18 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                   odkmaker[module].upgrade[version](formObj);
         }
 
-        $('h1').text(formObj.title);
         $('.control').trigger('odkControl-removing');
         $('.control').trigger('odkControl-removed');
         $('.workspace').empty();
+
+        $('h1').text(formObj.title);
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadMany($('.workspace'), formObj.controls);
         $('.workspace .control:first').trigger('click');
+
+        odkmaker.data.currentForm = formObj;
+        odkmaker.data.clean = true;
 
         kor.events.fire({ subject: formObj, verb: 'form-load' });
     };
@@ -445,23 +449,23 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // numeric/date range
         if ((control.range !== undefined) && (control.range !== false))
         {
-            constraint.push('. ' +
-                (control.range.minInclusive ? '&gt;=' : '&gt;') + ' ' +
-                xmlValue(control.range.min) + ' and . ' +
-                (control.range.maxInclusive ? '&lt;=' : '&lt;') + ' ' +
-                xmlValue(control.range.max));
-            invalidText = 'Value must be between ' + control.range.min + ' and ' + control.range.max;
+            if (!$.isBlank(control.range.min))
+                constraint.push('. &gt;' + (control.range.minInclusive ? '= ' : ' ') + xmlValue(control.range.min));
+            if (!$.isBlank(control.range.max))
+                constraint.push('. &lt;' + (control.range.maxInclusive ? '= ' : ' ') + xmlValue(control.range.max));
+
+            invalidText = 'Value must be between ' + $.emptyString(control.range.min, 'anything') + ' and ' + $.emptyString(control.range.max, 'anything');
         }
 
         // select multiple range
         if ((control.count !== undefined) && (control.count !== false))
         {
-            constraint.push('count-selected(.) ' +
-                (control.count.minInclusive ? '&gt;=' : '&gt;') + ' ' +
-                xmlValue(control.count.min) + ' and count-selected(.) ' +
-                (control.count.maxInclusive ? '&lt;=' : '&lt;') + ' ' +
-                xmlValue(control.count.max));
-            invalidText = 'Must choose between ' + control.count.min + ' and ' + control.count.max + ' options';
+            if (!$.isBlank(control.count.min))
+                constraint.push('count-selected(.) &gt;= ' + xmlValue(control.count.min));
+            if (!$.isBlank(control.count.max))
+                constraint.push('count-selected(.) &lt;= ' + xmlValue(control.count.max));
+           
+            invalidText = 'Must choose between ' + $.emptyString(control.count.min, 'anything') + ' and ' + $.emptyString(control.count.max, 'anything') + ' options';
         }
 
         // media kind

@@ -263,8 +263,13 @@
                 properties = defaultProperties ||
                     $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
                                    $.fn.odkControl.controlProperties[type]);
+
+            var match = null;
             if (properties.name.value == 'untitled')
                 properties.name.value += (untitledCount() + 1);
+            else if ((match = /^untitled(\d+)$/.exec(properties.name.value)) != null)
+                untitledCount_ = parseInt(match[1]);
+
             _.each(properties, function(property, name)
             {
                 property.id = name;
@@ -275,6 +280,7 @@
             $this.bind('odkControl-propertiesUpdated', function(event)
             {
                 event.stopPropagation();
+                kor.events.fire({ subject: $this, verb: 'properties-updated' });
                 refreshFromProperties($this, type, options, properties);
             });
             $this.trigger('odkControl-propertiesUpdated');
@@ -498,7 +504,7 @@
                         tips: [
                             'If you have many options or reuse options frequently, use Bulk Edit.',
                             'The Underlying Value is the value saved to the exported data.' ],
-                        value: [],
+                        value: [{ text: {}, val: 'untitled' }],
                         summary: false },
           appearance: { name: 'Style',
                         type: 'enum',
@@ -514,7 +520,7 @@
                             'If you have many options or reuse options frequently, use Bulk Edit.',
                             'The Underlying Value is the value saved to the exported data.' ],
                         validation: [ 'underlyingRequired', 'underlyingLegalChars', 'underlyingLength', 'hasOptions' ],
-                        value: [],
+                        value: [{ text: {}, val: 'untitled' }],
                         summary: false },
           count:      { name: 'Response Count',
                         type: 'numericRange',

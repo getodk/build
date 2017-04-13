@@ -8,10 +8,13 @@ var applicationNS = odkmaker.namespace.load('odkmaker.application');
 
 applicationNS.newForm = function()
 {
+    $('.control').trigger('odkControl-removing');
+    $('.control').trigger('odkControl-removed');
     $('.workspace').empty();
     $('.header h1').text('Untitled Form');
     applicationNS.clearProperties();
     odkmaker.data.currentForm = null;
+    odkmaker.data.clean = true;
 };
 
 applicationNS.clearProperties = function()
@@ -64,6 +67,7 @@ $(function()
                 .fadeIn();
             $(this).text('Done');
         }
+        odkmaker.data.clean = false;
     });
 
     // Wire up toolpane
