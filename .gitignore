@@ -1,9 +1,6 @@
 .DS_Store
 *.swp
 *.swo
-*.tdb
-*.tch
-*.tct
 .bundle/config
 vendor
 config.yml
