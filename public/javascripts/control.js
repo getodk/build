@@ -219,7 +219,7 @@
                 $this.each(deselect);
             else
             {
-                select($this);
+                $this.each(select);
                 $initiator = $this;
                 $endStop = null;
             }
@@ -295,7 +295,11 @@
             $this.click(function(event)
             {
                 event.stopPropagation();
-                performSelection($this, type, options, properties, $.keys.selectMany, $.keys.selectOne);
+
+                if ($.isMsft)
+                    performSelection($this, type, options, properties, $.keys.selectMany, $.keys.selectOne);
+                else
+                    performSelection($this, type, options, properties, event.shiftKey, $.isSelectOne(event));
             });
 
             $this.bind('odkControl-validationChanged', function(event, property, hasError)

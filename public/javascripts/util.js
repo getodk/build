@@ -44,6 +44,12 @@
             $.keys.selectOne = $.isSelectOne(event);
             $.keys.duplicate = $.isDuplicate(event);
         });
+        $(window).on('focus', function()
+        {
+            // assume nothing is held on window focus. if the user is already holding a
+            // key on focus it's not like we'll know anyway.
+            $.keys.selectMany = $.keys.selectOne = $.keys.duplicate = false;
+        });
     });
     $.isSelectOne = function(event) { return ($.isWindows && event.ctrlKey) || ($.isMac && event.metaKey); };
     $.isDuplicate = function(event) { return ($.isWindows && event.ctrlKey) || ($.isMac && event.altKey); };
