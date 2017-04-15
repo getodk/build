@@ -389,7 +389,7 @@ $.fn.droppable = function(passedOptions)
                     $moving.detach();
                     $moving.trigger('odkControl-removed')
                         .find('.control').trigger('odkControl-removed');
-                    $moving.insertAfter($placeholder);
+                    $moving.insertBefore($placeholder);
                 });
                 $added = $extant;
             }
@@ -398,7 +398,7 @@ $.fn.droppable = function(passedOptions)
                 // if our drag source is some other document or we're supposed to copy rather
                 // than move, then inflate and insert from data.
                 $added = $(_.map(controlData, function(data) { return odkmaker.data.loadOne(data)[0]; }));
-                $added.insertAfter($placeholder);
+                $added.insertBefore($placeholder);
 
                 // if we're chrome, write a key to localStorage to inform the original source of the user's
                 // intentions.
