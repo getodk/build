@@ -36,6 +36,44 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
         return display;
     };
 
+    i18nNS.reconcile = function(foreignLanguages)
+    {
+        var mappings = {};
+        var hasNew = false;
+
+        foreign: for (var fkey in foreignLanguages)
+        {
+            if ((fkey === '_counter') || (fkey === '_display')) continue;
+
+            for (var akey in i18nNS.activeLanguages())
+                if (foreignLanguages[fkey].trim().toLowerCase() === active[akey].trim().toLowerCase())
+                {
+                    mappings[fkey] = akey;
+                    continue foreign;
+                }
+
+            // we didn't find anything resembling the requisite language; add it.
+            hasNew = true;
+            var code = (++active._counter).toString();
+            active[code] = foreignLanguages[fkey];
+            mappings[fkey] = code;
+
+            // update underlying data and visible property ui
+            _.each(getTranslateProperties(), function(property)
+            {
+                property.value[code] = '';
+            });
+        }
+
+        if (hasNew === true)
+        {
+            updateMenu();
+            $('.workspace .control.selected').trigger('odkControl-reloadProperties');
+        }
+
+        return mappings;
+    };
+
     var createTranslationRow = function(code, name)
     {
         var result = $('<li><a href="#remove" class="removeTranslation">remove</a><input type="text" class="translationName"/></li>');
@@ -106,7 +144,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             var language = $textbox.val().trim();
 
             // bail out if we already have this language
-            if (_.any(_.values(active), function(activeLang) { return language === activeLang; }))
+            if (_.any(_.values(i18nNS.activeLanguages()), function(activeLang) { return language.toLowerCase() === activeLang.toLowerCase(); }))
                 return;
 
             var code = (++active._counter).toString();

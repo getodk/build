@@ -113,6 +113,7 @@ $.fn.draggable = function(passedOptions)
             var data = {
                 ids: $dragging.map(function() { return $(this).data('odkControl-id') }).get(),
                 controls: $dragging.map(function() { return odkmaker.data.extractOne($(this)); }).get(),
+                languages: odkmaker.i18n.activeLanguageData(),
                 at: lastDragStartAt
             };
             dataTransfer.setData(mimeType, JSON.stringify(data));
@@ -364,6 +365,7 @@ $.fn.droppable = function(passedOptions)
             var parsed = JSON.parse(data);
             var controlIds = parsed.ids;
             var controlData = parsed.controls;
+            var languageData = parsed.languages;
 
             // in only IE (but not edge) the dropEffect setting is lost between dragover
             // and drop, so we have to check and set it one last time:
@@ -399,6 +401,45 @@ $.fn.droppable = function(passedOptions)
                 // than move, then inflate and insert from data.
                 $added = $(_.map(controlData, function(data) { return odkmaker.data.loadOne(data)[0]; }));
                 $added.insertBefore($placeholder);
+
+                // insert first so we have full control objects to work with, but now we have
+                // to reconcile possible language differences across the forms.
+                if (!isExtant)
+                {
+                    var mapping = odkmaker.i18n.reconcile(languageData);
+                    var $allAdded = $added.find('.control').add($added);
+                    for (var i = 0; i < $allAdded.length; i++)
+                    {
+                        var $control = $allAdded.eq(i);
+                        var properties = $control.data('odkControl-properties');
+                        var changed = false;
+
+                        _.each(properties, function(property)
+                        {
+                            // find properties that would need adjustment:
+                            var objs = null;
+                            if (property.type === 'uiText')
+                                objs = [ property.value ];
+                            else if (property.type === 'optionsEditor')
+                                objs = _.map(property.value, function(option) { return option.text; });
+                            else
+                                return; // ie continue;
+
+                            _.each(objs, function(obj)
+                            {
+                                // because our keys could collide, we first save off all values to
+                                // an intermediate object, and perform all deletes before all writes.
+                                var oldObj = _.clone(obj);
+                                var keys = _.keys(obj);
+                                _.each(keys, function(fkey) { delete obj[fkey]; });
+                                _.each(keys, function(fkey) { obj[mapping[fkey]] = oldObj[fkey]; });
+                            });
+                            changed = true;
+                        });
+
+                        if (changed === true) $control.trigger('odkControl-propertiesUpdated');
+                    }
+                }
 
                 // if we're chrome, write a key to localStorage to inform the original source of the user's
                 // intentions.
