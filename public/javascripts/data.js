@@ -61,8 +61,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var $result = $('#templates .control')
             .clone()
             .addClass(control.type)
-            .odkControl(control.type, null, properties)
-            .trigger('odkControl-added');
+            .odkControl(control.type, null, properties);
 
         if (control.type == 'group')
             loadMany($result.find('.workspaceInner'), control.children);
@@ -72,7 +71,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
     var loadMany = function($root, controls)
     {
-        _.each(controls, function(control) { loadOne(control).appendTo($root); });
+        _.each(controls, function(control) { loadOne(control).appendTo($root).trigger('odkControl-added'); });
     };
     // forms without a version are assumed to be version 0. any form at a version less than
     // the current will be upgraded. to define an upgrade, add an upgrade object to any module
