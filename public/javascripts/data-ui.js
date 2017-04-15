@@ -65,6 +65,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 success: function(response, status)
                 {
                     dataNS.currentForm = response;
+                    dataNS.clean = true;
                     $.toast('Form saved!');
                 },
                 error: function(request, status, error)
@@ -190,6 +191,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 {
                     $.toast('Your form has been saved as "' + title + '".');
                     dataNS.currentForm = response;
+                    dataNS.clean = true;
                     $('.saveAsDialog').jqmHide();
                 },
                 error: function(request, status, error)
