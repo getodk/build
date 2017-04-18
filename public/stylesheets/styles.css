@@ -528,10 +528,23 @@ body
 {
     margin-bottom: 1.5em;
     position: relative;
+    transition: 0.3s margin, 0.5s opacity;
 }
 .collapsed .control
 {
     margin-bottom: 0.8em;
+}
+.control.droppedHead
+{
+    margin-top: -0.5em;
+}
+.control.dropped
+{
+    opacity: 0.7;
+}
+.control.droppedTail
+{
+    margin-bottom: -1.5em;
 }
 .control .controlInfo
 {
@@ -628,15 +641,27 @@ body
 {
     height: 1em;
 }
-.control .controlFlowArrow
+.control .controlFlowArrow, .control.selected:after
 {
     border: 2em solid transparent;
     border-bottom-width: 0;
     border-top-color: #646464;
     left: 50%;
     margin-left: -1em;
+    pointer-events: none; /* causes flickering on drag otherwise */
     position: absolute;
     z-index: 1;
+}
+.control.selected
+{
+    box-shadow: -0.3em -0.3em 0 #f4b241, 0.3em -0.3em 0 #f4b241, -0.3em 0.3em 0 #f4b241, 0.3em 0.3em 0 #f4b241;
+}
+.control.selected:after
+{
+    border-top-color: #f4b241;
+    content: '';
+    top: calc(100% + 0.3em);
+    z-index: 0;
 }
 .collapsed .control .controlFlowArrow
 {
@@ -647,9 +672,6 @@ body
 .control:hover > .controlInfo { background-color: #888; }
 .control:hover > .controlFlowArrow { border-top-color: #727272; }
 
-.control.selected > .controlInfo { background-color: #ab842c; }
-.control.selected > .controlFlowArrow { border-top-color: #8f6f25; }
-
 .control.group > .controlInfo { background-color: #607a60; }
 .control.group > .controlFlowArrow { border-top-color: #516651; }
 .control.group > .groupFooter { background-color: #516651; }
@@ -657,10 +679,6 @@ body
 .control.group:hover > .controlInfo { background-color: #6f8d6e; }
 .control.group:hover > .controlFlowArrow { border-top-color: #5d765c; }
 .control.group:hover > .groupFooter { background-color: #5d765c; }
-
-.control.group.selected > .controlInfo { background-color: #73823f; }
-.control.group.selected > .controlFlowArrow { border-top-color: #616d35; }
-.control.group.selected > .groupFooter { background-color: #616d35; }
 
 .control.error > .controlInfo, .control.group.error > .controlInfo { background-color: #a20f0f; }
 .control.error > .controlFlowArrow, .control.group.error > .controlFlowArrow { border-top-color: #880d0d; }
@@ -670,69 +688,109 @@ body
 .control.error:hover > .controlFlowArrow { border-top-color: #a43737; }
 .control.error:hover > .groupFooter { background-color: #a43737; }
 
-.control.ui-draggable-dragging
+.control.dragging
 {
-    z-index: 5;
+    opacity: 0.4;
 }
 body > .control.last .controlFlowArrow,
-.workspace .control:last-child > .controlFlowArrow
+.workspace .control:last-child > .controlFlowArrow,
+.workspace .control:last-child:after
 {
     display: none;
 }
 
-.placeholder
+#dragIcon
 {
-    background: #777;
-    height: 88px;
-    margin-bottom: 1.5em;
-    opacity: 0.4;
-    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)"; /* thank you msft */
-    filter: alpha(opacity=40);
-    position: relative;
-    text-indent: -9999px;
-}
-.placeholder .flowArrow
-{
-    height: 28px;
-    left: 50%;
-    margin-left: -14px;
+    left: -10em;
     position: absolute;
-    top: 88px;
-    width: 28px;
-    z-index: 1;
+    top: -10em;
 }
-.placeholder .flowArrow .slice
+#dragIcon .miniControl
 {
     background-color: #777;
+    box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.2);
+    height: 1.4em;
+    position: relative;
+    width: 3em;
 }
-.workspace > .placeholder:last-child .flowArrow
+#dragIcon .miniControl:after
 {
-    display: none;
+    border: 0.6em solid transparent;
+    border-bottom-width: 0;
+    border-top-color: #777;
+    content: '';
+    display: block;
+    left: calc(50% - 0.6em);
+    position: absolute;
+    top: 100%;
+}
+#dragIcon .count
+{
+    background: #a20f0f;
+    border-radius: 99em;
+    box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.3);
+    color: #fff;
+    font-weight: bold;
+    left: 2.5em;
+    min-width: 0.8em;
+    padding: 0.2em 0.3em;
+    position: absolute;
+    text-align: center;
+    top: 0.8em;
 }
 
-.placeholder.hidden
+#placeholder
 {
-    background: none;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    bottom: 0.8em;
+    margin-bottom: -2px;
+    pointer-events: none;
+    position: relative;
+    z-index: 1;
+}
+
+#placeholder:after
+{
+    border: 0.8em solid transparent;
+    border-left-width: 0;
+    border-right-color: rgba(0, 0, 0, 0.4);
+    content: '';
+    display: block;
+    position: absolute;
+    left: calc(100% + 0.2em);
+    top: -0.7em;
+}
+
+/* for sole child in a group, don't shift up to give more room. */
+.workspaceInner > #placeholder:first-child:last-child
+{
+    bottom: 0;
 }
 
 .propertiesPane
 {
-    bottom: 0.5em;
-    padding: 1em;
+    bottom: 20em;
+    margin-bottom: 1em;
     overflow-y: auto;
+    padding: 1em;
     position: absolute;
     right: 0.5em;
     top: 6em;
     width: 27em;
 }
-
-.propertiesPane .propertyList li
+.suppressInformation .propertiesPane
 {
-    margin-top: 0.8em;
+    bottom: 0.5em !important;
 }
-.propertiesPane .propertyList li:hover
+
+.propertiesPane .propertyList > li
 {
-    background-color: #eee;
+    margin-top: 1em;
+    padding-left: 1em;
+}
+.propertiesPane .propertyList > li:hover
+{
+    background-color: #eaeaea;
 }
 .propertiesPane .propertyList li.error
 {
@@ -742,14 +800,9 @@ body > .control.last .controlFlowArrow,
 {
     color: #a20f0f;
 }
-.propertiesPane .propertyList li li,
-.propertiesPane .propertyList .optionsEditorValueField
-{
-    margin-left: 0.5em;
-}
 .propertiesPane .propertyList li.advanced
 {
-    border-top: 1px dashed #888;
+    border-top: 1px dashed #aaa;
     padding-top: 0.5em;
 }
 .propertiesPane .propertyList li.emptyData
@@ -762,6 +815,8 @@ body > .control.last .controlFlowArrow,
 .propertiesPane .propertyList li h4
 {
     font-size: 1.3em;
+    margin-left: -0.769em;
+    padding-bottom: 0.2em;
 }
 .propertiesPane .propertyList li a.optionsEditorLink
 {
@@ -777,9 +832,15 @@ body > .control.last .controlFlowArrow,
 }
 .propertiesPane .propertyList input[type="text"]
 {
-    width: 21em;
+    width: calc(100% - 0.5em);
 }
-.propertiesPane .propertyList li .bool label
+.propertiesPane .propertyList li .bool,
+.propertiesPane .propertyList li .numericRange
+{
+    margin-left: -1em;
+}
+.propertiesPane .propertyList li .bool label,
+.propertiesPane .propertyList li .numericRange label
 {
     color: #444;
     font-size: 1.3em;
@@ -795,6 +856,10 @@ body > .control.last .controlFlowArrow,
 {
     margin-left: 2.2em;
 }
+.propertiesPane .propertyList li .numericRange input[type="text"]
+{
+    width: 19.5em;
+}
 .propertiesPane .propertyList li h5
 {
     font-size: 1.1em;
@@ -804,14 +869,27 @@ body > .control.last .controlFlowArrow,
     color: #444;
     font-size: 1.4em;
     letter-spacing: -1px;
+    margin-left: -0.714em;
+}
+.propertiesPane .advancedProperties
+{
+    padding-top: 1em;
 }
 
+.propertiesPane .propertyList li .optionsList
+{
+    padding-left: 1em;
+}
+.propertiesPane .propertyList li .optionsList li
+{
+    margin-bottom: 0.5em;
+}
 .propertiesPane .propertyList li .addOption
 {
+    display: block;
     font-size: 1.2em;
     letter-spacing: -1px;
-    margin-top: 0.5em;
-    padding: 0.5em;
+    padding: 0.5em 0;
 }
 .propertiesPane .propertyList li .removeOption
 {
@@ -854,6 +932,69 @@ body > .control.last .controlFlowArrow,
 
 .property-length .inclusiveCtrl, .property-count .inclusiveCtrl {
     display: none;
+}
+
+.helpPane
+{
+    background-color: #eaeaea;
+    bottom: 0.5em;
+    height: 20em;
+    overflow-y: auto;
+    position: absolute;
+    right: 0.5em;
+    width: 29em;
+    z-index: 1;
+}
+.suppressInformation .helpPane
+{
+    display: none;
+}
+
+.helpPane h3
+{
+    background-color: #ddd;
+    padding: 0.714em;
+}
+.helpPane.hasHelp .helpPane-title:after
+{
+    content: ':';
+}
+
+.helpPane .helpItem
+{
+    display: none;
+    padding: 1em;
+}
+.helpPane .helpItem.helpNone
+{
+    display: block;
+}
+
+.helpPane p
+{
+    font-size: 1.2em;
+    line-height: 1.1em;
+}
+.helpPane li
+{
+    border-bottom: 1px solid #ccc;
+    color: #555;
+    font-size: 1.1em;
+    padding: 0.5em 0 0.7em;
+}
+.helpPane li:last-child
+{
+    border-bottom: none;
+}
+.helpPane .key
+{
+    background: #fff;
+    border-radius: 0.2em;
+    box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.2);
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 0.2em;
+    padding: 0.2em 0.4em;
 }
 
 /**********

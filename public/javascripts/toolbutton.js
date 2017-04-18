@@ -14,6 +14,7 @@
                    .odkControl(type)
                    .trigger('odkControl-select');
     };
+
     // Constructor
     $.fn.toolButton = function(options)
     {
@@ -21,7 +22,7 @@
         {
             var $this = $(this);
 
-            $this.click(function(event)
+            $this.on('click', function(event)
             {
                 event.preventDefault();
                 var $control = createOdkControl($this.attr('rel'));
@@ -29,47 +30,12 @@
                 $control.trigger('odkControl-added').trigger('click');
             });
 
-            $this.workspaceDraggable({
-                dragCallback: function($control, direction)
-                {
-                    $('.workspace .placeholder')
-                        .addClass('closing')
-                        .slideUp('normal', function()
-                        {
-                            $(this).remove();
-                        });
-
-                    var $placeholder = $('<div class="placeholder"></div>')
-                                        .text($this.text())
-                                        .append('<div class="flowArrow"></div>')
-                                        .slideDown('normal');
-                    if (direction < 0)
-                        $control.before($placeholder);
-                    else if (direction == 0)
-                        $control.append($placeholder);
-                    else if (direction > 0)
-                        $control.after($placeholder);
-                },
-                dropCallback: function()
-                {
-                    var $placeholder = $('.workspace .placeholder:not(.closing)');
-                    if ($placeholder.length > 0)
-                    {
-                        var $control = createOdkControl($this.attr('rel'))
-                        $placeholder.replaceWith($control);
-                        $control.trigger('odkControl-added').trigger('click');
-                    }
-                },
-                draggableOptions: {
-                    start: function(event, ui)
-                    {
-                        $(ui.helper)
-                            .empty()
-                            .append($('<div class="typeIcon></div>"'));
-                    }
-                }
+            $this.draggable({
+                artifact: function() { return createOdkControl($this.attr('rel')); },
+                removeIfMoved: false
             });
         });
     };
 
 })(jQuery);
+

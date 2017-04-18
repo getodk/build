@@ -14,9 +14,11 @@
         return this.each(function()
         {
             var $this = $(this);
+            $this.data('odkProperty', property);
+
             var $editor = $('#templates .editors .' + property.type).clone();
             $editor.attr('data-name', name).addClass('property-' + name);
-            
+
             $this.empty().append($editor);
 
             $.fn.propertyEditor.editors[property.type](property, $editor, $parent, name);
@@ -54,7 +56,6 @@
     $.fn.propertyEditor.editors = {
         text: function(property, $editor, $parent) {
             $editor.find('h4').text(property.name);
-            $editor.find('p').text(property.description);
             $editor.find('.editorTextfield')
                 .attr('id', 'property_' + property.name)
                 .val(property.value || '')
@@ -66,7 +67,6 @@
         },
         uiText: function(property, $editor, $parent) {
             $editor.find('h4').text(property.name);
-            $editor.find('p').text(property.description);
 
             var $translationsList = $editor.find('.translations');
             _.each(odkmaker.i18n.activeLanguages(), function(language, code)
@@ -85,22 +85,16 @@
         },
         bool: function(property, $editor, $parent) {
             $editor.find('.editorCheckbox')
-                .attr('id', 'property_' + property.name)
                 .attr('checked', property.value === true)
                 .click(function(event)
                 {
                     property.value = $(this).is(':checked');
                     $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                 });
-            $editor.find('label')
-                .attr('for', 'property_' + property.name)
-                .text(property.name);
-            $editor.find('p')
-                .text(property.description);
+            $editor.find('label span').text(property.name);
         },
         numericRange: function(property, $editor, $parent) {
-            $editor.find('h4').text(property.name);
-            $editor.find('p').text(property.description);
+            $editor.find('label span').text(property.name);
 
             var $inputs = $editor.find('.editorTextfield, .inclusive');
 
@@ -149,7 +143,6 @@
         },
         'enum': function(property, $editor, $parent) {
             $editor.find('h4').text(property.name);
-            $editor.find('p').text(property.description);
 
             var $select = $editor.find('.editorSelect');
             _.each(property.options, function(option)
@@ -178,7 +171,6 @@
         },
         optionsEditor: function(property, $editor, $parent) {
             $editor.find('h4').text(property.name);
-            $editor.find('p').text(property.description);
 
             var $optionsList = $editor.find('.optionsList');
             _.each(property.value, function(val, i)
@@ -191,7 +183,7 @@
             $editor.find('.addOption').click(function(event)
             {
                 event.preventDefault();
-                var newOption = {text: {}};
+                var newOption = { text: {}, val: 'untitled' };
                 property.value.push(newOption);
                 $optionsList.append(newOptionRow(property, newOption, $optionsList.children().length, $parent));
                 $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);

@@ -19,7 +19,6 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             type: 'GET',
             success: function(response, status)
             {
-                dataNS.currentForm = response;
                 odkmaker.data.load(response);
                 $('.openDialog').jqmHide();
             },
@@ -39,7 +38,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('.menu .newLink').click(function(event)
         {
             event.preventDefault();
-            if (confirm('Are you sure? You will lose unsaved changes to the current form.'))
+            if (dataNS.clean || confirm('Are you sure? You will lose unsaved changes to the current form.'))
                 odkmaker.application.newForm();
         });
         $('.menu .saveLink').click(function(event)
@@ -66,6 +65,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 success: function(response, status)
                 {
                     dataNS.currentForm = response;
+                    dataNS.clean = true;
                     $.toast('Form saved!');
                 },
                 error: function(request, status, error)
@@ -112,6 +112,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
           xhttp.responseType = 'blob';
           xhttp.send(JSON.stringify(odkmaker.data.extract()));
         });
+
+        // cleanliness tracking events
+        dataNS.clean = true;
+        $('.workspace').on('odkControl-added odkControl-removed', function() { dataNS.clean = false; });
+        kor.events.listen({ verb: 'properties-updated', callback: function() { dataNS.clean = false; } });
 
         // modal events
         var $openDialog = $('.openDialog');
@@ -186,6 +191,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 {
                     $.toast('Your form has been saved as "' + title + '".');
                     dataNS.currentForm = response;
+                    dataNS.clean = true;
                     $('.saveAsDialog').jqmHide();
                 },
                 error: function(request, status, error)

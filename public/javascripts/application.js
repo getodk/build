@@ -8,12 +8,20 @@ var applicationNS = odkmaker.namespace.load('odkmaker.application');
 
 applicationNS.newForm = function()
 {
+    $('.control').trigger('odkControl-removing');
+    $('.control').trigger('odkControl-removed');
     $('.workspace').empty();
     $('.header h1').text('Untitled Form');
-    $('.propertiesPane .propertylist')
-        .empty()
-        .append('<li class="emptyData">First add a control, then select it to view its properties here.</li>');
+    applicationNS.clearProperties();
     odkmaker.data.currentForm = null;
+    odkmaker.data.clean = true;
+};
+
+applicationNS.clearProperties = function()
+{
+    $('.propertiesPane .propertyList')
+        .empty()
+        .append('<li class="emptyData">First add a question, then select it to view its properties here.</li>');
 };
 
 $(function()
@@ -32,6 +40,11 @@ $(function()
     {
         event.preventDefault();
         $('.workspace').toggleClass('collapsed');
+    });
+    $('.header .menu .toggleInformation').click(function(event)
+    {
+        event.preventDefault();
+        $('body').toggleClass('suppressInformation');
     });
 
     // wire up header actions
@@ -54,10 +67,14 @@ $(function()
                 .fadeIn();
             $(this).text('Done');
         }
+        odkmaker.data.clean = false;
     });
 
     // Wire up toolpane
     $('.toolPalette a').toolButton();
+
+    // Wire up workspace dropzone
+    $('.workspace').droppable({ scrollParent: '.workspaceScrollArea' });
 
     // Kick off a new form by default
     applicationNS.newForm();

@@ -1,10 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!doctype html>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" /> 
-    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>ODK Build</title>
 
     <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css"/>
@@ -93,12 +92,14 @@
               </ul>
             </li>
             <li class="divider"></li>
-            <li class="checkbox"><a href="#toggleCollapsedMode" class="toggleCollapsed"><span class="icon"></span>Collapse Controls</a></li>
+            <li class="checkbox"><a href="#toggleCollapsedMode" class="toggleCollapsed"><span class="icon"></span>Collapse Questions</a></li>
           </ul>
         </li>
         <li>
           <span>Help</span>
           <ul class="submenu">
+            <li class="checkbox selected"><a href="#toggleInformation" class="toggleInformation"><span class="icon"></span>Show Information</a></li>
+            <li class="divider"></li>
             <li><a href="#aboutDialog" rel="modal">About ODK Build...</a></li>
           </ul>
         </li>
@@ -135,6 +136,37 @@
           <li class="emptyData">First add a control, then select it to view its properties here.</li>
         </ul>
       </div>
+      <div class="helpPane">
+        <div class="helpPane-contents">
+          <h3><span class="helpPane-title">Information</span> <span class="helpPane-subtitle"></span></h3>
+          <div class="helpItem helpNone">
+            <p>Select something to learn more about it here.</p>
+          </div>
+          <div class="helpItem helpBasic">
+            <p class="helpBasic-description"></p>
+            <ul class="helpBasic-tips"></ul>
+          </div>
+          <div class="helpItem helpDrag">
+            <ul>
+              <li>You can hold <span class="key">Ctrl</span> (Win) or <span class="key">Option</span> (Mac) to drop a clone instead of moving the original.</li>
+              <li>You can drag between browser tabs to copy or move questions between ODK Build documents.</li>
+              <li>You can also hold <span class="key">Shift</span> while clicking on questions to select a whole range, or <span class="key">Ctrl</span> (Win) or <span class="key">Cmd</span> (Mac) to select multiple individual questions.</li>
+            </ul>
+          </div>
+          <div class="helpItem helpMultiselect">
+            <ul>
+              <li>You can drag all selected controls at once.</li>
+              <li>While dragging, you can hold <span class="key">Ctrl</span> (Win) or <span class="key">Option</span> (Mac) to drop a clone instead of moving the original.</li>
+              <li>You can drag between browser tabs to copy or move questions between ODK Build documents.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dragIcon">
+      <div class="miniControl"></div>
+      <div class="count"></div>
     </div>
 
     <div class="modal narrowModal signinDialog">
@@ -390,21 +422,21 @@
       <div class="editors">
         <div class="text">
           <h4></h4>
-          <p></p>
           <input type="text" class="editorTextfield"/>
         </div>
 
         <div class="bool">
-          <input type="checkbox" class="editorCheckbox"/>
-          <label></label>
-          <p></p>
+          <label>
+            <input type="checkbox" class="editorCheckbox"/>
+            <span></span>
+          </label>
         </div>
 
         <div class="numericRange dateRange">
-          <h4></h4>
-          <p></p>
-          <input id="property_range_enabled" type="checkbox" class="editorCheckbox editorEnabled"/>
-          <label for="property_range_enabled">Enable</label>
+          <label>
+            <input id="property_range_enabled" type="checkbox" class="editorCheckbox editorEnabled"/>
+            <span></span>
+          </label>
           <h5>Minimum</h5>
           <input type="text" class="editorTextfield min"/>
           <input id="property_range_min_inclusive" type="checkbox" class="editorCheckbox inclusive minInclusive inclusiveCtrl"/>
@@ -417,7 +449,6 @@
 
         <div class="uiText">
           <h4></h4>
-          <p></p>
           <ul class="translations"></ul>
         </div>
           <li class="uiText-translation">
@@ -427,14 +458,12 @@
 
         <div class="enum">
           <h4></h4>
-          <p></p>
           <select class="editorSelect"></select>
         </div>
 
         <div class="optionsEditor">
           <a href="#optionsEditorDialog" rel="modal" class="optionsEditorLink">Bulk Edit</a>
           <h4></h4>
-          <p></p>
           <ul class="optionsList"></ul>
           <a class="addOption" href="#addOption">Add Option</a>
         </div>

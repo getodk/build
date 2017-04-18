@@ -1,6 +1,5 @@
 javascripts:
 - underscore.min
-- json2
 - jquery.jqmodal
 - ajaxupload
 - kor.events
@@ -16,9 +15,10 @@ javascripts:
 - options-editor
 - modals
 - property-editor
-- workspace-draggable
+- draggable
 - control
 - toolbutton
 - dropdown-menu
+- help
 - application
 

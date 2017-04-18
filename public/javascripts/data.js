@@ -10,52 +10,33 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 ;(function($)
 {
     // gets just the pure data for any one control
-    var getDataRepresentation = function($control)
+    var getDataRepresentation = odkmaker.data.extractOne = function($control)
     {
         var data = {};
         _.each($control.data('odkControl-properties'), function(property, name)
         {
             data[name] = property.value;
         });
+
         data.type = $control.data('odkControl-type');
+        if (data.type == 'group')
+            data.children = extractMany($control.children('.workspaceInnerWrapper').children('.workspaceInner'));
+
         return data;
     };
 
     // gets the pure data tree for any workspace DOM node
-    var extractRecurse = function($root)
+    var extractMany = function($root)
     {
         var result = [];
-        $root.children('.control').each(function()
-        {
-            var $this = $(this);
-
-            var data = getDataRepresentation($this);
-
-            if (data.type == 'group')
-            {
-                data.children = extractRecurse($this.children('.workspaceInnerWrapper').children('.workspaceInner'));
-            }
-            else if (data.type == 'branch')
-            {
-                data.branches = [];
-                $this.find('.workspaceInner').each(function()
-                {
-                    var branch = {};
-                    branch.conditions = $(this).data('odkmaker-branchConditions');
-                    branch.children = extractRecurse($(this));
-                    data.branches.push(branch);
-                });
-            }
-
-            result.push(data);
-        });
+        $root.children('.control').each(function() { result.push(getDataRepresentation($(this))); });
         return result;
     };
     odkmaker.data.extract = function()
     {
         return {
             title: $('h1').text(),
-            controls: extractRecurse($('.workspace')),
+            controls: extractMany($('.workspace')),
             metadata: {
                 version: odkmaker.data.currentVersion,
                 activeLanguages: odkmaker.i18n.activeLanguageData(),
@@ -64,31 +45,33 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         };
     };
 
-    var loadRecurse = function($root, controls)
+    var loadOne = odkmaker.data.loadOne = function(control)
     {
-        _.each(controls, function(control)
+        var properties = null;
+        if ((control.type == 'group') || (control.type == 'branch') || (control.type == 'metadata'))
+            properties = $.extend(true, {}, $.fn.odkControl.controlProperties[control.type]);
+        else
+            properties = $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
+                                        $.fn.odkControl.controlProperties[control.type]);
+        _.each(properties, function(property, key)
         {
-            var properties = null;
-            if ((control.type == 'group') || (control.type == 'branch') || (control.type == 'metadata'))
-                properties = $.extend(true, {}, $.fn.odkControl.controlProperties[control.type]);
-            else
-                properties = $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
-                                            $.fn.odkControl.controlProperties[control.type]);
-            _.each(properties, function(property, key)
-            {
-                property.value = control[key];
-            });
-
-            var $control = $('#templates .control')
-                               .clone()
-                               .addClass(control.type)
-                               .odkControl(control.type, null, properties)
-                               .appendTo($root)
-                               .trigger('odkControl-added');
-
-            if (control.type == 'group')
-                loadRecurse($control.find('.workspaceInner'), control.children);
+            property.value = control[key];
         });
+
+        var $result = $('#templates .control')
+            .clone()
+            .addClass(control.type)
+            .odkControl(control.type, null, properties);
+
+        if (control.type == 'group')
+            loadMany($result.find('.workspaceInner'), control.children);
+
+        return $result;
+    };
+
+    var loadMany = function($root, controls)
+    {
+        _.each(controls, function(control) { loadOne(control).appendTo($root).trigger('odkControl-added'); });
     };
     // forms without a version are assumed to be version 0. any form at a version less than
     // the current will be upgraded. to define an upgrade, add an upgrade object to any module
@@ -106,14 +89,18 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                   odkmaker[module].upgrade[version](formObj);
         }
 
-        $('h1').text(formObj.title);
         $('.control').trigger('odkControl-removing');
         $('.control').trigger('odkControl-removed');
         $('.workspace').empty();
+
+        $('h1').text(formObj.title);
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
-        loadRecurse($('.workspace'), formObj.controls);
+        loadMany($('.workspace'), formObj.controls);
         $('.workspace .control:first').trigger('click');
+
+        odkmaker.data.currentForm = formObj;
+        odkmaker.data.clean = true;
 
         kor.events.fire({ subject: formObj, verb: 'form-load' });
     };
@@ -461,23 +448,23 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // numeric/date range
         if ((control.range !== undefined) && (control.range !== false))
         {
-            constraint.push('. ' +
-                (control.range.minInclusive ? '&gt;=' : '&gt;') + ' ' +
-                xmlValue(control.range.min) + ' and . ' +
-                (control.range.maxInclusive ? '&lt;=' : '&lt;') + ' ' +
-                xmlValue(control.range.max));
-            invalidText = 'Value must be between ' + control.range.min + ' and ' + control.range.max;
+            if (!$.isBlank(control.range.min))
+                constraint.push('. &gt;' + (control.range.minInclusive ? '= ' : ' ') + xmlValue(control.range.min));
+            if (!$.isBlank(control.range.max))
+                constraint.push('. &lt;' + (control.range.maxInclusive ? '= ' : ' ') + xmlValue(control.range.max));
+
+            invalidText = 'Value must be between ' + $.emptyString(control.range.min, 'anything') + ' and ' + $.emptyString(control.range.max, 'anything');
         }
 
         // select multiple range
         if ((control.count !== undefined) && (control.count !== false))
         {
-            constraint.push('count-selected(.) ' +
-                (control.count.minInclusive ? '&gt;=' : '&gt;') + ' ' +
-                xmlValue(control.count.min) + ' and count-selected(.) ' +
-                (control.count.maxInclusive ? '&lt;=' : '&lt;') + ' ' +
-                xmlValue(control.count.max));
-            invalidText = 'Must choose between ' + control.count.min + ' and ' + control.count.max + ' options';
+            if (!$.isBlank(control.count.min))
+                constraint.push('count-selected(.) &gt;= ' + xmlValue(control.count.min));
+            if (!$.isBlank(control.count.max))
+                constraint.push('count-selected(.) &lt;= ' + xmlValue(control.count.max));
+           
+            invalidText = 'Must choose between ' + $.emptyString(control.count.min, 'anything') + ' and ' + $.emptyString(control.count.max, 'anything') + ' options';
         }
 
         // media kind
