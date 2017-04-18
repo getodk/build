@@ -34,14 +34,14 @@
         {
             var self = this;
             this.controls.push(control);
-            _.each(this.listeners, function(listener) { listener(self.controls, control); });
+            _.each(this.listeners, function(listener) { listener(self.controls, control, 'add'); });
         },
         remove: function(control)
         {
             var self = this;
             var removed = $.removeFromArray(control, this.controls);
             if (removed != null)
-                _.each(this.listeners, function(listener) { listener(self.controls, removed); });
+                _.each(this.listeners, function(listener) { listener(self.controls, removed, 'remove'); });
         },
         handle: function(f) { this.listeners.push(f); },
         unhandle: function(f) { $.removeFromArray(f, this.listeners); }
@@ -140,12 +140,56 @@
         return function() { stopped = true; };
     };
 
+    // to save on binding/unbinding time, we bind exactly once to every single control
+    // for the odkControl-propertiesUpdated event, and have an internal routing mechanism
+    // to distribute the event where needed.
+    // the routing information is stored in propertiesRouting; the first level of keys is
+    // the name of the property itself, the second level is the id reference of the interested
+    // handler, and the third level is the ids of the in-scope controls.
+    allControls.handle(function(controls, delta, type)
+    {
+        var $delta = $(delta);
+        if (type == 'add')
+            $delta.bind('odkControl-propertiesUpdated.validation', propertiesUpdated($delta));
+        else if (type == 'remove')
+            $delta.unbind('odkControl-propertiesUpdated.validation');
+    });
+    var propertiesRouting = {};
+    var propertiesUpdated = function($control) { return _.throttle(function(event, propertyName)
+    {
+        var forProperty = propertiesRouting[propertyName];
+        if (forProperty == null) return;
+
+        var cid = $control.data('odkControl-id');
+        for (var hid in forProperty)
+            if (forProperty[hid][cid] === true)
+                forProperty[hid].f();
+    }, 100); };
+
     // subscribe creates interests. each validation can require as many interests as
     // it needs in order to properly process its validation. each interest can
     // consist of a property, the type, or the whole control of a scoped class
     // of its peer controls.
+    var globalSubscriptionCache = {};
     var subscribe = function($control, scope, type, param, f)
     {
+        // before we begin we check if we are a cacheable global scope subscription.
+        if ((scope === 'all') && (type === 'property'))
+        {
+            if (globalSubscriptionCache[param] == null)
+            {
+                // not yet a subscription for this param type; register the given f and
+                // replace it with our own handler.
+                globalSubscriptionCache[param] = [ f ];
+                f = function(xs) { globalSubscriptionCache[param].forEach(function(f) { f(xs); }); };
+            }
+            else
+            {
+                globalSubscriptionCache[param].push(f);
+                return;
+            }
+        }
+
         // first we figure out what to do with the controls we get back. this is
         // dependent on the type.
         var handle = null;
@@ -153,16 +197,31 @@
             handle = function(controls) { f($(controls)); };
         else if (type === 'property')
         {
-            var $last = null;
-            handle = function(controls) {
-                var id = _.uniqueId();
-                var go = function() { f(_.map(controls, function(control) { return $(control).data('odkControl-properties')[param].value; })); };
-                _.defer(go);
+            var go = null;
+            var scheduled = false;
+            var id = _.uniqueId();
+            propertiesRouting[param] = propertiesRouting[param] || {};
+            propertiesRouting[param][id] = {};
 
-                var update = function(event, propertyName) { if (propertyName === param) go(); };
-                var tryUpdate = _.throttle(update, 100);
-                if ($last != null) $last.unbind('odkControl-propertiesUpdated.validation' + id);
-                $last = $(controls).bind('odkControl-propertiesUpdated.validation' + id, tryUpdate);
+            handle = function(controls, delta, type) {
+                if (type == 'add')
+                    propertiesRouting[param][id][$(delta).data('odkControl-id')] = true;
+                else if (type == 'remove')
+                    delete propertiesRouting[param][id][$(delta).data('odkControl-id')];
+                else
+                    _.each(controls, function(control) { propertiesRouting[param][id][$(control).data('odkControl-id')] = true; });
+
+                propertiesRouting[param][id].f = go = function()
+                {
+                    f(_.map(controls, function(control) { return $(control).data('odkControl-properties')[param].value; }));
+                    scheduled = false;
+                };
+
+                if (scheduled === false)
+                {
+                    _.defer(function() { go(); });
+                    scheduled = true;
+                }
             };
         }
         else if (type === 'type')
@@ -229,7 +288,7 @@
             subscribe($control, it.scope, it.type, it.param, function(x)
             {
                 params[idx] = x;
-                apply()
+                apply();
             });
         });
         var lastHasError = false;
@@ -237,15 +296,11 @@
         {
             var passed;
             if ((validationObj.prereq != null) && (validationObj.prereq.apply(null, params) !== true))
-            {
                 passed = true; // bail out if we fail the precondition.
-            }
             else
-            {
                 passed = validationObj.check.apply(null, params);
-            }
 
-            console.log('%c' + property.id + ': ' + validation + ' -> ' + passed, 'color:' + (passed === false ? 'red;font-weight:bold' : '#444'));
+            //console.log('%c' + property.id + ': ' + validation + ' -> ' + passed, 'color:' + (passed === false ? 'red;font-weight:bold' : '#444'));
 
             result.hasError = !passed;
             if (lastHasError !== result.hasError) $control.trigger('odkControl-validationChanged', [ property, result.hasError ]);
