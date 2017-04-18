@@ -69,17 +69,15 @@
             $editor.find('p').text(property.description);
 
             var $translationsList = $editor.find('.translations');
-            _.each(odkmaker.i18n.activeLanguages(), function(language)
+            _.each(odkmaker.i18n.activeLanguages(), function(language, code)
             {
-                var languageKey = language;
-
                 var $newRow = $('#templates .editors .uiText-translation').clone();
-                $newRow.find('h5').text(odkmaker.i18n.getFriendlyName(languageKey));
+                $newRow.find('h5').text(language);
                 $newRow.find('.editorTextfield')
-                    .val((property.value == null) ? '' : (property.value[languageKey] || ''))
+                    .val((property.value == null) ? '' : (property.value[code] || ''))
                     .bind('keyup input', function(event)
                     {
-                        property.value[languageKey] = $(this).val();
+                        property.value[code] = $(this).val();
                         $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                     });
                 $translationsList.append($newRow);
