@@ -65,33 +65,33 @@ var updateLanguages = function()
 {
     var currentLanguages = odkmaker.i18n.activeLanguages();
 
-    _.each(currentLanguages, function(language)
+    _.each(currentLanguages, function(language, code)
     {
-        if (!languageItems[language])
+        if (!languageItems[code])
         {
-            var item = new gui.MenuItem({ type: 'checkbox', label: odkmaker.i18n.getFriendlyName(language) });
+            var item = new gui.MenuItem({ type: 'checkbox', label: language });
             item.on('click', function()
             {
                 _.each(languageItems, function(item) { item.checked = false; });
                 item.checked = true;
 
-                odkmaker.i18n.displayLanguage(language);
+                odkmaker.i18n.displayLanguage(code);
                 $('.workspace .control').trigger('odkControl-propertiesUpdated');
             });
-            if (odkmaker.i18n.displayLanguage() === language)
+            if (odkmaker.i18n.displayLanguage() === code)
                 item.checked = true;
 
-            languageItems[language] = item;
+            languageItems[code] = item;
             languageMenu.append(item);
         }
     });
 
-    _.each(languageItems, function(item, language)
+    _.each(languageItems, function(item, code)
     {
-        if (currentLanguages.indexOf(language) < 0)
+        if (currentLanguages[code] == null)
         {
-            languageMenu.remove(languageItems[language]);
-            delete languageItems[language];
+            languageMenu.remove(languageItems[code]);
+            delete languageItems[code];
         }
     });
 };
