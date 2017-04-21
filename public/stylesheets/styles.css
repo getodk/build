@@ -47,26 +47,39 @@ body
     height: 1%;
 }
 
+/*********
+ * FONTS *
+ *********/
+
+@font-face {
+  font-family: 'odkbuild';
+  src:  url(/images/odkbuild.eot?8723aa);
+  src:  url(/images/odkbuild.eot?8723aa#iefix) format('embedded-opentype'),
+    url(/images/odkbuild.ttf?8723aa) format('truetype'),
+    url(/images/odkbuild.woff?8723aa) format('woff'),
+    url(/images/odkbuild.svg?8723aa#odkbuild) format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.icon, .ui-icon {
+  font-family: 'odkbuild' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /***********
  * WIDGETS *
  ***********/
 
 /* jqm */
 .jqmOverlay { background-color: #000; }
-
-/* Background iframe styling for IE6. Prevents ActiveX bleed-through (<select> form elements, etc.) */
-* iframe.jqm {position:absolute;top:0;left:0;z-index:-1;
-	width: expression(this.parentNode.offsetWidth+'px');
-	height: expression(this.parentNode.offsetHeight+'px');
-}
-
-/* Fixed posistioning emulation for IE6
-     Star selector used to hide definition from browsers other than IE6
-     For valid CSS, use a conditional include instead */
-* html .jqmWindow {
-     position: absolute;
-     top: expression((document.documentElement.scrollTop || document.body.scrollTop) + Math.round(17 * (document.documentElement.offsetHeight || document.body.clientHeight) / 100) + 'px');
-}
 
 .modal
 {
@@ -144,18 +157,11 @@ body
     top: 0;
     right: 0;
 }
-.modal .modalLoadingOverlay .loadingSpinner
+.modal .modalLoadingOverlay .spinner
 {
-    background: transparent url(/images/loading.gif) no-repeat;
-    display: block;
-    height: 19px;
-    left: 50%;
-    margin-left: -110px;
-    margin-top: -10px;
-    position: relative;
-    text-indent: -9999px;
-    top: 8em;
-    width: 220px;
+    left: calc(50% - 1.5em);
+    position: absolute;
+    top: 3em;
 }
 
 #templates
@@ -195,6 +201,89 @@ form input
     z-index: 20;
 }
 
+#surveyToast
+{
+    background-color: #673ab7;
+    color: #fff;
+    overflow: hidden;
+}
+#surveyToast h2 { color: #eee; }
+#surveyToast p { padding: 0.6em 0 1em; }
+#surveyToast a { color: #fff; }
+#surveyToast #launchSurvey
+{
+    background-color: #fff;
+    border-radius: 0.2em;
+    color: #673ab7;
+    display: block;
+    font-weight: bold;
+    float: left;
+    padding: 0.5em 0.7em 0.4em;
+}
+#surveyToast #dismissSurvey
+{
+    color: #ddd;
+    display: block;
+    float: right;
+    font-size: 0.8em;
+    line-height: 2.5em;
+}
+
+@-webkit-keyframes spinspin
+{
+    from { transform: rotateZ(0deg); }
+    to { transform: rotateZ(-360deg); }
+}
+@-moz-keyframes spinspin
+{
+    from { transform: rotateZ(0deg); }
+    to { transform: rotateZ(-360deg); }
+}
+@keyframes spinspin
+{
+    from { transform: rotateZ(0deg); }
+    to { transform: rotateZ(-360deg); }
+}
+.spinner
+{
+    height: 3em;
+    width: 3em;
+}
+.spinnerInner
+{
+    height: 2em;
+    position: relative;
+    width: 2em;
+}
+.spinnerInner:before, .spinnerInner:after
+{
+    background-color: #777;
+    border-radius: 9999px;
+    content: '';
+    display: block;
+    height: 0.6em;
+    position: absolute;
+    top: 1em;
+    width: 0.6em;
+}
+.spinnerInner:before { left: 0; }
+.spinnerInner:after { right: 0; }
+.spinner, .spinnerInner
+{
+    -webkit-animation-duration: 1.6s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-name: spinspin;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-duration: 1.6s;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-name: spinspin;
+    -moz-animation-timing-function: linear;
+    animation-duration: 1.6s;
+    animation-iteration-count: infinite;
+    animation-name: spinspin;
+    animation-timing-function: linear;
+}
+
 /***********
  * GENERAL *
  ***********/
@@ -225,10 +314,10 @@ ul
 /**********
  * LAYOUT *
  **********/
-
 body
 {
-    background: #f3f3f3 url(/images/bg_slice.png) repeat-x top;
+    background: #f3f3f3;
+    background: #f3f3f3 linear-gradient(to bottom, #fff 0, #f3f3f3 80px) repeat-x top;
     overflow: hidden;
 }
 
@@ -255,7 +344,7 @@ body
 }
 .header ul.menu
 {
-    background: transparent url(/images/vert_bar.png) no-repeat left top;
+    border-left: 1px solid #aaa;
     display: inline-block;
     margin-left: 2em;
     padding-left: 0.5em;
@@ -329,17 +418,16 @@ body
 .header ul.menu li ul.submenu li.checkbox span.icon,
 .header ul.menu li ul.submenu li.radio span.icon
 {
-    display: inline-block;
-    height: 15px;
-    margin-right: 0.5em;
-    position: relative;
-    top: 0.2em;
-    width: 15px;
+    display: block;
+    float: left;
+    font-size: 1.2em;
+    min-height: 1px; /* gives empty icons area */
+    width: 1.3em;
 }
-.header ul.menu li ul.submenu li.checkbox.selected a span.icon,
-.header ul.menu li ul.submenu li.radio.selected a span.icon
+.header ul.menu li ul.submenu li.checkbox.selected a span.icon:before,
+.header ul.menu li ul.submenu li.radio.selected a span.icon:before
 {
-    background: transparent url(/images/glyphs.png) 0 -75px;
+    content: '\e905';
 }
 
 .header .accountStatus
@@ -361,12 +449,19 @@ body
     position: absolute;
     z-index: 1;
 }
+.toolPalette .addNewIcon
+{
+    color: #444;
+    display: inline-block;
+    font-size: 1.4em;
+}
+.toolPalette .addNewIcon:before { content: '\e906'; }
 .toolPalette h3
 {
-    background: transparent url(/images/add_new.png) no-repeat;
     display: inline-block;
     margin-right: 0.5em;
-    padding-left: 18px;
+    position: relative;
+    top: 0.1em;
 }
 .toolPalette ul
 {
@@ -420,7 +515,7 @@ body
 
 .workspaceInnerWrapper
 {
-    background: transparent url(/images/group_bg.png);
+    background: rgba(96, 122, 96, 0.5);
     padding: 1em;
 }
 .workspaceInner
@@ -433,10 +528,23 @@ body
 {
     margin-bottom: 1.5em;
     position: relative;
+    transition: 0.3s margin, 0.5s opacity;
 }
 .collapsed .control
 {
     margin-bottom: 0.8em;
+}
+.control.droppedHead
+{
+    margin-top: -0.5em;
+}
+.control.dropped
+{
+    opacity: 0.7;
+}
+.control.droppedTail
+{
+    margin-bottom: -1.5em;
 }
 .control .controlInfo
 {
@@ -461,13 +569,20 @@ body
 }
 .control .controlInfo .deleteControl
 {
-    background: transparent url(/images/glyphs.png) no-repeat;
-    height: 16px;
     position: absolute;
     text-align: left;
     text-indent: -9999px;
-    right: 0.4em;
-    width: 16px;
+    right: 0.5em;
+}
+.control .controlInfo .deleteControl:before
+{
+    color: #eee;
+    content: '\e904';
+    font-size: 1.5em;
+    position: absolute;
+    right: 0;
+    text-indent: 0;
+    top: 0;
 }
 .control .controlInfo .controlHeadline
 {
@@ -524,134 +639,158 @@ body
 }
 .control.group .groupFooter
 {
-    background: transparent url(/images/control_arrow_tint.png);
     height: 1em;
 }
-.control .controlFlowArrow
+.control .controlFlowArrow, .control.selected:after
 {
-    height: 28px;
+    border: 2em solid transparent;
+    border-bottom-width: 0;
+    border-top-color: #646464;
     left: 50%;
-    margin-left: -14px;
+    margin-left: -1em;
+    pointer-events: none; /* causes flickering on drag otherwise */
     position: absolute;
-    width: 28px;
     z-index: 1;
+}
+.control.selected
+{
+    box-shadow: -0.3em -0.3em 0 #f4b241, 0.3em -0.3em 0 #f4b241, -0.3em 0.3em 0 #f4b241, 0.3em 0.3em 0 #f4b241;
+}
+.control.selected:after
+{
+    border-top-color: #f4b241;
+    content: '';
+    top: calc(100% + 0.3em);
+    z-index: 0;
 }
 .collapsed .control .controlFlowArrow
 {
-    height: 16px;
-    margin-left: -8px;
-    width: 16px;
+    border-width: 1.4em;
+    border-bottom-width: 0;
+    margin-left: -0.7em;
 }
-.control .controlFlowArrow .slice
+.control:hover > .controlInfo { background-color: #888; }
+.control:hover > .controlFlowArrow { border-top-color: #727272; }
+
+.control.group > .controlInfo { background-color: #607a60; }
+.control.group > .controlFlowArrow { border-top-color: #516651; }
+.control.group > .groupFooter { background-color: #516651; }
+
+.control.group:hover > .controlInfo { background-color: #6f8d6e; }
+.control.group:hover > .controlFlowArrow { border-top-color: #5d765c; }
+.control.group:hover > .groupFooter { background-color: #5d765c; }
+
+.control.error > .controlInfo, .control.group.error > .controlInfo { background-color: #a20f0f; }
+.control.error > .controlFlowArrow, .control.group.error > .controlFlowArrow { border-top-color: #880d0d; }
+.control.error > .groupFooter, .control.group.error > .groupFooter { background-color: #880d0d; }
+
+.control.error:hover > .controlInfo { background-color: #c34141; }
+.control.error:hover > .controlFlowArrow { border-top-color: #a43737; }
+.control.error:hover > .groupFooter { background-color: #a43737; }
+
+.control.dragging
 {
-    background: #777 url(/images/control_arrow_tint.png) repeat-x;
-}
-.control:hover > .controlInfo,
-.control:hover > .controlFlowArrow .slice
-{
-    background-color: #888;
-}
-.control.selected > .controlInfo,
-.control.selected > .controlFlowArrow .slice
-{
-    background-color: #ab842c;
-}
-.control.group > .controlInfo,
-.control.group > .controlFlowArrow .slice,
-.control.group > .groupFooter
-{
-    background-color: #607a60;
-}
-.control.group:hover > .controlInfo,
-.control.group:hover > .controlFlowArrow .slice,
-.control.group:hover > .groupFooter
-{
-    background-color: #6f8d6e;
-}
-.control.group.selected > .controlInfo,
-.control.group.selected > .controlFlowArrow .slice,
-.control.group.selected > .groupFooter
-{
-    background-color: #73823f;
-}
-.control.error > .controlInfo,
-.control.group.error > .controlInfo,
-.control.error > .controlFlowArrow .slice,
-.control.group.error > .controlFlowArrow .slice,
-.control.error > .groupFooter,
-.control.group.error > .groupFooter
-{
-    background-color: #a20f0f;
-}
-.control.error:hover > .controlInfo,
-.control.error:hover > .controlFlowArrow .slice,
-.control.error:hover > .groupFooter
-{
-    background-color: #c34141;
-}
-.control.ui-draggable-dragging
-{
-    z-index: 5;
+    opacity: 0.4;
 }
 body > .control.last .controlFlowArrow,
-.workspace .control:last-child > .controlFlowArrow
+.workspace .control:last-child > .controlFlowArrow,
+.workspace .control:last-child:after
 {
     display: none;
 }
 
-.placeholder
+#dragIcon
 {
-    background: #777;
-    height: 88px;
-    margin-bottom: 1.5em;
-    opacity: 0.4;
-    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)"; /* thank you msft */
-    filter: alpha(opacity=40);
-    position: relative;
-    text-indent: -9999px;
-}
-.placeholder .flowArrow
-{
-    height: 28px;
-    left: 50%;
-    margin-left: -14px;
+    left: -10em;
     position: absolute;
-    top: 88px;
-    width: 28px;
-    z-index: 1;
+    top: -10em;
 }
-.placeholder .flowArrow .slice
+#dragIcon .miniControl
 {
     background-color: #777;
+    box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.2);
+    height: 1.4em;
+    position: relative;
+    width: 3em;
 }
-.workspace > .placeholder:last-child .flowArrow
+#dragIcon .miniControl:after
 {
-    display: none;
+    border: 0.6em solid transparent;
+    border-bottom-width: 0;
+    border-top-color: #777;
+    content: '';
+    display: block;
+    left: calc(50% - 0.6em);
+    position: absolute;
+    top: 100%;
+}
+#dragIcon .count
+{
+    background: #a20f0f;
+    border-radius: 99em;
+    box-shadow: 0 0 0.3em rgba(0, 0, 0, 0.3);
+    color: #fff;
+    font-weight: bold;
+    left: 2.5em;
+    min-width: 0.8em;
+    padding: 0.2em 0.3em;
+    position: absolute;
+    text-align: center;
+    top: 0.8em;
 }
 
-.placeholder.hidden
+#placeholder
 {
-    background: none;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    bottom: 0.8em;
+    margin-bottom: -2px;
+    pointer-events: none;
+    position: relative;
+    z-index: 1;
+}
+
+#placeholder:after
+{
+    border: 0.8em solid transparent;
+    border-left-width: 0;
+    border-right-color: rgba(0, 0, 0, 0.4);
+    content: '';
+    display: block;
+    position: absolute;
+    left: calc(100% + 0.2em);
+    top: -0.7em;
+}
+
+/* for sole child in a group, don't shift up to give more room. */
+.workspaceInner > #placeholder:first-child:last-child
+{
+    bottom: 0;
 }
 
 .propertiesPane
 {
-    bottom: 0.5em;
-    padding: 1em;
+    bottom: 20em;
+    margin-bottom: 1em;
     overflow-y: auto;
+    padding: 1em;
     position: absolute;
     right: 0.5em;
     top: 6em;
     width: 27em;
 }
-
-.propertiesPane .propertyList li
+.suppressInformation .propertiesPane
 {
-    margin-top: 0.8em;
+    bottom: 0.5em !important;
 }
-.propertiesPane .propertyList li:hover
+
+.propertiesPane .propertyList > li
 {
-    background-color: #eee;
+    margin-top: 1em;
+    padding-left: 1em;
+}
+.propertiesPane .propertyList > li:hover
+{
+    background-color: #eaeaea;
 }
 .propertiesPane .propertyList li.error
 {
@@ -661,14 +800,9 @@ body > .control.last .controlFlowArrow,
 {
     color: #a20f0f;
 }
-.propertiesPane .propertyList li li,
-.propertiesPane .propertyList .optionsEditorValueField
-{
-    margin-left: 0.5em;
-}
 .propertiesPane .propertyList li.advanced
 {
-    border-top: 1px dashed #888;
+    border-top: 1px dashed #aaa;
     padding-top: 0.5em;
 }
 .propertiesPane .propertyList li.emptyData
@@ -681,6 +815,8 @@ body > .control.last .controlFlowArrow,
 .propertiesPane .propertyList li h4
 {
     font-size: 1.3em;
+    margin-left: -0.769em;
+    padding-bottom: 0.2em;
 }
 .propertiesPane .propertyList li a.optionsEditorLink
 {
@@ -696,9 +832,15 @@ body > .control.last .controlFlowArrow,
 }
 .propertiesPane .propertyList input[type="text"]
 {
-    width: 21em;
+    width: calc(100% - 0.5em);
 }
-.propertiesPane .propertyList li .bool label
+.propertiesPane .propertyList li .bool,
+.propertiesPane .propertyList li .numericRange
+{
+    margin-left: -1em;
+}
+.propertiesPane .propertyList li .bool label,
+.propertiesPane .propertyList li .numericRange label
 {
     color: #444;
     font-size: 1.3em;
@@ -714,6 +856,10 @@ body > .control.last .controlFlowArrow,
 {
     margin-left: 2.2em;
 }
+.propertiesPane .propertyList li .numericRange input[type="text"]
+{
+    width: 19.5em;
+}
 .propertiesPane .propertyList li h5
 {
     font-size: 1.1em;
@@ -723,29 +869,47 @@ body > .control.last .controlFlowArrow,
     color: #444;
     font-size: 1.4em;
     letter-spacing: -1px;
+    margin-left: -0.714em;
+}
+.propertiesPane .advancedProperties
+{
+    padding-top: 1em;
 }
 
+.propertiesPane .propertyList li .optionsList
+{
+    padding-left: 1em;
+}
+.propertiesPane .propertyList li .optionsList li
+{
+    margin-bottom: 0.5em;
+}
 .propertiesPane .propertyList li .addOption
 {
+    display: block;
     font-size: 1.2em;
     letter-spacing: -1px;
-    margin-top: 0.5em;
-    padding: 0.5em;
+    padding: 0.5em 0;
 }
 .propertiesPane .propertyList li .removeOption
 {
-    background: url(/images/glyphs.png) no-repeat scroll 0 -45px transparent;
     display: inline-block;
     float: right;
-    height: 16px;
-    margin-left: 0.6em;
+    margin-right: 0.5em;
+    position: relative;
     text-align: left;
     text-indent: -9999px;
-    width: 16px;
+    width: 1.3em;
 }
-.propertiesPane .propertyList li .uiText:hover .removeOption
+.propertiesPane .propertyList li .removeOption:before
 {
-    background-position: 0 -60px;
+    color: #333;
+    content: '\e904';
+    font-size: 1.3em;
+    position: absolute;
+    right: 0;
+    text-indent: 0;
+    top: 0;
 }
 .propertiesPane .propertyList li .errorList li
 {
@@ -754,14 +918,83 @@ body > .control.last .controlFlowArrow,
 
 .propertiesPane .propertyList li.advanced .icon
 {
-    background: transparent url(/images/glyphs.png) no-repeat 0 -15px;
+    color: #333;
     float: right;
-    height: 15px;
-    width: 15px;
 }
-.propertiesPane .propertyList li.advanced .expanded .icon
+.propertiesPane .propertyList li.advanced .icon:before
 {
-    background-position: 0 -30px;
+    content: '\e901';
+}
+.propertiesPane .propertyList li.advanced .expanded .icon:before
+{
+    content: '\e900';
+}
+
+.property-length .inclusiveCtrl, .property-count .inclusiveCtrl {
+    display: none;
+}
+
+.helpPane
+{
+    background-color: #eaeaea;
+    bottom: 0.5em;
+    height: 20em;
+    overflow-y: auto;
+    position: absolute;
+    right: 0.5em;
+    width: 29em;
+    z-index: 1;
+}
+.suppressInformation .helpPane
+{
+    display: none;
+}
+
+.helpPane h3
+{
+    background-color: #ddd;
+    padding: 0.714em;
+}
+.helpPane.hasHelp .helpPane-title:after
+{
+    content: ':';
+}
+
+.helpPane .helpItem
+{
+    display: none;
+    padding: 1em;
+}
+.helpPane .helpItem.helpNone
+{
+    display: block;
+}
+
+.helpPane p
+{
+    font-size: 1.2em;
+    line-height: 1.1em;
+}
+.helpPane li
+{
+    border-bottom: 1px solid #ccc;
+    color: #555;
+    font-size: 1.1em;
+    padding: 0.5em 0 0.7em;
+}
+.helpPane li:last-child
+{
+    border-bottom: none;
+}
+.helpPane .key
+{
+    background: #fff;
+    border-radius: 0.2em;
+    box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.2);
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 0.2em;
+    padding: 0.2em 0.4em;
 }
 
 /**********
@@ -825,20 +1058,27 @@ body > .control.last .controlFlowArrow,
 }
 .openDialog .formList li a.deleteFormLink
 {
-    background: transparent url(/images/glyphs.png) no-repeat scroll 0 -45px;
+    color: #333;
     display: block;
-    height: 16px;
+    font-size: 1.1em;
     position: absolute;
     right: 0.3em;
     text-align: left;
     text-indent: -9999px;
-    top: 0.4em;
-    width: 16px;
+    top: 0.45em;
+    width: 1.3em;
 }
-.openDialog .formList li.selected a.deleteFormLink,
-.openDialog .formList li.selected:hover a.deleteFormLink
+.openDialog .formList li a.deleteFormLink:before
 {
-    background-position: 0 -60px;
+    content: '\e904';
+    position: absolute;
+    right: 0;
+    text-indent: 0;
+    top: 0;
+}
+.openDialog .formList li.selected a.deleteFormLink
+{
+    color: #eee;
 }
 
 .exportDialog .exportCodeContainer
@@ -887,9 +1127,7 @@ body > .control.last .controlFlowArrow,
 }
 .optionsEditorDialog .optionsBody
 {
-    background: transparent url(/images/alternating_rows.png);
-    border-top: 1px solid #c7c7c7;
-    border-left: 1px solid #c7c7c7;
+    border: 1px solid #c7c7c7;
     margin-top: 0.2em;
 }
 .optionsEditorDialog .optionsBody li
@@ -901,18 +1139,19 @@ body > .control.last .controlFlowArrow,
 .optionsEditorDialog .optionsBody li input
 {
     background: transparent;
+    box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
     border: none;
     display: block;
     font-size: 1.2em;
     line-height: 16px;
-    margin-bottom: 4px;
     outline: none;
     padding: 0;
+    padding-bottom: 0.333em;
     width: 12.5em;
 }
-.optionsEditorDialog .optionsBody li input:last-child
+.optionsEditorDialog .optionsBody li input:nth-child(2n)
 {
-    margin-bottom: 2px;
+    background: #ededed;
 }
 
 .translationsDialog .addTranslation
@@ -928,6 +1167,20 @@ body > .control.last .controlFlowArrow,
 .translationsDialog .translationList li .removeTranslation
 {
     float: right;
+}
+
+.aggregateDialog .aggregateInstanceName
+{
+    width: calc(100% - 5.2em);
+}
+.aggregateDialog .note
+{
+    display: block;
+    padding-top: 0.3em;
+}
+.aggregateDialog #aggregateUser
+{
+    width: 9.5em;
 }
 
 .narrowModal
@@ -950,6 +1203,12 @@ body > .control.last .controlFlowArrow,
     right: 0;
     top: 0;
     z-index: 9999;
+}
+.loadingScreen .spinner
+{
+    right: calc(100% + 1em);
+    top: 0.5em;
+    position: absolute;
 }
 .loadingScreen .loadingMessage
 {
@@ -981,14 +1240,9 @@ body > .control.last .controlFlowArrow,
     color: #555;
     padding-left: 0.8em;
 }
-.loadingScreen .loadingBar
+.loadingScreen .status
 {
-    background: transparent url(/images/loading.gif) no-repeat;
-    display: block;
-    height: 19px;
-    margin-left: 0.2em;
-    text-indent: -9999px;
-    width: 220px;
+    padding-top: 1em;
 }
 
 /***********

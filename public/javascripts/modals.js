@@ -40,7 +40,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                 _.each(odkmaker.auth.currentUser.forms, function(formObj)
                 {
                     $list.append('<li rel="' + formObj.id + '">' + $.h(formObj.title) +
-                      '<a href="#delete" class="deleteFormLink">delete</a></li>');
+                      '<a href="#delete" class="icon deleteFormLink">delete</a></li>');
                 });
                 if (odkmaker.auth.currentUser.forms.length === 0)
                 {
@@ -80,7 +80,6 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
     $(function()
     {
         $('.modal').jqm({
-            modal: true,
             onShow: function(jqm)
             {
                 _.each(handlers, function(callback, key)
@@ -89,6 +88,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                         callback(jqm.w, jqm.t);
                 });
                 jqm.w.fadeIn('slow');
+                jqm.o.prependTo('body');
                 jqm.o.fadeIn('slow');
             },
             onHide: function(jqm)
@@ -96,9 +96,9 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                 jqm.w.fadeOut('slow');
                 jqm.o.fadeOut('slow');
             }
-        }).append('<div class="modalLoadingOverlay"><div class="loadingSpinner"></div></div>');
+        }).append('<div class="modalLoadingOverlay"><div class="spinner"><div class="spinnerInner"></div></div></div>');
 
-        $.live('a[rel=modal]', 'click', function(event)
+        $('body').on('click', 'a[rel=modal]', function(event)
         {
             event.preventDefault();
             var $this = $(this);
@@ -110,7 +110,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
             }
             else if ($this.hasClass('destructive'))
             {
-                if (!confirm('Are you sure? You will lose unsaved changes to the current form.'))
+                if ((odkmaker.data.clean === false) && !confirm('Are you sure? You will lose unsaved changes to the current form.'))
                     return;
             }
 
