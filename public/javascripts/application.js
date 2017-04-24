@@ -15,6 +15,8 @@ applicationNS.newForm = function()
     applicationNS.clearProperties();
     odkmaker.data.currentForm = null;
     odkmaker.data.clean = true;
+
+    window.document.title = 'New Form - ODK Build';
 };
 
 applicationNS.clearProperties = function()

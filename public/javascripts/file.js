@@ -51,6 +51,7 @@ fileNS.openPath = function(path)
 
         odkmaker.data.currentForm = form;
         odkmaker.data.load(form);
+        fileNS.setTitle(path);
     });
 };
 
@@ -71,6 +72,7 @@ fileNS.save = function(overwrite)
     if (overwrite && currentPath != null)
     {
         saveFile(currentPath, JSON.stringify(odkmaker.data.extract()));
+        fileNS.setTitle(path);
         odkmaker.data.clean = true;
     }
     else
@@ -82,6 +84,7 @@ fileNS.save = function(overwrite)
             if (initPath == null)
             {
                 // we are saving a previously-unsaved form. prompt path but use current window.
+                fileNS.setTitle(path);
                 odkmaker.data.clean = true;
             }
             else
@@ -89,6 +92,11 @@ fileNS.save = function(overwrite)
                 odkmaker.application.spawn(path);
         });
     }
+};
+
+fileNS.setTitle = function(path)
+{
+    window.document.title = require('path').basename(path, '.odkbuild') + ' - ODK Build';
 };
 
 fileNS.export = function()
