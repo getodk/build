@@ -117,9 +117,9 @@ viewMenu.append(viewCollapse);
 var settingsMenu = new gui.Menu();
 
 // edit -> form properties
-var editProperties = new gui.MenuItem({ label: 'Form Properties...' });
+/*var editProperties = new gui.MenuItem({ label: 'Form Properties...' });
 editProperties.on('click', function() { $('.menu #propertiesLink').click(); });
-settingsMenu.append(editProperties);
+settingsMenu.append(editProperties);*/
 
 // edit -> languages
 var editLanguages = new gui.MenuItem({ label: 'Translations...' });
