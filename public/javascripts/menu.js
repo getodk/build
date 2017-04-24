@@ -10,11 +10,7 @@ var fileMenu = new gui.Menu();
 
 // file -> new
 var fileNew = new gui.MenuItem({ label: 'New Form' });
-fileNew.on('click', function()
-{
-    currentPath = null;
-    $('.menu .newLink').click();
-});
+fileNew.on('click', function() { odkmaker.application.spawn(); });
 fileMenu.append(fileNew);
 
 // file -> open

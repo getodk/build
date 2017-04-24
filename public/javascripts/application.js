@@ -24,6 +24,17 @@ applicationNS.clearProperties = function()
         .append('<li class="emptyData">First add a question, then select it to view its properties here.</li>');
 };
 
+var childWindows = []; // prevent gc.
+applicationNS.spawn = function(path)
+{
+    if ($.isBlank(path)) path = '';
+    require('nw.gui').Window.open('public/index.html#' + encodeURIComponent(path), {
+        focus: true,
+        width: window.outerWidth,
+        height: window.outerHeight - 20 // subtract approximate titlebar
+    }, function(spawned) { childWindows.push(spawned); });
+};
+
 $(function()
 {
     // Wire up menu
@@ -83,8 +94,13 @@ $(function()
     // Wire up workspace dropzone
     $('.workspace').droppable({ scrollParent: '.workspaceScrollArea' });
 
-    // Kick off a new form by default
-    applicationNS.newForm();
+    var loadPath = decodeURIComponent((window.location.hash || '').replace(/^#/, ''));
+    if ($.isBlank(loadPath))
+        // Kick off a new form by default
+        applicationNS.newForm();
+    else
+        // We were spawned for the purpose of opening a path:
+        odkmaker.file.openPath(loadPath);
 
     // Toggles
     $('body').on('click', 'a.toggle', function(event)
