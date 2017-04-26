@@ -63,7 +63,7 @@
     // Private methods
 
     // our own incrementing counter:
-    var untitledCount_ = 1;
+    var untitledCount_ = 0;
     var untitledCount = function() { return untitledCount_++; };
 
     var refreshFromProperties = function($this, type, options, properties)
@@ -268,7 +268,8 @@
             if (properties.name.value == 'untitled')
                 properties.name.value += (untitledCount() + 1);
             else if ((match = /^untitled(\d+)$/.exec(properties.name.value)) != null)
-                untitledCount_ = parseInt(match[1]);
+                if ((match = parseInt(match[1])) > untitledCount_)
+                    untitledCount_ = match;
 
             _.each(properties, function(property, name)
             {
