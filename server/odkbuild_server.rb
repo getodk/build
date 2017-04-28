@@ -103,7 +103,7 @@ class OdkBuild < Sinatra::Application
 
     # validate input
     return error_validation_failed if request_data[:title].blank?
-    return error_validation_failed if request_data[:controls].blank?
+    return error_validation_failed if request_data[:controls].nil?
     return error_validation_failed if request_data[:metadata].blank?
 
     form = (Form.create request_data, user)
