@@ -155,6 +155,13 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             $textbox.val('');
             $('.translationsDialog .translationNone').hide();
 
+            // if we have no display language use this one.
+            if (active[display] == null)
+            {
+                display = code;
+                $('.workspace .control').trigger('odkControl-propertiesUpdated');
+            }
+
             // update active translations menu
             updateMenu();
 
