@@ -9,7 +9,63 @@
 
 ;(function($)
 {
+    var validationNS = odkmaker.namespace.load('odkmaker.validation');
+
+    // Globally active singleton facilities:
+    var $propertyList = $('.propertyList');
+    var drawPropertyList = function($this, properties)
+    {
+            // clear out and reconstruct property list
+            var wasExpanded = $propertyList.find('.advanced > .toggle').hasClass('expanded');
+            $propertyList.empty();
+
+            var $advancedContainer = $.tag({
+                _: 'li', 'class': 'advanced', contents: [
+                    { _: 'a', 'class': [ 'toggle', { i: wasExpanded, t: 'expanded' } ], href: '#advanced', contents: [
+                        { _: 'div', 'class': 'icon' },
+                        'Advanced'
+                    ] },
+                    { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: { i: wasExpanded, t: 'block', e: 'none' } } }
+                ]
+            });
+            var $advancedList = $advancedContainer.find('.advancedProperties');
+
+            // add our hero's properties
+            _.each(properties, function(property, name)
+            {
+                $('<li class="propertyItem"/>')
+                    .propertyEditor(property, name, $this)
+                    .appendTo((property.advanced === true) ? $advancedList : $propertyList);
+            });
+
+            // drop in advanced
+            $propertyList.append($advancedContainer);
+    };
+    kor.events.listen({ verb: 'control-selected', callback: function(event)
+    {
+        var numSelected = $('.control.selected').length;
+        if (numSelected === 1)
+            drawPropertyList(event.subject, event.subject.data('odkControl-properties'));
+        else
+            $propertyList
+                .empty()
+                .append('<li class="emptyData">(multiple questions selected)</li>');
+    } });
+    kor.events.listen({ verb: 'control-deselected', callback: function(event)
+    {
+        var $selected = $('.control.selected');
+        if ($selected.length === 0)
+            odkmaker.application.clearProperties();
+        else if ($selected.length === 1)
+            drawPropertyList($selected.eq(0), $selected.eq(0).data('odkControl-properties'));
+    } });
+
     // Private methods
+
+    // our own incrementing counter:
+    var untitledCount_ = 0;
+    var untitledCount = function() { return untitledCount_++; };
+
     var refreshFromProperties = function($this, type, options, properties)
     {
         var $info = $this.children('.controlInfo');
@@ -22,7 +78,7 @@
         }
         else if (type == 'metadata')
         {
-            // do nothing for now
+            $headline.children('.controlLabel').text(properties.kind.value);
         }
         else
         {
@@ -41,62 +97,147 @@
                 $('<li>' + property.name + '</li>')
             );
         });
-
-        validateControl($this, properties);
     };
 
-    var validateControl = function($this, properties)
+    // gets all controls "between" two given controls, stepping in and out of groups
+    // as necessary. root and target themselves are never part of the set.
+    var getStack = function($root, $target)
     {
-        // revalidate either with the already-initialized components or make a new set of temporary components.
-        if ($this.hasClass('selected'))
-            $('.propertyList > li, .advancedProperties > li').trigger('odkProperty-validate');
+        var $result = null;
+
+        if ($root.is($target))
+        {
+            return $root;
+        }
+        else if ($root.siblings().is($target))
+        {
+            // root and target are siblings.
+            $result = $root.prevAll().is($target) ? $root.prevUntil($target) : $root.nextUntil($target);
+        }
         else
         {
-            var $validationProps = $('<ul/>');
-            _.each(properties, function(property, name)
+            // not siblings; compare the hierarchies to figure out the closest common parent.
+            var $rootLevels = $($root.parents('.workspace, .control').get().reverse()).add($root);
+            var $targetLevels = $($target.parents('.workspace, .control').get().reverse()).add($target);
+
+            // to figure out directionality, we have to first get pair of siblings to compare.
+            var $commonContainer = null;
+            for (var i = 0; i < $rootLevels.length; i++)
             {
-                $('<li/>').propertyEditor(property, name, $this).appendTo($validationProps);
-            });
-            $validationProps.children().trigger('odkProperty-validate');
+                if ($rootLevels[i] !== $targetLevels[i]) break;
+                $commonContainer = $rootLevels[i];
+            }
+            var divergentIdx = i;
+            var $rootDiverge = $rootLevels.eq(divergentIdx);
+            var $targetDiverge = $targetLevels.eq(divergentIdx);
+
+            // first deal with everything at common-container level.
+            $result = getStack($rootDiverge, $targetDiverge);
+
+            // now select the head or tail of all intervening containers as appropriate.
+            // first we determine the direction.
+            if ($rootDiverge.nextAll().is($targetDiverge))
+                var $before = $rootLevels, $after = $targetLevels;
+            else
+                var $before = $targetLevels, $after = $rootLevels;
+
+            // we start with the container nested within the divergent one.
+            for (var i = (divergentIdx + 1); i < $before.length; i++)
+                $result = $result.add($before.eq(i).nextAll());
+
+            for (var i = (divergentIdx + 1); i < $after.length; i++)
+                $result = $result.add($after.eq(i).prevAll());
+
         }
 
-        $this.toggleClass('error', _.any(properties, function(property) { return _.isArray(property.validationErrors) &&
-                                                                                 (property.validationErrors.length > 0); }));
+        // find any containers within the linear selections and select their contents.
+        $result = $result.add($result.find('.control'));
+
+        return $result;
     };
 
-    var selectControl = function($this, type, options, properties)
+    var select = function()
     {
-        $('.workspace .control.selected').removeClass('selected');
+        var $this = $(this);
         $this.addClass('selected');
+        kor.events.fire({ subject: $this, verb: 'control-selected' });
+    };
+    var deselect = function()
+    {
+        var $this = $(this);
+        $this.removeClass('selected');
+        kor.events.fire({ subject: $this, verb: 'control-deselected' });
+    };
 
-        // clear out and reconstruct property list
-        var $propertyList = $('.propertyList');
-        $propertyList.empty();
-
-        var $advancedContainer = $.tag({
-            _: 'li', 'class': 'advanced', contents: [
-                { _: 'a', 'class': 'toggle', href: '#advanced', contents: [
-                    { _: 'div', 'class': 'icon' },
-                    'Advanced'
-                ] },
-                { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: 'none' } }
-            ]
-        });
-        var $advancedList = $advancedContainer.find('.advancedProperties');
-
-        // add our hero's properties
-        _.each(properties, function(property, name)
+    // perform a selection action. this might mean modifying an active multi-selection.
+    var $initiator = null; // the last control the user selected singly.
+    var $endStop = null;
+    var performSelection = function($this, type, options, properties, selectMany, selectOne)
+    {
+        if (selectMany === true)
         {
-            $('<li/>')
-                .propertyEditor(property, name, $this)
-                .appendTo((property.advanced === true) ? $advancedList : $propertyList);
-        });
+            if ($initiator == null)
+                // not sure what to do; just pretend shift isn't held.
+                return performSelection($this, type, options, properties, false, false);
 
-        // drop in advanced
-        $propertyList.append($advancedContainer);
+            if ($endStop == null)
+            {
+                // if we have no endstop, simply select from the initiator through target.
+                getStack($initiator, $this).add($this).each(select);
+            }
+            else if ($endStop.is($this))
+            {
+                // nothing would happen anyway; don't bother with computing it.
+                return;
+            }
+            else if (getStack($initiator, $endStop).is($this))
+            {
+                // if we are selecting somewhere inside the active range, deselect the now-excess.
+                getStack($endStop, $this).add($endStop).each(deselect);
+            }
+            else
+            {
+                // we are somewhere outside the active range entirely. the easiest thing to do
+                // rather than do a bunch of work determining where exactly is just to nuke it
+                // and start over.
+                getStack($initiator, $endStop).add($endStop).each(deselect);
+                getStack($initiator, $this).add($this).each(select);
+            }
+
+            // if either endpoint is a container itself, now is the time to also select them.
+            $initiator.find('.control').each(select);
+            $this.find('.control').each(select);
+
+            if ($initiator.is($this))
+                $endStop = null;
+            else
+                $endStop = $this;
+        }
+        else if (selectOne === true)
+        {
+            if ($this.hasClass('selected'))
+                $this.each(deselect);
+            else
+            {
+                $this.each(select);
+                $initiator = $this;
+                $endStop = null;
+            }
+        }
+        else
+        {
+            $('.workspace .control.selected').each(deselect);
+
+            $this.addClass('selected');
+            kor.events.fire({ subject: $this, verb: 'control-selected' });
+
+            $initiator = $this;
+            $endStop = null;
+        }
     };
 
     // Constructor
+    var loadTime = (new Date()).getTime(); // get time in nanos to ~ensure universal uniqueness of id.
     $.fn.odkControl = function(type, options, defaultProperties)
     {
         // Abort for unknown types
@@ -109,6 +250,9 @@
         {
             var $this = $(this);
 
+            var id = loadTime + '_' + _.uniqueId();
+            $this.data('odkControl-id', id);
+            $this.attr('id', 'control' + id);
             $this.data('odkControl-type', type);
 
             // Deep clone the properties if relevant
@@ -119,27 +263,58 @@
                 properties = defaultProperties ||
                     $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
                                    $.fn.odkControl.controlProperties[type]);
+
+            var match = null;
             if (properties.name.value == 'untitled')
-                properties.name.value += (_.uniqueId() + 1);
+                properties.name.value += (untitledCount() + 1);
+            else if ((match = /^untitled(\d+)$/.exec(properties.name.value)) != null)
+                if ((match = parseInt(match[1])) > untitledCount_)
+                    untitledCount_ = match;
+
+            _.each(properties, function(property, name)
+            {
+                property.id = name;
+                property.validations = [];
+            });
             $this.data('odkControl-properties', properties);
 
             $this.bind('odkControl-propertiesUpdated', function(event)
             {
                 event.stopPropagation();
+                kor.events.fire({ subject: $this, verb: 'properties-updated' });
                 refreshFromProperties($this, type, options, properties);
             });
             $this.trigger('odkControl-propertiesUpdated');
 
-            $this.bind('odkControl-reloadProperties', function(event)
+            validationNS.controlCreated($this, properties);
+
+            $this.bind('odkControl-reloadProperties odkControl-select', function(event)
             {
-                selectControl($this, type, options, properties);
+                performSelection($this, type, options, properties);
             });
+            $this.bind('odkControl-deselect', deselect);
             $this.click(function(event)
             {
                 event.stopPropagation();
-                selectControl($this, type, options, properties);
+
+                if ($.isMsft)
+                    performSelection($this, type, options, properties, $.keys.selectMany, $.keys.selectOne);
+                else
+                    performSelection($this, type, options, properties, event.shiftKey, $.isSelectOne(event));
             });
-            selectControl($this, type, options, properties);
+
+            $this.bind('odkControl-validationChanged', function(event, property, hasError)
+            {
+                if (this !== event.target) return;
+
+                if (hasError === true)
+                    $this.addClass('error');
+                else
+                {
+                    var validations = $this.data('odkControl-validations');
+                    $this.toggleClass('error', _.any(validations, function(validation) { return validation.hasError === true; }));
+                }
+            });
 
             // special treatment for groups and branches
             if (type == 'group')
@@ -152,78 +327,20 @@
                 event.preventDefault();
                 $this.slideUp('normal', function()
                 {
-                    if ($this.is('.selected'))
-                        $('.propertyList').empty();
+                    var $thisAndChildren = $this.find('.control').add($this);
+                    $thisAndChildren.each(function() { validationNS.controlDestroyed($(this), properties); });
+                    $thisAndChildren.each(deselect);
+                    $thisAndChildren.trigger('odkControl-removing');
                     $this.remove();
+                    $thisAndChildren.trigger('odkControl-removed');
                 });
             });
 
-            var cachedHeight = 0;
-            $this.workspaceDraggable({
-                draggableOptions: {
-                    start: function(event, ui)
-                    {
-                        // keep track of old parents to revalidate.
-                        var $parents = $this.parents('.control');
-
-                        ui.helper.width($this.width());
-                        cachedHeight = $this.outerHeight(true);
-                        $this
-                            .after(
-                                $('<div class="placeholder hidden"></div>')
-                                    .css('height', cachedHeight + 'px'))
-                            .hide()
-                            .appendTo($('body'));
-
-                        // trigger revalidation to possibly free up some validation errors.
-                        $this.trigger('odkControl-propertiesUpdated');
-                        $parents.trigger('odkControl-propertiesUpdated');
-                    }
-                },
-                dragCallback: function($control, direction)
-                {
-                    $('.workspace .placeholder.hidden')
-                        .addClass('closing')
-                        .stop()
-                        .slideUp('fast', function()
-                        {
-                            $(this).remove();
-                        });
-
-                    $('.control.ui-draggable-dragging')
-                        .toggleClass('last', $control.is(':last-child') && (direction > 0))
-
-                    var $placeholder = $('<div class="placeholder hidden"></div>')
-                                        .css('height', cachedHeight + 'px')
-                                        .slideDown('fast');
-                    if (direction < 0)
-                        $control.before($placeholder);
-                    else if (direction == 0)
-                        $control.append($placeholder);
-                    else if (direction > 0)
-                        $control.after($placeholder);
-                },
-                dropCallback: function($helper)
-                {
-                    var $target = $('.workspace .placeholder:not(.closing)');
-                    if ($target.length == 1)
-                        $target.replaceWith($this);
-                    else
-                        $this.appendTo('.workspace');
-                    $this.show();
-
-                    // trigger revalidation on parents as adding components can cause new errors.
-                    $this.trigger('odkControl-propertiesUpdated');
-                    $this.parents('.control').trigger('odkControl-propertiesUpdated');
-                },
-                insertPlaceholder: false
+            // set up dragging
+            $this.one('mouseenter', function()
+            {
+                $this.draggable({ handleAddedClass: 'dragging' });
             });
-
-            // validate upon creation.
-            _.defer(function() { validateControl($this, properties); });
-
-            // fill in the flow arrow
-            _.defer(function() { $this.find('.controlFlowArrow').triangle(); });
         });
     };
 
@@ -235,30 +352,34 @@
     $.fn.odkControl.defaultProperties = {
         name:         { name: 'Data Name',
                         type: 'text',
-                        description: 'The data name of this field in the final exported XML.',
-                        limit: [ 'required', 'alphanumeric', 'unique', 'alphastart' ],
+                        description: 'The name of the column in the exported data. This is not shown during collection.',
+                        tips: [ 'Must start with a letter, and may only include letters, numbers, hyphens, underscores, and periods.' ],
+                        validation: [ 'required', 'xmlLegalChars', 'unique', 'alphaStart' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
-        label:        { name: 'Caption Text',
+        label:        { name: 'Label',
                         type: 'uiText',
-                        description: 'The name of this field as it is presented to the user.',
+                        description: 'The title text that is presented to the person filling the form.',
+                        tips: [ 'You can reference previous answers using <a href="https://opendatakit.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/xform/data/path}</code> syntax</a>.' ],
                         required: true,
                         value: {},
                         summary: false },
         hint:         { name: 'Hint',
                         type: 'uiText',
-                        description: 'Additional help for this question.',
+                        description: 'Additional help information for this question for the person filling the form.',
+                        tips: [ 'You can reference previous answers using <a href="https://opendatakit.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/xform/data/path}</code> syntax</a>.' ],
                         value: {},
                         summary: false },
         defaultValue: { name: 'Default Value',
                         type: 'text',
-                        description: 'The value this field is presented with at first.',
+                        description: 'The value this field is pre-filled with initially.',
                         value: '',
                         summary: false },
         readOnly:     { name: 'Read Only',
                         type: 'bool',
-                        description: 'Whether this field can be edited by the end user or not.',
+                        description: 'Whether or not this field can be edited by the person filling the form.',
+                        tips: [ 'This is often used together with a Default Value or a Calculate.' ],
                         value: false,
                         summary: true },
         required:     { name: 'Required',
@@ -269,25 +390,29 @@
         relevance:    { name: 'Relevance',
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this field is shown.',
+                        tips: [ 'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-functions" rel="external">ODK XForms Functions Spec</a> may be useful.' ],
                         value: '',
-                        limit: [ 'fieldlistexpr' ],
+                        validation: [ 'fieldListExpr' ],
                         advanced: true,
                         summary: false },
         constraint:   { name: 'Constraint',
                         type: 'text',
                         description: 'Specify a custom expression to validate the user input.',
+                        tips: [ 'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-functions" rel="external">ODK XForms Functions Spec</a> may be useful.' ],
                         value: '',
                         advanced: true,
                         summary: false },
         destination:  { name: 'Instance Destination',
                         type: 'text',
                         description: 'Specify a custom XPath expression at which to store the result.',
+                        tips: [ 'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-paths" rel="external">ODK XForms Path Spec</a> may be useful.' ],
                         value: '',
                         advanced: true,
                         summary: false },
         calculate:  { name: 'Calculate',
                         type: 'text',
-                        description: 'Specify a custom expression to store a value in this field',
+                        description: 'Specify a custom expression to store a calculated value in this field.',
+                        tips: [ 'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-functions" rel="external">ODK XForms Functions Spec</a> may be useful.' ],
                         value: '',
                         advanced: true,
                         summary: false }
@@ -298,7 +423,10 @@
         inputText: {
           length:     { name: 'Length',
                         type: 'numericRange',
-                        description: 'Valid lengths for this user input of this control.',
+                        description: 'Valid input text length for this user input of this control.',
+                        tips: [
+                            'Numbers are inclusive, so a minimum of 2 would allow 2 or more characters.',
+                            'For an open-ended range, fill in only a minimum or a maximum and leave the other blank.' ],
                         value: false,
                         summary: false },
           invalidText:{ name: 'Invalid Text',
@@ -309,7 +437,10 @@
         inputNumeric: {
           range:      { name: 'Range',
                         type: 'numericRange',
-                        description: 'Valid range for the user input of this control.',
+                        description: 'Valid numeric range for the user input of this control.',
+                        tips: [
+                            'Inclusive means the given number is valid; so a minimum of 3 without inclusive selected would prohibit 3 but allow 3.01 or 4.',
+                            'For an open-ended range, fill in only a minimum or a maximum and leave the other blank.' ],
                         value: false,
                         summary: false },
           invalidText:{ name: 'Invalid Text',
@@ -320,6 +451,7 @@
           kind:       { name: 'Kind',
                         type: 'enum',
                         description: 'Type of number accepted.',
+                        tips: [ 'In some data collection tools, this will affect the type of keypad shown.' ],
                         options: [ 'Integer',
                                    'Decimal' ],
                         value: 'Integer',
@@ -328,6 +460,9 @@
           range:      { name: 'Range',
                         type: 'dateRange',
                         description: 'Valid range for the user input of this control.',
+                        tips: [
+                            'Inclusive means the given date is valid; so a minimum of 2015/01/01 without inclusive selected would prohibit 2015/01/01 but allow 2015/01/02 or 2015/01/01 00:00:01.',
+                            'For an open-ended range, fill in only a minimum or a maximum and leave the other blank.' ],
                         value: false,
                         summary: false },
           invalidText:{ name: 'Invalid Text',
@@ -349,6 +484,7 @@
                         options: [ 'Point',
                                    'Path',
                                    'Shape' ],
+                        tips: [ 'A path may be open-ended, while a shape will be closed automatically to form a polygon.' ],
                         value: 'Point',
                         summary: true },
           appearance: { name: 'Style',
@@ -368,8 +504,12 @@
         inputSelectOne: {
           options:    { name: 'Options',
                         type: 'optionsEditor',
-                        limit: [ 'underlyingrequired', 'underlyingvalid', 'hasoptions' ],
-                        value: [],
+                        validation: [ 'underlyingRequired', 'underlyingLegalChars', 'underlyingLength', 'hasOptions' ],
+                        description: 'The options the person filling the form may select from.',
+                        tips: [
+                            'If you have many options or reuse options frequently, use Bulk Edit.',
+                            'The Underlying Value is the value saved to the exported data.' ],
+                        value: [{ text: {}, val: 'untitled' }],
                         summary: false },
           appearance: { name: 'Style',
                         type: 'enum',
@@ -380,12 +520,19 @@
         inputSelectMany: {
           options:    { name: 'Options',
                         type: 'optionsEditor',
-                        limit: [ 'underlyingrequired', 'underlyingvalid', 'hasoptions' ],
-                        value: [],
+                        description: 'The options the person filling the form may select from.',
+                        tips: [
+                            'If you have many options or reuse options frequently, use Bulk Edit.',
+                            'The Underlying Value is the value saved to the exported data.' ],
+                        validation: [ 'underlyingRequired', 'underlyingLegalChars', 'underlyingLength', 'hasOptions' ],
+                        value: [{ text: {}, val: 'untitled' }],
                         summary: false },
           count:      { name: 'Response Count',
                         type: 'numericRange',
                         description: 'This many options must be selected for the response to be valid.',
+                        tips: [
+                            'Numbers are inclusive, so a minimum of 2 would allow 2 or more selected options.',
+                            'For an open-ended range, fill in only a minimum or a maximum and leave the other blank.' ],
                         value: false,
                         summary: true },
           appearance: { name: 'Style',
@@ -395,33 +542,37 @@
                         value: 'Default',
                         summary: true } },
         group: {
-          name:       { name: 'Name',
+          name:       { name: 'Data Name',
                         type: 'text',
-                        description: 'The data name of this group in the final exported XML.',
-                        limit: [ 'required', 'alphanumeric', 'unique' ],
+                        description: 'The name of the column in the exported data. This is not shown during collection.',
+                        tips: [ 'Must start with a letter, and may only include letters, numbers, hyphens, underscores, and periods.' ],
+                        validation: [ 'required', 'xmlLegalChars', 'unique', 'alphaStart' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
           label:      { name: 'Label',
                         type: 'uiText',
-                        description: 'Give the group a label to give a visual hint to the user.',
+                        description: 'The title text that is presented to the person filling the form.',
+                        tips: [ 'You can reference previous answers using <a href="https://opendatakit.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/xform/data/path}</code> syntax</a>.' ],
                         required: true,
                         value: {},
                         summary: false },
           loop:       { name: 'Looped',
                         type: 'bool',
                         description: 'Whether or not to allow this group to loop.',
+                        tips: [ 'If enabled, the person filling the form will be prompted after each cycle if they wish to add another entry.' ],
                         value: false },
           fieldList:  { name: 'Display On One Screen',
                         type: 'bool',
                         description: 'Display all the controls in this group on one screen',
-                        limit: [ 'atomicchildren' ],
+                        validation: [ 'fieldListChildren' ],
                         value: false },
-        relevance:    { name: 'Relevance',
+          relevance:  { name: 'Relevance',
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this group is shown.',
+                        tips: [ 'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-functions" rel="external">ODK XForms Functions Spec</a> may be useful.' ],
                         value: '',
-                        limit: [ 'fieldlistexpr' ],
+                        validation: [ 'fieldListExpr' ],
                         advanced: true,
                         summary: false } },
         branch: {
@@ -433,8 +584,9 @@
         metadata: {
           name:       { name: 'Data Name',
                         type: 'text',
-                        description: 'The data name of this field in the final exported XML.',
-                        limit: [ 'required', 'alphanumeric', 'unique' ],
+                        description: 'The name of the column in the exported data.',
+                        tips: [ 'Must start with a letter, and may only include letters, numbers, hyphens, underscores, and periods.' ],
+                        validation: [ 'required', 'xmlLegalChars', 'unique' ],
                         required: true,
                         value: 'untitled',
                         summary: false },
@@ -445,4 +597,86 @@
                         value: 'Device ID',
                         summary: true } },
     };
+
+    // TODO: combine this and the above hash into one when all these declarations move out into an impl file.
+    $.fn.odkControl.controlInformation = {
+        inputText: {
+            name: 'Text',
+            description: 'Collects textual information. Use this for names, long-form responses, and other free text information.'
+        },
+        inputNumeric: {
+            name: 'Number',
+            description: 'Collects numeric information. An appropriate keyboard will be presented on mobile devices.',
+            tips: [
+                'You can choose between integer-only or decimal-allowed responses with the Kind property.',
+                'If you wish to collect numeric codes, particularly with leading zeroes, you may wish to use Text instead.'
+            ]
+        },
+        inputDate: {
+            name: 'Date/Time',
+            description: 'Collects a calendar date. You can choose the granularity from year-only through full date and time.',
+            tips: [
+                'An appropriate calendar/time widget will be presented on mobile devices.',
+                'If you wish to collect only a time, use the Time type instead.'
+            ]
+        },
+        inputTime: {
+            name: 'Time',
+            description: 'Collects just a time of day. If you wish to collect a time on a certain date, use Date/Time instead.',
+            tips: [ 'An appropriate time widget will be presented on mobile devices.' ]
+        },
+        inputLocation: {
+            name: 'Location',
+            description: 'Collects a geospatial point, path, or shape on the Earth. Use the Kind property to specify which.',
+            tips: [
+                'You can choose whether information is gathered automatically with the GPS location of the collection device ' +
+                'or selected manually on a map with the Style property.'
+            ]
+        },
+        inputMedia: {
+            name: 'Media',
+            description: 'Takes a photo, or records an audio or video recording with the collection device.'
+        },
+        inputBarcode: {
+            name: 'Barcode',
+            description: 'Scans a barcode with an appropriate application on the collection device and stores the result.',
+            tips: [
+                'You will need a third-party application like the <a href="https://play.google.com/store/apps/details?id=com.google.zxing.client.android" rel="external">Zxing Barcode Scanner</a> installed on the collection device to use this feature.'
+            ]
+        },
+        inputSelectOne: {
+            name: 'Choose One',
+            description: 'Allows the form filler to choose one from a set of predetermined choices.',
+            tips: [
+                // TODO: someday maybe create a feature that automatically fudges this in more easily for the form author.
+                // (probably wouldn't be hard, actually.)
+                'To create a freeform "Other" option, add one here, then follow it up with a Text question with the Relevance ' +
+                'property set to reference this question; for example: <code>${/xpath/to/this/choose/one} = \'other\'</code>'
+            ]
+        },
+        inputSelectMany: {
+            name: 'Select Many',
+            description: 'Allows the form filler to select multiple options from a set of predetermined options.',
+            tips: [
+                // TODO: ditto.
+                'To create a freeform "Other" option, add one here, then follow it up with a Text question with the Relevance ' +
+                'property set to reference this question; for example: <code>${/xpath/to/this/select/many} = \'other\'</code>',
+                'You can specify how many options the form filler is allowed to choose with the Response Count property.'
+            ]
+        },
+        group: {
+            name: 'Group',
+            description: 'Groups many questions together into a logical block.',
+            tips: [
+                'You can use groups to create looping sets of questions using the Looped option.',
+                'You can also display multiple questions at a time using the Display On One Screen option, but be careful ' +
+                'using Relevance declarations if you do so; they may not work as you expect.'
+            ]
+        },
+        metadata: {
+            name: 'Metadata',
+            description: 'Metadata questions silently and automatically collect information about the session.',
+        }
+    };
+
 })(jQuery);

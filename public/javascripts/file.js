@@ -26,21 +26,32 @@ fileNS.open = function()
 {
     filePrompt(false, 'odkbuild', function(path)
     {
-        fs.readFile(path, { encoding: 'UTF-8' }, function(err, data)
-        {
-            try
-            {
-                var form = JSON.parse(data);
-            }
-            catch (ex)
-            {
-                $.toast('There was a problem loading that file. Please check that it is accessible and valid, and try again');
-                return;
-            }
+        if ((odkmaker.data.currentForm == null) && (odkmaker.data.clean === true))
+            // if we are an unchanged unsaved form just throw it away and open inline.
+            fileNS.openPath(path);
+        else
+            // otherwise load the form in a new window.
+            odkmaker.application.spawn(path);
+    });
+};
 
-            odkmaker.data.currentForm = form;
-            odkmaker.data.load(form);
-        });
+fileNS.openPath = function(path)
+{
+    fs.readFile(path, { encoding: 'UTF-8' }, function(err, data)
+    {
+        try
+        {
+            var form = JSON.parse(data);
+        }
+        catch (ex)
+        {
+            $.toast('There was a problem loading that file. Please check that it is accessible and valid, and try again');
+            return;
+        }
+
+        odkmaker.data.currentForm = form;
+        odkmaker.data.load(form);
+        fileNS.setTitle(path);
     });
 };
 
@@ -49,29 +60,43 @@ var saveFile = function(path, contents)
     fs.writeFile(path, contents, { encoding: 'UTF-8'}, function(err)
     {
         if (err)
-        {
             $.toast('There was a problem saving that file: ' + err.message);
-        }
         else
-        {
             $.toast('File saved successfully.');
-        }
     });
 };
 
 fileNS.save = function(overwrite)
 {
+    var initPath = currentPath; // keep track of what our currentPath read before we saved.
     if (overwrite && currentPath != null)
     {
         saveFile(currentPath, JSON.stringify(odkmaker.data.extract()));
+        fileNS.setTitle(path);
+        odkmaker.data.clean = true;
     }
     else
     {
         filePrompt(true, 'odkbuild', function(path)
         {
-            saveFile(currentPath, JSON.stringify(odkmaker.data.extract()));
+            saveFile(path, JSON.stringify(odkmaker.data.extract()));
+
+            if (initPath == null)
+            {
+                // we are saving a previously-unsaved form. prompt path but use current window.
+                fileNS.setTitle(path);
+                odkmaker.data.clean = true;
+            }
+            else
+                // we are save-asing. always use a new window.
+                odkmaker.application.spawn(path);
         });
     }
+};
+
+fileNS.setTitle = function(path)
+{
+    window.document.title = require('path').basename(path, '.odkbuild') + ' - ODK Build';
 };
 
 fileNS.export = function()

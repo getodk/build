@@ -19,7 +19,6 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             type: 'GET',
             success: function(response, status)
             {
-                dataNS.currentForm = response;
                 odkmaker.data.load(response);
                 $('.openDialog').jqmHide();
             },
@@ -39,7 +38,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('.menu .newLink').click(function(event)
         {
             event.preventDefault();
-            if (confirm('Are you sure? You will lose unsaved changes to the current form.'))
+            if (dataNS.clean || confirm('Are you sure? You will lose unsaved changes to the current form.'))
                 odkmaker.application.newForm();
         });
         $('.menu .saveLink').click(function(event)
@@ -66,6 +65,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 success: function(response, status)
                 {
                     dataNS.currentForm = response;
+                    dataNS.clean = true;
                     $.toast('Form saved!');
                 },
                 error: function(request, status, error)
@@ -112,6 +112,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
           xhttp.responseType = 'blob';
           xhttp.send(JSON.stringify(odkmaker.data.extract()));
         });
+
+        // cleanliness tracking events
+        dataNS.clean = true;
+        $('.workspace').on('odkControl-added odkControl-removed', function() { dataNS.clean = false; });
+        kor.events.listen({ verb: 'properties-updated', callback: function() { dataNS.clean = false; } });
 
         // modal events
         var $openDialog = $('.openDialog');
@@ -186,6 +191,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 {
                     $.toast('Your form has been saved as "' + title + '".');
                     dataNS.currentForm = response;
+                    dataNS.clean = true;
                     $('.saveAsDialog').jqmHide();
                 },
                 error: function(request, status, error)
@@ -196,41 +202,6 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                         .slideDown();
                 }
             });
-        });
-
-        var loadFileValid = false;
-        var loadFileUploader = new AjaxUpload('loadFileChooseLink', {
-            action: '/binary/load',
-            name: 'file',
-            autoSubmit: false,
-            responseType: 'json',
-            onChange: function(fileName, ext)
-            {
-                $('#loadFile_name').val(fileName);
-                loadFileValid = _.isString(ext) && !!ext.match(/^odkbuild$/i);
-                $('.loadLocallyDialog .errorMessage')
-                    .text('You must choose an ODK Build form (.odkbuild) file!')
-                    .toggle(!loadFileValid);
-            },
-            onSubmit: function() { return loadFileValid; },
-            onComplete: function(fileName, response)
-            {
-                $('#loadFile_name').val('');
-
-                // we've loaded a file, but we don't want it to be canonical
-                // they'll have to save it to get it upstream.
-                dataNS.currentForm = null;
-                odkmaker.data.load(response);
-
-                $.toast($.h(fileName) + ' has been loaded, but it is unsaved. Please go to ' +
-                                        'File &raquo; Save if you wish to save it.');
-                $('.loadLocallyDialog').jqmHide();
-            }
-        });
-        $('.loadLocallyDialog .loadFileLink').click(function(event)
-        {
-            event.preventDefault();
-            loadFileUploader.submit();
         });
 
         $('.exportDialog .downloadLink').click(function(event)
@@ -252,6 +223,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             var $loading = $('.aggregateDialog .modalLoadingOverlay');
             var target = $('.aggregateInstanceName').val();
             $loading.show();
+            $('.aggregateDialog .errorMessage').empty().hide();
+
             $.ajax({
                 url: '/aggregate/post',
                 dataType: 'json',

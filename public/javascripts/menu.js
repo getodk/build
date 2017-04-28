@@ -10,11 +10,7 @@ var fileMenu = new gui.Menu();
 
 // file -> new
 var fileNew = new gui.MenuItem({ label: 'New Form' });
-fileNew.on('click', function()
-{
-    currentPath = null;
-    $('.menu .newLink').click();
-});
+fileNew.on('click', function() { odkmaker.application.spawn(); });
 fileMenu.append(fileNew);
 
 // file -> open
@@ -65,33 +61,33 @@ var updateLanguages = function()
 {
     var currentLanguages = odkmaker.i18n.activeLanguages();
 
-    _.each(currentLanguages, function(language)
+    _.each(currentLanguages, function(language, code)
     {
-        if (!languageItems[language])
+        if (!languageItems[code])
         {
-            var item = new gui.MenuItem({ type: 'checkbox', label: odkmaker.i18n.getFriendlyName(language) });
+            var item = new gui.MenuItem({ type: 'checkbox', label: language });
             item.on('click', function()
             {
                 _.each(languageItems, function(item) { item.checked = false; });
                 item.checked = true;
 
-                odkmaker.i18n.displayLanguage(language);
+                odkmaker.i18n.displayLanguage(code);
                 $('.workspace .control').trigger('odkControl-propertiesUpdated');
             });
-            if (odkmaker.i18n.displayLanguage() === language)
+            if (odkmaker.i18n.displayLanguage() === code)
                 item.checked = true;
 
-            languageItems[language] = item;
+            languageItems[code] = item;
             languageMenu.append(item);
         }
     });
 
-    _.each(languageItems, function(item, language)
+    _.each(languageItems, function(item, code)
     {
-        if (currentLanguages.indexOf(language) < 0)
+        if (currentLanguages[code] == null)
         {
-            languageMenu.remove(languageItems[language]);
-            delete languageItems[language];
+            languageMenu.remove(languageItems[code]);
+            delete languageItems[code];
         }
     });
 };
@@ -121,9 +117,9 @@ viewMenu.append(viewCollapse);
 var settingsMenu = new gui.Menu();
 
 // edit -> form properties
-var editProperties = new gui.MenuItem({ label: 'Form Properties...' });
+/*var editProperties = new gui.MenuItem({ label: 'Form Properties...' });
 editProperties.on('click', function() { $('.menu #propertiesLink').click(); });
-settingsMenu.append(editProperties);
+settingsMenu.append(editProperties);*/
 
 // edit -> languages
 var editLanguages = new gui.MenuItem({ label: 'Translations...' });

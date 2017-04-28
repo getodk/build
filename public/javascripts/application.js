@@ -8,12 +8,33 @@ var applicationNS = odkmaker.namespace.load('odkmaker.application');
 
 applicationNS.newForm = function()
 {
+    $('.control').trigger('odkControl-removing');
+    $('.control').trigger('odkControl-removed');
     $('.workspace').empty();
     $('.header h1').text('Untitled Form');
-    $('.propertiesPane .propertylist')
-        .empty()
-        .append('<li class="emptyData">First add a control, then select it to view its properties here.</li>');
+    applicationNS.clearProperties();
     odkmaker.data.currentForm = null;
+    odkmaker.data.clean = true;
+
+    window.document.title = 'New Form - ODK Build';
+};
+
+applicationNS.clearProperties = function()
+{
+    $('.propertiesPane .propertyList')
+        .empty()
+        .append('<li class="emptyData">First add a question, then select it to view its properties here.</li>');
+};
+
+var childWindows = []; // prevent gc.
+applicationNS.spawn = function(path)
+{
+    if ($.isBlank(path)) path = '';
+    require('nw.gui').Window.open('public/index.html#' + encodeURIComponent(path), {
+        focus: true,
+        width: window.outerWidth,
+        height: window.outerHeight - 20 // subtract approximate titlebar
+    }, function(spawned) { childWindows.push(spawned); });
 };
 
 $(function()
@@ -22,17 +43,21 @@ $(function()
     $('.header .menu li').dropdownMenu();
 
     // Wire up menu actions
-    $.live('.header .menu .displayLanguages a', 'click', function(event)
+    $('.header .menu .displayLanguages').on('click', 'a', function(event)
     {
         event.preventDefault();
-        odkmaker.i18n.displayLanguage($(this).attr('rel'));
+        odkmaker.i18n.displayLanguage($(this).closest('li').data('code'));
         $('.workspace .control').trigger('odkControl-propertiesUpdated');
     });
     $('.header .menu .toggleCollapsed').click(function(event)
     {
         event.preventDefault();
         $('.workspace').toggleClass('collapsed');
-        $('.controlFlowArrow').empty().triangle();
+    });
+    $('.header .menu .toggleInformation').click(function(event)
+    {
+        event.preventDefault();
+        $('body').toggleClass('suppressInformation');
     });
 
     // wire up header actions
@@ -55,6 +80,7 @@ $(function()
                 .fadeIn();
             $(this).text('Done');
         }
+        odkmaker.data.clean = false;
     });
 
     // Wire up properties dialog
@@ -67,11 +93,19 @@ $(function()
     // Wire up toolpane
     $('.toolPalette a').toolButton();
 
-    // Kick off a new form by default
-    applicationNS.newForm();
+    // Wire up workspace dropzone
+    $('.workspace').droppable({ scrollParent: '.workspaceScrollArea' });
+
+    var loadPath = decodeURIComponent((window.location.hash || '').replace(/^#/, ''));
+    if ($.isBlank(loadPath))
+        // Kick off a new form by default
+        applicationNS.newForm();
+    else
+        // We were spawned for the purpose of opening a path:
+        odkmaker.file.openPath(loadPath);
 
     // Toggles
-    $.live('a.toggle', 'click', function(event)
+    $('body').on('click', 'a.toggle', function(event)
     {
         event.preventDefault();
         $(this)
@@ -103,9 +137,30 @@ $(function()
         if (event.which == 192)
         {
             var now = (new Date()).getTime()
-            if (now - lastPress < 250) { require('nw.gui').Window.get().showDevTools() }
+            if (now - lastPress < 250) { require('nw.gui').Window.get().showDevTools(); }
             lastPress = now
         }
     });
+
+    // Show the survey popup if it exists and the user hasn't already dismissed it
+    var $surveyToast = $('#surveyToast');
+    if (($surveyToast.length > 0) && (localStorage.getItem('dismissedSurvey') == null))
+    {
+        var ticket = kor.events.listen({
+            verb: 'form-load',
+            callback: function()
+            {
+                kor.events.unlisten(ticket); // only ask once per session.
+                $surveyToast
+                    .animate({ bottom: '-' + ($surveyToast.outerHeight(true) - $surveyToast.height() - 20) + 'px' }, 'slow')
+                    .delegate('a', 'click', function() { $surveyToast.animate({ bottom: '-15em' }, 'slow'); })
+                    .delegate('#dismissSurvey', 'click', function()
+                    {
+                        localStorage.setItem('dismissedSurvey', 'true');
+                        $.toast('Got it. We&rsquo;ve made a note not to ask you again on this computer.');
+                    });
+            }
+        });
+    }
 });
 

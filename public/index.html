@@ -1,31 +1,29 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!doctype html>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" /> 
-    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <link rel="stylesheet" type="text/css" href="stylesheets/styles.css"/>
-    <link rel="stylesheet" type="text/css" href="stylesheets/jquery-ui-1.8.11.custom.css"/>
+    <link rel="stylesheet" type="text/css" href="stylesheets/jquery-ui.min.css"/>
     <link rel="stylesheet" type="text/css" href="stylesheets/override.css"/>
   </head>
   <body>
     <div class="loadingScreen">
       <div class="loadingMessage">
+        <div class="spinner"><div class="spinnerInner"></div></div>
         <h1>loading <strong>odk build</strong><sup>BETA</sup></h1>
-        <p>version 0.85</p>
-        <div class="loadingBar">please wait.</div>
+        <p>version 0.95</p>
         <p class="status">loading application...</p>
       </div>
     </div>
     <div class="preloadImages">
       <img src="images/control_slice.png"/>
-      <img src="images/group_bg.png"/>
       <img src="images/type_icons.png"/>
       <img src="images/type_icons_small.png"/>
     </div>
-    <div class="toast"></div>
+    <div id="toast" class="toast"></div>
     <div class="header">
       <h1>Untitled Form</h1>
       <input type="text" id="renameFormField"/>
@@ -35,13 +33,16 @@
         <li>
           <span>File</span>
           <ul class="submenu">
-            <li><a href="#newFormDialog" class="destructive newLink">New</a></li>
-            <li><a href="#openDialog" rel="modal" class="destructive">Open...</a></li>
+            <li><a href="#newFormDialog" class="destructive newLink">New Form</a></li>
+            <li><a href="#openDialog" rel="modal" class="destructive authRequired">Open Form...</a></li>
             <li class="divider"></li>
-            <li><a href="#saveForm" class="saveLink">Save</a></li>
-            <li><a href="#saveAsDialog" rel="modal">Save As...</a></li>
+            <li><a href="#saveForm" class="authRequired saveLink">Save</a></li>
+            <li><a href="#saveAsDialog" rel="modal" class="authRequired">Save Form As...</a></li>
             <li class="divider"></li>
-            <li><a href="#aggregateDialog" id="aggregateLink" rel="modal">Publish to Aggregate...</a></li>
+            <li><a href="#saveLocally" class="saveLocallyLink">Save Form to File...</a></li>
+            <li><a href="#loadLocallyDialog" rel="modal" class="destructive">Load Form from File...</a></li>
+            <li class="divider"></li>
+            <li><a href="#aggregateDialog" id="aggregateLink" rel="modal">Upload Form to Aggregate...</a></li>
             <li><a href="#exportDialog" id="exportLink" rel="modal">Export to XML...</a></li>
             <li><a href="#xlsformExport" id="xlsformLink">Export to XLSForm</a></li>
           </ul>
@@ -62,8 +63,6 @@
         <li>
           <span>View</span>
           <ul class="submenu">
-            <li><a href="#propertiesDialog" id="propertiesLink" rel="modal">Form Properties...</a></li>
-            <li class="divider"></li>
             <li class="infoText">Displayed Language</li>
             <li>
               <ul class="displayLanguages">
@@ -71,12 +70,14 @@
               </ul>
             </li>
             <li class="divider"></li>
-            <li class="checkbox"><a href="#toggleCollapsedMode" class="toggleCollapsed"><span class="icon"></span>Collapse Controls</a></li>
+            <li class="checkbox"><a href="#toggleCollapsedMode" class="toggleCollapsed"><span class="icon"></span>Collapse Questions</a></li>
           </ul>
         </li>
         <li>
           <span>Help</span>
           <ul class="submenu">
+            <li class="checkbox selected"><a href="#toggleInformation" class="toggleInformation"><span class="icon"></span>Show Information</a></li>
+            <li class="divider"></li>
             <li><a href="#aboutDialog" rel="modal">About ODK Build...</a></li>
           </ul>
         </li>
@@ -86,6 +87,7 @@
     </div>
     <div class="mainWrapper">
       <div class="toolPalette">
+        <div class="icon addNewIcon"></div>
         <h3>Add new</h3>
         <ul>
           <li><a class="toolButton inputText" rel="inputText">Text</a></li>
@@ -112,111 +114,37 @@
           <li class="emptyData">First add a control, then select it to view its properties here.</li>
         </ul>
       </div>
-    </div>
-
-    <div class="modal narrowModal signinDialog">
-      <h3>Sign in</h3>
-      <div class="modalContents">
-        <p>You must have an account in order to create forms on ODK Build.</p>
-
-        <div class="errorMessage"></div>
-
-        <form>
-          <label for="signin_username">Username</label>
-          <input type="text" id="signin_username" name="username" />
-          <div class="signin_section">
-            <label for="signin_password">Password</label>
-            <input type="password" id="signin_password" name="password" />
+      <div class="helpPane">
+        <div class="helpPane-contents">
+          <h3><span class="helpPane-title">Information</span> <span class="helpPane-subtitle"></span></h3>
+          <div class="helpItem helpNone">
+            <p>Select something to learn more about it here.</p>
           </div>
-          <div class="signup_section">
-            <label for="signup_password_confirm">Password (confirm)</label>
-            <input type="password" id="signup_password_confirm" name="password_confirm" />
-            <label for="signup_email">Email</label>
-            <input type="text" id="signup_email" name="email" />
+          <div class="helpItem helpBasic">
+            <p class="helpBasic-description"></p>
+            <ul class="helpBasic-tips"></ul>
           </div>
-          <p><a href="#forgotPassword" class="togglePasswordLink">Forgot your password?</a></p>
-          <p><a href="#signUp" class="toggleSignupLink">Don't yet have an account?</a></p>
-        </form>
-      </div>
-      <div class="modalButtonContainer">
-        <a class="modalButton signinLink" href="#signin">Sign in</a>
-        <a class="modalButton signupLink hide" href="#signin">Sign up</a>
-        <a class="modalButton passwordLink hide" href="#signin">Reset password</a>
-        <a class="modalButton jqmClose" href="#close">Cancel</a>
-      </div>
-    </div>
-
-    <div class="modal narrowModal accountDialog">
-      <h3>My account</h3>
-      <div class="modalContents">
-        <form>
-          <div class="errorMessage"></div>
-
-          <label for="account_email">Email Address</label>
-          <input type="text" id="account_email" name="email" />
-
-          <p>Fill these out only if you wish to change your password:</p>
-          <label for="account_old_password">Old Password</label>
-          <input type="password" id="account_old_password" name="old_password" />
-          <label for="account_password">New Password</label>
-          <input type="password" id="account_password" name="password" />
-          <label for="account_password_confirm">New Password (confirm)</label>
-          <input type="password" id="account_password_confirm" />
-        </form>
-      </div>
-      <div class="modalButtonContainer">
-        <a class="modalButton updateAccountLink acceptLink" href="#update">Update</a>
-        <a class="modalButton jqmClose" href="#close">Cancel</a>
+          <div class="helpItem helpDrag">
+            <ul>
+              <li>You can hold <span class="key">Ctrl</span> (Win) or <span class="key">Option</span> (Mac) to drop a clone instead of moving the original.</li>
+              <li>You can drag between browser tabs to copy or move questions between ODK Build documents.</li>
+              <li>You can also hold <span class="key">Shift</span> while clicking on questions to select a whole range, or <span class="key">Ctrl</span> (Win) or <span class="key">Cmd</span> (Mac) to select multiple individual questions.</li>
+            </ul>
+          </div>
+          <div class="helpItem helpMultiselect">
+            <ul>
+              <li>You can drag all selected controls at once.</li>
+              <li>While dragging, you can hold <span class="key">Ctrl</span> (Win) or <span class="key">Option</span> (Mac) to drop a clone instead of moving the original.</li>
+              <li>You can drag between browser tabs to copy or move questions between ODK Build documents.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="modal narrowModal openDialog">
-      <h3>Open Form</h3>
-      <div class="modalContents">
-        <form>
-          <div class="errorMessage"></div>
-
-          <p>Select a form to open:</p>
-          <ul class="formList"></ul>
-        </form>
-      </div>
-      <div class="modalButtonContainer">
-        <a class="modalButton openLink acceptLink" href="#open">Open</a>
-        <a class="modalButton jqmClose" href="#close">Cancel</a>
-      </div>
-    </div>
-
-    <div class="modal narrowModal saveAsDialog">
-      <h3>Save Form As</h3>
-      <div class="modalContents">
-        <form>
-          <div class="errorMessage"></div>
-
-          <label for="saveAs_name">Form Name</label>
-          <input type="text" id="saveAs_name" name="name" />
-        </form>
-      </div>
-      <div class="modalButtonContainer">
-        <a class="modalButton saveAsLink acceptLink" href="#save">Save</a>
-        <a class="modalButton jqmClose" href="#close">Cancel</a>
-      </div>
-    </div>
-
-    <div class="modal narrowModal loadLocallyDialog">
-      <h3>Load Form from File</h3>
-      <div class="modalContents">
-        <form>
-          <div class="errorMessage"></div>
-
-          <label for="loadFile_name">File to Load</label>
-          <input type="text" id="loadFile_name" name="name" readonly='readonly' />
-          <a href="#chooseFile" id="loadFileChooseLink">Choose</a>
-        </form>
-      </div>
-      <div class="modalButtonContainer">
-        <a class="modalButton loadFileLink acceptLink" href="#load">Load</a>
-        <a class="modalButton jqmClose" href="#close">Cancel</a>
-      </div>
+    <div id="dragIcon">
+      <div class="miniControl"></div>
+      <div class="count"></div>
     </div>
 
     <div class="modal exportDialog">
@@ -245,7 +173,7 @@
         <ul class="translationList"></ul>
 
         <h4>Add a new language</h4>
-        <select class="translationSelect"></select>
+        <input type="text" class="translationNewName"/>
         <a class="addTranslation" href="#addTranslation">Add Translation</a>
       </div>
       <div class="modalButtonContainer">
@@ -279,34 +207,27 @@
       </div>
     </div>
 
-    <div class="modal narrowModal propertiesDialog">
-      <h3>Export</h3>
-      <div class="modalContents">
-        <h4>Form Name</h4>
-        <input type="text" id="propertiesName"/>
-      </div>
-      <div class="modalButtonContainer">
-        <a class="modalButton propertiesCommitButton jqmClose" href="#export">Done</a>
-        <a class="modalButton jqmClose" href="#close">Cancel</a>
-      </div>
-    </div>
-
     <div class="modal narrowModal aggregateDialog">
-      <h3>Export</h3>
+      <h3>Upload Form to Aggregate</h3>
       <div class="modalContents">
         <div class="errorMessage"></div>
-        <p>You will be asked to authenticate with the Aggregate instance in order to
-           be able to export the form there. Please supply your Google account information
-           when prompted.</p>
+        <p>You can use this tool to upload your form to any Aggregate instance publicly
+          visible on the Internet.</p>
 
         <h4>Aggregate Instance URI</h4>
-        <p>https://<input type="text" class="aggregateInstanceName"/>.appspot.com/</p>
+        <p>https://<input type="text" class="aggregateInstanceName"/></p>
+        <p>Examples include <code>https://my-aggregate.appspot.com</code> if you're on
+          Google App Engine, or <code>https://216.58.193.110:8080/ODKAggregate</code> if
+          you have your own server on the web.</p>
         <h4>Aggregate Credentials</h4>
-        <label for="aggregateUser">Username</label> <input type="text" id="aggregateUser"/>
-        <label for="aggregatePassword">Password</label> <input type="password" id="aggregatePassword"/>
-        <p><strong>Note:</strong> this is your Aggregate account information, <em>not</em>
-          your Google account. You may leave these blank if your Aggregate instance
-          allows anonymous form uploading.</p>
+        <p>
+          <label for="aggregateUser">Username</label> <input type="text" id="aggregateUser"/>
+          <label for="aggregatePassword">Password</label> <input type="password" id="aggregatePassword"/>
+        </p>
+        <p><strong>Note:</strong> This is your Aggregate account credentials with Form
+          Manager or greater capabilities. The account type in Aggregate has to be ODK,
+          not Google. You may leave these blank if your Aggregate instance allows anonymous
+          form uploading.</p>
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton aggregateExportButton" href="#export">Export</a>
@@ -338,28 +259,29 @@
       </div>
     </div>
 
-    <script type="text/javascript" src="javascripts/jquery-1.5.1.js"></script>
-    <script type="text/javascript" src="javascripts/jquery-ui-1.8.11.custom.js"></script>
+    <script type="text/javascript" src="javascripts/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="javascripts/jquery-ui.js"></script>
 
     <script type="text/javascript" src="javascripts/underscore.min.js"></script>
-    <script type="text/javascript" src="javascripts/json2.js"></script>
-    <script type="text/javascript" src="javascripts/jquery.jqmodal.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery.jqmodal.js"></script>
+    <script type="text/javascript" src="javascripts/kor.events.js"></script>
     <script type="text/javascript" src="javascripts/awesomemarkup.js"></script>
-    <script type="text/javascript" src="javascripts/ajaxupload.js"></script>
     <script type="text/javascript" src="javascripts/namespace.js"></script>
     <script type="text/javascript" src="javascripts/util.js"></script>
-    <script type="text/javascript" src="javascripts/triangle.js"></script>
     <script type="text/javascript" src="javascripts/auth.js"></script>
     <script type="text/javascript" src="javascripts/data.js"></script>
     <script type="text/javascript" src="javascripts/data-ui.js"></script>
+    <script type="text/javascript" src="javascripts/core.validation.js"></script>
+    <script type="text/javascript" src="javascripts/impl.validation.js"></script>
     <script type="text/javascript" src="javascripts/i18n.js"></script>
     <script type="text/javascript" src="javascripts/options-editor.js"></script>
     <script type="text/javascript" src="javascripts/modals.js"></script>
     <script type="text/javascript" src="javascripts/property-editor.js"></script>
-    <script type="text/javascript" src="javascripts/workspace-draggable.js"></script>
+    <script type="text/javascript" src="javascripts/draggable.js"></script>
     <script type="text/javascript" src="javascripts/control.js"></script>
     <script type="text/javascript" src="javascripts/toolbutton.js"></script>
     <script type="text/javascript" src="javascripts/dropdown-menu.js"></script>
+    <script type="text/javascript" src="javascripts/help.js"></script>
     <script type="text/javascript" src="javascripts/file.js"></script>
     <script type="text/javascript" src="javascripts/remote.js"></script>
     <script type="text/javascript" src="javascripts/menu.js"></script>
@@ -370,7 +292,7 @@
       <div class="control">
         <div class="controlInfo">
           <div class="typeIcon"></div>
-          <a href="#deleteControl" class="deleteControl">Delete</a>
+          <a href="#deleteControl" class="icon deleteControl">Delete</a>
           <div class="controlHeadline">
             <h4 class="controlLabel"></h4>
             <span class="controlHint"></span>
@@ -384,34 +306,33 @@
       <div class="editors">
         <div class="text">
           <h4></h4>
-          <p></p>
           <input type="text" class="editorTextfield"/>
         </div>
 
         <div class="bool">
-          <input type="checkbox" class="editorCheckbox"/>
-          <label></label>
-          <p></p>
+          <label>
+            <input type="checkbox" class="editorCheckbox"/>
+            <span></span>
+          </label>
         </div>
 
         <div class="numericRange dateRange">
-          <h4></h4>
-          <p></p>
-          <input id="property_range_enabled" type="checkbox" class="editorCheckbox editorEnabled"/>
-          <label for="property_range_enabled">Enable</label>
+          <label>
+            <input id="property_range_enabled" type="checkbox" class="editorCheckbox editorEnabled"/>
+            <span></span>
+          </label>
           <h5>Minimum</h5>
           <input type="text" class="editorTextfield min"/>
-          <input id="property_range_min_inclusive" type="checkbox" class="editorCheckbox inclusive minInclusive"/>
-          <label for="property_range_min_inclusive">Inclusive</label>
+          <input id="property_range_min_inclusive" type="checkbox" class="editorCheckbox inclusive minInclusive inclusiveCtrl"/>
+          <label for="property_range_min_inclusive" class="inclusiveCtrl">Inclusive</label>
           <h5>Maximum</h5>
           <input type="text" class="editorTextfield max"/>
-          <input id="property_range_max_inclusive" type="checkbox" class="editorCheckbox inclusive maxInclusive"/>
-          <label for="property_range_max_inclusive">Inclusive</label>
+          <input id="property_range_max_inclusive" type="checkbox" class="editorCheckbox inclusive maxInclusive inclusiveCtrl"/>
+          <label for="property_range_max_inclusive" class="inclusiveCtrl">Inclusive</label>
         </div>
 
         <div class="uiText">
           <h4></h4>
-          <p></p>
           <ul class="translations"></ul>
         </div>
           <li class="uiText-translation">
@@ -421,14 +342,12 @@
 
         <div class="enum">
           <h4></h4>
-          <p></p>
           <select class="editorSelect"></select>
         </div>
 
         <div class="optionsEditor">
           <a href="#optionsEditorDialog" rel="modal" class="optionsEditorLink">Bulk Edit</a>
           <h4></h4>
-          <p></p>
           <ul class="optionsList"></ul>
           <a class="addOption" href="#addOption">Add Option</a>
         </div>
