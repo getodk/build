@@ -192,6 +192,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     $.toast('Your form has been saved as "' + title + '".');
                     dataNS.currentForm = response;
                     dataNS.clean = true;
+                    $('h1').text(title);
                     $('.saveAsDialog').jqmHide();
                 },
                 error: function(request, status, error)
