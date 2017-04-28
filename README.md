@@ -10,9 +10,11 @@ Build is a combination between a Ruby Rack-based application built on Sinatra an
 
 ### Dependencies
 
-All Rubygem dependencies are managed by Ruby Bundler. Make sure you have at least version 1.0.0 of Bundler installed (`gem update --system && gem install bundler` if you don't have it already). Then run `bundle install` in the application root to resolve and install the appropriate dependencies.
+All Rubygem dependencies are managed by Ruby Bundler. There are config files present for `rbenv`/`rvm`. Run `bundle install` in the application root to resolve and install the appropriate dependencies. You can do `--without test` to skip some gems if you're short on bandwidth.
 
 We depend on one native binding, to connect to a PostgreSQL database. To satisfy the binding, you can install `libpq-dev` on apt, or `postgresql` on homebrew.
+
+If you run into trouble, try updating Bundler: `gem update --system && gem install bundler`.
 
 ### Setup and Execution
 
@@ -23,6 +25,12 @@ Next, you want to start up your databases. Create a database in your Postgres in
 Finally, you'll want to run `bundle exec rackup config.ru` to start the server, or `bundle exec shotgun config.ru` if you want the application to automatically detect your changes to source code and load them up when you refresh the app in your web browser.
 
 If you're running Build in a production environment, there are a couple of things that the application needs to build before it will run. Before first-run, and after each time you update with a new version, you'll want to run `rake deploy:build`. This will bundle all the assets the application needs for speed an ease of deployment.
+
+## Offline Version
+
+There is a separate native-desktop build of ODK Build that is actively maintained; version of it may be downloaded under the [releases page](https://github.com/opendatakit/build/releases), and the code for it is found under the `offline` branch of this repository. It uses [NWjs](https://nwjs.io/) (formerly `node-webkit`), which is similar to [Electron](https://electron.atom.io/) (but pre-dated it, as does this branch). The code is substantially shared with the Javascript aspects of the main build, with the main differences being the removal of all Ruby server code and the addition of some code to handle the window shell and filesystem operations.
+
+A full README for developers wanting to work on this version [is available](https://github.com/opendatakit/build/blob/offline/README.textile) in the root of the `offline` branch.
 
 ### Contributing
 
