@@ -997,6 +997,30 @@ body > .control.last .controlFlowArrow,
     padding: 0.2em 0.4em;
 }
 
+/* pop the help pane up just a bit to make room for toolbar controls */
+@media(max-width: 1125px)
+{
+    .helpPane { bottom: 3em; }
+    .propertiesPane { margin-bottom: 3.5em; }
+
+    .suppressInformation .propertiesPane { bottom: 3em !important; }
+}
+
+/* hide "Add new" text to make yet more room */
+@media(max-width: 830px)
+{
+    .toolPalette h3 { display: none; }
+}
+
+/* compress spacing/margins to make even more room */
+@media(max-width: 775px)
+{
+    .toolPalette ul li { margin-left: 0.5em; }
+    .toolPalette ul li.separator { display: none; }
+}
+
+/* any smaller (~<650px) and the layout is impractical on more general terms so forget it. */
+
 /**********
  * MODALS *
  **********/
