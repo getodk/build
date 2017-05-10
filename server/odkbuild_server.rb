@@ -259,7 +259,12 @@ class OdkBuild < Sinatra::Application
     req['X-OpenRosa-Version'] = '1.0'
     req['Date'] = DateTime.now.httpdate
 
-    res = http.request(req)
+    begin
+      res = http.request(req)
+    rescue SocketError => ex
+      status 404
+      return { :error => ex.message, :code => 404, :body => 'Socket Error' }.to_json
+    end
 
     if res.code.to_s == '401'
       # we failed without auth; retry with digest auth now that we have details.
