@@ -405,7 +405,10 @@
         destination:  { name: 'Instance Destination',
                         type: 'text',
                         description: 'Specify a custom XPath expression at which to store the result.',
-                        tips: [ 'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-paths" rel="external">ODK XForms Path Spec</a> may be useful.' ],
+                        tips: [
+                            'This overrides the Data Name for this control.',
+                            'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-paths" rel="external">ODK XForms Path Spec</a> may be useful, though .. is not yet supported.',
+                            'Use a leading slash to target the root instance tag even if you\'re in a group. Leave it off for a relative path.' ],
                         value: '',
                         advanced: true,
                         summary: false },

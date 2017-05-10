@@ -170,7 +170,31 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             });
         })
     };
-    var parseControl = function(control, xpath, instance, translations, model, body, relevance)
+    var findOrCreate = function(root, parent, xpath)
+    {
+        var pathParts = xpath.split(/\//g);
+        var childName = pathParts.shift();
+
+        if (childName === '')
+        {
+            // means we have a leading slash, so don't use a relative path.
+            parent = findOrCreate(null, root, 'h:head/model/instance');
+            childName = pathParts.shift();
+        }
+
+        var result = _.find(parent.children, function(node) { return node.name === childName; });
+        if (result == null)
+        {
+            result = { name: childName, attrs: {}, children: [] };
+            parent.children.push(result);
+        }
+
+        if (pathParts.length > 0)
+            return findOrCreate(root, result, pathParts.join('/'));
+        else
+            return result;
+    };
+    var parseControl = function(root, control, xpath, instance, translations, model, body, relevance)
     {
         // first set up some defaults we need
         // relevance string
@@ -182,12 +206,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // groups are special
         if (control.type == 'group')
         {
-            var instanceTag = {
-                name: control.name,
-                attrs: {},
-                children: []
-            };
-            instance.children.push(instanceTag);
+            var instanceTag = findOrCreate(root, instance, (control.destination || control.name));
             var bodyTag = {
                 name: 'group',
                 attrs: {},
@@ -258,7 +277,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             // deal with children
             _.each(control.children, function(child)
             { 
-                parseControl(child, xpath + control.name + '/', instanceTag, translations, model, bodyTag, $.extend([], relevance));
+                parseControl(root, child, xpath + control.name + '/', instanceTag, translations, model, bodyTag, $.extend([], relevance));
             });
             return;
         }
@@ -267,10 +286,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if (control.type == 'metadata')
         {
             // instance
-            var instanceTag = {
-                name: control.name
-            };
-            instance.children.push(instanceTag);
+            var instanceTag = findOrCreate(root, instance, (control.destination || control.name));
 
             // binding
             var binding = {
@@ -337,10 +353,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
 
 
-        var instanceTag = {
-            name: control.name
-        };
-        instance.children.push(instanceTag);
+        var instanceTag = findOrCreate(root, instance, (control.destination || control.name));
 
         // control markup
         var bodyTag = {
@@ -613,7 +626,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         _.each(internal.controls, function(control)
         {
-            parseControl(control, '/data/', instanceHead, translations, model, body);
+            parseControl(root, control, '/data/', instanceHead, translations, model, body);
         });
 
         return root;
@@ -648,7 +661,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         {
             result += '>' + xmlEncode(obj.val) + '</' + obj.name + '>\n';
         }
-        else if (obj.children !== undefined)
+        else if ((obj.children !== undefined) && (obj.children.length > 0))
         {
             if (obj._noWhitespace !== true)
             {
