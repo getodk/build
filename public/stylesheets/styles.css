@@ -864,16 +864,34 @@ body > .control.last .controlFlowArrow,
 {
     font-size: 1.1em;
 }
+.propertiesPane .propertyList li.advanced
+{
+    padding-left: 0;
+}
 .propertiesPane .propertyList li.advanced a.toggle
 {
     color: #444;
     font-size: 1.4em;
     letter-spacing: -1px;
-    margin-left: -0.714em;
 }
 .propertiesPane .advancedProperties
 {
+    max-height: 0;
+    overflow: hidden;
     padding-top: 1em;
+    transition: 0.4s max-height;
+}
+.propertiesPane .advancedProperties .propertyItem
+{
+    padding-left: 1em;
+}
+.propertiesPane .propertyList input[type="text"]
+{
+    width: calc(100% - 1em);
+}
+.propertiesPane .propertyList.showAdvanced .advancedProperties
+{
+    max-height: 20em
 }
 
 .propertiesPane .propertyList li .optionsList
@@ -925,7 +943,7 @@ body > .control.last .controlFlowArrow,
 {
     content: '\e901';
 }
-.propertiesPane .propertyList li.advanced .expanded .icon:before
+.propertiesPane .propertyList.showAdvanced li.advanced .icon:before
 {
     content: '\e900';
 }
