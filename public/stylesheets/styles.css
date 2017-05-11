@@ -835,20 +835,18 @@ body > .control.last .controlFlowArrow,
     width: calc(100% - 0.5em);
 }
 .propertiesPane .propertyList li .bool,
-.propertiesPane .propertyList li .numericRange
+.propertiesPane .propertyList li .numericRange,
+.propertiesPane .propertyList li .otherEditor
 {
     margin-left: -1em;
 }
 .propertiesPane .propertyList li .bool label,
-.propertiesPane .propertyList li .numericRange label
+.propertiesPane .propertyList li .numericRange label,
+.propertiesPane .propertyList li .otherEditor label
 {
     color: #444;
     font-size: 1.3em;
     letter-spacing: -1px;
-}
-.propertiesPane .propertyList li .bool p
-{
-    padding-left: 2.7em;
 }
 .propertiesPane .propertyList li .numericRange h5,
 .propertiesPane .propertyList li .numericRange input[type="text"],
@@ -859,6 +857,10 @@ body > .control.last .controlFlowArrow,
 .propertiesPane .propertyList li .numericRange input[type="text"]
 {
     width: 19.5em;
+}
+.propertiesPane .propertyList li .otherEditor .otherValue
+{
+    padding-left: 2.1em;
 }
 .propertiesPane .propertyList li h5
 {
