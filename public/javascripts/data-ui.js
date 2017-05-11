@@ -38,8 +38,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('.menu .newLink').click(function(event)
         {
             event.preventDefault();
-            if (dataNS.clean || confirm('Are you sure? You will lose unsaved changes to the current form.'))
+            if (dataNS.clean)
                 odkmaker.application.newForm();
+            else
+                odkmaker.application.confirm('Are you sure? You will lose unsaved changes to the current form.', odkmaker.application.newForm);
+                
         });
         $('.menu .saveLink').click(function(event)
         {
@@ -142,25 +145,25 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         {
             event.preventDefault();
 
-            if (!confirm('Are you absolutely sure you want to delete this form? This cannot be undone.'))
-                return;
+            var id = $(this).closest('li').attr('rel');
+            odkmaker.application.confirm('Are you absolutely sure you want to delete this form? This cannot be undone.', function() { deleteForm(id); });
+        });
 
+        var deleteForm = function(id)
+        {
             $openDialog.find('.modalLoadingOverlay').fadeIn();
 
-            var $listItem = $(this).closest('li');
             $.ajax({
-                url: '/form/' + $listItem.attr('rel'),
+                url: '/form/' + id,
                 dataType: 'json',
                 type: 'DELETE',
                 success: function(response, status)
                 {
-                    $openDialog.find('.modalLoadingOverlay').stop().fadeOut();
-
                     odkmaker.auth.currentUser.forms = _.reject(odkmaker.auth.currentUser.forms, function(form)
                     {
-                        form.id = $listItem.attr('rel');
+                        return form.id === id;
                     });
-                    $listItem.remove();
+                    $openDialog.find('[rel=' + id + ']').remove();
 
                     $('.openDialog .errorMessage').empty();
                 },
@@ -168,9 +171,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 {
                     $('.openDialog .errorMessage').empty().append('<p>Something went wrong when trying to delete ' +
                         'that form. Please try again later.');
+                },
+                complete: function()
+                {
+                    $openDialog.find('.modalLoadingOverlay').fadeOut();
                 }
             });
-        });
+        };
 
         $('.saveAsDialog .saveAsLink').click(function(event)
         {
