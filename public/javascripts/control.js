@@ -236,6 +236,25 @@
         }
     };
 
+    var deleteControl = function($control)
+    {
+        $control.slideUp('normal', function()
+        {
+            var $controlAndChildren = $control.find('.control').add($control);
+            $controlAndChildren.each(function()
+            {
+                var $this = $(this);
+                // don't do anything if this control has already been processed for deletion.
+                if (document.contains($this[0]))
+                    validationNS.controlDestroyed($this, $this.data('odkControl-properties'));
+            });
+            $controlAndChildren.each(deselect);
+            $controlAndChildren.trigger('odkControl-removing');
+            $control.remove();
+            $controlAndChildren.trigger('odkControl-removed');
+        });
+    };
+
     // Constructor
     var loadTime = (new Date()).getTime(); // get time in nanos to ~ensure universal uniqueness of id.
     $.fn.odkControl = function(type, options, defaultProperties)
@@ -293,7 +312,7 @@
                 performSelection($this, type, options, properties);
             });
             $this.bind('odkControl-deselect', deselect);
-            $this.click(function(event)
+            $this.on('click', function(event)
             {
                 event.stopPropagation();
 
@@ -324,16 +343,25 @@
             // event wireup
             $this.find('.deleteControl').click(function(event)
             {
+                event.stopPropagation();
                 event.preventDefault();
-                $this.slideUp('normal', function()
-                {
-                    var $thisAndChildren = $this.find('.control').add($this);
-                    $thisAndChildren.each(function() { validationNS.controlDestroyed($(this), properties); });
-                    $thisAndChildren.each(deselect);
-                    $thisAndChildren.trigger('odkControl-removing');
-                    $this.remove();
-                    $thisAndChildren.trigger('odkControl-removed');
-                });
+
+                // if the control to which this delete button belongs is not selected at all,
+                // always just delete this one.
+                var $selected;
+                if (!$this.hasClass('selected'))
+                    $selected = $this;
+                else
+                    $selected = $('.control.selected');
+
+                if ($selected.length > 1)
+                    odkmaker.application.ask('What do you want to delete?', {
+                        'Just this question': function() { deleteControl($this); },
+                        'All selected questions': function() { $selected.each(function() { deleteControl($(this)); }); },
+                        'Cancel': null
+                    });
+                else
+                    deleteControl($this);
             });
 
             // set up dragging
