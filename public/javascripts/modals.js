@@ -70,6 +70,12 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
         {
             $dialog.removeClass('exporting');
         },
+        formPropertiesDialog: function($dialog)
+        {
+            $dialog.find('#formProperties_title')
+                .attr('placeholder', $('h1').text())
+                .val(odkmaker.data.getTitle());
+        },
         optionsEditorDialog: odkmaker.options.modalHandler
     };
 

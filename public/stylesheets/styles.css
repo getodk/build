@@ -1213,6 +1213,12 @@ body > .control.last .controlFlowArrow,
     width: 40em;
 }
 
+.formPropertiesDialog input
+{
+    margin-left: 10em;
+    width: calc(100% - 10em);
+}
+
 .errorMessage p
 {
     color: #f00;

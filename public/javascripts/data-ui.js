@@ -286,5 +286,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 complete: function() { $loading.hide(); }
             });
         });
+
+        $('.formPropertiesDialog .jqmClose').on('click', function()
+        {
+            // this codebase is really starting to wear. we have to clear out this field
+            // if it is identical to the main title so it doesn't get picked up.
+            var $input = $('#formProperties_title');
+            if ($input.val() === $('h1').text()) $input.val('');
+        });
     });
 })(jQuery);

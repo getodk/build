@@ -34,15 +34,26 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
     odkmaker.data.extract = function()
     {
+        var htitle = odkmaker.data.getTitle();
+        if ($.isBlank(htitle) || (htitle === $('h1').text())) htitle = null;
+
         return {
             title: $('h1').text(),
             controls: extractMany($('.workspace')),
             metadata: {
                 version: odkmaker.data.currentVersion,
                 activeLanguages: odkmaker.i18n.activeLanguageData(),
-                optionsPresets: odkmaker.options.presets
+                optionsPresets: odkmaker.options.presets,
+                htitle: htitle
             }
         };
+    };
+    odkmaker.data.getTitle = function()
+    {
+        var title = $('#formProperties_title').val();
+        if ($.isBlank(title) && (odkmaker.data.currentForm != null)) title = odkmaker.data.currentForm.metadata.title;
+        if ($.isBlank(title)) title = $('h1').text();
+        return title;
     };
 
     var loadOne = odkmaker.data.loadOne = function(control)
@@ -94,6 +105,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('.workspace').empty();
 
         $('h1').text(formObj.title);
+        $('#formProperties_title').val(formObj.metadata.htitle)
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadMany($('.workspace'), formObj.controls);
@@ -579,7 +591,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 {   name: 'h:head',
                     children: [
                         {   name: 'h:title',
-                            val: internal.title },
+                            val: odkmaker.data.getTitle() },
                         model
                     ] },
                 body
