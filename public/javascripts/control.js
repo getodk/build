@@ -16,16 +16,15 @@
     var drawPropertyList = function($this, properties)
     {
             // clear out and reconstruct property list
-            var wasExpanded = $propertyList.find('.advanced > .toggle').hasClass('expanded');
             $propertyList.empty();
 
             var $advancedContainer = $.tag({
                 _: 'li', 'class': 'advanced', contents: [
-                    { _: 'a', 'class': [ 'toggle', { i: wasExpanded, t: 'expanded' } ], href: '#advanced', contents: [
+                    { _: 'a', 'class': 'toggle', href: '#advanced', contents: [
                         { _: 'div', 'class': 'icon' },
                         'Advanced'
                     ] },
-                    { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: { i: wasExpanded, t: 'block', e: 'none' } } }
+                    { _: 'ul', 'class': 'advancedProperties toggleContainer' }
                 ]
             });
             var $advancedList = $advancedContainer.find('.advancedProperties');
@@ -59,6 +58,16 @@
         else if ($selected.length === 1)
             drawPropertyList($selected.eq(0), $selected.eq(0).data('odkControl-properties'));
     } });
+
+    // Wired events
+    $(function()
+    {
+        $propertyList.on('click', '.toggle', function(event)
+        {
+            event.preventDefault();
+            $propertyList.toggleClass('showAdvanced');
+        });
+    });
 
     // Private methods
 

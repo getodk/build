@@ -79,16 +79,6 @@ $(function()
     // Kick off a new form by default
     applicationNS.newForm();
 
-    // Toggles
-    $('body').on('click', 'a.toggle', function(event)
-    {
-        event.preventDefault();
-        $(this)
-            .toggleClass('expanded')
-            .siblings('.toggleContainer')
-                .slideToggle('normal');
-    });
-
     // External links should open in a new window
     $("a[rel$='external']").click(function()
     {
