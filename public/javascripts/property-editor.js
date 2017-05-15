@@ -57,6 +57,17 @@
                 });
                 showHide();
             }
+
+            if (property.bindControlClass != null)
+            {
+                var updateClass = function() { console.log(property.value); $parent.toggleClass(property.bindControlClass, property.value !== false); };
+                $parent.on('odkControl-propertiesUpdated', function(_, propId)
+                {
+                    console.log(propId, name);
+                    if (propId === name) updateClass();
+                });
+                updateClass();
+            }
         });
     };
 
@@ -270,6 +281,7 @@
                         $select.val(selectedValue);
                         property.value = [ selectedValue ];
                     }
+                    $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                 }
             };
 
@@ -288,6 +300,8 @@
             $enable.on('change', function()
             {
                 property.value = $enable.is(':checked') ? [] : false;
+                $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
+
                 update();
             });
 

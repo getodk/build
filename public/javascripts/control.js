@@ -106,6 +106,11 @@
                 $('<li>' + property.name + '</li>')
             );
         });
+
+        // SPECIAL CASE:
+        // update the followup question text from that value.
+        if ((properties.other != null) && (properties.other.value !== false))
+            $info.find('.controlSuccessorCondition span').text(properties.other.value.join(' or '));
     };
 
     // gets all controls "between" two given controls, stepping in and out of groups
@@ -554,11 +559,15 @@
                             'The Underlying Value is the value saved to the exported data.' ],
                         value: [{ text: {}, val: 'untitled' }],
                         summary: false },
-          other:      { name: 'Additional Information',
+          other:      { name: 'Follow-up Question',
                         type: 'otherEditor',
                         validation: [ 'fieldListExpr' ],
-                        description: 'Prompt for additional information if a particular response is chosen.',
+                        description: 'Ask the following question as additional information only if a particular response is chosen.',
+                        tips: [
+                            'You can use this to easily prompt for more information if the user selects "Other," for example.',
+                            'Whatever the following question is, it will only be asked if the user selects the value you specify here.' ],
                         bindTo: 'options',
+                        bindControlClass: 'hasSuccessorBinding',
                         value: false,
                         summary: false },
           appearance: { name: 'Style',
@@ -577,11 +586,15 @@
                         validation: [ 'underlyingRequired', 'underlyingLegalChars', 'underlyingLength', 'hasOptions' ],
                         value: [{ text: {}, val: 'untitled' }],
                         summary: false },
-          other:      { name: 'Additional Information',
+          other:      { name: 'Follow-up Question',
                         type: 'otherEditor',
                         validation: [ 'fieldListExpr' ],
-                        description: 'Prompt for additional information if a particular response is chosen.',
+                        description: 'Ask the following question as additional information only if a particular response is chosen.',
+                        tips: [
+                            'You can use this to easily prompt for more information if the user selects "Other," for example.',
+                            'Whatever the following question is, it will only be asked if the user selects the value you specify here.' ],
                         bindTo: 'options',
+                        bindControlClass: 'hasSuccessorBinding',
                         value: false,
                         summary: false },
           count:      { name: 'Response Count',
