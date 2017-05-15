@@ -1207,6 +1207,11 @@ body > .control.last .controlFlowArrow,
     width: 9.5em;
 }
 
+.titlelessModal
+{
+    padding-top: 4em;
+}
+
 .narrowModal
 {
     margin-left: -20em;

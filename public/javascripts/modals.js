@@ -75,6 +75,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
 
     $(function()
     {
+        var stackHeight = 2999;
         $('.modal').jqm({
             onShow: function(jqm)
             {
@@ -86,11 +87,15 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
                 jqm.w.fadeIn('slow');
                 jqm.o.prependTo('body');
                 jqm.o.fadeIn('slow');
+
+                jqm.o.css('z-index', stackHeight++);
+                jqm.w.css('z-index', stackHeight++);
             },
             onHide: function(jqm)
             {
                 jqm.w.fadeOut('slow');
                 jqm.o.fadeOut('slow');
+                stackHeight -= 2;
             }
         }).append('<div class="modalLoadingOverlay"><div class="spinner"><div class="spinnerInner"></div></div></div>');
 
@@ -99,18 +104,20 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
             event.preventDefault();
             var $this = $(this);
 
+            // bail if the user needs auth.
             if ($this.hasClass('authRequired') && (odkmaker.auth.currentUser === null))
             {
                 $('.signinDialog').jqmShow();
                 return;
             }
-            else if ($this.hasClass('destructive'))
-            {
-                if ((odkmaker.data.clean === false) && !confirm('Are you sure? You will lose unsaved changes to the current form.'))
-                    return;
-            }
 
-            $('.modal.' + $this.attr('href').replace(/#/, '')).jqmShow();
+            var go = function() { $('.modal.' + $this.attr('href').replace(/#/, '')).jqmShow(); };
+
+            // first ask if the operation is destructive and we have changes. otherwise just go.
+            if ($this.hasClass('destructive') && (odkmaker.data.clean === false))
+                odkmaker.application.confirm('Are you sure? You will lose unsaved changes to the current form.', go);
+            else
+                go();
         });
 
         $('.modal form').submit(function(event)
