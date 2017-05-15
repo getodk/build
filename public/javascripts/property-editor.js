@@ -46,6 +46,17 @@
                 processValidation();
             });
             processValidation();
+
+            if (property.bindDisplayIf != null)
+            {
+                var parentProperty = $parent.data('odkControl-properties')[property.bindDisplayIf];
+                var showHide = function() { $this.toggle(parentProperty.value !== false); }
+                $parent.on('odkControl-propertiesUpdated', function(_, propId)
+                {
+                    if (propId === property.bindDisplayIf) showHide();
+                });
+                showHide();
+            }
         });
     };
 

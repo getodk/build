@@ -438,6 +438,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if (control.required === true)
             binding.attrs.required = 'true()';
 
+        // required message
+        if ((control.required === true) && (control.requiredText !== undefined) && !_.isEmpty(control.requiredText))
+        {
+            binding.attrs['jr:requiredMsg'] = "jr:itext('" + xpath + control.name + ":requiredMsg')"
+            addTranslation(control.requiredText, xpath + control.name + ':requiredMsg', translations);
+        }
+
         // text length
         if ((control.length !== undefined) && (control.length !== false))
         {
