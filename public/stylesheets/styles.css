@@ -703,6 +703,16 @@ body
     color: #fff;
     font-size: 1.1em;
 }
+.control .controlSuccessor .noSuccessorError
+{
+    display: none;
+    color: #ad0e0e;
+    left: 0;
+    margin-top: 1em;
+    position: absolute;
+    top: 100%;
+    width: 20em;
+}
 .control.hasSuccessorBinding + .control
 {
     margin-left: 3.5em;
@@ -756,6 +766,10 @@ body
     left: 0.7em;
     position: absolute;
     top: 0;
+}
+.control.hasSuccessorBinding:last-child .controlSuccessor .noSuccessorError
+{
+    display: block;
 }
 .control.group .groupFooter
 {
