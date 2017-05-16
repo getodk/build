@@ -499,7 +499,8 @@
                         description: 'Type of media to upload.',
                         options: [ 'Image',
                                    'Audio',
-                                   'Video' ] } },
+                                   'Video' ],
+                        value: 'Image' } },
         inputBarcode: {},
         inputSelectOne: {
           options:    { name: 'Options',
