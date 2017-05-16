@@ -707,6 +707,25 @@ body
 {
     margin-left: 3.5em;
 }
+.control.hasSuccessorBinding + .control.hasSuccessorBinding .controlSuccessorArrow
+{
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    height: 3.8em;
+}
+.control.hasSuccessorBinding + .control.hasSuccessorBinding .controlSuccessorArrow .bend
+{
+    height: 0;
+    width: 0;
+}
+.control.hasSuccessorBinding + .control.hasSuccessorBinding .controlSuccessorArrow .bend:before
+{
+    border-width: 0.7em;
+    border-left-color: transparent;
+    border-bottom-width: 0;
+    border-top-color: #61128e;
+    position: absolute;
+}
 .control.hasSuccessorBinding:last-child .controlSuccessorArrow
 {
     background: #ad0e0e;
