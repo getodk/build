@@ -57,17 +57,6 @@
                 });
                 showHide();
             }
-
-            if (property.bindControlClass != null)
-            {
-                var updateClass = function() { console.log(property.value); $parent.toggleClass(property.bindControlClass, property.value !== false); };
-                $parent.on('odkControl-propertiesUpdated', function(_, propId)
-                {
-                    console.log(propId, name);
-                    if (propId === name) updateClass();
-                });
-                updateClass();
-            }
         });
     };
 
@@ -272,6 +261,7 @@
                         // select the value we found.
                         $select.val(selectedValue);
                         property.value = [ selectedValue ];
+                        $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                     }
                     else if (optionsProperty.value.length > 0)
                     {
@@ -280,8 +270,8 @@
                         selectedValue = $select.children('option:first-child').attr('value');
                         $select.val(selectedValue);
                         property.value = [ selectedValue ];
+                        $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                     }
-                    $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                 }
             };
 
@@ -294,6 +284,7 @@
                 {
                     selectedOption = $(option).data('option');
                     property.value = [ selectedOption.val ];
+                    $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                 }
             });
 
@@ -301,7 +292,6 @@
             {
                 property.value = $enable.is(':checked') ? [] : false;
                 $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
-
                 update();
             });
 
