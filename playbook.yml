@@ -133,8 +133,8 @@
               proxy_pass: "http://[::1]:8686"
             location4:
               name: "~ ^/.well-known"
-              root: "/var/www/letsencrypt"
-              error_page: "404 =500 @500"
+              root: "/var/www"
+              error_page: "404 =500"
         - server:
             name: https
             listen: "443 ssl"
