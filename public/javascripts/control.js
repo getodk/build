@@ -285,12 +285,19 @@
 
             // Deep clone the properties if relevant
             var properties = null;
-            if ((type == 'group') || (type == 'branch') || (type == 'metadata'))
-                properties = defaultProperties || $.extend(true, {}, $.fn.odkControl.controlProperties[type]);
+
+            if (defaultProperties != null)
+                properties = defaultProperties;
+            else if ((type == 'group') || (type == 'branch') || (type == 'metadata'))
+                properties = $.extend(true, {}, $.fn.odkControl.controlProperties[type]);
             else
-                properties = defaultProperties ||
-                    $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
-                                   $.fn.odkControl.controlProperties[type]);
+            {
+                properties = $.extend(true, {}, $.fn.odkControl.defaultProperties);
+                var controlProperties = $.fn.odkControl.controlProperties[type];
+                for (var prop in controlProperties)
+                    delete properties[prop];
+                $.extend(true, properties, controlProperties);
+            }
 
             var match = null;
             if (properties.name.value == 'untitled')
@@ -441,8 +448,18 @@
         constraint:   { name: 'Constraint',
                         type: 'text',
                         description: 'Specify a custom expression to validate the user input.',
-                        tips: [ 'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-functions" rel="external">ODK XForms Functions Spec</a> may be useful.' ],
+                        tips: [
+                            'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-functions" rel="external">ODK XForms Functions Spec</a> may be useful.',
+                            'If this constraint check fails, the Invalid Text is displayed.'
+                        ],
                         value: '',
+                        advanced: true,
+                        summary: false },
+        // this is automatically overridden by controls that have their own specified invalidText:
+        invalidText:  { name: 'Constraint Invalid Text',
+                        type: 'uiText',
+                        description: 'Message to display if the value fails the custom constraint check.',
+                        value: {},
                         advanced: true,
                         summary: false },
         destination:  { name: 'Instance Destination',
@@ -475,6 +492,7 @@
           invalidText:{ name: 'Invalid Text',
                         type: 'uiText',
                         description: 'Message to display if the value fails the length check.',
+                        tips: [ 'It is also displayed if a custom constraint check is failed.' ],
                         value: {},
                         summary: false } },
         inputNumeric: {
@@ -489,6 +507,7 @@
           invalidText:{ name: 'Invalid Text',
                         type: 'uiText',
                         description: 'Message to display if the value fails the range check.',
+                        tips: [ 'It is also displayed if a custom constraint check is failed.' ],
                         value: {},
                         summary: false },
           kind:       { name: 'Kind',
@@ -511,6 +530,7 @@
           invalidText:{ name: 'Invalid Text',
                         type: 'uiText',
                         description: 'Message to display if the value fails the range check.',
+                        tips: [ 'It is also displayed if a custom constraint check is failed.' ],
                         value: {},
                         summary: false },
           kind:       { name: 'Kind',
@@ -579,6 +599,12 @@
                             'For an open-ended range, fill in only a minimum or a maximum and leave the other blank.' ],
                         value: false,
                         summary: true },
+          invalidText:{ name: 'Invalid Text',
+                        type: 'uiText',
+                        description: 'Message to display if the value fails the response count check.',
+                        tips: [ 'It is also displayed if a custom constraint check is failed.' ],
+                        value: {},
+                        summary: false },
           appearance: { name: 'Style',
                         type: 'enum',
                         description: 'What interface to present.',
