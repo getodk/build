@@ -551,6 +551,7 @@ body
     background: #777 url(/images/control_slice.png) repeat-x bottom;
     min-height: 76px;
     padding: 6px;
+    transition: 0.3s padding;
 }
 .collapsed .control .controlInfo
 {
@@ -636,6 +637,139 @@ body
 .collapsed .control .controlInfo .controlProperties
 {
     display: none;
+}
+.control .controlSuccessor
+{
+    display: none;
+}
+.control.hasSuccessorBinding .controlInfo
+{
+    padding-bottom: 2.3em;
+}
+.control.hasSuccessorBinding .controlSuccessor
+{
+    display: block;
+    left: 1em;
+    padding-left: 2.2em;
+    position: absolute;
+    top: calc(100% - 2em);
+    z-index: 1;
+}
+.control.hasSuccessorBinding .controlSuccessorArrow
+{
+    background: #61128e;
+    border-radius: 999px;
+    height: 6em;
+    left: 0;
+    position: absolute;
+    width: 1.5em;
+    top: -0.2em;
+}
+.control.hasSuccessorBinding .controlSuccessorArrow:before
+{
+    background: #fff;
+    border-radius: 999px;
+    content: '';
+    display: block;
+    left: 0.5em;
+    height: 0.5em;
+    position: absolute;
+    top: 0.5em;
+    width: 0.5em;
+}
+.control.hasSuccessorBinding .controlSuccessorArrow .bend
+{
+    background: #61128e;
+    border-radius: 999px 0 0 999px;
+    bottom: 0;
+    height: 1.4em;
+    left: 0;
+    position: absolute;
+    width: 2.5em;
+}
+.control.hasSuccessorBinding .controlSuccessorArrow .bend:before
+{
+    border: 0.7em solid transparent;
+    border-left-color: #61128e;
+    border-right-width: 0;
+    content: '';
+    display: block;
+    left: 100%;
+    position: absolute;
+    top: 0;
+}
+.control.hasSuccessorBinding .controlSuccessorCondition
+{
+    color: #fff;
+    font-size: 1.1em;
+}
+.control .controlSuccessor .noSuccessorError
+{
+    display: none;
+    color: #ad0e0e;
+    left: 0;
+    margin-top: 1em;
+    position: absolute;
+    top: 100%;
+    width: 20em;
+}
+.control.hasSuccessorBinding + .control
+{
+    margin-left: 3.5em;
+}
+.control.hasSuccessorBinding + .control.hasSuccessorBinding .controlSuccessorArrow
+{
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    height: 3.8em;
+}
+.control.hasSuccessorBinding + .control.hasSuccessorBinding .controlSuccessorArrow .bend
+{
+    height: 0;
+    width: 0;
+}
+.control.hasSuccessorBinding + .control.hasSuccessorBinding .controlSuccessorArrow .bend:before
+{
+    border-width: 0.7em;
+    border-left-color: transparent;
+    border-bottom-width: 0;
+    border-top-color: #61128e;
+    position: absolute;
+}
+.control.hasSuccessorBinding:last-child .controlSuccessorArrow
+{
+    background: #ad0e0e;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    height: 3em;
+}
+.control.hasSuccessorBinding:last-child .controlSuccessorArrow .bend
+{
+    height: 0;
+    width: 0;
+}
+.control.hasSuccessorBinding:last-child .controlSuccessorArrow .bend:before
+{
+    border-width: 0.4em;
+    border-left-color: transparent;
+    border-bottom-width: 0;
+    border-top-color: #ad0e0e;
+    position: absolute;
+}
+.control.hasSuccessorBinding:last-child .controlSuccessorArrow .bend:after
+{
+    border: 0.4em solid transparent;
+    border-bottom-width: 0;
+    border-top-color: #ad0e0e;
+    content: '';
+    display: block;
+    left: 0.7em;
+    position: absolute;
+    top: 0;
+}
+.control.hasSuccessorBinding:last-child .controlSuccessor .noSuccessorError
+{
+    display: block;
 }
 .control.group .groupFooter
 {
@@ -835,20 +969,18 @@ body > .control.last .controlFlowArrow,
     width: calc(100% - 0.5em);
 }
 .propertiesPane .propertyList li .bool,
-.propertiesPane .propertyList li .numericRange
+.propertiesPane .propertyList li .numericRange,
+.propertiesPane .propertyList li .otherEditor
 {
     margin-left: -1em;
 }
 .propertiesPane .propertyList li .bool label,
-.propertiesPane .propertyList li .numericRange label
+.propertiesPane .propertyList li .numericRange label,
+.propertiesPane .propertyList li .otherEditor label
 {
     color: #444;
     font-size: 1.3em;
     letter-spacing: -1px;
-}
-.propertiesPane .propertyList li .bool p
-{
-    padding-left: 2.7em;
 }
 .propertiesPane .propertyList li .numericRange h5,
 .propertiesPane .propertyList li .numericRange input[type="text"],
@@ -859,6 +991,10 @@ body > .control.last .controlFlowArrow,
 .propertiesPane .propertyList li .numericRange input[type="text"]
 {
     width: 19.5em;
+}
+.propertiesPane .propertyList li .otherEditor .otherValue
+{
+    padding-left: 2.1em;
 }
 .propertiesPane .propertyList li h5
 {

@@ -179,13 +179,27 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // constraint string
         var constraint = [];
 
+        // deal universally with successor binding.
+        if (instance.context.successorRelevance != null)
+        {
+            relevance.push(instance.context.successorRelevance);
+            delete instance.context.successorRelevance;
+        }
+        if ((control.other != null) && (control.other !== false))
+        {
+            instance.context.successorRelevance = _.map(control.other, function(value) {
+                return 'selected(' + xpath + control.name + ", '" + xmlEncode(value) + "')";
+            }).join(' or ');
+        }
+
         // groups are special
         if (control.type == 'group')
         {
             var instanceTag = {
                 name: control.name,
                 attrs: {},
-                children: []
+                children: [],
+                context: {}
             };
             instance.children.push(instanceTag);
             var bodyTag = {
@@ -548,12 +562,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
               'id': 'build_' + $.sanitizeString($('.header h1').text()) +
                     '_' + Math.round((new Date()).getTime() / 1000)
             },
-            children: [ 
-                {   name: 'meta',
-                    children: [
-                        {   name: 'instanceID' }
-                    ]   }
-             ]
+            children: [{
+                name: 'meta',
+                children: [ { name: 'instanceID' } ]
+            }],
+            context: {}
         };
 
         var instance = {
