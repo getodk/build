@@ -128,6 +128,18 @@ var editLanguages = new gui.MenuItem({ label: 'Translations...' });
 editLanguages.on('click', function() { $('.manageTranslations').click(); });
 settingsMenu.append(editLanguages);
 
+var editAnalytics = new gui.MenuItem({ type: 'checkbox', label: 'Allow anonymous usage analytics' });
+editAnalytics.on('click', function()
+{
+    var setTo = (localStorage.getItem('suppressAnalytics') == null);
+    if (setTo === true)
+        localStorage.setItem('suppressAnalytics', true);
+    else
+        localStorage.removeItem('suppressAnalytics');
+    editAnalytics.checked = !setTo;
+});
+editAnalytics.checked = (localStorage.getItem('suppressAnalytics') == null);
+settingsMenu.append(editAnalytics);
 
 
 

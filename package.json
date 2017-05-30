@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "build2xlsform": "git://github.com/clint-tseng/build2xlsform",
-    "request-digest": "~1.0"
+    "request-digest": "~1.0",
+    "universal-analytics": "~0.4"
   },
   "main": "public/index.html",
   "window": {

@@ -182,5 +182,13 @@ $(function()
     {
         applicationNS.ask(message, { Yes: callback, No: null });
     };
+
+    // GA tracking, if enabled.
+    var configNS = odkmaker.namespace.load('odkmaker.config');
+    if ((configNS.gaToken != null) && (localStorage.getItem('suppressAnalytics') == null))
+    {
+        var analytics = require('universal-analytics');
+        analytics(configNS.gaToken, { https: true }).pageview('/offline').send();
+    }
 });
 
