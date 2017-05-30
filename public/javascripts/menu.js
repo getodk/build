@@ -118,12 +118,12 @@ viewMenu.append(viewCollapse);
 // SETTINGS
 var settingsMenu = new gui.Menu();
 
-// edit -> form properties
-/*var editProperties = new gui.MenuItem({ label: 'Form Properties...' });
-editProperties.on('click', function() { $('.menu #propertiesLink').click(); });
-settingsMenu.append(editProperties);*/
+// settings -> form properties
+var editProperties = new gui.MenuItem({ label: 'Form Properties...' });
+editProperties.on('click', function() { $('.menu .formProperties').click(); });
+settingsMenu.append(editProperties);
 
-// edit -> languages
+// settings -> languages
 var editLanguages = new gui.MenuItem({ label: 'Translations...' });
 editLanguages.on('click', function() { $('.manageTranslations').click(); });
 settingsMenu.append(editLanguages);
