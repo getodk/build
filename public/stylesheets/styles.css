@@ -201,16 +201,16 @@ form input
     z-index: 20;
 }
 
-#surveyToast
+.toast.flashy
 {
     background-color: #673ab7;
     color: #fff;
     overflow: hidden;
 }
-#surveyToast h2 { color: #eee; }
-#surveyToast p { padding: 0.6em 0 1em; }
-#surveyToast a { color: #fff; }
-#surveyToast #launchSurvey
+.toast.flashy h2 { color: #eee; }
+.toast.flashy p { padding: 0.6em 0 1em; }
+.toast.flashy a { color: #fff; }
+.toast.flashy .toastAction
 {
     background-color: #fff;
     border-radius: 0.2em;
@@ -220,13 +220,17 @@ form input
     float: left;
     padding: 0.5em 0.7em 0.4em;
 }
-#surveyToast #dismissSurvey
+.toast.flashy .dismissToast
 {
     color: #ddd;
     display: block;
     float: right;
     font-size: 0.8em;
     line-height: 2.5em;
+}
+#updateToast
+{
+    height: 7em;
 }
 
 @-webkit-keyframes spinspin

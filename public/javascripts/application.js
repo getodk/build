@@ -5,6 +5,7 @@
  */
 
 var applicationNS = odkmaker.namespace.load('odkmaker.application');
+var configNS = odkmaker.namespace.load('odkmaker.config');
 
 applicationNS.newForm = function()
 {
@@ -184,11 +185,28 @@ $(function()
     };
 
     // GA tracking, if enabled.
-    var configNS = odkmaker.namespace.load('odkmaker.config');
     if ((configNS.gaToken != null) && (localStorage.getItem('suppressAnalytics') == null))
     {
         var analytics = require('universal-analytics');
         analytics(configNS.gaToken, { https: true }).pageview('/offline').send();
     }
+
+    // check for new releases.
+    var $updateToast = $('#updateToast');
+    $.ajax({ type: 'get', url: 'https://api.github.com/repos/opendatakit/build/releases/latest', success: function(response)
+    {
+        if (response.tag_name !== configNS.version)
+            $updateToast
+                .find('.version').text(response.tag_name).end()
+                .animate({ bottom: '-' + ($updateToast.outerHeight(true) - $updateToast.height() - 20) + 'px' }, 'slow')
+                .delegate('a', 'click', function() { $updateToast.animate({ bottom: '-15em' }, 'slow'); });
+    } });
+
+    // open external links in native browser.
+    $(document).on('click', 'a[target=_blank]', function()
+    {
+         require('nw.gui').Shell.openExternal(this.href);
+         return false;
+    });
 });
 
