@@ -38,8 +38,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('.menu .newLink').click(function(event)
         {
             event.preventDefault();
-            if (dataNS.clean || confirm('Are you sure? You will lose unsaved changes to the current form.'))
+            if (dataNS.clean)
                 odkmaker.application.newForm();
+            else
+                odkmaker.application.confirm('Are you sure? You will lose unsaved changes to the current form.', odkmaker.application.newForm);
         });
         $('.menu .saveLink').click(function(event)
         {
@@ -142,25 +144,25 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         {
             event.preventDefault();
 
-            if (!confirm('Are you absolutely sure you want to delete this form? This cannot be undone.'))
-                return;
+            var id = $(this).closest('li').attr('rel');
+            odkmaker.application.confirm('Are you absolutely sure you want to delete this form? This cannot be undone.', function() { deleteForm(id); });
+        });
 
+        var deleteForm = function(id)
+        {
             $openDialog.find('.modalLoadingOverlay').fadeIn();
 
-            var $listItem = $(this).closest('li');
             $.ajax({
-                url: '/form/' + $listItem.attr('rel'),
+                url: '/form/' + id,
                 dataType: 'json',
                 type: 'DELETE',
                 success: function(response, status)
                 {
-                    $openDialog.find('.modalLoadingOverlay').stop().fadeOut();
-
                     odkmaker.auth.currentUser.forms = _.reject(odkmaker.auth.currentUser.forms, function(form)
                     {
-                        form.id = $listItem.attr('rel');
+                        return form.id === id;
                     });
-                    $listItem.remove();
+                    $openDialog.find('[rel=' + id + ']').remove();
 
                     $('.openDialog .errorMessage').empty();
                 },
@@ -168,9 +170,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 {
                     $('.openDialog .errorMessage').empty().append('<p>Something went wrong when trying to delete ' +
                         'that form. Please try again later.');
+                },
+                complete: function()
+                {
+                    $openDialog.find('.modalLoadingOverlay').fadeOut();
                 }
             });
-        });
+        };
 
         $('.saveAsDialog .saveAsLink').click(function(event)
         {
@@ -192,6 +198,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     $.toast('Your form has been saved as "' + title + '".');
                     dataNS.currentForm = response;
                     dataNS.clean = true;
+                    $('h1').text(title);
                     $('.saveAsDialog').jqmHide();
                 },
                 error: function(request, status, error)
@@ -238,9 +245,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 error: function(xhr, status, error)
                 {
                     var errorBody = $.parseJSON(xhr.responseText);
-                    var message = (errorBody.code == '400') ?
-                      '<p>Could not upload the form. Aggregate could not validate the form contents. Please make sure your form is valid and try again.</p>' :
-                      '<p>Could not upload the form. Please check your credentials and instance name, and try again.</p>';
+                    var message;
+                    if (errorBody.code == '400')
+                        message = '<p>Could not upload the form. Aggregate could not validate the form contents. Please make sure your form is valid and try again.</p>';
+                    else if (errorBody.code == '404')
+                        message = '<p>Could not upload the form, because we could not find the Aggregate server you specified. Please check the address and try again.</p>';
+                    else
+                        message = '<p>Could not upload the form. Please check your credentials and instance name, and try again.</p>';
 
                     $('.aggregateDialog .errorMessage')
                         .empty()
@@ -249,6 +260,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 },
                 complete: function() { $loading.hide(); }
             });
+        });
+
+        $('.formPropertiesDialog .jqmClose').on('click', function()
+        {
+            // this codebase is really starting to wear. we have to clear out this field
+            // if it is identical to the main title so it doesn't get picked up.
+            var $input = $('#formProperties_title');
+            if ($input.val() === $('h1').text()) $input.val('');
         });
     });
 })(jQuery);

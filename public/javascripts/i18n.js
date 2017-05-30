@@ -140,10 +140,6 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             var code = (++active._counter).toString();
             active[code] = language;
 
-            // event
-            $('body').trigger('odk-activeLanguagesChanged');
-
-
             // update dialog ui
             $('.translationsDialog .translationList').append(createTranslationRow(code, language));
             $textbox.val('');
@@ -173,14 +169,15 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             event.preventDefault();
 
             var $this = $(this);
-
-            // get item to remove
             var code = $this.closest('li').data('code');
 
-            if (!confirm('Are you sure you want to delete the active language ' + active[code] +
-                         '? All existing translations for this language will be lost!'))
-                return;
+            odkmaker.application.confirm('Are you sure you want to delete the active language ' +
+                active[code] + '? All existing translations for this language will be lost!',
+                function() { removeTranslation(code, $this.closest('li')); });
+        });
 
+        var removeTranslation = function(code, $line)
+        {
             delete active[code];
             if (display == code)
             {
@@ -189,7 +186,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             }
 
             // update dialog and menu
-            $this.closest('li').remove();
+            $line.remove();
             updateMenu();
 
             // update underlying data and visible property ui
@@ -199,7 +196,7 @@ var i18nNS = odkmaker.namespace.load('odkmaker.i18n');
             });
             // TODO: someday make this more efficient
             $('.workspace .control.selected').trigger('odkControl-reloadProperties');
-        });
+        };
 
         $('.translationsDialog').on('change', '.translationName', function(event)
         {

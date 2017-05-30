@@ -34,15 +34,26 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
     odkmaker.data.extract = function()
     {
+        var htitle = odkmaker.data.getTitle();
+        if ($.isBlank(htitle) || (htitle === $('h1').text())) htitle = null;
+
         return {
             title: $('h1').text(),
             controls: extractMany($('.workspace')),
             metadata: {
                 version: odkmaker.data.currentVersion,
                 activeLanguages: odkmaker.i18n.activeLanguageData(),
-                optionsPresets: odkmaker.options.presets
+                optionsPresets: odkmaker.options.presets,
+                htitle: htitle
             }
         };
+    };
+    odkmaker.data.getTitle = function()
+    {
+        var title = $('#formProperties_title').val();
+        if ($.isBlank(title) && (odkmaker.data.currentForm != null)) title = odkmaker.data.currentForm.metadata.title;
+        if ($.isBlank(title)) title = $('h1').text();
+        return title;
     };
 
     var loadOne = odkmaker.data.loadOne = function(control)
@@ -179,13 +190,27 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // constraint string
         var constraint = [];
 
+        // deal universally with successor binding.
+        if (instance.context.successorRelevance != null)
+        {
+            relevance.push(instance.context.successorRelevance);
+            delete instance.context.successorRelevance;
+        }
+        if ((control.other != null) && (control.other !== false))
+        {
+            instance.context.successorRelevance = _.map(control.other, function(value) {
+                return 'selected(' + xpath + control.name + ", '" + xmlEncode(value) + "')";
+            }).join(' or ');
+        }
+
         // groups are special
         if (control.type == 'group')
         {
             var instanceTag = {
                 name: control.name,
                 attrs: {},
-                children: []
+                children: [],
+                context: {}
             };
             instance.children.push(instanceTag);
             var bodyTag = {
@@ -438,6 +463,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         if (control.required === true)
             binding.attrs.required = 'true()';
 
+        // required message
+        if ((control.required === true) && (control.requiredText !== undefined) && !_.isEmpty(control.requiredText))
+        {
+            binding.attrs['jr:requiredMsg'] = "jr:itext('" + xpath + control.name + ":requiredMsg')"
+            addTranslation(control.requiredText, xpath + control.name + ':requiredMsg', translations);
+        }
+
         // text length
         if ((control.length !== undefined) && (control.length !== false))
         {
@@ -541,12 +573,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
               'id': 'build_' + $.sanitizeString($('.header h1').text()) +
                     '_' + Math.round((new Date()).getTime() / 1000)
             },
-            children: [ 
-                {   name: 'meta',
-                    children: [
-                        {   name: 'instanceID' }
-                    ]   }
-             ]
+            children: [{
+                name: 'meta',
+                children: [ { name: 'instanceID' } ]
+            }],
+            context: {}
         };
 
         var instance = {
@@ -579,7 +610,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 {   name: 'h:head',
                     children: [
                         {   name: 'h:title',
-                            val: internal.title },
+                            val: odkmaker.data.getTitle() },
                         model
                     ] },
                 body

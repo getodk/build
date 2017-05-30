@@ -165,6 +165,21 @@
       </div>
     </div>
 
+    <div class="modal narrowModal formPropertiesDialog">
+      <h3>Form Properties</h3>
+      <div class="modalContents">
+        <form>
+          <div class="errorMessage"></div>
+
+          <label for="formProperties_title">Title on Device</label>
+          <input type="text" id="formProperties_title" name="title" />
+        </form>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton jqmClose" href="#close">Done</a>
+      </div>
+    </div>
+
     <div class="modal narrowModal translationsDialog">
       <h3>Translations</h3>
       <div class="modalContents">
@@ -235,6 +250,13 @@
       </div>
     </div>
 
+    <div class="modal narrowModal titlelessModal askDialog">
+      <div class="modalContents">
+        <p></p>
+      </div>
+      <div class="modalButtonContainer"></div>
+    </div>
+
     <div class="modal narrowModal aboutDialog">
       <h3>About</h3>
       <div class="modalContents">
@@ -299,6 +321,15 @@
           </div>
           <h5 class="controlName"></h5>
           <ul class="controlProperties"></ul>
+          <div class="controlSuccessor">
+            <div class="controlSuccessorArrow">
+              <div class="bend"></div>
+              <div class="noSuccessorError">Please add a question to follow up with.</div>
+            </div>
+            <div class="controlSuccessorCondition">
+              Ask the following question if <span></span> is selected:
+            </div>
+          </div>
         </div>
         <div class="controlFlowArrow"></div>
       </div>
@@ -355,6 +386,17 @@
             <h5>Underlying Value</h5>
             <input type="text" class="editorTextfield underlyingValue"/>
           </div>
+
+        <div class="otherEditor">
+          <label>
+            <input id="other_enabled" type="checkbox" class="editorCheckbox editorEnabled"/>
+            <span></span>
+          </label>
+          <div class="otherValue">
+            <h5>Ask if the response is:</h5>
+            <select class="editorSelect"></select>
+          </div>
+        </div>
 
       </div>
 

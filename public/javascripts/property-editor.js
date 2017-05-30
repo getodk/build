@@ -46,6 +46,17 @@
                 processValidation();
             });
             processValidation();
+
+            if (property.bindDisplayIf != null)
+            {
+                var parentProperty = $parent.data('odkControl-properties')[property.bindDisplayIf];
+                var showHide = function() { $this.toggle(parentProperty.value !== false); }
+                $parent.on('odkControl-propertiesUpdated', function(_, propId)
+                {
+                    if (propId === property.bindDisplayIf) showHide();
+                });
+                showHide();
+            }
         });
     };
 
@@ -202,6 +213,89 @@
                     $editor.closest('li').replaceWith($newEditor);
                 };
             });
+        },
+        otherEditor: function(property, $editor, $parent) {
+            $editor.find('label span').text(property.name);
+            var optionsProperty = $parent.data('odkControl-properties')[property.bindTo];
+
+            // WARNING: we don't yet know how to detangle if the user has two identical
+            // underlying values. right now the first instance is always used.
+
+            // because the user might change the underlying value, we can't simply track
+            // their selection here based on that. so we track the full object ref instead.
+            var selectedOption = null;
+
+            var $enable = $editor.find('input');
+            var $select = $editor.find('select');
+            var update = function()
+            {
+                $enable.attr('checked', property.value !== false);
+                $select.attr('disabled', property.value === false);
+                updateOptions();
+            };
+
+            var updateOptions = function()
+            {
+                var $options = $select.find('option').detach();
+                var selectedValue = property.value[0]; // default to the saved value.
+
+                _.each(optionsProperty.value, function(option)
+                {
+                    // if we find a ref match, assume that option.
+                    if (selectedOption === option)
+                        selectedValue = option.val;
+
+                    // on the other hand, if we have no ref yet and we match, grab the ref.
+                    if ((selectedOption == null) && (property.value[0] === option.val))
+                        selectedOption = option;
+
+                    var existing = _.find($options, function(dom) { return $(dom).data('option') === option; });
+                    existing = (existing == null) ? $('<option/>').data('option', option) : $(existing);
+                    $select.append(existing.text(option.val).attr('value', option.val));
+                });
+
+                if (property.value !== false)
+                {
+                    if (selectedValue != null)
+                    {
+                        // select the value we found.
+                        $select.val(selectedValue);
+                        property.value = [ selectedValue ];
+                        $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
+                    }
+                    else if (optionsProperty.value.length > 0)
+                    {
+                        // we have no value yet; select the first option.
+                        selectedOption = optionsProperty.value[0];
+                        selectedValue = $select.children('option:first-child').attr('value');
+                        $select.val(selectedValue);
+                        property.value = [ selectedValue ];
+                        $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
+                    }
+                }
+            };
+
+            $parent.on('odkControl-propertiesUpdated', function(_, propId) { if (propId === property.bindTo) updateOptions(); });
+
+            $select.on('change', function()
+            {
+                var option = $select.children(':selected')[0];
+                if (option != null)
+                {
+                    selectedOption = $(option).data('option');
+                    property.value = [ selectedOption.val ];
+                    $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
+                }
+            });
+
+            $enable.on('change', function()
+            {
+                property.value = $enable.is(':checked') ? [] : false;
+                $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
+                update();
+            });
+
+            update();
         }
     };
 

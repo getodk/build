@@ -127,14 +127,14 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
         if ($presetsSelect.is(':disabled'))
             return;
 
-        if (confirm('Are you sure you want to delete this preset? This cannot be undone.'))
+        odkmaker.application.confirm('Are you sure you want to delete this preset? This cannot be undone.', function()
         {
             var idx = parseInt($presetsSelect.val());
             optionsNS.presets.splice(idx, 1);
             $presetsSelect.children(':nth-child(' + (idx + 1) + ')').remove();
 
             updatePresets();
-        }
+        });
     });
     $dialog.find('.savePreset').click(function(event)
     {

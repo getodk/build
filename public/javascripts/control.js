@@ -16,16 +16,15 @@
     var drawPropertyList = function($this, properties)
     {
             // clear out and reconstruct property list
-            var wasExpanded = $propertyList.find('.advanced > .toggle').hasClass('expanded');
             $propertyList.empty();
 
             var $advancedContainer = $.tag({
                 _: 'li', 'class': 'advanced', contents: [
-                    { _: 'a', 'class': [ 'toggle', { i: wasExpanded, t: 'expanded' } ], href: '#advanced', contents: [
+                    { _: 'a', 'class': 'toggle', href: '#advanced', contents: [
                         { _: 'div', 'class': 'icon' },
                         'Advanced'
                     ] },
-                    { _: 'ul', 'class': 'advancedProperties toggleContainer', style: { display: { i: wasExpanded, t: 'block', e: 'none' } } }
+                    { _: 'ul', 'class': 'advancedProperties toggleContainer' }
                 ]
             });
             var $advancedList = $advancedContainer.find('.advancedProperties');
@@ -59,6 +58,16 @@
         else if ($selected.length === 1)
             drawPropertyList($selected.eq(0), $selected.eq(0).data('odkControl-properties'));
     } });
+
+    // Wired events
+    $(function()
+    {
+        $propertyList.on('click', '.toggle', function(event)
+        {
+            event.preventDefault();
+            $propertyList.toggleClass('showAdvanced');
+        });
+    });
 
     // Private methods
 
@@ -97,6 +106,17 @@
                 $('<li>' + property.name + '</li>')
             );
         });
+
+        _.each(properties, function(property)
+        {
+            if (property.bindControlClass != null)
+                $this.toggleClass(property.bindControlClass, property.value !== false);
+        });
+
+        // SPECIAL CASE:
+        // update the followup question text from that value.
+        if ((properties.other != null) && (properties.other.value !== false))
+            $info.find('.controlSuccessorCondition span').text(properties.other.value.join(' or '));
     };
 
     // gets all controls "between" two given controls, stepping in and out of groups
@@ -236,6 +256,25 @@
         }
     };
 
+    var deleteControl = function($control)
+    {
+        $control.slideUp('normal', function()
+        {
+            var $controlAndChildren = $control.find('.control').add($control);
+            $controlAndChildren.each(function()
+            {
+                var $this = $(this);
+                // don't do anything if this control has already been processed for deletion.
+                if (document.contains($this[0]))
+                    validationNS.controlDestroyed($this, $this.data('odkControl-properties'));
+            });
+            $controlAndChildren.each(deselect);
+            $controlAndChildren.trigger('odkControl-removing');
+            $control.remove();
+            $controlAndChildren.trigger('odkControl-removed');
+        });
+    };
+
     // Constructor
     var loadTime = (new Date()).getTime(); // get time in nanos to ~ensure universal uniqueness of id.
     $.fn.odkControl = function(type, options, defaultProperties)
@@ -257,12 +296,19 @@
 
             // Deep clone the properties if relevant
             var properties = null;
-            if ((type == 'group') || (type == 'branch') || (type == 'metadata'))
-                properties = defaultProperties || $.extend(true, {}, $.fn.odkControl.controlProperties[type]);
+
+            if (defaultProperties != null)
+                properties = defaultProperties;
+            else if ((type == 'group') || (type == 'branch') || (type == 'metadata'))
+                properties = $.extend(true, {}, $.fn.odkControl.controlProperties[type]);
             else
-                properties = defaultProperties ||
-                    $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
-                                   $.fn.odkControl.controlProperties[type]);
+            {
+                properties = $.extend(true, {}, $.fn.odkControl.defaultProperties);
+                var controlProperties = $.fn.odkControl.controlProperties[type];
+                for (var prop in controlProperties)
+                    delete properties[prop];
+                $.extend(true, properties, controlProperties);
+            }
 
             var match = null;
             if (properties.name.value == 'untitled')
@@ -293,7 +339,7 @@
                 performSelection($this, type, options, properties);
             });
             $this.bind('odkControl-deselect', deselect);
-            $this.click(function(event)
+            $this.on('click', function(event)
             {
                 event.stopPropagation();
 
@@ -324,16 +370,24 @@
             // event wireup
             $this.find('.deleteControl').click(function(event)
             {
+                event.stopPropagation();
                 event.preventDefault();
-                $this.slideUp('normal', function()
-                {
-                    var $thisAndChildren = $this.find('.control').add($this);
-                    $thisAndChildren.each(function() { validationNS.controlDestroyed($(this), properties); });
-                    $thisAndChildren.each(deselect);
-                    $thisAndChildren.trigger('odkControl-removing');
-                    $this.remove();
-                    $thisAndChildren.trigger('odkControl-removed');
-                });
+                // if the control to which this delete button belongs is not selected at all,
+                // always just delete this one.
+                var $selected;
+                if (!$this.hasClass('selected'))
+                    $selected = $this;
+                else
+                    $selected = $('.control.selected');
+
+                if ($selected.length > 1)
+                    odkmaker.application.ask('What do you want to delete?', {
+                        'Just this question': function() { deleteControl($this); },
+                        'All selected questions': function() { $selected.each(function() { deleteControl($(this)); }); },
+                        'Cancel': null
+                    });
+                else
+                    deleteControl($this);
             });
 
             // set up dragging
@@ -387,6 +441,12 @@
                         description: 'Whether this field must be filled in before continuing.',
                         value: false,
                         summary: true },
+        requiredText: { name: 'Required Text',
+                        type: 'uiText',
+                        bindDisplayIf: 'required',
+                        description: 'The error text to display if this field is not filled in.',
+                        value: {},
+                        summary: false },
         relevance:    { name: 'Relevance',
                         type: 'text',
                         description: 'Specify a custom expression to evaluate to determine if this field is shown.',
@@ -398,8 +458,18 @@
         constraint:   { name: 'Constraint',
                         type: 'text',
                         description: 'Specify a custom expression to validate the user input.',
-                        tips: [ 'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-functions" rel="external">ODK XForms Functions Spec</a> may be useful.' ],
+                        tips: [
+                            'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-functions" rel="external">ODK XForms Functions Spec</a> may be useful.',
+                            'If this constraint check fails, the Invalid Text is displayed.'
+                        ],
                         value: '',
+                        advanced: true,
+                        summary: false },
+        // this is automatically overridden by controls that have their own specified invalidText:
+        invalidText:  { name: 'Constraint Invalid Text',
+                        type: 'uiText',
+                        description: 'Message to display if the value fails the custom constraint check.',
+                        value: {},
                         advanced: true,
                         summary: false },
         destination:  { name: 'Instance Destination',
@@ -432,6 +502,7 @@
           invalidText:{ name: 'Invalid Text',
                         type: 'uiText',
                         description: 'Message to display if the value fails the length check.',
+                        tips: [ 'It is also displayed if a custom constraint check is failed.' ],
                         value: {},
                         summary: false } },
         inputNumeric: {
@@ -446,6 +517,7 @@
           invalidText:{ name: 'Invalid Text',
                         type: 'uiText',
                         description: 'Message to display if the value fails the range check.',
+                        tips: [ 'It is also displayed if a custom constraint check is failed.' ],
                         value: {},
                         summary: false },
           kind:       { name: 'Kind',
@@ -468,6 +540,7 @@
           invalidText:{ name: 'Invalid Text',
                         type: 'uiText',
                         description: 'Message to display if the value fails the range check.',
+                        tips: [ 'It is also displayed if a custom constraint check is failed.' ],
                         value: {},
                         summary: false },
           kind:       { name: 'Kind',
@@ -499,7 +572,8 @@
                         description: 'Type of media to upload.',
                         options: [ 'Image',
                                    'Audio',
-                                   'Video' ] } },
+                                   'Video' ],
+                        value: 'Image' } },
         inputBarcode: {},
         inputSelectOne: {
           options:    { name: 'Options',
@@ -510,6 +584,17 @@
                             'If you have many options or reuse options frequently, use Bulk Edit.',
                             'The Underlying Value is the value saved to the exported data.' ],
                         value: [{ text: {}, val: 'untitled' }],
+                        summary: false },
+          other:      { name: 'Follow-up Question',
+                        type: 'otherEditor',
+                        validation: [ 'fieldListExpr' ],
+                        description: 'Ask the following question as additional information only if a particular response is chosen.',
+                        tips: [
+                            'You can use this to easily prompt for more information if the user selects "Other," for example.',
+                            'Whatever the following question is, it will only be asked if the user selects the value you specify here.' ],
+                        bindTo: 'options',
+                        bindControlClass: 'hasSuccessorBinding',
+                        value: false,
                         summary: false },
           appearance: { name: 'Style',
                         type: 'enum',
@@ -527,6 +612,17 @@
                         validation: [ 'underlyingRequired', 'underlyingLegalChars', 'underlyingLength', 'hasOptions' ],
                         value: [{ text: {}, val: 'untitled' }],
                         summary: false },
+          other:      { name: 'Follow-up Question',
+                        type: 'otherEditor',
+                        validation: [ 'fieldListExpr' ],
+                        description: 'Ask the following question as additional information only if a particular response is chosen.',
+                        tips: [
+                            'You can use this to easily prompt for more information if the user selects "Other," for example.',
+                            'Whatever the following question is, it will only be asked if the user selects the value you specify here.' ],
+                        bindTo: 'options',
+                        bindControlClass: 'hasSuccessorBinding',
+                        value: false,
+                        summary: false },
           count:      { name: 'Response Count',
                         type: 'numericRange',
                         description: 'This many options must be selected for the response to be valid.',
@@ -535,6 +631,12 @@
                             'For an open-ended range, fill in only a minimum or a maximum and leave the other blank.' ],
                         value: false,
                         summary: true },
+          invalidText:{ name: 'Invalid Text',
+                        type: 'uiText',
+                        description: 'Message to display if the value fails the response count check.',
+                        tips: [ 'It is also displayed if a custom constraint check is failed.' ],
+                        value: {},
+                        summary: false },
           appearance: { name: 'Style',
                         type: 'enum',
                         description: 'What interface to present.',
