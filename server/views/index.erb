@@ -79,7 +79,8 @@
             <li class="disabled"><a href="#undo">Undo</a></li>
             <li class="disabled"><a href="#redo">Redo</a></li>
             <li class="divider"></li>
-            <li><a href="#translationsDialog" class="manageTranslations" rel="modal">Manage Translations...</a></li>
+            <li><a href="#translationsDialog" class="manageTranslations" rel="modal">Manage Translations&hellip;</a></li>
+            <li><a href="#formPropertiesDialog" class="formProperties" rel="modal">Form Properties&hellip;</a></li>
           </ul>
         </li>
         <li>
@@ -288,6 +289,21 @@
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton downloadLink" href="#download">Download</a>
+        <a class="modalButton jqmClose" href="#close">Done</a>
+      </div>
+    </div>
+
+    <div class="modal narrowModal formPropertiesDialog">
+      <h3>Form Properties</h3>
+      <div class="modalContents">
+        <form>
+          <div class="errorMessage"></div>
+
+          <label for="formProperties_title">Title on Device</label>
+          <input type="text" id="formProperties_title" name="title" />
+        </form>
+      </div>
+      <div class="modalButtonContainer">
         <a class="modalButton jqmClose" href="#close">Done</a>
       </div>
     </div>

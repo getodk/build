@@ -12,6 +12,7 @@ applicationNS.newForm = function()
     $('.control').trigger('odkControl-removed');
     $('.workspace').empty();
     $('.header h1').text('Untitled Form');
+    $('#formProperties_title').val('');
     applicationNS.clearProperties();
     odkmaker.data.currentForm = null;
     odkmaker.data.clean = true;
