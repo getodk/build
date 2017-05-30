@@ -80,6 +80,8 @@ var updateLanguages = function()
             languageItems[code] = item;
             languageMenu.append(item);
         }
+        else if ((languageItems[code] != null) && (languageItems[code].label !== language))
+            languageItems[code].label = language;
     });
 
     _.each(languageItems, function(item, code)
