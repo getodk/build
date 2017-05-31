@@ -80,6 +80,8 @@ var updateLanguages = function()
             languageItems[code] = item;
             languageMenu.append(item);
         }
+        else if ((languageItems[code] != null) && (languageItems[code].label !== language))
+            languageItems[code].label = language;
     });
 
     _.each(languageItems, function(item, code)
@@ -116,16 +118,28 @@ viewMenu.append(viewCollapse);
 // SETTINGS
 var settingsMenu = new gui.Menu();
 
-// edit -> form properties
-/*var editProperties = new gui.MenuItem({ label: 'Form Properties...' });
-editProperties.on('click', function() { $('.menu #propertiesLink').click(); });
-settingsMenu.append(editProperties);*/
+// settings -> form properties
+var editProperties = new gui.MenuItem({ label: 'Form Properties...' });
+editProperties.on('click', function() { $('.menu .formProperties').click(); });
+settingsMenu.append(editProperties);
 
-// edit -> languages
+// settings -> languages
 var editLanguages = new gui.MenuItem({ label: 'Translations...' });
 editLanguages.on('click', function() { $('.manageTranslations').click(); });
 settingsMenu.append(editLanguages);
 
+var editAnalytics = new gui.MenuItem({ type: 'checkbox', label: 'Allow anonymous usage analytics' });
+editAnalytics.on('click', function()
+{
+    var setTo = (localStorage.getItem('suppressAnalytics') == null);
+    if (setTo === true)
+        localStorage.setItem('suppressAnalytics', true);
+    else
+        localStorage.removeItem('suppressAnalytics');
+    editAnalytics.checked = !setTo;
+});
+editAnalytics.checked = (localStorage.getItem('suppressAnalytics') == null);
+settingsMenu.append(editAnalytics);
 
 
 

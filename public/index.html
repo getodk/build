@@ -23,6 +23,12 @@
       <img src="images/type_icons.png"/>
       <img src="images/type_icons_small.png"/>
     </div>
+    <div id="updateToast" class="toast flashy">
+      <h2>New version available</h2>
+      <p>Version <span class="version"></span> is now available:</p>
+      <a href="https://opendatakit.org/downloads/download-category/build/" class="toastAction" target="_blank">Download</a>
+      <a class="dismissToast" href="#">No thanks</a>
+    </div>
     <div id="toast" class="toast"></div>
     <div class="header">
       <h1>Untitled Form</h1>
@@ -57,7 +63,8 @@
             <li class="disabled"><a href="#undo">Undo</a></li>
             <li class="disabled"><a href="#redo">Redo</a></li>
             <li class="divider"></li>
-            <li><a href="#translationsDialog" class="manageTranslations" rel="modal">Manage Translations...</a></li>
+            <li><a href="#translationsDialog" class="manageTranslations" rel="modal">Manage Translations&hellip;</a></li>
+            <li><a href="#formPropertiesDialog" class="formProperties" rel="modal">Form Properties&hellip;</a></li>
           </ul>
         </li>
         <li>
@@ -165,6 +172,21 @@
       </div>
     </div>
 
+    <div class="modal narrowModal formPropertiesDialog">
+      <h3>Form Properties</h3>
+      <div class="modalContents">
+        <form>
+          <div class="errorMessage"></div>
+
+          <label for="formProperties_title">Title on Device</label>
+          <input type="text" id="formProperties_title" name="title" />
+        </form>
+      </div>
+      <div class="modalButtonContainer">
+        <a class="modalButton jqmClose" href="#close">Done</a>
+      </div>
+    </div>
+
     <div class="modal narrowModal translationsDialog">
       <h3>Translations</h3>
       <div class="modalContents">
@@ -235,6 +257,13 @@
       </div>
     </div>
 
+    <div class="modal narrowModal titlelessModal askDialog">
+      <div class="modalContents">
+        <p></p>
+      </div>
+      <div class="modalButtonContainer"></div>
+    </div>
+
     <div class="modal narrowModal aboutDialog">
       <h3>About</h3>
       <div class="modalContents">
@@ -267,6 +296,7 @@
     <script type="text/javascript" src="javascripts/kor.events.js"></script>
     <script type="text/javascript" src="javascripts/awesomemarkup.js"></script>
     <script type="text/javascript" src="javascripts/namespace.js"></script>
+    <script type="text/javascript" src="javascripts/config.js"></script>
     <script type="text/javascript" src="javascripts/util.js"></script>
     <script type="text/javascript" src="javascripts/auth.js"></script>
     <script type="text/javascript" src="javascripts/data.js"></script>
@@ -299,6 +329,15 @@
           </div>
           <h5 class="controlName"></h5>
           <ul class="controlProperties"></ul>
+          <div class="controlSuccessor">
+            <div class="controlSuccessorArrow">
+              <div class="bend"></div>
+              <div class="noSuccessorError">Please add a question to follow up with.</div>
+            </div>
+            <div class="controlSuccessorCondition">
+              Ask the following question if <span></span> is selected:
+            </div>
+          </div>
         </div>
         <div class="controlFlowArrow"></div>
       </div>
@@ -355,6 +394,17 @@
             <h5>Underlying Value</h5>
             <input type="text" class="editorTextfield underlyingValue"/>
           </div>
+
+        <div class="otherEditor">
+          <label>
+            <input id="other_enabled" type="checkbox" class="editorCheckbox editorEnabled"/>
+            <span></span>
+          </label>
+          <div class="otherValue">
+            <h5>Ask if the response is:</h5>
+            <select class="editorSelect"></select>
+          </div>
+        </div>
 
       </div>
 

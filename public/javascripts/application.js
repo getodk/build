@@ -5,6 +5,7 @@
  */
 
 var applicationNS = odkmaker.namespace.load('odkmaker.application');
+var configNS = odkmaker.namespace.load('odkmaker.config');
 
 applicationNS.newForm = function()
 {
@@ -12,6 +13,7 @@ applicationNS.newForm = function()
     $('.control').trigger('odkControl-removed');
     $('.workspace').empty();
     $('.header h1').text('Untitled Form');
+    $('#formProperties_title').val('');
     applicationNS.clearProperties();
     odkmaker.data.currentForm = null;
     odkmaker.data.clean = true;
@@ -104,16 +106,6 @@ $(function()
         // We were spawned for the purpose of opening a path:
         odkmaker.file.openPath(loadPath);
 
-    // Toggles
-    $('body').on('click', 'a.toggle', function(event)
-    {
-        event.preventDefault();
-        $(this)
-            .toggleClass('expanded')
-            .siblings('.toggleContainer')
-                .slideToggle('normal');
-    });
-
     // External links should open in a new window
     $("a[rel$='external']").click(function()
     {
@@ -162,5 +154,59 @@ $(function()
             }
         });
     }
+
+    // Standard question-asking modal. Provide buttons in the form of
+    // an object with label: callback pairs. Specifying callback of null
+    // will make that button close the dialog.
+    var $askDialog = $('.askDialog');
+    $askDialog.jqm({ modal: true });
+    applicationNS.ask = function(message, options)
+    {
+        $askDialog.find('p').text(message);
+
+        var $buttonContainer = $askDialog.find('.modalButtonContainer');
+        $buttonContainer.empty();
+
+        for (var label in options)
+        {
+            var $button = $('<a class="modalButton jqmClose" href="#"/>');
+            $button.text(label);
+            $buttonContainer.append($button);
+            if (options[label] != null)
+                $button.on('click', options[label]);
+        }
+
+        $askDialog.jqmShow();
+    };
+
+    applicationNS.confirm = function(message, callback)
+    {
+        applicationNS.ask(message, { Yes: callback, No: null });
+    };
+
+    // GA tracking, if enabled.
+    if ((configNS.gaToken != null) && (localStorage.getItem('suppressAnalytics') == null))
+    {
+        var analytics = require('universal-analytics');
+        analytics(configNS.gaToken, { https: true }).pageview('/offline').send();
+    }
+
+    // check for new releases.
+    var $updateToast = $('#updateToast');
+    $.ajax({ type: 'get', url: 'https://api.github.com/repos/opendatakit/build/releases/latest', success: function(response)
+    {
+        if (response.tag_name !== configNS.version)
+            $updateToast
+                .find('.version').text(response.tag_name).end()
+                .animate({ bottom: '-' + ($updateToast.outerHeight(true) - $updateToast.height() - 20) + 'px' }, 'slow')
+                .delegate('a', 'click', function() { $updateToast.animate({ bottom: '-15em' }, 'slow'); });
+    } });
+
+    // open external links in native browser.
+    $(document).on('click', 'a[target=_blank]', function()
+    {
+         require('nw.gui').Shell.openExternal(this.href);
+         return false;
+    });
 });
 
