@@ -229,15 +229,16 @@
             var $select = $editor.find('select');
             var update = function()
             {
-                $enable.attr('checked', property.value !== false);
-                $select.attr('disabled', property.value === false);
+                var value = (property.value == null) ? false : property.value;
+                $enable.attr('checked', value);
+                $select.attr('disabled', value);
                 updateOptions();
             };
 
             var updateOptions = function()
             {
                 var $options = $select.find('option').detach();
-                var selectedValue = property.value[0]; // default to the saved value.
+                var selectedValue = (property.value == null) ? undefined : property.value[0]; // default to the saved value.
 
                 _.each(optionsProperty.value, function(option)
                 {
@@ -246,7 +247,7 @@
                         selectedValue = option.val;
 
                     // on the other hand, if we have no ref yet and we match, grab the ref.
-                    if ((selectedOption == null) && (property.value[0] === option.val))
+                    if ((selectedOption == null) && (selectedValue === option.val))
                         selectedOption = option;
 
                     var existing = _.find($options, function(dom) { return $(dom).data('option') === option; });
@@ -254,7 +255,7 @@
                     $select.append(existing.text(option.val).attr('value', option.val));
                 });
 
-                if (property.value !== false)
+                if ((property.value !== false) && (property.value != null))
                 {
                     if (selectedValue != null)
                     {
