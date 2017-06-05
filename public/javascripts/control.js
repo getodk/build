@@ -115,7 +115,7 @@
 
         // SPECIAL CASE:
         // update the followup question text from that value.
-        if ((properties.other != null) && (properties.other.value !== false))
+        if ((properties.other != null) && (properties.other.value != null) && (properties.other.value !== false))
             $info.find('.controlSuccessorCondition span').text(properties.other.value.join(' or '));
     };
 
