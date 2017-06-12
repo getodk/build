@@ -110,12 +110,12 @@
         _.each(properties, function(property)
         {
             if (property.bindControlClass != null)
-                $this.toggleClass(property.bindControlClass, property.value !== false);
+                $this.toggleClass(property.bindControlClass, ((property.value != null) && (property.value !== false)));
         });
 
         // SPECIAL CASE:
         // update the followup question text from that value.
-        if ((properties.other != null) && (properties.other.value !== false))
+        if ((properties.other != null) && (properties.other.value != null) && (properties.other.value !== false))
             $info.find('.controlSuccessorCondition span').text(properties.other.value.join(' or '));
     };
 
