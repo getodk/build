@@ -287,6 +287,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                         message = '<p>Could not upload the form. Aggregate could not validate the form contents. Please make sure your form is valid and try again.</p>';
                     else if (errorBody.code == '404')
                         message = '<p>Could not upload the form, because we could not find the Aggregate server you specified. Please check the address and try again.</p>';
+                    else if (errorBody.code == 'ECONNREFUSED')
+                        message = '<p>Could not upload the form. We found the server you specified, but it does not appear to be a valid, functioning Aggregate server. Please check the address and the server, and try again.</p>';
                     else
                         message = '<p>Could not upload the form. Please check your credentials and instance name, and try again.</p>';
 

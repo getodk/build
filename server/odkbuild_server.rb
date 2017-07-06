@@ -264,6 +264,9 @@ class OdkBuild < Sinatra::Application
     rescue SocketError => ex
       status 404
       return { :error => ex.message, :code => 404, :body => 'Socket Error' }.to_json
+    rescue Errno::ECONNREFUSED => ex
+      status 400
+      return { :error => 'Errno::ECONNREFUSED', :code => 'ECONNREFUSED', :body => 'Connection refused' }.to_json
     end
 
     if res.code.to_s == '401'
