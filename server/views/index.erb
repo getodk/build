@@ -361,9 +361,13 @@
           visible on the Internet.</p>
 
         <h4>Aggregate Instance URI</h4>
-        <p>https://<input type="text" class="aggregateInstanceName"/></p>
+        <p>
+          <select class="aggregateInstanceProtocol">
+            <option>https</option>
+            <option>http</option>
+          </select>://<input type="text" class="aggregateInstanceName"/></p>
         <p>Examples include <code>https://my-aggregate.appspot.com</code> if you're on
-          Google App Engine, or <code>https://216.58.193.110:8080/ODKAggregate</code> if
+          Google App Engine, or <code>http://216.58.193.110:8080/ODKAggregate</code> if
           you have your own server on the web.</p>
         <h4>Aggregate Credentials</h4>
         <p>

@@ -264,6 +264,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             event.preventDefault();
 
             var $loading = $('.aggregateDialog .modalLoadingOverlay');
+            var protocol = $('.aggregateInstanceProtocol').val();
             var target = $('.aggregateInstanceName').val();
             $loading.show();
             $('.aggregateDialog .errorMessage').empty().hide();
@@ -272,7 +273,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 url: '/aggregate/post',
                 dataType: 'json',
                 type: 'POST',
-                data: { target: target, credentials: { user: $('#aggregateUser').val(), password: $('#aggregatePassword').val() }, name: $('h1').text(), payload: odkmaker.data.serialize() },
+                data: { protocol: protocol, target: target, credentials: { user: $('#aggregateUser').val(), password: $('#aggregatePassword').val() }, name: $('h1').text(), payload: odkmaker.data.serialize() },
                 success: function(response, status)
                 {
                     $.toast('Your form has been successfully uploaded to ' + $.h(target) + '.');

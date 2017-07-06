@@ -247,7 +247,7 @@ class OdkBuild < Sinatra::Application
     return error_validation_failed unless params[:credentials][:user]
     return error_validation_failed unless params[:credentials][:password]
 
-    uri = URI.parse("https://#{params[:target]}/formUpload")
+    uri = URI.parse("#{params[:protocol] || 'https'}://#{params[:target]}/formUpload")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     req = Net::HTTP::Post.new(uri.request_uri)
