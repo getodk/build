@@ -1385,6 +1385,11 @@ body > .control.last .controlFlowArrow,
     margin-left: 10em;
     width: calc(100% - 10em);
 }
+.formPropertiesDialog p
+{
+    font-size: 1.1em;
+    padding-left: 10em;
+}
 
 .errorMessage p
 {

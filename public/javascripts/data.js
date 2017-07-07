@@ -44,7 +44,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 version: odkmaker.data.currentVersion,
                 activeLanguages: odkmaker.i18n.activeLanguageData(),
                 optionsPresets: odkmaker.options.presets,
-                htitle: htitle
+                htitle: htitle,
+                instance_name: $('#formProperties_instanceName').val()
             }
         };
     };
@@ -106,6 +107,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         $('h1').text(formObj.title);
         $('#formProperties_title').val(formObj.metadata.htitle)
+        $('#formProperties_instanceName').val(formObj.metadata.instance_name);
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadMany($('.workspace'), formObj.controls);
@@ -568,16 +570,18 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // TODO: user-config of instanceHead
 
         // Per OpenRosa spec, instanceID should be in /data/meta
+        var meta = {
+            name: 'orx:meta',
+            children: [ { name: 'orx:instanceID' } ]
+        };
+
         var instanceHead = {
             name: 'data',
             attrs: {
               'id': 'build_' + $.sanitizeString($('.header h1').text()) +
                     '_' + Math.round((new Date()).getTime() / 1000)
             },
-            children: [{
-                name: 'meta',
-                children: [ { name: 'instanceID' } ]
-            }],
+            children: [ meta ],
             context: {}
         };
 
@@ -603,9 +607,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             attrs: {
                 'xmlns': 'http://www.w3.org/2002/xforms',
                 'xmlns:h': 'http://www.w3.org/1999/xhtml',
-                'xmlns:ev': 'http://www.w3.org/2001/xml-events',
                 'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
-                'xmlns:jr': 'http://openrosa.org/javarosa'
+                'xmlns:jr': 'http://openrosa.org/javarosa',
+                'xmlns:orx': 'http://openrosa.org/xforms'
             },
             children: [
                 {   name: 'h:head',
@@ -634,7 +638,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var instanceID = {
             name: 'bind',
             attrs: {
-                'nodeset': '/data/meta/instanceID',
+                'nodeset': '/data/orx:meta/orx:instanceID',
                 'type' : 'string',
                 'readonly' : 'true()',
                 'calculate' : 'concat(\'uuid:\', uuid())'
@@ -642,6 +646,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
         model.children.push(instanceID);
 
+        if (!$.isBlank(internal.metadata.instance_name))
+            meta.children.push({ name: 'instanceName', children: [ internal.metadata.instance_name ], _noWhitespace: true })
 
         _.each(internal.controls, function(control)
         {
