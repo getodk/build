@@ -45,7 +45,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 activeLanguages: odkmaker.i18n.activeLanguageData(),
                 optionsPresets: odkmaker.options.presets,
                 htitle: htitle,
-                instance_name: $('#formProperties_instanceName').val()
+                instance_name: $('#formProperties_instanceName').val(),
+                public_key: $('#formProperties_publicKey').val(),
+                submission_url: $('#formProperties_submissionUrl').val()
             }
         };
     };
@@ -108,6 +110,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('h1').text(formObj.title);
         $('#formProperties_title').val(formObj.metadata.htitle)
         $('#formProperties_instanceName').val(formObj.metadata.instance_name);
+        $('#formProperties_publicKey').val(formObj.metadata.public_key);
+        $('#formProperties_submissionUrl').val(formObj.metadata.submission_url);
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadMany($('.workspace'), formObj.controls);
@@ -648,6 +652,23 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         if (!$.isBlank(internal.metadata.instance_name))
             meta.children.push({ name: 'instanceName', children: [ internal.metadata.instance_name ], _noWhitespace: true })
+
+        if (!$.isBlank(internal.metadata.public_key) || !$.isBlank(internal.metadata.submission_url))
+        {
+            var submission = {
+                name: 'submission',
+                attrs: {
+                    method: 'form-data-post'
+                }
+            };
+            model.children.push(submission);
+
+            if (!$.isBlank(internal.metadata.public_key))
+                submission.attrs.base64RsaPublicKey = internal.metadata.public_key;
+
+            if (!$.isBlank(internal.metadata.submission_url))
+                submission.attrs.action = internal.metadata.submission_url;
+        }
 
         _.each(internal.controls, function(control)
         {
