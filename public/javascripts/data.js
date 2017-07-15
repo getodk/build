@@ -88,7 +88,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     // the current will be upgraded. to define an upgrade, add an upgrade object to any module
     // whose keys are the number of the version to be upgraded to and values are the functions
     // that take the form data and update it to conform with that version.
-    odkmaker.data.currentVersion = 1;
+    odkmaker.data.currentVersion = 2;
     odkmaker.data.load = function(formObj)
     {
         var version = formObj.metadata.version || 0;
@@ -134,7 +134,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         'Manual (No GPS)': 'placement-map',
         'Minimal (spinner)': 'minimal',
         'Table': 'label',
-        'Horizontal Layout': 'horizontal'
+        'Horizontal Layout': 'horizontal',
+        'Vertical Slider': 'vertical',
+        'Picker': 'picker'
     };
     var addTranslation = function(obj, itextPath, translations)
     {
@@ -392,10 +394,24 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             binding.attrs.type = 'string';
         else if (control.type == 'inputNumeric')
         {
-            if (control.kind == 'Integer')
-                binding.attrs.type = 'int';
-            else if (control.kind == 'Decimal')
-                binding.attrs.type = 'decimal';
+            if (control.appearance == 'Textbox')
+            {
+                if (control.kind == 'Integer')
+                    binding.attrs.type = 'int';
+                else if (control.kind == 'Decimal')
+                    binding.attrs.type = 'decimal';
+            }
+            else
+            {
+                // overrides extant input tag with a range tag.
+                bodyTag.name = 'range';
+                if (_.isObject(control.selectRange))
+                {
+                    bodyTag.attrs.start = control.selectRange.min;
+                    bodyTag.attrs.end = control.selectRange.max;
+                }
+                bodyTag.attrs.step = control.selectStep;
+            }
         }
         else if (control.type == 'inputDate')
         {
@@ -513,6 +529,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
         if ((control.type === 'inputDate') && ((control.kind === 'Year and Month') || (control.kind === 'Year')))
             bodyTag.attrs.appearance = (control.kind === 'Year') ? 'year' : 'month-year';
+        if (control.sliderTicks === false)
+            bodyTag.attrs.appearance = ((bodyTag.attrs.appearance || '') + ' no-ticks').trim();
 
         // options
         if (control.options !== undefined)
