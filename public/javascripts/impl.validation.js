@@ -172,7 +172,10 @@
             check: function(step, range)
             {
                 // can't use % because js float nastiness.
-                var quotient = (parseFloat(range.max) - parseFloat(range.min)) / parseFloat(step);
+                var step = parseFloat(step);
+                if (step <= 0) return false;
+
+                var quotient = (parseFloat(range.max) - parseFloat(range.min)) / step;
                 return Math.floor(quotient) === quotient;
             },
             message: 'Step must divide the selectable range perfectly into evenly-sized increments.',

@@ -549,7 +549,7 @@
                         inclusivity: false,
                         description: 'The lowest and highest selectable values, inclusive.',
                         tips: [ 'Integers and decimals are both valid.' ],
-                        value: { min: 1, max: 10 },
+                        value: { min: "1", max: "10" },
                         summary: false },
           selectStep: { name: 'Selectable Range: Step Between Choices',
                         type: 'text',
