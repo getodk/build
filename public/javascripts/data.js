@@ -274,7 +274,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 var binding = {
                     name: 'bind',
                     attrs: {
-                        'nodeset': control.destination || (xpath + control.name),
+                        'nodeset': xpath + control.name,
                         'relevant': '(' + relevance.join(') and (') + ')'
                     }
                 }
@@ -302,7 +302,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             var binding = {
                 name: 'bind',
                 attrs: {
-                    'nodeset': control.destination || (xpath + control.name)
+                    'nodeset': xpath + control.name
                 }
             }
 
@@ -372,7 +372,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var bodyTag = {
             name: controlTypes[control.type],
             attrs: {
-                'ref': control.destination || (xpath + control.name)
+                'ref': xpath + control.name
             },
             children: []
         };
@@ -382,7 +382,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var binding = {
             name: 'bind',
             attrs: {
-                'nodeset': control.destination || (xpath + control.name)
+                'nodeset': xpath + control.name
             }
         }
         model.children.push(binding);
