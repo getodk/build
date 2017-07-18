@@ -1357,7 +1357,7 @@ body > .control.last .controlFlowArrow,
 
 .aggregateDialog .aggregateInstanceName
 {
-    width: calc(100% - 5.2em);
+    width: calc(100% - 7.6em);
 }
 .aggregateDialog .note
 {

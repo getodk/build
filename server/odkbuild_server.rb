@@ -247,7 +247,7 @@ class OdkBuild < Sinatra::Application
     return error_validation_failed unless params[:credentials][:user]
     return error_validation_failed unless params[:credentials][:password]
 
-    uri = URI.parse("https://#{params[:target]}/formUpload")
+    uri = URI.parse("#{params[:protocol] || 'https'}://#{params[:target]}/formUpload")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     req = Net::HTTP::Post.new(uri.request_uri)
@@ -264,6 +264,9 @@ class OdkBuild < Sinatra::Application
     rescue SocketError => ex
       status 404
       return { :error => ex.message, :code => 404, :body => 'Socket Error' }.to_json
+    rescue Errno::ECONNREFUSED => ex
+      status 400
+      return { :error => 'Errno::ECONNREFUSED', :code => 'ECONNREFUSED', :body => 'Connection refused' }.to_json
     end
 
     if res.code.to_s == '401'
