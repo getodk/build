@@ -575,8 +575,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         // Per OpenRosa spec, instanceID should be in /data/meta
         var meta = {
-            name: 'orx:meta',
-            children: [ { name: 'orx:instanceID' } ]
+            name: 'meta',
+            children: [ { name: 'instanceID' } ]
         };
 
         var instanceHead = {
@@ -612,8 +612,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 'xmlns': 'http://www.w3.org/2002/xforms',
                 'xmlns:h': 'http://www.w3.org/1999/xhtml',
                 'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
-                'xmlns:jr': 'http://openrosa.org/javarosa',
-                'xmlns:orx': 'http://openrosa.org/xforms'
+                'xmlns:jr': 'http://openrosa.org/javarosa'
             },
             children: [
                 {   name: 'h:head',
@@ -642,7 +641,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var instanceID = {
             name: 'bind',
             attrs: {
-                'nodeset': '/data/orx:meta/orx:instanceID',
+                'nodeset': '/data/meta/instanceID',
                 'type' : 'string',
                 'readonly' : 'true()',
                 'calculate' : 'concat(\'uuid:\', uuid())'
