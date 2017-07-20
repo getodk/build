@@ -19,9 +19,10 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
 
     // keep track of some elems for fast access
     var $dialog = $('.optionsEditorDialog');
-    var $optionsBody = $('.optionsEditorDialog .optionsBody');
-    var $optionsHeaderContainer = $('.optionsEditorDialog .optionsHeaderContainer');
+    var $gridArea = $('.optionsEditorDialog .optionsGridEditor');
     var $presetsSelect = $('.optionsEditorDialog .presetsSelect');
+
+    $(function() { $gridArea.gridEditor() });
 
     // method to call on modal show
     optionsNS.modalHandler = function()
@@ -34,83 +35,6 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
     };
 
     // events for modal
-    var checkNthRowBlank = function(n)
-    {
-        var clean = true;
-        $optionsBody.children().each(function()
-        {
-            return (clean = ($(this).children(':nth-child(' + n + ')').val().trim() === ''));
-        });
-        return clean;
-    };
-
-    // grid events
-    $dialog.find('.optionsContainer').scroll(function()
-    {
-        $optionsHeaderContainer.children(':first-child').css('margin-left', -1 * $(this).scrollLeft());
-    });
-    $optionsBody.delegate('input', 'focus', function()
-    {
-        var $input = $(this);
-        if ($input.next().length === 0)
-        {
-            $optionsBody.children().each(function()
-            {
-                $(this).append('<input type="text"/>');
-            });
-        }
-    });
-    $optionsBody.delegate('input', 'blur', function()
-    {
-        var $input = $(this);
-        if ($input.next().is(':last-child') && checkNthRowBlank($input.prevAll().length + 1))
-        {
-            $optionsBody.children().each(function()
-            {
-                $(this).children(':last-child').remove();
-            });
-        }
-    });
-    $optionsBody.delegate('input', 'keydown', function(event)
-    {
-        var $input = $(this);
-        if (event.which == 13)
-        {
-            if (event.shiftKey)
-                $input.prev().focus();
-            else
-                $input.next().focus();
-        }
-        else if (event.which == 9)
-        {
-            event.preventDefault();
-
-            var $targetList;
-            var idx = $input.prevAll().length + 1;
-            if (event.shiftKey)
-                $targetList = $input.closest('li').prev();
-            else
-                $targetList = $input.closest('li').next();
-
-            if ($targetList.length === 0)
-            {
-                if (event.shiftKey)
-                {
-                    idx--;
-                    $targetList = $optionsBody.children(':last-child');
-                }
-                else
-                {
-                    idx++;
-                    $targetList = $optionsBody.children(':first-child');
-                }
-            }
-
-            $targetList.children(':nth-child(' + idx + ')').focus();
-        }
-    });
-
-    // presets events
     $dialog.find('.loadPreset').click(function(event)
     {
         event.preventDefault();
@@ -177,69 +101,33 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
         $presetsSelect.attr('disabled', _.isEmpty(optionsNS.presets));
     };
 
-    // injector
-    var populate = function(source)
+    var populate = function(options)
     {
-        // get languages
-        var languages = [{ id: 'value', name: 'Underlying Value'}].concat(
-            _.map(odkmaker.i18n.activeLanguages(), function(lang, code)
-            {
-                return { id: code, name: lang };
-            }));
+        headers = [ 'Underlying Value' ].concat(_.values(odkmaker.i18n.activeLanguages()));
 
-        // update ui
-        var width = languages.length * 150;
-        $dialog.find('.optionsHeader, .optionsBody').empty();
-        _.each(languages, function(lang)
+        langCodes = _.keys(odkmaker.i18n.activeLanguages());
+        data = _.map(options, function(option)
         {
-            $dialog.find('.optionsHeader').width(width)
-                                          .append('<li>' + lang.name + '</li>');
-
-            var langOptions;
-            if (lang.id == 'value')
-                langOptions = _.pluck(source, 'val');
-            else
-                langOptions = _.map(source, function(property) { return property.text[lang.id] || ''; });
-            langOptions.push(''); // add an empty row at the end
-
-            var $listItem = $('<li data-lang="' + $.h(lang.id) + '"/>');
-            _.each(langOptions, function(langOption)
-            {
-                $listItem.append('<input type="text" value="' + $.h(langOption) + '"/>');
-            });
-            $dialog.find('.optionsBody').width(width)
-                                        .append($listItem);
+            return [ option.val ].concat(_.map(langCodes, function(code) { return option.text[code]; }));
         });
+
+        $gridArea.gridEditor_populate(headers, data);
     };
 
-    // extractor
     var extract = function()
     {
-        var result = [];
-        _($optionsBody.children(':first-child').children().length).times(function()
-        {
-            result.push({ text: {} });
-        });
+        // assumes languages haven't changed. as long as this is a modal that is true:
+        langCodes = _.keys(odkmaker.i18n.activeLanguages());
 
-        $optionsBody.children().each(function()
+        var data = $gridArea.gridEditor_extract();
+      console.log(data);
+        return _.map(data, function(row)
         {
-            var $listItem = $(this);
-            var lang = $listItem.attr('data-lang');
-
-            $listItem.children().each(function(i)
-            {
-                if (lang == 'value')
-                    result[i].val = $(this).val().trim();
-                else
-                    result[i].text[lang] = $(this).val().trim();
-            });
-        });
-
-        // filter out blank options before returning
-        return _.reject(result, function(option)
-        {
-            return (option.val === '') && _.all(option.text, function(val) { return val === ''; });
+            var text = {};
+            _.each(langCodes, function(code, idx) { text[code] = row[idx + 1]; });
+            return { val: row[0], text: text };
         });
     };
+
 })(jQuery);
 
