@@ -284,6 +284,59 @@ form input
     animation-timing-function: linear;
 }
 
+.gridEditor .gridHeaderContainer
+{
+    overflow: hidden;
+    height: 1.3em;
+    margin-top: 0.3em;
+}
+.gridEditor .gridHeader li
+{
+    display: block;
+    float: left;
+    font-size: 1.1em;
+    font-weight: bold;
+    width: 13.636em;
+}
+.gridEditor .gridContainer
+{
+    margin-top: 0.2em;
+    min-height: 5em;
+    max-height: 30em;
+    overflow-x: auto;
+    overflow-y: auto;
+    padding-bottom: 1.2em;
+}
+.gridEditor .gridBody
+{
+    border: 1px solid #c7c7c7;
+    margin-top: 0.2em;
+}
+.gridEditor .gridBody li
+{
+    display: block;
+    float: left;
+    width: 15em;
+}
+.gridEditor .gridBody li input
+{
+    background: transparent;
+    box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
+    border: none;
+    display: block;
+    font-size: 1.2em;
+    line-height: 16px;
+    outline: none;
+    padding: 0;
+    padding-bottom: 0.333em;
+    width: 12.5em;
+}
+.gridEditor .gridBody li input:nth-child(2n)
+{
+    background: #ededed;
+}
+
+
 /***********
  * GENERAL *
  ***********/
@@ -1287,57 +1340,6 @@ body > .control.last .controlFlowArrow,
 {
     display: inline-block;
     margin: 0.4em;
-}
-.optionsEditorDialog .optionsHeaderContainer
-{
-    overflow: hidden;
-    height: 1.3em;
-    margin-top: 0.3em;
-}
-.optionsEditorDialog .optionsHeader li
-{
-    display: block;
-    float: left;
-    font-size: 1.1em;
-    font-weight: bold;
-    width: 13.636em;
-}
-.optionsEditorDialog .optionsContainer
-{
-    margin-top: 0.2em;
-    min-height: 5em;
-    max-height: 30em;
-    overflow-x: auto;
-    overflow-y: auto;
-    padding-bottom: 1.2em;
-}
-.optionsEditorDialog .optionsBody
-{
-    border: 1px solid #c7c7c7;
-    margin-top: 0.2em;
-}
-.optionsEditorDialog .optionsBody li
-{
-    display: block;
-    float: left;
-    width: 15em;
-}
-.optionsEditorDialog .optionsBody li input
-{
-    background: transparent;
-    box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
-    border: none;
-    display: block;
-    font-size: 1.2em;
-    line-height: 16px;
-    outline: none;
-    padding: 0;
-    padding-bottom: 0.333em;
-    width: 12.5em;
-}
-.optionsEditorDialog .optionsBody li input:nth-child(2n)
-{
-    background: #ededed;
 }
 
 .translationsDialog .addTranslation
