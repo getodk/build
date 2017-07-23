@@ -32,6 +32,8 @@
             // add our hero's properties
             _.each(properties, function(property, name)
             {
+                if (name === 'metadata') return;
+
                 $('<li class="propertyItem"/>')
                     .propertyEditor(property, name, $this)
                     .appendTo((property.advanced === true) ? $advancedList : $propertyList);
@@ -97,9 +99,9 @@
 
         var $propertyList = $info.children('.controlProperties');
         $propertyList.empty();
-        _.each(properties, function(property)
+        _.each(properties, function(property, name)
         {
-            if ((property.summary === false) || (property.value !== true))
+            if ((name === 'metadata') || (property.summary === false) || (property.value !== true))
                 return;
 
             $propertyList.append(
@@ -109,7 +111,6 @@
 
         _.each(properties, function(property)
         {
-            console.log($this[0], property.bindControlClass, property.value);
             if (property.bindControlClass != null)
                 $this.toggleClass(property.bindControlClass, ((property.value != null) && (property.value !== false)));
         });
@@ -339,7 +340,12 @@
                 $.extend(true, properties, controlProperties);
             }
 
-            if (options.slave === true)
+            // add metadata bag.
+            if (properties.metadata == null) properties.metadata = {};
+
+            // transmute slave option into permanent property, then act as appropriate.
+            if (options.slave === true) properties.metadata.slave = true;
+            if (properties.metadata.slave === true)
             {
                 $this.addClass('slave');
                 $this.data('odkControl-parent', $this.prev().data('odkControl-properties'));
@@ -354,6 +360,8 @@
 
             _.each(properties, function(property, name)
             {
+                if (name === 'metadata') return;
+
                 property.id = name;
                 property.validations = [];
             });

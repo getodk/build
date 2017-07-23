@@ -13,10 +13,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     var getDataRepresentation = odkmaker.data.extractOne = function($control)
     {
         var data = {};
-        _.each($control.data('odkControl-properties'), function(property, name)
+        var properties = $control.data('odkControl-properties');
+        _.each(properties, function(property, name)
         {
             data[name] = property.value;
         });
+        data.metadata = properties.metadata;
 
         data.type = $control.data('odkControl-type');
         if (data.type == 'group')
@@ -66,8 +68,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                                         $.fn.odkControl.controlProperties[control.type]);
         _.each(properties, function(property, key)
         {
+            if (key === 'metadata') return;
             property.value = control[key];
         });
+        properties.metadata = control.metadata;
 
         var $result = $('#templates .control')
             .clone()

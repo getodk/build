@@ -319,7 +319,7 @@
         var validations = [];
         _.each(properties, function(property, name)
         {
-            if (property.validation != null)
+            if ((name !== 'metadata') && (property.validation != null))
                 _.each(property.validation, function(validation)
                 {
                     var validation = validate($control, property, validation);

@@ -120,7 +120,6 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
         langCodes = _.keys(odkmaker.i18n.activeLanguages());
 
         var data = $gridArea.gridEditor_extract();
-      console.log(data);
         return _.map(data, function(row)
         {
             var text = {};
