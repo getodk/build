@@ -1,5 +1,8 @@
 ;(function($){
 
+var applicationNS = odkmaker.namespace.load('odkmaker.application');
+var dataNS = odkmaker.namespace.load('odkmaker.data');
+
 var checkNthRowBlank = function($body, n)
 {
     return _.all($body.children(), function(child)
@@ -61,6 +64,49 @@ $.fn.gridEditor = function()
             }
         });
 
+        $body.on('paste', 'input', function(event)
+        {
+            var fragmentData;
+            var raw = event.originalEvent.clipboardData.getData('text/html');
+            if (raw != null)
+            {
+                fragmentData = $(raw).find('tr').map(function()
+                {
+                    return $(this).find('td').map(function() { return $(this).text(); });
+                }).toArray();
+            }
+            // IE does it differently; including a window-scope global state var:
+            else if ((clipboardData != null) && ((raw = clipboardData.getData('Text')) != null))
+            {
+                fragmentData = dataNS.parseTSV(raw);
+            }
+
+            if ((fragmentData.length > 0) && (fragmentData[0].length > 0))
+            {
+                event.preventDefault();
+
+                var insert = function(replace) { return function()
+                {
+                    if (replace === true)
+                        $this.gridEditor_populate(headers, fragmentData);
+                    else
+                        // kind of a cheap/silly way to do this but no reason it doesn't work.
+                        $this.gridEditor_populate(headers, $this.gridEditor_extract().concat(fragmentData));
+                } };
+
+                // TODO: someday detect n < k column paste (or at least n=1 column) and
+                // allow subset operations maybe.
+                applicationNS.ask('Where would you like the pasted data?', {
+                    'Append at end': insert(false),
+                    'Replace all': insert(true),
+                    'Cancel': null
+                });
+
+                // for IE.
+                return false;
+            }
+        });
+
         // add a new final row if the current one is focused.
         $body.delegate('input', 'focus', function()
         {
@@ -83,7 +129,7 @@ $.fn.gridEditor_populate = function(headers, data)
     var $header = this.find('.gridHeader');
     var $body = this.find('.gridBody');
     $both = $header.add($body);
-    $both.empty().width(data[0].length * 150);
+    $both.empty().width(headers.length * 150);
 
     _.each(headers, function(header, idx)
     {
@@ -106,10 +152,11 @@ $.fn.gridEditor_extract = function()
 
     $body.children().each(function()
     {
-        console.log(this);
         $(this).children().each(function(idx) { result[idx].push($(this).val()); });
     });
-    result.pop(); // drop blank row.
+
+    // drop all blank rows:
+    result = _.reject(result, function(row) { return _.all(row, function(cell) { return cell.trim().length === 0; }); });
 
     return result;
 };
