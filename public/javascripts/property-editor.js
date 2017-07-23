@@ -57,6 +57,36 @@
                 });
                 showHide();
             }
+
+            if (property.bindAllowedIf != null)
+            {
+                var baiKey, baiValues;
+                if (_.isString(property.bindAllowedIf))
+                 {
+                    baiKey = property.bindAllowedIf;
+                    baiValues = [ true ];
+                }
+                else
+                {
+                    baiKey = _.keys(property.bindAllowedIf)[0];
+                    baiValues = property.bindAllowedIf[baiKey];
+                    if (!_.isArray(baiValues)) { baiValues = [ baiValues ]; }
+                }
+
+                var baiProperty = $parent.data('odkControl-properties')[baiKey];
+                var allow = function()
+                {
+                    if (_.contains(baiValues, baiProperty.value))
+                        $this.removeClass('disabled');
+                    else
+                    {
+                        $this.addClass('disabled');
+                        $this.find('label input:checked').click();
+                    }
+                };
+                $parent.on('odkControl-propertiesUpdated', function(_, propId) { if (propId === baiKey) allow(); });
+                allow();
+            }
         });
     };
 

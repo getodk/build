@@ -886,6 +886,20 @@ body > .control.last .controlFlowArrow,
     display: none;
 }
 
+.control.slave
+{
+    margin-top: -1.2em;
+}
+.control.slave .controlInfo
+{
+    min-height: 56px;
+}
+.control.slave .deleteControl,
+.control.slave .typeIcon
+{
+    display: none;
+}
+
 #dragIcon
 {
     left: -10em;
@@ -998,6 +1012,11 @@ body > .control.last .controlFlowArrow,
     font-size: 1.2em;
     margin-top: 10em;
     text-align: center;
+}
+.propertiesPane .propertyList > li.disabled
+{
+    opacity: 0.4;
+    pointer-events: none;
 }
 .propertiesPane .propertyList li h4
 {

@@ -109,14 +109,43 @@
 
         _.each(properties, function(property)
         {
+            console.log($this[0], property.bindControlClass, property.value);
             if (property.bindControlClass != null)
                 $this.toggleClass(property.bindControlClass, ((property.value != null) && (property.value !== false)));
         });
 
-        // SPECIAL CASE:
+        // SPECIAL CASES:
         // update the followup question text from that value.
         if ((properties.other != null) && (properties.other.value != null) && (properties.other.value !== false))
             $info.find('.controlSuccessorCondition span').text(properties.other.value.join(' or '));
+
+        // add a cascading slave if cascade is checked.
+        if ((properties.cascading != null) && (properties.cascading.value === true) && !$this.next().hasClass('slave'))
+        {
+            var $slaves = null;
+            if (($slaves = $this.data('odkControl-cascadeBackup')) != null)
+            {
+                $this.after($slaves);
+                $slaves.trigger('odkControl-added');
+            }
+            else
+                $this.after($('#templates .control').clone().addClass(type).odkControl(type, { slave: true }));
+        }
+
+        // remove all subsequent cascading slaves if cascade is unchecked.
+        if ((properties.cascading == null) || (properties.cascading.value === false) && $this.next().hasClass('slave'))
+        {
+            var $slaves = $this.nextUntil(':not(.slave)');
+            $slaves.each(function()
+            {
+                var $slave = $(this);
+                validationNS.controlDestroyed($slave, $slave.data('odkControl-properties'));
+            });
+            $slaves.trigger('odkControl-removing');
+            $slaves.detach();
+            $slaves.trigger('odkControl-removed');
+            $this.data('odkControl-cascadeBackup', $slaves);
+        }
     };
 
     // gets all controls "between" two given controls, stepping in and out of groups
@@ -308,6 +337,12 @@
                 for (var prop in controlProperties)
                     delete properties[prop];
                 $.extend(true, properties, controlProperties);
+            }
+
+            if (options.slave === true)
+            {
+                $this.addClass('slave');
+                $this.data('odkControl-parent', $this.prev().data('odkControl-properties'));
             }
 
             var match = null;
@@ -586,8 +621,14 @@
                             'The Underlying Value is the value saved to the exported data.' ],
                         value: [{ text: {}, val: 'untitled' }],
                         summary: false },
+          cascading:  { name: 'Cascading',
+                        type: 'bool',
+                        description: 'Enable this to add a subsequent select question with filtered options.',
+                        value: false,
+                        summary: false },
           other:      { name: 'Follow-up Question',
                         type: 'otherEditor',
+                        bindAllowedIf: { 'cascading': [ null, undefined, false ] },
                         validation: [ 'fieldListExpr' ],
                         description: 'Ask the following question as additional information only if a particular response is chosen.',
                         tips: [
