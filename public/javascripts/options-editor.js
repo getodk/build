@@ -11,7 +11,8 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
     // until someone loads a form, we have no presets
     optionsNS.presets = [];
 
-    // keep track of the current property we're editing
+    // keep track of the current control and property we're editing
+    optionsNS.$currentControl = null;
     optionsNS.currentProperty = null;
 
     // callback for when options are updated
@@ -103,12 +104,20 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
 
     var populate = function(options)
     {
-        headers = [ 'Underlying Value' ].concat(_.values(odkmaker.i18n.activeLanguages()));
+        var prefix = [];
+        var $ptr = optionsNS.$currentControl;
+        while ($ptr.hasClass('slave'))
+        {
+            $ptr = $ptr.prev();
+            prefix.unshift($ptr.data('odkControl-properties').name.value + ' Value');
+        }
+
+        headers = prefix.concat([ 'Underlying Value' ]).concat(_.values(odkmaker.i18n.activeLanguages()));
 
         langCodes = _.keys(odkmaker.i18n.activeLanguages());
         data = _.map(options, function(option)
         {
-            return [ option.val ].concat(_.map(langCodes, function(code) { return option.text[code]; }));
+            return (option.cascade || []).slice(0).reverse().concat([ option.val ].concat(_.map(langCodes, function(code) { return option.text[code]; })));
         });
 
         $gridArea.gridEditor_populate(headers, data);
@@ -120,11 +129,13 @@ var optionsNS = odkmaker.namespace.load('odkmaker.options');
         langCodes = _.keys(odkmaker.i18n.activeLanguages());
 
         var data = $gridArea.gridEditor_extract();
-        return _.map(data, function(row)
+        numCascades = data[0].length - langCodes.length - 1;
+        return _.map(data, function(row) // warning: mangles input. but the input is ephemeral.
         {
             var text = {};
+            var cascade = row.splice(0, numCascades).reverse();
             _.each(langCodes, function(code, idx) { text[code] = row[idx + 1]; });
-            return { val: row[0], text: text };
+            return { val: row[0], cascade: cascade, text: text };
         });
     };
 

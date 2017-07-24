@@ -232,6 +232,7 @@
 
             $editor.find('.optionsEditorLink').click(function(event)
             {
+                odkmaker.options.$currentControl = $parent;
                 odkmaker.options.currentProperty = property.value;
                 odkmaker.options.optionsUpdated = function(options)
                 {
