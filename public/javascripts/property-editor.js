@@ -259,9 +259,9 @@
             var $select = $editor.find('select');
             var update = function()
             {
-                var value = (property.value == null) ? false : property.value;
+                var value = (property.value == null) ? false : !!property.value;
                 $enable.attr('checked', value);
-                $select.attr('disabled', value);
+                $select.attr('disabled', !value);
                 updateOptions();
             };
 
