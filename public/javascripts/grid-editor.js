@@ -19,10 +19,11 @@ $.fn.gridEditor = function()
 
         $this.append($('#templates > .gridEditor').clone());
         var $header = $this.find('.gridHeader');
+        var $container = $this.find('.gridContainer');
         var $body = $this.find('.gridBody');
 
         // header tracks horiz scrolling.
-        $this.scroll(function() { $header.css('margin-left', -1 * $this.scrollLeft()); });
+        $container.on('scroll',function() { $header.css('margin-left', -1 * $container.scrollLeft()); });
 
         // keyboard navigation.
         $body.delegate('input', 'keydown', function(event)
