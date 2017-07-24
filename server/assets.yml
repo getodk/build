@@ -8,10 +8,12 @@ javascripts:
 - util
 - auth
 - data
+- tsv
 - data-ui
 - core.validation
 - impl.validation
 - i18n
+- grid-editor
 - options-editor
 - modals
 - property-editor
