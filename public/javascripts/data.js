@@ -520,23 +520,87 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         // options
         if (control.options !== undefined)
-            _.each(control.options, function(option, i)
+        {
+            if ((control.cascading === true) || (instance.context.cascade != null))
             {
-                var itextPath = xpath + control.name + ':option' + i;
-                addTranslation(option.text, itextPath, translations);
+                // we are somewhere in a cascading select.
+                if (instance.context.cascade == null)
+                    instance.context.cascade = [];
 
+                // add an instance tag for this level of the cascade.
+                var instanceId = 'choices_' + $.sanitizeString(xpath.replace(/^\/data\//, '') + control.name);
+                var optionsInstance = {
+                    name: 'instance',
+                    attrs: { id: instanceId },
+                    children: [{
+                        name: 'root',
+                        children: _.map(control.options, function(option, i)
+                        {
+                            // minor warning: mutation in a map.
+                            var itextPath = xpath + control.name + ':option' + i;
+                            addTranslation(option.text, itextPath, translations);
+
+                            return {
+                                name: 'item',
+                                children: [
+                                    { name: 'itextId', children: [ itextPath ], _noWhitespace: true },
+                                    { name: 'value', children: [ option.val ], _noWhitespace: true }
+                                ].concat(_.map(instance.context.cascade, function(name, j)
+                                {
+                                    return { name: name, children: [ option.cascade[j] ], _noWhitespace: true };
+                                }))
+                            };
+                        })
+                    }]
+                };
+                model.children.push(optionsInstance);
+
+                // calculate our filtering condition.
+                var condition = _.map(instance.context.cascade, function(dataName)
+                {
+                    return dataName + '=' + xpath + dataName;
+                }).join(' and ');
+                if (condition.length > 0) condition = '[' + condition + ']';
+
+                // add an itemset reference to our body tag.
                 bodyTag.children.push({
-                    name: 'item',
+                    name: 'itemset',
+                    attrs: { nodeset: "instance('" + instanceId + "')/root/item" + condition },
                     children: [
-                        {   name: 'label',
-                            attrs: {
-                                'ref': "jr:itext('" + itextPath + "')"
-                            } },
-                        {   name: 'value',
-                            val: option.val }
+                        { name: 'value', attrs: { ref: 'value' } },
+                        { name: 'label', attrs: { ref: 'jr:itext(itextId)' } }
                     ]
                 });
-            });
+
+                // inform downstream cascades of our data name.
+                instance.context.cascade.push(control.name);
+
+                // remove our context object if we are at the very tail.
+                if (control.cascading === false)
+                    delete instance.context.cascade;
+            }
+            else
+            {
+                // normal options; drop them inline.
+                _.each(control.options, function(option, i)
+                {
+                    var itextPath = xpath + control.name + ':option' + i;
+                    addTranslation(option.text, itextPath, translations);
+
+                    bodyTag.children.push({
+                        name: 'item',
+                        children: [
+                            {   name: 'label',
+                                attrs: {
+                                    'ref': "jr:itext('" + itextPath + "')"
+                                } },
+                            {   name: 'value',
+                                val: option.val }
+                        ]
+                    });
+                });
+            }
+        }
 
         // advanced relevance
         if (control.relevance !== '')
