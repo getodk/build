@@ -224,7 +224,7 @@
             $editor.find('.addOption').click(function(event)
             {
                 event.preventDefault();
-                var newOption = { text: {}, val: 'untitled' };
+                var newOption = { text: {}, cascade: [], val: 'untitled' };
                 property.value.push(newOption);
                 $optionsList.append(newOptionRow(property, newOption, $optionsList.children().length, $parent));
                 $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
@@ -351,6 +351,7 @@
 
             $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
         });
+
         var $underlyingValueEdit = $('#templates .editors .optionsEditorValueField').clone();
         $underlyingValueEdit
             .find('.editorTextfield')
@@ -360,6 +361,28 @@
                     data.val = $(this).val();
                     $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                 });
+
+        var $cascadeFields = $([]);
+        var idx = 0;
+        var $ptr = $parent;
+        while ($ptr.hasClass('slave'))
+        {
+            $ptr = $ptr.prev();
+            (function(thisIdx) // js is weird.
+            {
+                var $parentValueEdit = $('#templates .editors .optionsEditorValueField').clone();
+                $parentValueEdit.find('h5').text($ptr.data('odkControl-properties').name.value + ' Value');
+                $parentValueEdit.find('.editorTextfield')
+                    .val(data.cascade[thisIdx] || '')
+                    .keyup(function()
+                    {
+                        data.cascade[thisIdx] = $(this).val();
+                        $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
+                    });
+                $cascadeFields = $cascadeFields.add($parentValueEdit);
+            })(idx++);
+        }
+
         return $('<li></li>')
                 .toggleClass('even', (index % 2) == 0)
                 .append(
@@ -371,6 +394,7 @@
                             value: data.text
                         }, null, $parent)
                         .prepend($removeLink)
-                        .append($underlyingValueEdit));
+                        .append($underlyingValueEdit)
+                        .append($cascadeFields));
     };
 })(jQuery);
