@@ -44,7 +44,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 version: odkmaker.data.currentVersion,
                 activeLanguages: odkmaker.i18n.activeLanguageData(),
                 optionsPresets: odkmaker.options.presets,
-                htitle: htitle
+                htitle: htitle,
+                instance_name: $('#formProperties_instanceName').val(),
+                public_key: $('#formProperties_publicKey').val(),
+                submission_url: $('#formProperties_submissionUrl').val()
             }
         };
     };
@@ -106,6 +109,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         $('h1').text(formObj.title);
         $('#formProperties_title').val(formObj.metadata.htitle)
+        $('#formProperties_instanceName').val(formObj.metadata.instance_name);
+        $('#formProperties_publicKey').val(formObj.metadata.public_key);
+        $('#formProperties_submissionUrl').val(formObj.metadata.submission_url);
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadMany($('.workspace'), formObj.controls);
@@ -588,16 +594,18 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // TODO: user-config of instanceHead
 
         // Per OpenRosa spec, instanceID should be in /data/meta
+        var meta = {
+            name: 'meta',
+            children: [ { name: 'instanceID' } ]
+        };
+
         var instanceHead = {
             name: 'data',
             attrs: {
               'id': 'build_' + $.sanitizeString($('.header h1').text()) +
                     '_' + Math.round((new Date()).getTime() / 1000)
             },
-            children: [{
-                name: 'meta',
-                children: [ { name: 'instanceID' } ]
-            }],
+            children: [ meta ],
             context: {}
         };
 
@@ -623,7 +631,6 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             attrs: {
                 'xmlns': 'http://www.w3.org/2002/xforms',
                 'xmlns:h': 'http://www.w3.org/1999/xhtml',
-                'xmlns:ev': 'http://www.w3.org/2001/xml-events',
                 'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
                 'xmlns:jr': 'http://openrosa.org/javarosa'
             },
@@ -662,6 +669,32 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
         model.children.push(instanceID);
 
+        if (!$.isBlank(internal.metadata.instance_name))
+        {
+            meta.children.push({ name: 'instanceName', _noWhitespace: true });
+            model.children.push({ name: 'bind', attrs: {
+              nodeset: '/data/meta/instanceName',
+              type: 'string',
+              calculate: internal.metadata.instance_name
+            } });
+        }
+
+        if (!$.isBlank(internal.metadata.public_key) || !$.isBlank(internal.metadata.submission_url))
+        {
+            var submission = {
+                name: 'submission',
+                attrs: {
+                    method: 'form-data-post'
+                }
+            };
+            model.children.push(submission);
+
+            if (!$.isBlank(internal.metadata.public_key))
+                submission.attrs.base64RsaPublicKey = internal.metadata.public_key;
+
+            if (!$.isBlank(internal.metadata.submission_url))
+                submission.attrs.action = internal.metadata.submission_url;
+        }
 
         _.each(internal.controls, function(control)
         {

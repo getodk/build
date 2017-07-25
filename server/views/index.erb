@@ -304,6 +304,18 @@
 
           <label for="formProperties_title">Title on Device</label>
           <input type="text" id="formProperties_title" name="title" />
+
+          <label for="formProperties_instanceName">Instance Name</label>
+          <input type="text" id="formProperties_instanceName" name="instanceName" />
+          <p>You can use calculated expressions to name submissions based on submission data. <a rel="external" href="https://opendatakit.org/help/form-design/examples/">More Information</a>.</p>
+
+          <label for="formProperties_publicKey">Public Key</label>
+          <input type="text" id="formProperties_publicKey" name="publicKey" />
+          <p>The public key is used to encrypt (but not decrypt) forms. You can learn about generating and using one <a rel="external" href="https://opendatakit.org/help/encrypted-forms/">here</a>.</p>
+
+          <label for="formProperties_submissionUrl">Submission URL</label>
+          <input type="text" id="formProperties_submissionUrl" name="submissionUrl" />
+          <p>Directs your submissions somewhere other than the Aggregate that supplied the form. This is the ODK Aggregate website url with <code>Aggregate.html</code> replaced by <code>submission</code>.</p>
         </form>
       </div>
       <div class="modalButtonContainer">
