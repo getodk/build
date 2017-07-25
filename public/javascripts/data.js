@@ -411,6 +411,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     bodyTag.attrs.end = control.selectRange.max;
                 }
                 bodyTag.attrs.step = control.selectStep;
+                var step = parseFloat(control.selectStep);
+                binding.attrs.type = (Math.floor(step) === step) ? 'int' : 'decimal';
             }
         }
         else if (control.type == 'inputDate')
