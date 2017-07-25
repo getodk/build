@@ -650,7 +650,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         model.children.push(instanceID);
 
         if (!$.isBlank(internal.metadata.instance_name))
-            meta.children.push({ name: 'instanceName', children: [ internal.metadata.instance_name ], _noWhitespace: true })
+        {
+            meta.children.push({ name: 'instanceName', _noWhitespace: true });
+            model.children.push({ name: 'bind', attrs: {
+              nodeset: '/data/meta/instanceName',
+              type: 'string',
+              calculate: internal.metadata.instance_name
+            } });
+        }
 
         if (!$.isBlank(internal.metadata.public_key) || !$.isBlank(internal.metadata.submission_url))
         {
