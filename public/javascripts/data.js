@@ -536,7 +536,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                         name: 'root',
                         children: _.map(control.options, function(option, i)
                         {
-                            // minor warning: mutation in a map.
+                            // minor warning: side effects in a map.
                             var itextPath = xpath + control.name + ':option' + i;
                             addTranslation(option.text, itextPath, translations);
 
@@ -573,7 +573,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 });
 
                 // inform downstream cascades of our data name.
-                instance.context.cascade.push(control.name);
+                instance.context.cascade.unshift(control.name);
 
                 // remove our context object if we are at the very tail.
                 if (control.cascading === false)
