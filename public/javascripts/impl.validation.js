@@ -79,25 +79,32 @@
     var hasOptions = function(val) { return _.isArray(val) && (val.length > 0); };
     var xmlLegalChars = function(val) { return /^[0-9a-z_.-]+$/i.test(val); };
     var alphaStart = function(val) { return /^[a-z]/i.test(val); };
+    var isNumeric = function(val) { return /^[+-]?\d*(\.\d*)?$/.test(val) && /\d/.test(val); };
 
     // the actual definitions:
     validationNS.validations = {
         required: {
             given: [ 'self' ],
-            check: function(self) { return hasString(self); },
+            check: hasString,
             message: 'This property is required.'
         },
         xmlLegalChars: {
             given: [ 'self' ],
             prereq: hasString,
-            check: function(self) { return xmlLegalChars(self); },
+            check: xmlLegalChars,
             message: 'Only letters, numbers, -, _, and . are allowed.'
         },
         alphaStart: {
             given: [ 'self' ],
             prereq: hasString,
-            check: function(self) { return alphaStart(self); },
+            check: alphaStart,
             message: 'The first character must be a letter.'
+        },
+        numeric: {
+            given: [ 'self' ],
+            prereq: hasString,
+            check: isNumeric,
+            message: 'Please enter a number.'
         },
         unique: {
             given: [ 'self', { scope: 'all', property: 'self' } ],
@@ -146,6 +153,32 @@
                 return _.all(options, function(option) { return !hasString(option.val) || option.val.length <= 32; });
             },
             message: 'One or more Underlying Value is longer than the allowed maximum of 32 characters.'
+        },
+        // checks both presence and numericness. i couldn't think of a case you wouldn't want both.
+        rangeRequired: {
+            given: [ 'self' ],
+            check: function(range)
+            {
+                return _.isObject(range) && isNumeric(range.min) && isNumeric(range.max);
+            },
+            message: 'Please enter two valid numbers.'
+        },
+        stepDivision: {
+            given: [ 'self', { scope: 'self', property: 'selectRange' } ],
+            prereq: function(step, range)
+            {
+                return _.isObject(range) && _.all([ step, range.min, range.max ], isNumeric);
+            },
+            check: function(step, range)
+            {
+                // can't use % because js float nastiness.
+                var step = parseFloat(step);
+                if (step <= 0) return false;
+
+                var quotient = (parseFloat(range.max) - parseFloat(range.min)) / step;
+                return Math.floor(quotient) === quotient;
+            },
+            message: 'Step must divide the selectable range perfectly into evenly-sized increments.',
         },
         hasOptions: {
             given: [ 'self' ],

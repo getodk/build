@@ -49,12 +49,25 @@
 
             if (property.bindDisplayIf != null)
             {
-                var parentProperty = $parent.data('odkControl-properties')[property.bindDisplayIf];
-                var showHide = function() { $this.toggle(parentProperty.value !== false); }
-                $parent.on('odkControl-propertiesUpdated', function(_, propId)
+                // normalize two formats: 'key' just checks bool on that key.
+                // { 'key': [ 'value1', 'value2' ] } checks a single property against values.
+                // someday if required we can check multiple properties.
+                var key, values;
+                if (_.isString(property.bindDisplayIf))
                 {
-                    if (propId === property.bindDisplayIf) showHide();
-                });
+                    key = property.bindDisplayIf;
+                    values = [ true ];
+                }
+                else
+                {
+                    key = _.keys(property.bindDisplayIf)[0];
+                    values = property.bindDisplayIf[key];
+                    if (!_.isArray(values)) { values = [ values ]; }
+                }
+
+                var parentProperty = $parent.data('odkControl-properties')[key];
+                var showHide = function() { $this.toggle(_.contains(values, parentProperty.value)); }
+                $parent.on('odkControl-propertiesUpdated', function(_, propId) { if (propId === key) showHide(); });
                 showHide();
             }
         });
@@ -118,6 +131,11 @@
                     maxInclusive: $inputs.filter('.maxInclusive').is(':checked')
                 };
             };
+
+            if (property.optional === false)
+                $editor.addClass('nonOptional');
+            if (property.inclusivity === false)
+                $editor.addClass('hideInclusivity');
 
             if ((property.value === false) || (property.value == null))
                 $inputs.attr('disabled', true);

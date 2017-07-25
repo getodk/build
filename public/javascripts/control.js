@@ -10,6 +10,7 @@
 ;(function($)
 {
     var validationNS = odkmaker.namespace.load('odkmaker.validation');
+    var controlNS = odkmaker.namespace.load('odkmaker.control');
 
     // Globally active singleton facilities:
     var $propertyList = $('.propertyList');
@@ -500,7 +501,7 @@
                         value: {},
                         summary: false } },
         inputNumeric: {
-          range:      { name: 'Range',
+          range:      { name: 'Valid Range',
                         type: 'numericRange',
                         description: 'Valid numeric range for the user input of this control.',
                         tips: [
@@ -514,14 +515,50 @@
                         tips: [ 'It is also displayed if a custom constraint check is failed.' ],
                         value: {},
                         summary: false },
+          appearance: { name: 'Style',
+                        type: 'enum',
+                        description: 'Style of collection interface to present.',
+                        tips: [ 'A Picker, also known as a Spinner, is a little textbox with plus and minus buttons to change the number.' ],
+                        options: [ 'Textbox',
+                                   'Slider',
+                                   'Vertical Slider',
+                                   'Picker' ],
+                        value: 'Textbox',
+                        summary: true },
           kind:       { name: 'Kind',
                         type: 'enum',
+                        bindDisplayIf: { appearance: 'Textbox' },
                         description: 'Type of number accepted.',
                         tips: [ 'In some data collection tools, this will affect the type of keypad shown.' ],
                         options: [ 'Integer',
                                    'Decimal' ],
                         value: 'Integer',
-                        summary: true } },
+                        summary: true },
+          selectRange:{ name: 'Selectable Range',
+                        type: 'numericRange',
+                        validation: [ 'rangeRequired' ],
+                        bindDisplayIf: { appearance: [ 'Slider', 'Vertical Slider', 'Picker' ] },
+                        optional: false,
+                        inclusivity: false,
+                        description: 'The lowest and highest selectable values, inclusive.',
+                        tips: [ 'Integers and decimals are both valid.' ],
+                        value: { min: "1", max: "10" },
+                        summary: false },
+          selectStep: { name: 'Selectable Range: Step Between Choices',
+                        type: 'text',
+                        validation: [ 'required', 'numeric', 'stepDivision' ],
+                        bindDisplayIf: { appearance: [ 'Slider', 'Vertical Slider', 'Picker' ] },
+                        description: 'The gap between adjacent selectable values in the range.',
+                        tips: [ 'The step must cleanly end at the low and high ends of the range; in other words, it must divide the selectable range perfectly.' ],
+                        value: '1',
+                        summary: false },
+          sliderTicks:{ name: 'Slider Ticks',
+                        type: 'bool',
+                        bindDisplayIf: { appearance: [ 'Slider', 'Vertical Slider' ] },
+                        description: 'The lowest and highest selectable values, inclusive.',
+                        tips: [ 'Integers and decimals are both valid.' ],
+                        value: true,
+                        summary: false } },
         inputDate: {
           range:      { name: 'Range',
                         type: 'dateRange',
@@ -772,6 +809,21 @@
         metadata: {
             name: 'Metadata',
             description: 'Metadata questions silently and automatically collect information about the session.',
+        }
+    };
+
+
+    controlNS.upgrade = {
+        2: function(form) {
+            var processControl = function(control)
+            {
+                if (_.isArray(control.children))
+                    _.each(control.children, processControl);
+
+                if ((control.type === 'inputNumeric') && (control.appearance == null))
+                    control.appearance = 'Textbox';
+            };
+            _.each(form.controls, processControl);
         }
     };
 
