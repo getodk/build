@@ -213,13 +213,16 @@
 
                 propertiesRouting[param][id].f = go = function()
                 {
+                    // if we have been reaped since our check was scheduled (eg by an open-form op), bail.
+                    if ((controls.length > 0) && !document.body.contains(controls[0])) return;
+
                     f(_.map(controls, function(control) { return $(control).data('odkControl-properties')[param].value; }));
                     scheduled = false;
                 };
 
                 if (scheduled === false)
                 {
-                    _.defer(function() { go(); });
+                    _.defer(go);
                     scheduled = true;
                 }
             };
