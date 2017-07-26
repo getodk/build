@@ -14,7 +14,7 @@
       <div class="loadingMessage">
         <div class="spinner"><div class="spinnerInner"></div></div>
         <h1>loading <strong>odk build</strong><sup>BETA</sup></h1>
-        <p>version 0.95</p>
+        <p>version 0.3.3</p>
         <p class="status">loading application...</p>
       </div>
     </div>
@@ -180,6 +180,18 @@
 
           <label for="formProperties_title">Title on Device</label>
           <input type="text" id="formProperties_title" name="title" />
+
+          <label for="formProperties_instanceName">Instance Name</label>
+          <input type="text" id="formProperties_instanceName" name="instanceName" />
+          <p>You can use calculated expressions to name submissions based on submission data. <a rel="external" href="https://opendatakit.org/help/form-design/examples/">More Information</a>.</p>
+
+          <label for="formProperties_publicKey">Public Key</label>
+          <input type="text" id="formProperties_publicKey" name="publicKey" />
+          <p>The public key is used to encrypt (but not decrypt) forms. You can learn about generating and using one <a rel="external" href="https://opendatakit.org/help/encrypted-forms/">here</a>.</p>
+
+          <label for="formProperties_submissionUrl">Submission URL</label>
+          <input type="text" id="formProperties_submissionUrl" name="submissionUrl" />
+          <p>Directs your submissions somewhere other than the Aggregate that supplied the form. This is the ODK Aggregate website url with <code>Aggregate.html</code> replaced by <code>submission</code>.</p>
         </form>
       </div>
       <div class="modalButtonContainer">
@@ -212,16 +224,16 @@
         <div class="presetsButtonContainer">
           <a class="modalButton loadPreset" href="#load">Load Preset</a>
           <a class="modalButton deletePreset" href="#delete">Delete Preset</a>
-          <a class="modalButton savePreset" href="#save">Save to Preset...</a>
+          <a class="modalButton savePreset" href="#save">Save Below to Preset...</a>
         </div>
 
         <h4>Options</h4>
-        <div class="optionsHeaderContainer">
-          <ul class="optionsHeader clearfix"></ul>
-        </div>
-        <div class="optionsContainer clearfix">
-          <ul class="optionsBody clearfix"></ul>
-        </div>
+        <div class="optionsGridEditor"></div>
+
+        <p>
+          <strong>Tip:</strong> you can copy cells from a spreadsheet (eg Excel, Google
+          Sheets, etc.) and paste them into the table above to bulk-insert data.
+        </p>
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton applyOptions" href="#apply">Apply</a>
@@ -237,9 +249,13 @@
           visible on the Internet.</p>
 
         <h4>Aggregate Instance URI</h4>
-        <p>https://<input type="text" class="aggregateInstanceName"/></p>
+        <p>
+          <select class="aggregateInstanceProtocol">
+            <option>https</option>
+            <option>http</option>
+          </select>://<input type="text" class="aggregateInstanceName"/></p>
         <p>Examples include <code>https://my-aggregate.appspot.com</code> if you're on
-          Google App Engine, or <code>https://216.58.193.110:8080/ODKAggregate</code> if
+          Google App Engine, or <code>http://216.58.193.110:8080/ODKAggregate</code> if
           you have your own server on the web.</p>
         <h4>Aggregate Credentials</h4>
         <p>
@@ -300,10 +316,12 @@
     <script type="text/javascript" src="javascripts/util.js"></script>
     <script type="text/javascript" src="javascripts/auth.js"></script>
     <script type="text/javascript" src="javascripts/data.js"></script>
+    <script type="text/javascript" src="javascripts/tsv.js"></script>
     <script type="text/javascript" src="javascripts/data-ui.js"></script>
     <script type="text/javascript" src="javascripts/core.validation.js"></script>
     <script type="text/javascript" src="javascripts/impl.validation.js"></script>
     <script type="text/javascript" src="javascripts/i18n.js"></script>
+    <script type="text/javascript" src="javascripts/grid-editor.js"></script>
     <script type="text/javascript" src="javascripts/options-editor.js"></script>
     <script type="text/javascript" src="javascripts/modals.js"></script>
     <script type="text/javascript" src="javascripts/property-editor.js"></script>
@@ -340,6 +358,15 @@
           </div>
         </div>
         <div class="controlFlowArrow"></div>
+      </div>
+
+      <div class="gridEditor">
+        <div class="gridHeaderContainer">
+          <ul class="gridHeader clearfix"></ul>
+        </div>
+        <div class="gridContainer clearfix">
+          <ul class="gridBody clearfix"></ul>
+        </div>
       </div>
 
       <div class="editors">

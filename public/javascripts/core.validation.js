@@ -291,9 +291,48 @@
                 apply();
             });
         });
+
+        // if the property has a bindDisplayIf we'll automagically create subscriptions
+        // to track that binding and not bother validating if the property is hidden.
+        var displayed = true;
+        if (property.bindDisplayIf != null)
+        {
+            // TODO: duplicated from property-editor.js. if this logic continues to
+            // evolve we should consolidate. but js has no tuple type so it's not obvious
+            // how to do so.
+            var bdiKey, bdiValues;
+            if (_.isString(property.bindDisplayIf))
+            {
+                bdiKey = property.bindDisplayIf;
+                bdiValues = [ true ];
+            }
+            else
+            {
+                bdiKey = _.keys(property.bindDisplayIf)[0];
+                bdiValues = property.bindDisplayIf[bdiKey];
+                if (!_.isArray(bdiValues)) { bdiValues = [ bdiValues ]; }
+            }
+
+            subscribe($control, 'self', 'property', bdiKey, function(value)
+            {
+                displayed = _.contains(bdiValues, value);
+                apply();
+            });
+        }
+
         var lastHasError = false;
         var apply = function()
         {
+            if (displayed === false)
+            {
+                if (lastHasError === true)
+                {
+                    lastHasError = result.hasError = false;
+                    $control.trigger('odkControl-validationChanged', [ property, false ]);
+                }
+                return;
+            }
+
             var passed;
             if ((validationObj.prereq != null) && (validationObj.prereq.apply(null, params) !== true))
                 passed = true; // bail out if we fail the precondition.
@@ -319,7 +358,7 @@
         var validations = [];
         _.each(properties, function(property, name)
         {
-            if (property.validation != null)
+            if ((name !== 'metadata') && (property.validation != null))
                 _.each(property.validation, function(validation)
                 {
                     var validation = validate($control, property, validation);

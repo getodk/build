@@ -288,6 +288,59 @@ form input
     animation-timing-function: linear;
 }
 
+.gridEditor .gridHeaderContainer
+{
+    overflow: hidden;
+    height: 1.3em;
+    margin-top: 0.3em;
+}
+.gridEditor .gridHeader li
+{
+    display: block;
+    float: left;
+    font-size: 1.1em;
+    font-weight: bold;
+    width: 13.636em;
+}
+.gridEditor .gridContainer
+{
+    margin-top: 0.2em;
+    min-height: 5em;
+    max-height: 30em;
+    overflow-x: auto;
+    overflow-y: auto;
+    padding-bottom: 1.2em;
+}
+.gridEditor .gridBody
+{
+    border: 1px solid #c7c7c7;
+    margin-top: 0.2em;
+}
+.gridEditor .gridBody li
+{
+    display: block;
+    float: left;
+    width: 15em;
+}
+.gridEditor .gridBody li input
+{
+    background: transparent;
+    box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
+    border: none;
+    display: block;
+    font-size: 1.2em;
+    line-height: 16px;
+    outline: none;
+    padding: 0;
+    padding-bottom: 0.333em;
+    width: 12.5em;
+}
+.gridEditor .gridBody li input:nth-child(2n)
+{
+    background: #ededed;
+}
+
+
 /***********
  * GENERAL *
  ***********/
@@ -837,6 +890,20 @@ body > .control.last .controlFlowArrow,
     display: none;
 }
 
+.control.slave
+{
+    margin-top: -1.2em;
+}
+.control.slave .controlInfo
+{
+    min-height: 56px;
+}
+.control.slave .deleteControl,
+.control.slave .typeIcon
+{
+    display: none;
+}
+
 #dragIcon
 {
     left: -10em;
@@ -950,6 +1017,11 @@ body > .control.last .controlFlowArrow,
     margin-top: 10em;
     text-align: center;
 }
+.propertiesPane .propertyList > li.disabled
+{
+    opacity: 0.4;
+    pointer-events: none;
+}
 .propertiesPane .propertyList li h4
 {
     font-size: 1.3em;
@@ -1042,6 +1114,10 @@ body > .control.last .controlFlowArrow,
 {
     margin-bottom: 0.5em;
 }
+.propertiesPane .propertyList li .optionsList .optionsEditorValueField + .optionsEditorValueField
+{
+    margin-top: 0.5em;
+}
 .propertiesPane .propertyList li .addOption
 {
     display: block;
@@ -1088,7 +1164,10 @@ body > .control.last .controlFlowArrow,
     content: '\e900';
 }
 
-.property-length .inclusiveCtrl, .property-count .inclusiveCtrl {
+.nonOptional .editorEnabled {
+    display: none;
+}
+.hideInclusivity .inclusiveCtrl, .property-length .inclusiveCtrl, .property-count .inclusiveCtrl {
     display: none;
 }
 
@@ -1292,57 +1371,6 @@ body > .control.last .controlFlowArrow,
     display: inline-block;
     margin: 0.4em;
 }
-.optionsEditorDialog .optionsHeaderContainer
-{
-    overflow: hidden;
-    height: 1.3em;
-    margin-top: 0.3em;
-}
-.optionsEditorDialog .optionsHeader li
-{
-    display: block;
-    float: left;
-    font-size: 1.1em;
-    font-weight: bold;
-    width: 13.636em;
-}
-.optionsEditorDialog .optionsContainer
-{
-    margin-top: 0.2em;
-    min-height: 5em;
-    max-height: 30em;
-    overflow-x: auto;
-    overflow-y: auto;
-    padding-bottom: 1.2em;
-}
-.optionsEditorDialog .optionsBody
-{
-    border: 1px solid #c7c7c7;
-    margin-top: 0.2em;
-}
-.optionsEditorDialog .optionsBody li
-{
-    display: block;
-    float: left;
-    width: 15em;
-}
-.optionsEditorDialog .optionsBody li input
-{
-    background: transparent;
-    box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
-    border: none;
-    display: block;
-    font-size: 1.2em;
-    line-height: 16px;
-    outline: none;
-    padding: 0;
-    padding-bottom: 0.333em;
-    width: 12.5em;
-}
-.optionsEditorDialog .optionsBody li input:nth-child(2n)
-{
-    background: #ededed;
-}
 
 .translationsDialog .addTranslation
 {
@@ -1361,7 +1389,7 @@ body > .control.last .controlFlowArrow,
 
 .aggregateDialog .aggregateInstanceName
 {
-    width: calc(100% - 5.2em);
+    width: calc(100% - 7.6em);
 }
 .aggregateDialog .note
 {
@@ -1388,6 +1416,11 @@ body > .control.last .controlFlowArrow,
 {
     margin-left: 10em;
     width: calc(100% - 10em);
+}
+.formPropertiesDialog p
+{
+    font-size: 1.1em;
+    padding-left: 10em;
 }
 
 .errorMessage p

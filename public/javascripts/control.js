@@ -10,6 +10,7 @@
 ;(function($)
 {
     var validationNS = odkmaker.namespace.load('odkmaker.validation');
+    var controlNS = odkmaker.namespace.load('odkmaker.control');
 
     // Globally active singleton facilities:
     var $propertyList = $('.propertyList');
@@ -32,6 +33,8 @@
             // add our hero's properties
             _.each(properties, function(property, name)
             {
+                if (name === 'metadata') return;
+
                 $('<li class="propertyItem"/>')
                     .propertyEditor(property, name, $this)
                     .appendTo((property.advanced === true) ? $advancedList : $propertyList);
@@ -97,9 +100,9 @@
 
         var $propertyList = $info.children('.controlProperties');
         $propertyList.empty();
-        _.each(properties, function(property)
+        _.each(properties, function(property, name)
         {
-            if ((property.summary === false) || (property.value !== true))
+            if ((name === 'metadata') || (property.summary === false) || (property.value !== true))
                 return;
 
             $propertyList.append(
@@ -113,10 +116,38 @@
                 $this.toggleClass(property.bindControlClass, ((property.value != null) && (property.value !== false)));
         });
 
-        // SPECIAL CASE:
+        // SPECIAL CASES:
         // update the followup question text from that value.
         if ((properties.other != null) && (properties.other.value != null) && (properties.other.value !== false))
             $info.find('.controlSuccessorCondition span').text(properties.other.value.join(' or '));
+
+        // add a cascading slave if cascade is checked.
+        if ((properties.cascading != null) && (properties.cascading.value === true) && !$this.next().hasClass('slave'))
+        {
+            var $slaves = null;
+            if (($slaves = $this.data('odkControl-cascadeBackup')) != null)
+            {
+                $this.after($slaves);
+                $slaves.trigger('odkControl-added');
+            }
+            else
+                $this.after($('#templates .control').clone().addClass(type).odkControl(type, { slave: true }));
+        }
+
+        // remove all subsequent cascading slaves if cascade is unchecked.
+        if ((properties.cascading == null) || (properties.cascading.value === false) && $this.next().hasClass('slave'))
+        {
+            var $slaves = $this.nextUntil(':not(.slave)');
+            $slaves.each(function()
+            {
+                var $slave = $(this);
+                validationNS.controlDestroyed($slave, $slave.data('odkControl-properties'));
+            });
+            $slaves.trigger('odkControl-removing');
+            $slaves.detach();
+            $slaves.trigger('odkControl-removed');
+            $this.data('odkControl-cascadeBackup', $slaves);
+        }
     };
 
     // gets all controls "between" two given controls, stepping in and out of groups
@@ -310,6 +341,17 @@
                 $.extend(true, properties, controlProperties);
             }
 
+            // add metadata bag.
+            if (properties.metadata == null) properties.metadata = {};
+
+            // transmute slave option into permanent property, then act as appropriate.
+            if (options.slave === true) properties.metadata.slave = true;
+            if (properties.metadata.slave === true)
+            {
+                $this.addClass('slave');
+                $this.data('odkControl-parent', $this.prev().data('odkControl-properties'));
+            }
+
             var match = null;
             if (properties.name.value == 'untitled')
                 properties.name.value += (untitledCount() + 1);
@@ -319,6 +361,8 @@
 
             _.each(properties, function(property, name)
             {
+                if (name === 'metadata') return;
+
                 property.id = name;
                 property.validations = [];
             });
@@ -472,13 +516,6 @@
                         value: {},
                         advanced: true,
                         summary: false },
-        destination:  { name: 'Instance Destination',
-                        type: 'text',
-                        description: 'Specify a custom XPath expression at which to store the result.',
-                        tips: [ 'The <a href="https://opendatakit.github.io/xforms-spec/#xpath-paths" rel="external">ODK XForms Path Spec</a> may be useful.' ],
-                        value: '',
-                        advanced: true,
-                        summary: false },
         calculate:  { name: 'Calculate',
                         type: 'text',
                         description: 'Specify a custom expression to store a calculated value in this field.',
@@ -506,7 +543,7 @@
                         value: {},
                         summary: false } },
         inputNumeric: {
-          range:      { name: 'Range',
+          range:      { name: 'Valid Range',
                         type: 'numericRange',
                         description: 'Valid numeric range for the user input of this control.',
                         tips: [
@@ -520,14 +557,50 @@
                         tips: [ 'It is also displayed if a custom constraint check is failed.' ],
                         value: {},
                         summary: false },
+          appearance: { name: 'Style',
+                        type: 'enum',
+                        description: 'Style of collection interface to present.',
+                        tips: [ 'A Picker, also known as a Spinner, is a little textbox with plus and minus buttons to change the number.' ],
+                        options: [ 'Textbox',
+                                   'Slider',
+                                   'Vertical Slider',
+                                   'Picker' ],
+                        value: 'Textbox',
+                        summary: true },
           kind:       { name: 'Kind',
                         type: 'enum',
+                        bindDisplayIf: { appearance: 'Textbox' },
                         description: 'Type of number accepted.',
                         tips: [ 'In some data collection tools, this will affect the type of keypad shown.' ],
                         options: [ 'Integer',
                                    'Decimal' ],
                         value: 'Integer',
-                        summary: true } },
+                        summary: true },
+          selectRange:{ name: 'Selectable Range',
+                        type: 'numericRange',
+                        validation: [ 'rangeRequired' ],
+                        bindDisplayIf: { appearance: [ 'Slider', 'Vertical Slider', 'Picker' ] },
+                        optional: false,
+                        inclusivity: false,
+                        description: 'The lowest and highest selectable values, inclusive.',
+                        tips: [ 'Integers and decimals are both valid.' ],
+                        value: { min: "1", max: "10" },
+                        summary: false },
+          selectStep: { name: 'Selectable Range: Step Between Choices',
+                        type: 'text',
+                        validation: [ 'required', 'numeric', 'stepDivision' ],
+                        bindDisplayIf: { appearance: [ 'Slider', 'Vertical Slider', 'Picker' ] },
+                        description: 'The gap between adjacent selectable values in the range.',
+                        tips: [ 'The step must cleanly end at the low and high ends of the range; in other words, it must divide the selectable range perfectly.' ],
+                        value: '1',
+                        summary: false },
+          sliderTicks:{ name: 'Slider Ticks',
+                        type: 'bool',
+                        bindDisplayIf: { appearance: [ 'Slider', 'Vertical Slider' ] },
+                        description: 'The lowest and highest selectable values, inclusive.',
+                        tips: [ 'Integers and decimals are both valid.' ],
+                        value: true,
+                        summary: false } },
         inputDate: {
           range:      { name: 'Range',
                         type: 'dateRange',
@@ -583,10 +656,16 @@
                         tips: [
                             'If you have many options or reuse options frequently, use Bulk Edit.',
                             'The Underlying Value is the value saved to the exported data.' ],
-                        value: [{ text: {}, val: 'untitled' }],
+                        value: [{ text: {}, cascade: [], val: 'untitled' }],
+                        summary: false },
+          cascading:  { name: 'Cascading',
+                        type: 'bool',
+                        description: 'Enable this to add a subsequent select question with filtered options.',
+                        value: false,
                         summary: false },
           other:      { name: 'Follow-up Question',
                         type: 'otherEditor',
+                        bindAllowedIf: { 'cascading': [ null, undefined, false ] },
                         validation: [ 'fieldListExpr' ],
                         description: 'Ask the following question as additional information only if a particular response is chosen.',
                         tips: [
@@ -778,6 +857,21 @@
         metadata: {
             name: 'Metadata',
             description: 'Metadata questions silently and automatically collect information about the session.',
+        }
+    };
+
+
+    controlNS.upgrade = {
+        2: function(form) {
+            var processControl = function(control)
+            {
+                if (_.isArray(control.children))
+                    _.each(control.children, processControl);
+
+                if ((control.type === 'inputNumeric') && (control.appearance == null))
+                    control.appearance = 'Textbox';
+            };
+            _.each(form.controls, processControl);
         }
     };
 

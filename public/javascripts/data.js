@@ -13,10 +13,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     var getDataRepresentation = odkmaker.data.extractOne = function($control)
     {
         var data = {};
-        _.each($control.data('odkControl-properties'), function(property, name)
+        var properties = $control.data('odkControl-properties');
+        _.each(properties, function(property, name)
         {
             data[name] = property.value;
         });
+        data.metadata = properties.metadata;
 
         data.type = $control.data('odkControl-type');
         if (data.type == 'group')
@@ -44,7 +46,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 version: odkmaker.data.currentVersion,
                 activeLanguages: odkmaker.i18n.activeLanguageData(),
                 optionsPresets: odkmaker.options.presets,
-                htitle: htitle
+                htitle: htitle,
+                instance_name: $('#formProperties_instanceName').val(),
+                public_key: $('#formProperties_publicKey').val(),
+                submission_url: $('#formProperties_submissionUrl').val()
             }
         };
     };
@@ -66,8 +71,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                                         $.fn.odkControl.controlProperties[control.type]);
         _.each(properties, function(property, key)
         {
+            if (key === 'metadata') return;
             property.value = control[key];
         });
+        properties.metadata = control.metadata;
 
         var $result = $('#templates .control')
             .clone()
@@ -88,7 +95,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     // the current will be upgraded. to define an upgrade, add an upgrade object to any module
     // whose keys are the number of the version to be upgraded to and values are the functions
     // that take the form data and update it to conform with that version.
-    odkmaker.data.currentVersion = 1;
+    odkmaker.data.currentVersion = 2;
     odkmaker.data.load = function(formObj)
     {
         var version = formObj.metadata.version || 0;
@@ -105,6 +112,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('.workspace').empty();
 
         $('h1').text(formObj.title);
+        $('#formProperties_title').val(formObj.metadata.htitle)
+        $('#formProperties_instanceName').val(formObj.metadata.instance_name);
+        $('#formProperties_publicKey').val(formObj.metadata.public_key);
+        $('#formProperties_submissionUrl').val(formObj.metadata.submission_url);
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadMany($('.workspace'), formObj.controls);
@@ -133,7 +144,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         'Manual (No GPS)': 'placement-map',
         'Minimal (spinner)': 'minimal',
         'Table': 'label',
-        'Horizontal Layout': 'horizontal'
+        'Horizontal Layout': 'horizontal',
+        'Vertical Slider': 'vertical',
+        'Picker': 'picker'
     };
     var addTranslation = function(obj, itextPath, translations)
     {
@@ -273,7 +286,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 var binding = {
                     name: 'bind',
                     attrs: {
-                        'nodeset': control.destination || (xpath + control.name),
+                        'nodeset': xpath + control.name,
                         'relevant': '(' + relevance.join(') and (') + ')'
                     }
                 }
@@ -301,7 +314,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             var binding = {
                 name: 'bind',
                 attrs: {
-                    'nodeset': control.destination || (xpath + control.name)
+                    'nodeset': xpath + control.name
                 }
             }
 
@@ -371,7 +384,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var bodyTag = {
             name: controlTypes[control.type],
             attrs: {
-                'ref': control.destination || (xpath + control.name)
+                'ref': xpath + control.name
             },
             children: []
         };
@@ -381,7 +394,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var binding = {
             name: 'bind',
             attrs: {
-                'nodeset': control.destination || (xpath + control.name)
+                'nodeset': xpath + control.name
             }
         }
         model.children.push(binding);
@@ -391,10 +404,26 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             binding.attrs.type = 'string';
         else if (control.type == 'inputNumeric')
         {
-            if (control.kind == 'Integer')
-                binding.attrs.type = 'int';
-            else if (control.kind == 'Decimal')
-                binding.attrs.type = 'decimal';
+            if (control.appearance == 'Textbox')
+            {
+                if (control.kind == 'Integer')
+                    binding.attrs.type = 'int';
+                else if (control.kind == 'Decimal')
+                    binding.attrs.type = 'decimal';
+            }
+            else
+            {
+                // overrides extant input tag with a range tag.
+                bodyTag.name = 'range';
+                if (_.isObject(control.selectRange))
+                {
+                    bodyTag.attrs.start = control.selectRange.min;
+                    bodyTag.attrs.end = control.selectRange.max;
+                }
+                bodyTag.attrs.step = control.selectStep;
+                var step = parseFloat(control.selectStep);
+                binding.attrs.type = (Math.floor(step) === step) ? 'int' : 'decimal';
+            }
         }
         else if (control.type == 'inputDate')
         {
@@ -512,26 +541,92 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
         if ((control.type === 'inputDate') && ((control.kind === 'Year and Month') || (control.kind === 'Year')))
             bodyTag.attrs.appearance = (control.kind === 'Year') ? 'year' : 'month-year';
+        if (control.sliderTicks === false)
+            bodyTag.attrs.appearance = ((bodyTag.attrs.appearance || '') + ' no-ticks').trim();
 
         // options
         if (control.options !== undefined)
-            _.each(control.options, function(option, i)
+        {
+            if ((control.cascading === true) || (instance.context.cascade != null))
             {
-                var itextPath = xpath + control.name + ':option' + i;
-                addTranslation(option.text, itextPath, translations);
+                // we are somewhere in a cascading select.
+                if (instance.context.cascade == null)
+                    instance.context.cascade = [];
 
+                // add an instance tag for this level of the cascade.
+                var instanceId = 'choices_' + $.sanitizeString(xpath.replace(/^\/data\//, '') + control.name);
+                var optionsInstance = {
+                    name: 'instance',
+                    attrs: { id: instanceId },
+                    children: [{
+                        name: 'root',
+                        children: _.map(control.options, function(option, i)
+                        {
+                            // minor warning: side effects in a map.
+                            var itextPath = xpath + control.name + ':option' + i;
+                            addTranslation(option.text, itextPath, translations);
+
+                            return {
+                                name: 'item',
+                                children: [
+                                    { name: 'itextId', children: [ itextPath ], _noWhitespace: true },
+                                    { name: 'value', children: [ option.val ], _noWhitespace: true }
+                                ].concat(_.map(instance.context.cascade, function(name, j)
+                                {
+                                    return { name: name, children: [ option.cascade[j] ], _noWhitespace: true };
+                                }))
+                            };
+                        })
+                    }]
+                };
+                model.children.push(optionsInstance);
+
+                // calculate our filtering condition.
+                var condition = _.map(instance.context.cascade, function(dataName)
+                {
+                    return dataName + '=' + xpath + dataName;
+                }).join(' and ');
+                if (condition.length > 0) condition = '[' + condition + ']';
+
+                // add an itemset reference to our body tag.
                 bodyTag.children.push({
-                    name: 'item',
+                    name: 'itemset',
+                    attrs: { nodeset: "instance('" + instanceId + "')/root/item" + condition },
                     children: [
-                        {   name: 'label',
-                            attrs: {
-                                'ref': "jr:itext('" + itextPath + "')"
-                            } },
-                        {   name: 'value',
-                            val: option.val }
+                        { name: 'value', attrs: { ref: 'value' } },
+                        { name: 'label', attrs: { ref: 'jr:itext(itextId)' } }
                     ]
                 });
-            });
+
+                // inform downstream cascades of our data name.
+                instance.context.cascade.unshift(control.name);
+
+                // remove our context object if we are at the very tail.
+                if (control.cascading === false)
+                    delete instance.context.cascade;
+            }
+            else
+            {
+                // normal options; drop them inline.
+                _.each(control.options, function(option, i)
+                {
+                    var itextPath = xpath + control.name + ':option' + i;
+                    addTranslation(option.text, itextPath, translations);
+
+                    bodyTag.children.push({
+                        name: 'item',
+                        children: [
+                            {   name: 'label',
+                                attrs: {
+                                    'ref': "jr:itext('" + itextPath + "')"
+                                } },
+                            {   name: 'value',
+                                val: option.val }
+                        ]
+                    });
+                });
+            }
+        }
 
         // advanced relevance
         if (control.relevance !== '')
@@ -567,16 +662,18 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // TODO: user-config of instanceHead
 
         // Per OpenRosa spec, instanceID should be in /data/meta
+        var meta = {
+            name: 'meta',
+            children: [ { name: 'instanceID' } ]
+        };
+
         var instanceHead = {
             name: 'data',
             attrs: {
               'id': 'build_' + $.sanitizeString($('.header h1').text()) +
                     '_' + Math.round((new Date()).getTime() / 1000)
             },
-            children: [{
-                name: 'meta',
-                children: [ { name: 'instanceID' } ]
-            }],
+            children: [ meta ],
             context: {}
         };
 
@@ -602,7 +699,6 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             attrs: {
                 'xmlns': 'http://www.w3.org/2002/xforms',
                 'xmlns:h': 'http://www.w3.org/1999/xhtml',
-                'xmlns:ev': 'http://www.w3.org/2001/xml-events',
                 'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
                 'xmlns:jr': 'http://openrosa.org/javarosa'
             },
@@ -641,6 +737,32 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
         model.children.push(instanceID);
 
+        if (!$.isBlank(internal.metadata.instance_name))
+        {
+            meta.children.push({ name: 'instanceName', _noWhitespace: true });
+            model.children.push({ name: 'bind', attrs: {
+              nodeset: '/data/meta/instanceName',
+              type: 'string',
+              calculate: internal.metadata.instance_name
+            } });
+        }
+
+        if (!$.isBlank(internal.metadata.public_key) || !$.isBlank(internal.metadata.submission_url))
+        {
+            var submission = {
+                name: 'submission',
+                attrs: {
+                    method: 'form-data-post'
+                }
+            };
+            model.children.push(submission);
+
+            if (!$.isBlank(internal.metadata.public_key))
+                submission.attrs.base64RsaPublicKey = internal.metadata.public_key;
+
+            if (!$.isBlank(internal.metadata.submission_url))
+                submission.attrs.action = internal.metadata.submission_url;
+        }
 
         _.each(internal.controls, function(control)
         {

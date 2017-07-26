@@ -49,13 +49,56 @@
 
             if (property.bindDisplayIf != null)
             {
-                var parentProperty = $parent.data('odkControl-properties')[property.bindDisplayIf];
-                var showHide = function() { $this.toggle(parentProperty.value !== false); }
-                $parent.on('odkControl-propertiesUpdated', function(_, propId)
+                // normalize two formats: 'key' just checks bool on that key.
+                // { 'key': [ 'value1', 'value2' ] } checks a single property against values.
+                // someday if required we can check multiple properties.
+                var key, values;
+                if (_.isString(property.bindDisplayIf))
                 {
-                    if (propId === property.bindDisplayIf) showHide();
-                });
+                    key = property.bindDisplayIf;
+                    values = [ true ];
+                }
+                else
+                {
+                    key = _.keys(property.bindDisplayIf)[0];
+                    values = property.bindDisplayIf[key];
+                    if (!_.isArray(values)) { values = [ values ]; }
+                }
+
+                var parentProperty = $parent.data('odkControl-properties')[key];
+                var showHide = function() { $this.toggle(_.contains(values, parentProperty.value)); }
+                $parent.on('odkControl-propertiesUpdated', function(_, propId) { if (propId === key) showHide(); });
                 showHide();
+            }
+
+            if (property.bindAllowedIf != null)
+            {
+                var baiKey, baiValues;
+                if (_.isString(property.bindAllowedIf))
+                 {
+                    baiKey = property.bindAllowedIf;
+                    baiValues = [ true ];
+                }
+                else
+                {
+                    baiKey = _.keys(property.bindAllowedIf)[0];
+                    baiValues = property.bindAllowedIf[baiKey];
+                    if (!_.isArray(baiValues)) { baiValues = [ baiValues ]; }
+                }
+
+                var baiProperty = $parent.data('odkControl-properties')[baiKey];
+                var allow = function()
+                {
+                    if (_.contains(baiValues, baiProperty.value))
+                        $this.removeClass('disabled');
+                    else
+                    {
+                        $this.addClass('disabled');
+                        $this.find('label input:checked').click();
+                    }
+                };
+                $parent.on('odkControl-propertiesUpdated', function(_, propId) { if (propId === baiKey) allow(); });
+                allow();
             }
         });
     };
@@ -118,6 +161,11 @@
                     maxInclusive: $inputs.filter('.maxInclusive').is(':checked')
                 };
             };
+
+            if (property.optional === false)
+                $editor.addClass('nonOptional');
+            if (property.inclusivity === false)
+                $editor.addClass('hideInclusivity');
 
             if ((property.value === false) || (property.value == null))
                 $inputs.attr('disabled', true);
@@ -194,7 +242,7 @@
             $editor.find('.addOption').click(function(event)
             {
                 event.preventDefault();
-                var newOption = { text: {}, val: 'untitled' };
+                var newOption = { text: {}, cascade: [], val: 'untitled' };
                 property.value.push(newOption);
                 $optionsList.append(newOptionRow(property, newOption, $optionsList.children().length, $parent));
                 $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
@@ -202,6 +250,7 @@
 
             $editor.find('.optionsEditorLink').click(function(event)
             {
+                odkmaker.options.$currentControl = $parent;
                 odkmaker.options.currentProperty = property.value;
                 odkmaker.options.optionsUpdated = function(options)
                 {
@@ -229,9 +278,9 @@
             var $select = $editor.find('select');
             var update = function()
             {
-                var value = (property.value == null) ? false : property.value;
+                var value = (property.value == null) ? false : !!property.value;
                 $enable.attr('checked', value);
-                $select.attr('disabled', value);
+                $select.attr('disabled', !value);
                 updateOptions();
             };
 
@@ -321,6 +370,7 @@
 
             $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
         });
+
         var $underlyingValueEdit = $('#templates .editors .optionsEditorValueField').clone();
         $underlyingValueEdit
             .find('.editorTextfield')
@@ -330,6 +380,28 @@
                     data.val = $(this).val();
                     $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                 });
+
+        var $cascadeFields = $([]);
+        var idx = 0;
+        var $ptr = $parent;
+        while ($ptr.hasClass('slave'))
+        {
+            $ptr = $ptr.prev();
+            (function(thisIdx) // js is weird.
+            {
+                var $parentValueEdit = $('#templates .editors .optionsEditorValueField').clone();
+                $parentValueEdit.find('h5').text($ptr.data('odkControl-properties').name.value + ' Value');
+                $parentValueEdit.find('.editorTextfield')
+                    .val(data.cascade[thisIdx] || '')
+                    .keyup(function()
+                    {
+                        data.cascade[thisIdx] = $(this).val();
+                        $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
+                    });
+                $cascadeFields = $cascadeFields.add($parentValueEdit);
+            })(idx++);
+        }
+
         return $('<li></li>')
                 .toggleClass('even', (index % 2) == 0)
                 .append(
@@ -341,6 +413,7 @@
                             value: data.text
                         }, null, $parent)
                         .prepend($removeLink)
-                        .append($underlyingValueEdit));
+                        .append($underlyingValueEdit)
+                        .append($cascadeFields));
     };
 })(jQuery);
