@@ -570,10 +570,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                                 name: 'item',
                                 children: [
                                     { name: 'itextId', children: [ itextPath ], _noWhitespace: true },
-                                    { name: 'value', children: [ option.val ], _noWhitespace: true }
+                                    { name: 'value', children: [ option.val || '' ], _noWhitespace: true }
                                 ].concat(_.map(instance.context.cascade, function(name, j)
                                 {
-                                    return { name: name, children: [ option.cascade[j] ], _noWhitespace: true };
+                                    return { name: name, children: [ option.cascade[j] || '' ], _noWhitespace: true };
                                 }))
                             };
                         })
