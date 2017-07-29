@@ -104,6 +104,29 @@ $.fn.draggable = function(passedOptions)
             else
                 // we are being dragged but we are not selected. drag just this thing.
                 var $dragging = $this;
+
+            // expand selection in both directions to account for slave groups.
+            // N.B.!! this depends on selection order. if the above logic changes, this
+            // code may cease to work as expected.
+            var $first = $dragging.first();
+            if ($first.hasClass('slave'))
+            {
+                // need to add not just the previous slaves but also the parent of the
+                // slaves.
+                var $additional = $first.prevUntil(':not(.slave)');
+                if ($additional.length > 0)
+                    // prevUntil returns objects in reverse stack, so last is the topmost
+                    // element in the document.
+                    $dragging = $dragging.add($additional).add($additional.last().prev());
+                else
+                    $dragging = $dragging.add($first.prev());
+            }
+            var $last = $dragging.last();
+            if ($last.next().hasClass('slave'))
+                // in this case just select all hanging slaves.
+                $dragging = $dragging.add($last.nextUntil(':not(.slave)'));
+
+            // save off the drag cohort.
             $this.data('draggable-dragging', $dragging);
 
             // track dragstart millisecond time as a UUID for the sake of chrome.
@@ -273,6 +296,37 @@ $.fn.droppable = function(passedOptions)
                         else
                             $workspace.append($placeholder);
                     }
+                }
+                else if ($target.hasClass('slave') || $target.next().hasClass('slave'))
+                {
+                    // if we encounter a slave block, we need to insert before or after
+                    // the entire thing.
+                    var $first = $target;
+                    while ($first.hasClass('slave')) $first = $first.prev();
+                    var $last = $target;
+                    while ($last.next().hasClass('slave')) $last = $last.next();
+                    var $block = $first.nextUntil($last).add($last);
+
+                    targetTop = $first.offset().top;
+                    targetHeight = _.reduce($block, function(x, elem) { return x + $(elem).outerHeight(true); }, 0);
+                    third = targetHeight / 3;
+                    if (mouseY < (targetTop + third))
+                        // top third of block; add before.
+                        $first.before($placeholder);
+                    else if (mouseY < (targetTop + (2 * third)))
+                    {
+                        // leave placeholder where it is, unless it's nowhere, then put on closer half.
+                        if ($placeholder[0].parentNode == null)
+                        {
+                            if (mouseY < (targetTop + (targetHeight / 2)))
+                                $first.before($placeholder);
+                            else
+                                $last.after($placeholder);
+                        }
+                    }
+                    else
+                        // bottom third of block; add after.
+                        $last.after($placeholder);
                 }
                 else if (mouseY < (targetTop + third))
                 {

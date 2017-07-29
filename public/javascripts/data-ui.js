@@ -228,6 +228,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             event.preventDefault();
 
             var $loading = $('.aggregateDialog .modalLoadingOverlay');
+            var protocol = $('.aggregateInstanceProtocol').val();
             var target = $('.aggregateInstanceName').val();
             $loading.show();
             $('.aggregateDialog .errorMessage').empty().hide();
@@ -236,7 +237,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 url: '/aggregate/post',
                 dataType: 'json',
                 type: 'POST',
-                data: { target: target, credentials: { user: $('#aggregateUser').val(), password: $('#aggregatePassword').val() }, name: $('h1').text(), payload: odkmaker.data.serialize() },
+                data: { protocol: protocol, target: target, credentials: { user: $('#aggregateUser').val(), password: $('#aggregatePassword').val() }, name: $('h1').text(), payload: odkmaker.data.serialize() },
                 success: function(response, status)
                 {
                     $.toast('Your form has been successfully uploaded to ' + $.h(target) + '.');
@@ -250,6 +251,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                         message = '<p>Could not upload the form. Aggregate could not validate the form contents. Please make sure your form is valid and try again.</p>';
                     else if (errorBody.code == '404')
                         message = '<p>Could not upload the form, because we could not find the Aggregate server you specified. Please check the address and try again.</p>';
+                    else if (errorBody.code == 'ECONNREFUSED')
+                        message = '<p>Could not upload the form. We found the server you specified, but it does not appear to be a valid, functioning Aggregate server. Please check the address and the server, and try again.</p>';
                     else
                         message = '<p>Could not upload the form. Please check your credentials and instance name, and try again.</p>';
 
