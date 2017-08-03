@@ -117,6 +117,7 @@
       monit_protection: true
       nginx_install_method: package
       nginx_default_enable: false
+      nginx_client_max_body_size: "15M"
       nginx_sites:
         - server:
             name: http
