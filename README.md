@@ -16,6 +16,21 @@ We depend on one native binding, to connect to a PostgreSQL database. To satisfy
 
 If you run into trouble, try updating Bundler: `gem update --system && gem install bundler`.
 
+Note: If you run into this error while executing `bundle install`
+```
+An error occurred while installing pg (<some version>), and Bundler cannot continue.
+Make sure that `gem install pg -v '<some version>'` succeeds before bundling.
+```
+Then installing `pg` with `gem install pg -v '0.19.0'` would solve the issue. However, on some platforms there might be an issue in running this commnad also. The following message will be displayed:
+```
+Can't find the PostgreSQL client library (libpq)
+*** extconf.rb failed ***
+Could not create Makefile due to some reason, probably lack of necessary
+libraries and/or headers.  Check the mkmf.log file for more details.  You may
+need configuration options.
+```
+To resolve this, setting the `ARCHFLAGS` env to `-arch x86_64` and then installing pg would work. So run this command: `sudo ARCHFLAGS="-arch x86_64" gem install pg -v '<some version>'`
+
 ### Setup and Execution
 
 Now that you have resolved all the appropriate dependencies, you'll need to set up the configuration by copying `config.yml.sample` to `config.yml`. This file contains a number of secret keys and tokens, so be sure not to check it into source control once you put your own keys into it. Note that the `cookie_ssl_only` flag should only be set to true if you are serving your requests on HTTPS; it should likely remain off for local development.
