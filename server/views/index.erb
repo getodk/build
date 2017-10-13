@@ -56,7 +56,7 @@
           <span>File</span>
           <ul class="submenu">
             <li><a href="#newFormDialog" class="destructive newLink">New Form</a></li>
-            <li><a href="#openDialog" rel="modal" class="destructive authRequired">Open Form...</a></li>
+            <li><a href="#openDialog" rel="modal" class="authRequired">My Forms</a></li>
             <li class="divider"></li>
             <li><a href="#saveForm" class="authRequired saveLink">Save</a></li>
             <li><a href="#saveAsDialog" rel="modal" class="authRequired">Save Form As...</a></li>
@@ -230,7 +230,7 @@
     </div>
 
     <div class="modal narrowModal openDialog">
-      <h3>Open Form</h3>
+      <h3>My Forms</h3>
       <div class="modalContents">
         <form>
           <div class="errorMessage"></div>
@@ -240,7 +240,7 @@
         </form>
       </div>
       <div class="modalButtonContainer">
-        <a class="modalButton openLink acceptLink" href="#open">Open</a>
+        <a class="modalButton openLink acceptLink destructive" href="#open">Open</a>
         <a class="modalButton jqmClose" href="#close">Cancel</a>
       </div>
     </div>
