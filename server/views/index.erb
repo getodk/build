@@ -263,12 +263,13 @@
 
     <div class="modal narrowModal loadLocallyDialog">
       <h3>Load Form from File</h3>
+      <p>You must choose an ODK Build form (.odkbuild) file</p>
       <div class="modalContents">
         <form>
           <div class="errorMessage"></div>
 
           <label for="loadFile_name">File to Load</label>
-          <input type="text" id="loadFile_name" name="name" readonly='readonly' />
+          <input type="text" id="loadFile_name" name="name" readonly='readonly' accept=".odkbuild" />
           <a href="#chooseFile" id="loadFileChooseLink">Choose</a>
         </form>
       </div>
