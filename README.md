@@ -14,7 +14,7 @@ All Rubygem dependencies are managed by Ruby Bundler. There are config files pre
 
 We depend on one native binding, to connect to a PostgreSQL database. To satisfy the binding, you can install `libpq-dev` on apt, or `postgresql` on homebrew.
 
-If you run into trouble, try updating Bundler: `gem update --system && gem install bundler`.
+If you run into trouble, see the [building guide](BUILDING.md) for further details.
 
 ### Setup and Execution
 
