@@ -152,7 +152,6 @@ $(function()
     {
         if (odkmaker.data.clean === false)
             odkmaker.application.confirm('Are you sure? You will lose unsaved changes to the current form.', callback);
-
         else
             callback();
     };
