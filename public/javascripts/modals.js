@@ -37,6 +37,10 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
             {
                 $dialog.find('.modalLoadingOverlay').stop().fadeOut();
 
+                odkmaker.auth.currentUser.forms.sort(function(a, b) {
+                    return a.title.localeCompare(b.title);
+                });
+
                 _.each(odkmaker.auth.currentUser.forms, function(formObj)
                 {
                     $list.append('<li rel="' + formObj.id + '">' + $.h(formObj.title) +
