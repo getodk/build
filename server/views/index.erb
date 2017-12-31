@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" /> 
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>ODK Build</title>
 
@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui.min.css"/>
 
   <% unless ConfigManager['google_analytics_id'].nil? %>
+
+
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '<%= ConfigManager['google_analytics_id'] %>']);
@@ -20,6 +22,14 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
+
+      function shortenBuildRev() {
+console.log(document.getElementById('buildRev').innerHTML)
+document.getElementById('buildRev').innerHTML = document.getElementById('buildRev').innerHTML.slice(0,6)
+}
+
+   window.onload = shortenBuildRev;
+
     </script>
   <% end %>
   </head>
@@ -423,7 +433,7 @@
           Found a bug? Have a feature request?
           <a href="http://github.com/clint-tseng/odkbuild/issues" rel="external">Report it</a>.
         </p>
-        <p>
+        <p id = "buildRev">
           You are running <%= AssetManager.build_rev %>
         </p>
       </div>
