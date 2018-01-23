@@ -37,12 +37,16 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
             {
                 $dialog.find('.modalLoadingOverlay').stop().fadeOut();
 
-                _.each(odkmaker.auth.currentUser.forms, function(formObj)
+                var sortedForms = odkmaker.auth.currentUser.forms.slice(0).sort(function(a, b) {
+                    return a.title.localeCompare(b.title);
+                });
+
+                _.each(sortedForms, function(formObj)
                 {
                     $list.append('<li rel="' + formObj.id + '">' + $.h(formObj.title) +
                       '<a href="#delete" class="icon deleteFormLink">delete</a></li>');
                 });
-                if (odkmaker.auth.currentUser.forms.length === 0)
+                if (sortedForms === 0)
                 {
                     $list.append('<li class="noData">You do not appear to have saved any forms just yet.</li>');
                 }

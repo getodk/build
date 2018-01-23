@@ -184,6 +184,14 @@ $(function()
         applicationNS.ask(message, { Yes: callback, No: null });
     };
 
+    applicationNS.confirmDestruction = function(callback)
+    {
+        if (odkmaker.data.clean === false)
+            odkmaker.application.confirm('Are you sure? You will lose unsaved changes to the current form.', callback);
+        else
+            callback();
+    };
+
     // GA tracking, if enabled.
     if ((configNS.gaToken != null) && (localStorage.getItem('suppressAnalytics') == null))
     {

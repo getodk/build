@@ -110,6 +110,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('.control').trigger('odkControl-removing');
         $('.control').trigger('odkControl-removed');
         $('.workspace').empty();
+        odkmaker.application.clearProperties();
 
         $('h1').text(formObj.title);
         $('#formProperties_title').val(formObj.metadata.htitle)

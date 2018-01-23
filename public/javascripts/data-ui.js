@@ -133,7 +133,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $openDialog.find('.openLink').click(function(event)
         {
             event.preventDefault();
-            openForm();
+            odkmaker.application.confirmDestruction(openForm);
+
         });
         $openDialog.delegate('.formList li', 'dblclick', function(event)
         {
