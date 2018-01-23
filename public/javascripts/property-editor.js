@@ -131,6 +131,7 @@
                     .val((property.value == null) ? '' : (property.value[code] || ''))
                     .bind('keyup input', function(event)
                     {
+                        if (property.value == null) property.value = {};
                         property.value[code] = $(this).val();
                         $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                     });
