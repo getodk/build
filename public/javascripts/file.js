@@ -11,14 +11,8 @@ var filePrompt = function(save, format, callback)
 {
     var inputConf = { _: 'input', type: 'file', accept: '.' + format };
     if (save === true) inputConf.nwsaveas = $.sanitizeString($('h1').text());
-    //if (currentPath != null) inputConf.nwworkingdir = currentPath;
     var $input = $.tag(inputConf);
-    $input.change(function()
-    {
-        if (format == 'odkbuild') // nice hack bro
-            currentPath = $input.val();
-        callback($input.val());
-    });
+    $input.change(function() { callback($input.val()); });
     $input.click();
 };
 
@@ -51,13 +45,14 @@ fileNS.openPath = function(path)
 
         odkmaker.data.currentForm = form;
         odkmaker.data.load(form);
+        currentPath = path;
         fileNS.setTitle(path);
     });
 };
 
 var saveFile = function(path, contents)
 {
-    fs.writeFile(path, contents, { encoding: 'UTF-8'}, function(err)
+    fs.writeFile(path, contents, { encoding: 'UTF-8' }, function(err)
     {
         if (err)
             $.toast('There was a problem saving that file: ' + err.message);
@@ -68,9 +63,9 @@ var saveFile = function(path, contents)
 
 fileNS.save = function(overwrite)
 {
-    var initPath = currentPath; // keep track of what our currentPath read before we saved.
     if (overwrite && currentPath != null)
     {
+        // we are saving over the currently opened extant file.
         saveFile(currentPath, JSON.stringify(odkmaker.data.extract()));
         fileNS.setTitle(path);
         odkmaker.data.clean = true;
@@ -81,11 +76,12 @@ fileNS.save = function(overwrite)
         {
             saveFile(path, JSON.stringify(odkmaker.data.extract()));
 
-            if (initPath == null)
+            if (currentPath == null)
             {
                 // we are saving a previously-unsaved form. prompt path but use current window.
                 fileNS.setTitle(path);
                 odkmaker.data.clean = true;
+                currentPath = path;
             }
             else
                 // we are save-asing. always use a new window.
