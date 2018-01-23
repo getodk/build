@@ -191,7 +191,7 @@
         },
         fieldListExpr: {
             given: [ 'self', { scope: 'parents', property: 'fieldList' } ],
-            prereq: hasString,
+            prereq: function(x) { return (x !== false) && hasString(x); },
             check: function(expr, parentFLs)
             {
                 return _.all(parentFLs, function(fl) { return fl !== true; });
