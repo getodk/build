@@ -249,9 +249,10 @@ class OdkBuild < Sinatra::Application
     return error_validation_failed unless params[:credentials][:user]
     return error_validation_failed unless params[:credentials][:password]
 
-    uri = URI.parse("#{params[:protocol] || 'https'}://#{params[:target]}/formUpload")
+    protocol = params[:protocol] || 'https'
+    uri = URI.parse("#{protocol}://#{params[:target]}/formUpload")
     http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
+    http.use_ssl = protocol == 'https'
     req = Net::HTTP::Post.new(uri.request_uri)
 
     body, headers = Multipart::Post.prepare_query({ 'form_name' => params[:name], 'form_def_file' => { :filename => 'form.xml', :content => params[:payload] } })
