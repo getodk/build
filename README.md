@@ -40,3 +40,4 @@ Pull requests are welcome! Please be sure you follow existing conventions: brace
 
 Build is licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
 
+Issue #95 appears to have been resolved but is still open.
