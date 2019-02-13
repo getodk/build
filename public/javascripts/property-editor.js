@@ -25,15 +25,31 @@
 
             var processValidation = function()
             {
-                var errors = _.filter(property.validations, function(validation) { return validation.hasError; });
-                $this.toggleClass('error', errors.length > 0);
-                $this.children('.errorList').remove();
-                if (errors.length > 0)
+                if (property.validations == null) return;
+                var errors = [];
+                var warnings = [];
+                for (var i = 0; i < property.validations.length; i++)
                 {
+                    var validation = property.validations[i];
+                    if (validation.failed === true)
+                    {
+                        if (validation.isWarning === true)
+                            warnings.push(validation);
+                        else
+                            errors.push(validation);
+                    }
+                }
+                $this.toggleClass('error', errors.length > 0);
+                $this.toggleClass('warning', warnings.length > 0);
+                $this.children('.errorList').remove();
+
+                if ((errors.length > 0) || (warnings.length > 0))
+                {
+                    var issueList = (errors.length > 0) ? errors : warnings;
                     $('<ul/>')
                         .addClass('errorList')
                         .append(
-                            _.map(errors, function(error)
+                            _.map(issueList, function(error)
                             {
                                 return '<li>' + error.validation.message + '</li>';
                             }).join(''))

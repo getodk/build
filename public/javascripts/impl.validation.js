@@ -196,7 +196,7 @@
             {
                 return _.all(parentFLs, function(fl) { return fl !== true; });
             },
-            severity: 'warning',
+            warning: true,
             message: 'Because this control is within a single-screen group (field list), any expressions that reference other fields in the same group will not work.'
         }
     };
