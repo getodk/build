@@ -31,6 +31,20 @@ var checkForMimeType = function(dataTransfer)
     return false;
 };
 
+// okay, as usual mozilla has read the specification and nobody else has bothered. theoretically,
+// during both the dragEnd and drop handlers, the dropEffect property on dataTransfer is supposed
+// to be set to the user's final intention. this is important so we know if the user wants to move
+// or copy, or if the user has cancelled the drag operation (this is the reason for the chrome
+// nastiness below).
+//
+// the copy versus move behavior used to work throughout. but now it's broken in chrome and
+// safari. thankfully, there is a weird hack workaround due to the way the browsers set the
+// effectAllowed property, which we exploit here.
+var isCopyEffect = function(dataTransfer) {
+  return (dataTransfer.dropEffect === 'copy') ||
+    ((dataTransfer.dropEffect === 'none') && (dataTransfer.effectAllowed === 'copy'));
+};
+
 // our two shameful global variables. but you can really only drag+drop one thing on your entire
 // machine at once anyway. we use these to track whether a successful drop happened here or in
 // some other window, and to fix awfulness with Chrome.
@@ -430,7 +444,7 @@ $.fn.droppable = function(passedOptions)
             // break this logic out because chrome makes it all terrible (see commit message @c1c897e).
             // don't depend on key detection when we can help it because it's less reliable.
             var isExtant = ($extant.length === controlIds.length);
-            var intendsCopy = $.isChrome ? $.isDuplicate(event) : (dataTransfer.dropEffect === 'copy');
+            var intendsCopy = isCopyEffect(dataTransfer);
 
             var $added = null;
             if (isExtant && !intendsCopy)
