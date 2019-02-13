@@ -109,7 +109,7 @@
     // Initializers for different editor types
     $.fn.propertyEditor.editors = {
         text: function(property, $editor, $parent) {
-            $editor.find('h4').text(property.name);
+            $editor.find('h4').text(property.label || property.name);
             $editor.find('.editorTextfield')
                 .attr('id', 'property_' + property.name)
                 .val(property.value || '')
@@ -120,7 +120,7 @@
                 });
         },
         uiText: function(property, $editor, $parent) {
-            $editor.find('h4').text(property.name);
+            $editor.find('h4').text(property.label || property.name);
 
             var $translationsList = $editor.find('.translations');
             _.each(odkmaker.i18n.activeLanguages(), function(language, code)
@@ -146,10 +146,10 @@
                     property.value = $(this).is(':checked');
                     $parent.trigger('odkControl-propertiesUpdated', [ property.id ]);
                 });
-            $editor.find('label span').text(property.name);
+            $editor.find('label span').text(property.label || property.name);
         },
         numericRange: function(property, $editor, $parent) {
-            $editor.find('label span').text(property.name);
+            $editor.find('label span').text(property.label || property.name);
 
             var $inputs = $editor.find('.editorTextfield, .inclusive');
 
@@ -202,7 +202,7 @@
                 });
         },
         'enum': function(property, $editor, $parent) {
-            $editor.find('h4').text(property.name);
+            $editor.find('h4').text(property.label || property.name);
 
             var $select = $editor.find('.editorSelect');
             _.each(property.options, function(option)
@@ -230,7 +230,7 @@
             });
         },
         optionsEditor: function(property, $editor, $parent) {
-            $editor.find('h4').text(property.name);
+            $editor.find('h4').text(property.label || property.name);
 
             var $optionsList = $editor.find('.optionsList');
             _.each(property.value, function(val, i)
@@ -265,7 +265,7 @@
             });
         },
         otherEditor: function(property, $editor, $parent) {
-            $editor.find('label span').text(property.name);
+            $editor.find('label span').text(property.label || property.name);
             var optionsProperty = $parent.data('odkControl-properties')[property.bindTo];
 
             // WARNING: we don't yet know how to detangle if the user has two identical
