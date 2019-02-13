@@ -228,7 +228,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             instance.children.push(instanceTag);
             var bodyTag = {
                 name: 'group',
-                attrs: {},
+                attrs: { ref: xpath + control.name },
                 children: []
             };
             body.children.push(bodyTag);
