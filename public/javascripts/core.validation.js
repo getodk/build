@@ -320,14 +320,14 @@
             });
         }
 
-        var lastHasError = false;
+        var lastFailed = false;
         var apply = function()
         {
             if (displayed === false)
             {
-                if (lastHasError === true)
+                if (lastFailed === true)
                 {
-                    lastHasError = result.hasError = false;
+                    lastFailed = result.failed = false;
                     $control.trigger('odkControl-validationChanged', [ property, false ]);
                 }
                 return;
@@ -341,12 +341,13 @@
 
             //console.log('%c' + property.id + ': ' + validation + ' -> ' + passed, 'color:' + (passed === false ? 'red;font-weight:bold' : '#444'));
 
-            result.hasError = !passed;
-            if (lastHasError !== result.hasError) $control.trigger('odkControl-validationChanged', [ property, result.hasError ]);
-            lastHasError = result.hasError;
+            result.failed = !passed;
+            result.isWarning = (validationObj.warning === true);
+            if (lastFailed !== result.failed) $control.trigger('odkControl-validationChanged', [ property, (result.failed && !result.isWarning) ]);
+            lastFailed = result.failed;
         };
 
-        var result = { property: property, validation: validationObj, hasError: false };
+        var result = { property: property, validation: validationObj, failed: false };
         return result;
     };
 

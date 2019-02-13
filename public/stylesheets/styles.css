@@ -1001,6 +1001,10 @@ body > .control.last .controlFlowArrow,
 {
     color: #a20f0f;
 }
+.propertiesPane .propertyList li.warning
+{
+    background-color: #fffebe;
+}
 .propertiesPane .propertyList li.advanced
 {
     border-top: 1px dashed #aaa;
@@ -1141,9 +1145,13 @@ body > .control.last .controlFlowArrow,
     text-indent: 0;
     top: 0;
 }
-.propertiesPane .propertyList li .errorList li
+.propertiesPane .propertyList li.error .errorList li
 {
     color: #a20f0f;
+}
+.propertiesPane .propertyList li.warning .errorList li
+{
+    color: #746854;
 }
 
 .propertiesPane .propertyList li.advanced .icon
