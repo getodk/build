@@ -22,6 +22,13 @@ Now that you have resolved all the appropriate dependencies, you'll need to set 
 
 Next, you want to start up your databases. Create a database in your Postgres instance according to how you populated `config.yml`, then run `rake db:migrate` to run migrations against that database. Ideally, create the database with an encoding of `UTF8`.
 
+If you are using the development settings for the config file, you'll want to do this:
+
+```
+create role odkbuild with login password 'odkbuild';
+create database odkbuild with owner='odkbuild' encoding='utf8';
+```
+
 Finally, you'll want to run `bundle exec rackup config.ru` to start the server, or `bundle exec shotgun config.ru` if you want the application to automatically detect your changes to source code and load them up when you refresh the app in your web browser.
 
 If you're running Build in a production environment, there are a couple of things that the application needs to build before it will run. Before first-run, and after each time you update with a new version, you'll want to run `rake deploy:build`. This will bundle all the assets the application needs for speed an ease of deployment.
