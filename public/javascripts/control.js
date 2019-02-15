@@ -402,9 +402,12 @@
                 else
                 {
                     var validations = $this.data('odkControl-validations');
-                    $this.toggleClass('error', _.any(validations, function(validation) {
-                        return (validation.failed === true) && (validation.isWarning !== true);
-                    }));
+                    $this.removeClass('error warning');
+                    _.each(validations, function(validation)
+                    {
+                        if (validation.failed === true)
+                            $this.addClass((validation.isWarning === true) ? 'warning' : 'error');
+                    });
                 }
             });
 

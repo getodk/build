@@ -867,6 +867,14 @@ body
 .control.group:hover > .controlFlowArrow { border-top-color: #5d765c; }
 .control.group:hover > .groupFooter { background-color: #5d765c; }
 
+.control.warning > .controlInfo, .control.group.warning > .controlInfo { background-color: #95762d; }
+.control.warning > .controlFlowArrow, .control.group.warning > .controlFlowArrow { border-top-color: #796331; }
+.control.warning > .groupFooter, .control.group.warning > .groupFooter { background-color: #796331; }
+
+.control.warning:hover > .controlInfo { background-color: #a18339; }
+.control.warning:hover > .controlFlowArrow { border-top-color: #8a6d28; }
+.control.warning:hover > .groupFooter { background-color: #8a6d28; }
+
 .control.error > .controlInfo, .control.group.error > .controlInfo { background-color: #a20f0f; }
 .control.error > .controlFlowArrow, .control.group.error > .controlFlowArrow { border-top-color: #880d0d; }
 .control.error > .groupFooter, .control.group.error > .groupFooter { background-color: #880d0d; }
