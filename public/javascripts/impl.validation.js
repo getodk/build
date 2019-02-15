@@ -198,6 +198,17 @@
             },
             warning: true,
             message: 'Because this control is within a single-screen group (field list), any expressions that reference other fields in the same group will not work.'
+        },
+        fieldListFollowup: {
+            given: [ 'self', { scope: 'parents', property: 'fieldList' } ],
+            prereq: function(other) {
+                return _.isArray(other) && (other.length > 0);
+            },
+            check: function(other, parentFLs)
+            {
+                return _.all(parentFLs, function(fl) { return fl !== true; });
+            },
+            message: 'Because this control is within a single-screen group (field list), the follow-up question feature will not work (at least in ODK Collect).'
         }
     };
 
