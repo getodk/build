@@ -61,7 +61,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         return title;
     };
 
-    var loadOne = odkmaker.data.loadOne = function(control)
+    var loadOne = odkmaker.data.loadOne = function(control, $parent)
     {
         var properties = null;
         if ((control.type == 'group') || (control.type == 'branch') || (control.type == 'metadata'))
@@ -81,15 +81,21 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             .addClass(control.type)
             .odkControl(control.type, null, properties);
 
+        if ($parent != null)
+        {
+            $result.appendTo($parent);
+            $result.trigger('odkControl-added');
+        }
+
         if (control.type == 'group')
             loadMany($result.find('.workspaceInner'), control.children);
 
         return $result;
     };
 
-    var loadMany = function($root, controls)
+    var loadMany = function($parent, controls)
     {
-        _.each(controls, function(control) { loadOne(control).appendTo($root).trigger('odkControl-added'); });
+        _.each(controls, function(control) { loadOne(control, $parent); });
     };
     // forms without a version are assumed to be version 0. any form at a version less than
     // the current will be upgraded. to define an upgrade, add an upgrade object to any module
