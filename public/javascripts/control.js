@@ -670,7 +670,7 @@
           other:      { name: 'Follow-up Question',
                         type: 'otherEditor',
                         bindAllowedIf: { 'cascading': [ null, undefined, false ] },
-                        validation: [ 'fieldListExpr' ],
+                        validation: [ 'fieldListFollowup' ],
                         description: 'Ask the following question as additional information only if a particular response is chosen.',
                         tips: [
                             'You can use this to easily prompt for more information if the user selects "Other," for example.',
