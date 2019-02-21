@@ -197,7 +197,7 @@
                 return _.all(parentFLs, function(fl) { return fl !== true; });
             },
             warning: true,
-            message: 'Because this control is within a single-screen group (field list), any expressions that reference other fields in the same group will not work.'
+            message: 'Because this control is within a single-screen group (field list), any expressions that reference other fields in the same group will not work as expected (at least in ODK Collect).'
         },
         fieldListFollowup: {
             given: [ 'self', { scope: 'parents', property: 'fieldList' } ],
