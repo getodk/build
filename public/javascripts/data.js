@@ -155,6 +155,23 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         'Vertical Slider': 'vertical',
         'Picker': 'picker'
     };
+    var mediaTypes = {
+         'Image': 'image/*',
+         'Selfie': 'image/*',
+         'Annotate': 'image/*',
+         'Draw': 'image/*',
+         'Signature': 'image/*',
+         'Audio': 'audio/*',
+         'Video': 'video/*',
+         'Selfie Video': 'video/*'
+    };
+    var mediaAppearances = {
+          'Signature': 'signature',
+          'Annotate': 'annotate',
+          'Draw': 'draw',
+          'Selfie': 'new-front',
+          'Selfie Video': 'new-front'
+    };
     var addTranslation = function(obj, itextPath, translations)
     {
         _.each(translations.children, function(translation)
@@ -536,8 +553,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
 
         // media kind
-        if (control.type == 'inputMedia')
-            bodyTag.attrs.mediatype = control.kind.toLowerCase() + '/*';
+        if (control.type == 'inputMedia') {
+            bodyTag.attrs.mediatype = mediaTypes[control.kind];
+            if (mediaAppearances[control.kind] != null)
+                bodyTag.attrs.appearance = mediaAppearances[control.kind];
+        }
 
         // appearance
         if (control.appearance != null)
