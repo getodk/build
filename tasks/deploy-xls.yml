@@ -13,7 +13,7 @@
   when: (not current_dir.stat.exists)
 
 - name: Fetch and extract latest artifact
-  shell: "curl -L \"https://github.com/clint-tseng/build2xlsform/releases/download/{{service_version}}/build2xlsform.tar.bz2\" | tar jxf -"
+  shell: "curl -L \"https://github.com/opendatakit/build2xlsform/releases/download/{{service_version}}/build2xlsform.tar.bz2\" | tar jxf -"
   args:
     chdir: "{{service_root}}/releases/{{service_version}}"
   when: (not current_dir.stat.exists)
