@@ -651,6 +651,7 @@
                         type: 'enum',
                         description: 'Type of media to upload.',
                         options: [ 'Image',
+                                   'New Image',
                                    'Selfie',
                                    'Annotate',
                                    'Draw',

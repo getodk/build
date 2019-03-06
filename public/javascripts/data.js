@@ -157,6 +157,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
     var mediaTypes = {
          'Image': 'image/*',
+         'New Image': 'image/*',
          'Selfie': 'image/*',
          'Annotate': 'image/*',
          'Draw': 'image/*',
@@ -166,11 +167,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
          'Selfie Video': 'video/*'
     };
     var mediaAppearances = {
-          'Signature': 'signature',
-          'Annotate': 'annotate',
-          'Draw': 'draw',
-          'Selfie': 'new-front',
-          'Selfie Video': 'new-front'
+         'New Image': 'new',
+         'Signature': 'signature',
+         'Annotate': 'annotate',
+         'Draw': 'draw',
+         'Selfie': 'new-front',
+         'Selfie Video': 'new-front'
     };
     var addTranslation = function(obj, itextPath, translations)
     {
