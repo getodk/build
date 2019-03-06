@@ -39,7 +39,7 @@
           ssh_keys: []
           system: true
 
-    - role: rvm_io.ruby
+    - role: rvm.ruby
       rvm1_rubies: 
         - "{{app.ruby_version}}"
       rvm1_install_flags: "--auto-dotfiles"

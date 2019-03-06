@@ -9,14 +9,14 @@
 - src: ANXS.hostname
 
 - name: ANXS.nginx
-  src: https://github.com/clint-tseng/ansible-ANXS-nginx
-  version: 11223c2148a149ae2b4aa4e269db31b7aa64edce
+  src: https://github.com/ANXS/nginx
+  version: b469b10482ef76385e6a1f3bcb7c7d713d927972
 
 - name: ANXS.postgresql
   src: https://github.com/ANXS/postgresql
   version: b6b105cd3863ecfc0c3ba79c26ab6e73681934c8
 
-- src: rvm_io.ruby
+- src: rvm.ruby
 
 - name: Stouts.wale
   src: https://github.com/carlosfunk/Stouts.wale
