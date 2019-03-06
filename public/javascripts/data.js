@@ -509,10 +509,16 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // numeric/date range
         if ((control.range !== undefined) && (control.range !== false))
         {
-            if (!$.isBlank(control.range.min))
-                constraint.push('. &gt;' + (control.range.minInclusive ? '= ' : ' ') + xmlValue(control.range.min));
-            if (!$.isBlank(control.range.max))
-                constraint.push('. &lt;' + (control.range.maxInclusive ? '= ' : ' ') + xmlValue(control.range.max));
+            if (!$.isBlank(control.range.min)) {
+                var min = xmlValue(control.range.min);
+                if (control.type === 'inputDate') min = 'date(' + min + ')';
+                constraint.push('. &gt;' + (control.range.minInclusive ? '= ' : ' ') + min);
+            }
+            if (!$.isBlank(control.range.max)) {
+                var max = xmlValue(control.range.max);
+                if (control.type === 'inputDate') max = 'date(' + max + ')';
+                constraint.push('. &lt;' + (control.range.maxInclusive ? '= ' : ' ') + max);
+            }
 
             invalidText = 'Value must be between ' + $.emptyString(control.range.min, 'anything') + ' and ' + $.emptyString(control.range.max, 'anything');
         }
