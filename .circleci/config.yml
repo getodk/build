@@ -19,7 +19,7 @@ jobs:
             cp config.yml.sample config.yml
             bundle install --path vendor/bundle
             bundle exec rake deploy:build
-            echo $CIRCLE_SHA1 > .build_rev
+            echo $CIRCLE_SHA1 | cut -c1-7 > .build_rev
             tar jcf build.tar.bz2 * .build_rev .build_time
       - store_artifacts:
           path: /home/circleci/work/build.tar.bz2
