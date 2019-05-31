@@ -732,7 +732,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 'nodeset': '/data/meta/instanceID',
                 'type' : 'string',
                 'readonly' : 'true()',
-                'calculate' : 'concat(\'uuid:\', uuid())'
+                'jr:preload' : 'uid'
             }
         }
         model.children.push(instanceID);
