@@ -4,7 +4,7 @@ GEM
     daemons (1.2.4)
     deep_merge (1.1.1)
     eventmachine (1.2.1)
-    ffi (1.0.9)
+    ffi (1.9.24)
     kgio (2.11.0)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
@@ -51,7 +51,7 @@ PLATFORMS
 
 DEPENDENCIES
   deep_merge (= 1.1.1)
-  ffi (= 1.0.9)
+  ffi (= 1.9.24)
   mocha (= 0.9.12)
   net-http-digest_auth (= 1.4)
   pg (>= 0.18)
