@@ -32,7 +32,7 @@ jobs:
 # https://github.com/circleci/circleci-docs/issues/2411
 notify:
   webhooks:
-    - url: "http://staging.build.opendatakit.org:5566/deploy"
+    - url: "http://staging.build.getodk.org:5566/deploy"
 experimental:
   notify:
     branches:
