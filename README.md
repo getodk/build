@@ -1,8 +1,8 @@
 # ODK Build
 
-ODK Build is a web-based, drag-and-drop service for creating forms used with data collection tools such as [ODK Collect](https://opendatakit.org/use/collect/). ODK Build is part of Open Data Kit (ODK), a free and open-source set of tools which help organizations author, field, and manage mobile data collection solutions. Learn more about the Open Data Kit project and its history [here](https://opendatakit.org/about/) and read about example ODK deployments [here](https://opendatakit.org/about/deployments/).
+ODK Build is a web-based, drag-and-drop service for creating forms used with data collection tools such as [ODK Collect](https://docs.getodk.org/collect-intro/). ODK Build is part of ODK, a free and open-source set of tools which help organizations author, field, and manage mobile data collection solutions. Learn more about the ODK project and its history [here](https://getodk.org/) and read about example ODK deployments [here](https://forum.getodk.org/c/showcase).
 
-Unless you mean to do development on ODK Build, just go to [https://build.opendatakit.org](https://build.opendatakit.org) to give it a try, or to the [releases page](https://github.com/opendatakit/build/releases) to download a local copy.
+Unless you mean to do development on ODK Build, just go to [https://build.getodk.org](https://build.getodk.org) to give it a try, or to the [releases page](https://github.com/getodk/build/releases) to download a local copy.
 
 ## Development
 
@@ -35,9 +35,9 @@ If you're running Build in a production environment, there are a couple of thing
 
 ## Offline Version
 
-There is a separate native-desktop build of ODK Build that is actively maintained; versions of it may be downloaded under the [releases page](https://github.com/opendatakit/build/releases), and the code for it is found under the `offline` branch of this repository. It uses [NWjs](https://nwjs.io/) (formerly `node-webkit`), which is similar to [Electron](https://electron.atom.io/) (but pre-dated it, as does this branch). The code is substantially shared with the Javascript aspects of the main build, with the main differences being the removal of all Ruby server code and the addition of some code to handle the window shell and filesystem operations.
+There is a separate native-desktop build of ODK Build that is actively maintained; versions of it may be downloaded under the [releases page](https://github.com/getodk/build/releases), and the code for it is found under the `offline` branch of this repository. It uses [NWjs](https://nwjs.io/) (formerly `node-webkit`), which is similar to [Electron](https://electron.atom.io/) (but pre-dated it, as does this branch). The code is substantially shared with the Javascript aspects of the main build, with the main differences being the removal of all Ruby server code and the addition of some code to handle the window shell and filesystem operations.
 
-A full README for developers wanting to work on this version [is available](https://github.com/opendatakit/build/blob/offline/README.textile) in the root of the `offline` branch.
+A full README for developers wanting to work on this version [is available](https://github.com/getodk/build/blob/offline/README.textile) in the root of the `offline` branch.
 
 ### Contributing
 
