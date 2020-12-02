@@ -321,7 +321,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
             // deal with children
             _.each(control.children, function(child)
-            { 
+            {
                 parseControl(child, xpath + control.name + '/', instanceTag, translations, model, bodyTag, $.extend([], relevance));
             });
             return;
@@ -346,7 +346,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
             // create binding based on kind
             var kind = control.kind.toLowerCase();
-            if (kind == 'device id') 
+            if (kind == 'device id')
             {
                 binding.attrs.type='string';
                 binding.attrs['jr:preload']='property';
@@ -556,7 +556,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 constraint.push('count-selected(.) &gt;= ' + xmlValue(control.count.min));
             if (!$.isBlank(control.count.max))
                 constraint.push('count-selected(.) &lt;= ' + xmlValue(control.count.max));
-           
+
             invalidText = 'Must choose between ' + $.emptyString(control.count.min, 'anything') + ' and ' + $.emptyString(control.count.max, 'anything') + ' options';
         }
 
@@ -705,7 +705,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var instanceHead = {
             name: 'data',
             attrs: {
-              'id': 'build_' + $.sanitizeString($('.header h1').text()) +
+              'id': $.sanitizeString($('.header h1').text()),
+              'version': 'build_' + $.sanitizeString($('.header h1').text()) +
                     '_' + Math.round((new Date()).getTime() / 1000)
             },
             children: [ meta ],
