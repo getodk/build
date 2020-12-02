@@ -394,11 +394,31 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 binding.attrs['jr:preload']='property';
                 binding.attrs['jr:preloadParams']='phonenumber';
             }
+            else if (kind == 'start geopoint')
+            {
+                binding.attrs.type='geopoint';
+            }
 
             model.children.push(binding);
 
+            // actions
+            // see https://getodk.github.io/xforms-spec/#actions
+            var eventaction = {
+                name: 'odk:setgeopoint',
+                attrs: {
+                    'ref': xpath + control.name
+                }
+            }
+
+            if (kind == 'start geopoint')
+            {
+                eventaction.attrs['event']: 'odk-instance-first-load';
+                model.children.push(eventaction);
+            }
+
             return;
         }
+
 
 
         var instanceTag = {
@@ -735,7 +755,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 'xmlns': 'http://www.w3.org/2002/xforms',
                 'xmlns:h': 'http://www.w3.org/1999/xhtml',
                 'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
-                'xmlns:jr': 'http://openrosa.org/javarosa'
+                'xmlns:jr': 'http://openrosa.org/javarosa',
+                'xmlns:ev': 'http://www.w3.org/2001/xml-events',
+                'xmlns:odk': 'http://www.opendatakit.org/xforms'
             },
             children: [
                 {   name: 'h:head',
