@@ -706,8 +706,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             name: 'data',
             attrs: {
               'id': $.sanitizeString($('.header h1').text()),
-              'version': 'build_' + $.sanitizeString($('.header h1').text()) +
-                    '_' + Math.round((new Date()).getTime() / 1000)
+              'version': Math.round((new Date()).getTime() / 1000)
             },
             children: [ meta ],
             context: {}
