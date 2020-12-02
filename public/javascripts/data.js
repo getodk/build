@@ -344,6 +344,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }
             }
 
+            // actions
+            // see https://getodk.github.io/xforms-spec/#actions
+            var eventaction = {
+                name: 'odk:setgeopoint',
+                attrs: {
+                    'ref': xpath + control.name
+                }
+            }
+
             // create binding based on kind
             var kind = control.kind.toLowerCase();
             if (kind == 'device id')
@@ -401,24 +410,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
             model.children.push(binding);
 
-            // actions
-            // see https://getodk.github.io/xforms-spec/#actions
-            var eventaction = {
-                name: 'odk:setgeopoint',
-                attrs: {
-                    'ref': xpath + control.name
-                }
-            }
-
+            // actions are only added for some kinds of metadata
             if (kind == 'start geopoint')
             {
-                eventaction.attrs['event']: 'odk-instance-first-load';
+                eventaction.attrs['event']='odk-instance-first-load';
                 model.children.push(eventaction);
             }
 
             return;
         }
-
 
 
         var instanceTag = {
