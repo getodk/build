@@ -16,6 +16,8 @@ We depend on one native binding, to connect to a PostgreSQL database. To satisfy
 
 If you run into trouble, see the [building guide](BUILDING.md) for further details.
 
+The export to XLSForm depends on [build2xlsform](https://github.com/getodk/build2xlsform). Follow its README to install and run `build2xlsform` locally on its default port 8686.
+
 ### Setup and Execution
 
 Now that you have resolved all the appropriate dependencies, you'll need to set up the configuration by copying `config.yml.sample` to `config.yml`. This file contains a number of secret keys and tokens, so be sure not to check it into source control once you put your own keys into it. Note that the `cookie_ssl_only` flag should only be set to true if you are serving your requests on HTTPS; it should likely remain off for local development.

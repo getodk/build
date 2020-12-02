@@ -62,6 +62,10 @@ Otherwise, files of note include:
 * `property-editor.js` renders and manages all of the property controls that appear in the right sidebar, and pushes updates back into the control.
 * `core.validation.js` is the core code that routes data in order to _perform_ validation, as opposed to `impl.validation.js` which _defines_ how the validations behave.
 
+### build2xlsform
+
+Some changes, like adding support for a new field type, might require an addition to `build2xlsform`. Make sure to test that the export to XLSForm yields a valid XLSForm.
+
 Staging
 -------
 
