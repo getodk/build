@@ -788,7 +788,7 @@
           kind:       { name: 'Kind',
                         type: 'enum',
                         description: 'Type of metadata to add.',
-                        options: [ 'Device ID', 'Start Time', 'End Time', 'Today', 'Username', 'Subscriber ID', 'SIM Serial', 'Phone Number' ],
+                        options: [ 'Device ID', 'Start Time', 'End Time', 'Today', 'Username', 'Subscriber ID', 'SIM Serial', 'Phone Number', 'Start Geopoint' ],
                         value: 'Device ID',
                         summary: true } },
     };
