@@ -725,8 +725,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var instanceHead = {
             name: 'data',
             attrs: {
-              'id': 'build_' + $.sanitizeString($('.header h1').text()) +
-                    '_' + Math.round((new Date()).getTime() / 1000)
+              'id': $.sanitizeString($('.header h1').text()),
+              'version': '' + Math.round((new Date()).getTime() / 1000)
             },
             children: [ meta ],
             context: {}

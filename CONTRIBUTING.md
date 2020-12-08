@@ -6,16 +6,16 @@ We want to make Build the easiest, most foolproof form design tool we can. To do
 Getting Involved
 ----------------
 
-One of the easiest ways you can participate is to help us [track down bugs](https://github.com/opendatakit/build/issues). Did you run into some odd or puzzling behaviour? Did a form you made in Build fail to work in Aggregate or Collect? We want to know! Please do a quick search of the issues list to see if it's something that's already been submitted. Please do make an effort to figure out if the issue is related to Build, or some other tool you are using. But when in doubt, submit your problem anyway.
+One of the easiest ways you can participate is to help us [track down bugs](https://github.com/getodk/build/issues). Did you run into some odd or puzzling behaviour? Did a form you made in Build fail to work in Aggregate or Collect? We want to know! Please do a quick search of the issues list to see if it's something that's already been submitted. Please do make an effort to figure out if the issue is related to Build, or some other tool you are using. But when in doubt, submit your problem anyway.
 
 Of course, we also then need help fixing those issues, or adding new features to make Build more powerful. If you're just getting started working with the project, we encourage you to browse the issues list for smaller tickets that can help you ease into the codebase. We'll make an effort to tag these issues with "quick win".
 
 Questions and Discussion
 ------------------------
 
-If you are having trouble with making Build work correctly, we encourage you to visit the [mailing list](https://groups.google.com/forum/#!forum/opendatakit) where a great many of your knowledgeable peers can help you with your problem.
+If you are having trouble with making Build work correctly, we encourage you to visit the [forum](https://forum.getodk.org/) where a great many of your knowledgeable peers can help you with your problem.
 
-If you're looking for help or discussion on _how_ Build works and how to understand or update its code, the ODK [developer Slack](https://opendatakit.slack.com) is for you. If you don't want to sign up for Slack, please feel free to open an issue ticket here on GitHub.
+If you're looking for help or discussion on _how_ Build works and how to understand or update its code, the ODK [developer Slack](http://slack.getodk.org) is for you. If you don't want to sign up for Slack, please feel free to open an issue ticket here on GitHub.
 
 Contributing Code
 -----------------
@@ -69,5 +69,5 @@ Some changes, like adding support for a new field type, might require an additio
 Staging
 -------
 
-The [staging.build.opendatakit.org](http://staging.build.opendatakit.org) site is set up to track the `staging` branch of this repository. You can see the status of the CI build on the [staging branch page on CircleCI](https://circleci.com/gh/opendatakit/build/tree/staging); the deploy should kick off on the staging server no more than two minutes after the build, and should complete within a minute of that. You can always see which SHA is live by going to `Help > About` in the application itself.
+The [staging.build.getodk.org](http://staging.build.getodk.org) site is set up to track the `staging` branch of this repository. You can see the status of the CI build on the [staging branch page on CircleCI](https://circleci.com/gh/getodk/build/tree/staging); the deploy should kick off on the staging server no more than two minutes after the build, and should complete within a minute of that. You can always see which SHA is live by going to `Help > About` in the application itself.
 
