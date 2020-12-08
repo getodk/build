@@ -342,16 +342,16 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 attrs: {
                     'nodeset': xpath + control.name
                 }
-            }
+            };
 
             // actions
             // see https://getodk.github.io/xforms-spec/#actions
             var eventaction = {
                 name: 'odk:setgeopoint',
                 attrs: {
-                    'ref': xpath + control.name;
+                    'ref': xpath + control.name
                 }
-            }
+            };
 
             // create binding based on kind
             var kind = control.kind.toLowerCase();
