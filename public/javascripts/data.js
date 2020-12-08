@@ -357,55 +357,55 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             var kind = control.kind.toLowerCase();
             if (kind == 'device id')
             {
-                binding.attrs.type='string';
-                binding.attrs['jr:preload']='property';
-                binding.attrs['jr:preloadParams']='deviceid';
+                binding.attrs.type = 'string';
+                binding.attrs['jr:preload'] = 'property';
+                binding.attrs['jr:preloadParams'] = 'deviceid';
             }
             else if (kind == 'start time')
             {
-                binding.attrs.type='dateTime';
-                binding.attrs['jr:preload']='timestamp';
-                binding.attrs['jr:preloadParams']='start';
+                binding.attrs.type = 'dateTime';
+                binding.attrs['jr:preload'] = 'timestamp';
+                binding.attrs['jr:preloadParams'] = 'start';
             }
             else if (kind == 'end time')
             {
-                binding.attrs.type='dateTime';
-                binding.attrs['jr:preload']='timestamp';
-                binding.attrs['jr:preloadParams']='end';
+                binding.attrs.type = 'dateTime';
+                binding.attrs['jr:preload'] = 'timestamp';
+                binding.attrs['jr:preloadParams'] = 'end';
             }
             else if (kind == 'today')
             {
-                binding.attrs.type='date';
-                binding.attrs['jr:preload']='date';
-                binding.attrs['jr:preloadParams']='today';
+                binding.attrs.type = 'date';
+                binding.attrs['jr:preload'] = 'date';
+                binding.attrs['jr:preloadParams'] = 'today';
             }
             else if (kind == 'username')
             {
-                binding.attrs.type='string';
-                binding.attrs['jr:preload']='property';
-                binding.attrs['jr:preloadParams']='username';
+                binding.attrs.type = 'string';
+                binding.attrs['jr:preload'] = 'property';
+                binding.attrs['jr:preloadParams'] = 'username';
             }
             else if (kind == 'subscriber id')
             {
-                binding.attrs.type='string';
-                binding.attrs['jr:preload']='property';
-                binding.attrs['jr:preloadParams']='subscriberid';
+                binding.attrs.type = 'string';
+                binding.attrs['jr:preload'] = 'property';
+                binding.attrs['jr:preloadParams'] = 'subscriberid';
             }
             else if (kind == 'sim serial')
             {
-                binding.attrs.type='string';
-                binding.attrs['jr:preload']='property';
-                binding.attrs['jr:preloadParams']='simserial';
+                binding.attrs.type = 'string';
+                binding.attrs['jr:preload'] = 'property';
+                binding.attrs['jr:preloadParams'] = 'simserial';
             }
             else if (kind == 'phone number')
             {
-                binding.attrs.type='string';
-                binding.attrs['jr:preload']='property';
-                binding.attrs['jr:preloadParams']='phonenumber';
+                binding.attrs.type = 'string';
+                binding.attrs['jr:preload'] = 'property';
+                binding.attrs['jr:preloadParams'] = 'phonenumber';
             }
             else if (kind == 'start geopoint')
             {
-                binding.attrs.type='geopoint';
+                binding.attrs.type = 'geopoint';
             }
 
             model.children.push(binding);
@@ -413,7 +413,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             // actions are only added for some kinds of metadata
             if (kind == 'start geopoint')
             {
-                eventaction.attrs['event']='odk-instance-first-load';
+                eventaction.attrs['event'] = 'odk-instance-first-load';
                 model.children.push(eventaction);
             }
 
