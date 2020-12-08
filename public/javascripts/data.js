@@ -349,7 +349,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             var eventaction = {
                 name: 'odk:setgeopoint',
                 attrs: {
-                    'ref': xpath + control.name
+                    'ref': xpath + control.name;
                 }
             }
 
