@@ -26,7 +26,7 @@ body
 }
 
 /* clearfix */
-.clearfix:after 
+.clearfix:after
 {
     clear: both;
     content: ".";
@@ -34,16 +34,16 @@ body
     height: 0;
     visibility: hidden;
 }
-.clearfix 
-{ 
+.clearfix
+{
     display: inline-block;
 }
-.clearfix 
-{ 
+.clearfix
+{
     display: block;
 }
-* html .clearfix 
-{ 
+* html .clearfix
+{
     height: 1%;
 }
 
@@ -658,11 +658,24 @@ body
     font-size: 2em;
     padding-top: 0.4em;
 }
+.control .controlInfo .controlShort
+{
+    color: #f3f3f3;
+    display: inline;
+    font-size: 1.8em;
+    padding-top: 0.4em;
+}
 .control .controlInfo .controlHint
 {
     color: #bbb;
     display: inline;
     font-size: 1.4em;
+}
+.control .controlInfo .controlGuidance
+{
+    color: #bbb;
+    display: inline;
+    font-size: 1em;
 }
 .control .controlInfo .controlName
 {

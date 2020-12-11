@@ -95,7 +95,9 @@
         else
         {
             $headline.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no caption text yet]'));
+            $headline.children('.controlShort').text(properties.short.value[odkmaker.i18n.displayLanguage()]);
             $headline.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
+            $headline.children('.controlGuidance').text(properties.guidance.value[odkmaker.i18n.displayLanguage()]);
         }
 
         var $propertyList = $info.children('.controlProperties');
@@ -469,9 +471,22 @@
                         required: true,
                         value: {},
                         summary: false },
+        short:        { name: 'Short Label',
+                        type: 'uiText',
+                        description: 'If provided, a short label that is presented to the person filling the form on smaller screens.',
+                        tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/xform/data/path}</code> syntax</a>.' ],
+                        required: true,
+                        value: {},
+                        summary: false },
         hint:         { name: 'Hint',
                         type: 'uiText',
-                        description: 'Additional help information for this question for the person filling the form.',
+                        description: 'Additional help information for this question for the person filling the form. Hints are always shown.',
+                        tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/xform/data/path}</code> syntax</a>.' ],
+                        value: {},
+                        summary: false },
+        guidance:     { name: 'Guidance',
+                        type: 'uiText',
+                        description: 'Guidance is ideal to include verbose training information or other context. Guidance can be always hidden, always shown, or shown collapsed to be expanded on demand in General Settings > Form management.',
                         tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/xform/data/path}</code> syntax</a>.' ],
                         value: {},
                         summary: false },

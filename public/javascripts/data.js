@@ -174,11 +174,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
          'Selfie': 'new-front',
          'Selfie Video': 'new-front'
     };
-    var addTranslation = function(obj, itextPath, translations)
+    var addTranslation = function(obj, itextPath, translations, obj2=null, form="guidance")
     {
         _.each(translations.children, function(translation)
         {
             var result = [];
+            var result2 = [];
             var itext = obj[translation._languageCode];
 
             if (itext)
@@ -201,10 +202,66 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     itext = itext.slice(match[0].length);
                 }
                 if (itext.length > 0)
+                {
                     result.push(itext);
-
+                }
                 if (result.length === 0)
                     result = obj[translation.attrs.lang];
+            }
+
+            // #242: If an obj2 is given, build result2
+            if (obj2 != null)
+            {
+                var itext2 = obj2[translation._languageCode];
+                if (itext2)
+                {
+                    var match;
+                    while (match = itext2.match(/\$\{[^}]+\}/))
+                    {
+                        if (match.index > 0)
+                        {
+                            result2.push(itext2.slice(0, match.index));
+                            itext2 = itext2.slice(match.index);
+                        }
+
+                        result2.push({
+                            name: 'output',
+                            attrs: {
+                                value: itext2.slice(2, match[0].length - 1)
+                            }
+                        });
+                        itext2 = itext2.slice(match[0].length);
+                    }
+                    if (itext2.length > 0)
+                    {
+                        result2.push(itext2);
+                    }
+                    if (result.length === 0)
+                        result2 = obj[translation.attrs.lang];
+                }
+            }
+
+            // #242: Build children_value so we can add obj2
+            var children_value = [{
+                    name: 'value',
+                    _noWhitespace: true,
+                    children: result
+                }]
+
+
+            // #242: If obj2 is given ("short" label or "guidance" hint),
+            // and result2 is not an empty string,
+            // add translation with given kwarg "form" to the children
+            if (obj2 != null && result2 != "")
+            {
+                children_value.push({
+                    name: 'value',
+                    attrs: {
+                        form: form
+                    },
+                    _noWhitespace: true,
+                    children: result2
+                })
             }
 
             translation.children.push({
@@ -212,11 +269,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 attrs: {
                     'id': itextPath
                 },
-                children: [{
-                    name: 'value',
-                    _noWhitespace: true,
-                    children: result
-                }]
+                children: children_value
             });
         })
     };
@@ -511,7 +564,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     'ref': "jr:itext('" + xpath + control.name + ":label')"
                 }
             });
-            addTranslation(control.label, xpath + control.name + ':label', translations);
+            // #242 short label
+            if ((control.short !== undefined) && !_.isEmpty(control.short))
+            {
+                addTranslation(control.label, xpath + control.name + ':label', translations, control.short, form="short");
+            } else {
+                addTranslation(control.label, xpath + control.name + ':label', translations);
+            }
         }
 
         // hint
@@ -523,7 +582,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     'ref': "jr:itext('" + xpath + control.name + ":hint')"
                 }
             });
-            addTranslation(control.hint, xpath + control.name + ':hint', translations);
+            if ((control.guidance !== undefined) && !_.isEmpty(control.guidance))
+            {
+                addTranslation(control.hint, xpath + control.name + ':hint', translations, control.guidance, form="guidance");
+            } else {
+                addTranslation(control.hint, xpath + control.name + ':hint', translations);
+            }
         }
 
         // default value
