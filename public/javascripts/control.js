@@ -473,7 +473,7 @@
                         summary: false },
         short:        { name: 'Short Label',
                         type: 'uiText',
-                        description: 'If provided, a short label that is presented to the person filling the form on smaller screens.',
+                        description: 'A shorter version of the label, meant for very small screens, or to be shown in a summary of the form data.',
                         tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/xform/data/path}</code> syntax</a>.' ],
                         required: true,
                         value: {},
