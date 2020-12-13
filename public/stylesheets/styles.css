@@ -663,18 +663,26 @@ body
     color: #f3f3f3;
     display: inline;
     font-size: 1.8em;
-    padding-top: 0.4em;
+    padding-top: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    margin-top: 0.2em;
+    margin-left: 2em;
+    background-color: #888;
+    border-radius: 5px;
+}
+.control .controlInfo .controlShort:empty
+{
+    display: none;
 }
 .control .controlInfo .controlHint
 {
     color: #bbb;
-    display: inline;
     font-size: 1.4em;
 }
 .control .controlInfo .controlGuidance
 {
     color: #bbb;
-    display: inline;
     font-size: 1em;
 }
 .control .controlInfo .controlName
@@ -682,8 +690,12 @@ body
     color: #bbb;
     font-size: 1.4em;
     margin-left: 80px;
+    margin-top: 0.5em;
 }
-.collapsed .control .controlInfo .controlName
+.collapsed .control .controlInfo .controlName,
+.collapsed .control .controlInfo .controlShort,
+.collapsed .control .controlInfo .controlHint,
+.collapsed .control .controlInfo .controlGuidance
 {
     display: none;
 }
