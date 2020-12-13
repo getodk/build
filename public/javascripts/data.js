@@ -209,7 +209,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     result = obj[translation.attrs.lang];
             }
 
-            // #242: If an obj2 is given, build result2
+            // If an obj2 (short label or guidance) is given, build result2
             if (obj2 != null)
             {
                 var itext2 = obj2[translation._languageCode];
@@ -241,7 +241,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }
             }
 
-            // #242: Build children_value so we can add obj2
+            // The translations for obj
             var children_value = [{
                     name: 'value',
                     _noWhitespace: true,
@@ -249,7 +249,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }]
 
 
-            // #242: If obj2 is given ("short" label or "guidance" hint),
+            // If obj2 is given ("short" label or "guidance" hint),
             // and result2 is not an empty string,
             // add translation with given kwarg "form" to the children
             if (obj2 != null && result2 != "")
@@ -564,7 +564,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     'ref': "jr:itext('" + xpath + control.name + ":label')"
                 }
             });
-            // #242 short label
+            // short label
             if ((control.short !== undefined) && !_.isEmpty(control.short))
             {
                 addTranslation(control.label, xpath + control.name + ':label', translations, control.short, form="short");
@@ -582,6 +582,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     'ref': "jr:itext('" + xpath + control.name + ":hint')"
                 }
             });
+            // guidance
             if ((control.guidance !== undefined) && !_.isEmpty(control.guidance))
             {
                 addTranslation(control.hint, xpath + control.name + ':hint', translations, control.guidance, form="guidance");
