@@ -253,7 +253,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         _.each(translations.children, function(translation)
         {
 
-            // The translations for obj
+            // The translation for the main control object obj
             var schoolyard = [{
                     name: 'value',
                     _noWhitespace: true,
