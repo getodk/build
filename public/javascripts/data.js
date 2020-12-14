@@ -222,7 +222,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
      * @param {String} txn  The desired language.
      * @return              None, the arr is mutated in place.
      */
-    var push_children = function(arr, ext, frm, txn)
+    var pushChildren = function(arr, ext, frm, txn)
     {
         if (ext !== undefined && ext !== null)
         {
@@ -260,17 +260,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     children: getTranslation(obj, translation)
                 }];
 
-            /* Extras: if not empty, push translation
-             * TODO refactor into own function
-             */
+            // Extras: if not empty, push translations for each additional control object
             if (extras !== {})
             {
-                push_children(schoolyard, extras.short, "short", translation);
-                push_children(schoolyard, extras.image, "image", translation);
-                push_children(schoolyard, extras.video, "video", translation);
-                push_children(schoolyard, extras.audio, "audio", translation);
-                push_children(schoolyard, extras.bigimage, "big-image", translation);
-                push_children(schoolyard, extras.guidance, "guidance", translation);
+                pushChildren(schoolyard, extras.short, "short", translation);
+                pushChildren(schoolyard, extras.image, "image", translation);
+                pushChildren(schoolyard, extras.video, "video", translation);
+                pushChildren(schoolyard, extras.audio, "audio", translation);
+                pushChildren(schoolyard, extras.bigimage, "big-image", translation);
+                pushChildren(schoolyard, extras.guidance, "guidance", translation);
             };
 
             translation.children.push({
