@@ -98,6 +98,7 @@
             $headline.children('.controlShort').text(properties.short.value[odkmaker.i18n.displayLanguage()]);
             $headline.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
             $headline.children('.controlGuidance').text(properties.guidance.value[odkmaker.i18n.displayLanguage()]);
+            // Here we could indicate the presence of media labels, although their resource files are external to ODK Build
         }
 
         var $propertyList = $info.children('.controlProperties');
@@ -475,7 +476,30 @@
                         type: 'uiText',
                         description: 'A shorter version of the label, meant for very small screens, or to be shown in a summary of the form data.',
                         tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/xform/data/path}</code> syntax</a>.' ],
-                        required: true,
+                        value: {},
+                        summary: false },
+        image:        { name: 'Image Label',
+                        type: 'uiText',
+                        description: 'Media labels can be used in addition to text labels or instead of text labels.',
+                        tips: [ 'See examples <a href="<https://docs.getodk.org/form-styling/#media>">here</a>.' ],
+                        value: {},
+                        summary: false },
+        audio:        { name: 'Audio Label',
+                        type: 'uiText',
+                        description: 'Media labels can be used in addition to text labels or instead of text labels.',
+                        tips: [ 'See examples <a href="<https://docs.getodk.org/form-styling/#media>">here</a>.' ],
+                        value: {},
+                        summary: false },
+        video:        { name: 'Video Label',
+                        type: 'uiText',
+                        description: 'Media labels can be used in addition to text labels or instead of text labels.',
+                        tips: [ 'See examples <a href="<https://docs.getodk.org/form-styling/#media>">here</a>.' ],
+                        value: {},
+                        summary: false },
+        bigimage:    { name: 'Clickable Image Label',
+                        type: 'uiText',
+                        description: 'Media labels can be used in addition to text labels or instead of text labels.',
+                        tips: [ 'You must provide an "image" label in combination with "big-image". See examples <a href="<https://docs.getodk.org/form-styling/#media>">here</a>.' ],
                         value: {},
                         summary: false },
         hint:         { name: 'Hint',
