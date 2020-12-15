@@ -175,13 +175,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
          'Selfie': 'new-front',
          'Selfie Video': 'new-front'
     };
+
     /**
      * Get the translated text for a given control element and language.
      * @param {Object} obj          A control element, e.g. control.label.
      * @param {String} translation  The desired language.
-     * return {Object}              The translated text.
+     * @param {String} prefix       An optional prefix for the translated value, e.g. `jr://images/`.
+     * return {String}              The translated and prefixed text.
      */
-    var getTranslation = function(obj, translation)
+    var getTranslation = function(obj, translation, prefix = "")
     {
         var result = [];
         var itext = obj[translation._languageCode];
@@ -207,11 +209,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }
                 if (itext.length > 0)
                 {
-                    result.push(itext);
+                    result.push(prefix + itext);
                 }
                 if (result.length === 0)
                     result = obj[translation.attrs.lang];
             }
+        console.log("result" + result);
         return result
     };
 
@@ -221,11 +224,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
      * @param {Object} ext  The value of an item of the extra object.
      * @param {Object} frm  The value for "form".
      * @param {String} txn  The desired language.
+     * @param {String} pre  An optional prefix for the translated value, e.g. `jr://images/`.
      * @return              None, the arr is mutated in place.
      */
-    var pushChildren = function(arr, ext, frm, txn)
+    var pushChildren = function(arr, ext, frm, txn, pre = "")
     {
-        if (ext !== undefined && ext !== null)
+        // Only create a node for non-empty control object values
+        if ((ext !== undefined) && !_.isEmpty(ext[txn._languageCode]))
         {
             arr.push({
                         name: 'value',
@@ -233,7 +238,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                             form: frm
                         },
                         _noWhitespace: true,
-                        children: getTranslation(ext, txn)
+                        children: getTranslation(ext, txn, prefix = pre)
                     });
         };
     };
@@ -261,14 +266,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     children: getTranslation(obj, translation)
                 }];
 
-            // Extras: if not empty, push translations for each additional control object
+            // Extras: if present, push translations for each additional control object
             if (extras !== {})
             {
                 pushChildren(schoolyard, extras.short, "short", translation);
-                pushChildren(schoolyard, extras.image, "image", translation);
-                pushChildren(schoolyard, extras.video, "video", translation);
-                pushChildren(schoolyard, extras.audio, "audio", translation);
-                pushChildren(schoolyard, extras.bigimage, "big-image", translation);
+                pushChildren(schoolyard, extras.image, "image", translation, pre = "jr://images/");
+                pushChildren(schoolyard, extras.video, "video", translation, pre = "jr://video/");
+                pushChildren(schoolyard, extras.audio, "audio", translation, pre = "jr://audio/");
+                pushChildren(schoolyard, extras.bigimage, "big-image", translation, pre = "jr://images/");
                 pushChildren(schoolyard, extras.guidance, "guidance", translation);
             };
 
@@ -282,6 +287,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         })
     };
+
     var parseControl = function(control, xpath, instance, translations, model, body, relevance)
     {
         // first set up some defaults we need
