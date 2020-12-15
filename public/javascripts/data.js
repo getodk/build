@@ -153,6 +153,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         'Table': 'label',
         'Horizontal Layout': 'horizontal',
         'Vertical Slider': 'vertical',
+        'Likert': 'likert',
         'Picker': 'picker'
     };
     var mediaTypes = {
