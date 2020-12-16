@@ -547,7 +547,7 @@
         video:        { name: 'Video Label (filename)',
                         type: 'uiText',
                         description: 'Media labels can be used in addition to text labels or instead of text labels.',
-                        tips: [ 'Provide a filename with extension, but without a folder path, e.g. "myvideo.avi".' ],
+                        tips: [ 'Provide a filename with extension, but without a folder path, e.g. "myvideo.mp4".' ],
                         value: {},
                         summary: false },
         bigimage:    { name: 'Clickable Image Label (filename)',
