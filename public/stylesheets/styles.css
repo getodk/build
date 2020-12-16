@@ -555,7 +555,7 @@ body
     overflow-y: auto;
     padding: 1em;
     position: absolute;
-    right: 30em;
+    right: 37em;
     top: 6em;
 }
 .workspace
@@ -1010,7 +1010,7 @@ body > .control.last .controlFlowArrow,
     position: absolute;
     right: 0.5em;
     top: 6em;
-    width: 27em;
+    width: 35em;
 }
 .suppressInformation .propertiesPane
 {
@@ -1122,13 +1122,16 @@ body > .control.last .controlFlowArrow,
 .propertiesPane .advancedProperties
 {
     max-height: 0;
-    overflow: hidden;
-    padding-top: 1em;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-top: 1em;
+    padding-top: 0.2em;
     transition: 0.4s max-height;
 }
 .propertiesPane .advancedProperties .propertyItem
 {
     padding-left: 1em;
+    padding-top: 0.1em;
 }
 .propertiesPane .propertyList input[type="text"]
 {
@@ -1216,7 +1219,7 @@ body > .control.last .controlFlowArrow,
     overflow-y: auto;
     position: absolute;
     right: 0.5em;
-    width: 29em;
+    width: 35em;
     z-index: 1;
 }
 .suppressInformation .helpPane
