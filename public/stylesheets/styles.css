@@ -655,14 +655,14 @@ body
 {
     color: #f3f3f3;
     display: inline;
-    font-size: 2em;
+    font-size: 1.4em;
     padding-top: 0.4em;
 }
 .control .controlInfo .controlShort
 {
     color: #f3f3f3;
     display: inline;
-    font-size: 1.2em;
+    font-size: 1.8em;
     padding-top: 0.2em;
     padding-left: 0.2em;
     padding-right: 0.2em;
@@ -678,6 +678,7 @@ body
 {
     color: #bbb;
     font-size: 1.4em;
+    margin-top: 0.2em;
 }
 .control .controlInfo .controlGuidance
 {
