@@ -651,13 +651,6 @@ body
 {
     font-size: 1.7em;
 }
-.control .controlInfo .controlLabel
-{
-    color: #f3f3f3;
-    display: inline;
-    font-size: 1.4em;
-    padding-top: 0.4em;
-}
 .control .controlInfo .controlShort
 {
     color: #f3f3f3;
@@ -670,9 +663,26 @@ body
     background-color: #888;
     border-radius: 5px;
 }
+/* Empty short labels hide their label-like background */
 .control .controlInfo .controlShort:empty
 {
     display: none;
+}
+.control .controlInfo .controlLabel
+{
+    color: #f3f3f3;
+    display: inline;
+    padding-top: 0.4em;
+}
+/* Label font size is smaller if a short label exists */
+.controlShort + .controlLabel
+{
+    font-size: 1.4em;
+}
+/* Label font size is bigger if no short label exists */
+.controlShort:empty + .controlLabel
+{
+    font-size: 2em;
 }
 .control .controlInfo .controlHint
 {
