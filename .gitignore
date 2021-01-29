@@ -8,3 +8,5 @@ config.yml
 .build_rev
 public/javascripts/build.js
 tmp/
+node_modules/
+build/
