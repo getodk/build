@@ -153,6 +153,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         'Table': 'label',
         'Horizontal Layout': 'horizontal',
         'Vertical Slider': 'vertical',
+        'Likert': 'likert',
         'Picker': 'picker'
     };
     var mediaTypes = {
@@ -174,12 +175,18 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
          'Selfie': 'new-front',
          'Selfie Video': 'new-front'
     };
-    var addTranslation = function(obj, itextPath, translations)
+
+    /**
+     * Get the translated text for a given control element and language.
+     * @param {Object} obj          A control element, e.g. control.label.
+     * @param {String} translation  The desired language.
+     * @param {String} prefix       An optional prefix for the translated value, e.g. `jr://images/`.
+     * return {String}              The translated and prefixed text.
+     */
+    var getTranslation = function(obj, translation, prefix = "")
     {
-        _.each(translations.children, function(translation)
-        {
-            var result = [];
-            var itext = obj[translation._languageCode];
+        var result = [];
+        var itext = obj[translation._languageCode];
 
             if (itext)
             {
@@ -201,25 +208,86 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     itext = itext.slice(match[0].length);
                 }
                 if (itext.length > 0)
-                    result.push(itext);
-
+                {
+                    result.push(prefix + itext);
+                }
                 if (result.length === 0)
                     result = obj[translation.attrs.lang];
             }
+        console.log("result" + result);
+        return result
+    };
+
+    /**
+     * Push a translated extra node to a given array.
+     * @param {Object} arr  The array to be added to.
+     * @param {Object} ext  The value of an item of the extra object.
+     * @param {Object} frm  The value for "form".
+     * @param {String} txn  The desired language.
+     * @param {String} pre  An optional prefix for the translated value, e.g. `jr://images/`.
+     * @return              None, the arr is mutated in place.
+     */
+    var pushChildren = function(arr, ext, frm, txn, pre = "")
+    {
+        // Only create a node for non-empty control object values
+        if ((ext !== undefined) && !_.isEmpty(ext[txn._languageCode]))
+        {
+            arr.push({
+                        name: 'value',
+                        attrs: {
+                            form: frm
+                        },
+                        _noWhitespace: true,
+                        children: getTranslation(ext, txn, prefix = pre)
+                    });
+        };
+    };
+
+    /**
+     * Generate all translations for a given control element and optional extras.
+     * @param {Object} obj          A control element, e.g. control.label.
+     * @param {String} itextPath    The XPath for the control element.
+     * @param {Object} translations The translations structure, which is mutated.
+     * @param {Object} [extras]     An optional object of extra control elements.
+     *                              Supported are keys "short", "image", "audio",
+     *                              "video", "big-image", "guidance".
+     *                              See <https://getodk.github.io/xforms-spec/#supported-media-types>
+     *                              and <https://docs.getodk.org/form-styling/#media>
+     */
+    var addTranslation = function(obj, itextPath, translations, extras = {})
+    {
+        _.each(translations.children, function(translation)
+        {
+
+            // The translation for the main control object obj
+            var schoolyard = [{
+                    name: 'value',
+                    _noWhitespace: true,
+                    children: getTranslation(obj, translation)
+                }];
+
+            // Extras: if present, push translations for each additional control object
+            if (extras !== {})
+            {
+                pushChildren(schoolyard, extras.short, "short", translation);
+                pushChildren(schoolyard, extras.image, "image", translation, pre = "jr://images/");
+                pushChildren(schoolyard, extras.video, "video", translation, pre = "jr://video/");
+                pushChildren(schoolyard, extras.audio, "audio", translation, pre = "jr://audio/");
+                pushChildren(schoolyard, extras.bigimage, "big-image", translation, pre = "jr://images/");
+                pushChildren(schoolyard, extras.guidance, "guidance", translation);
+            };
 
             translation.children.push({
                 name: 'text',
                 attrs: {
                     'id': itextPath
                 },
-                children: [{
-                    name: 'value',
-                    _noWhitespace: true,
-                    children: result
-                }]
+                children: schoolyard
             });
+
         })
     };
+
     var parseControl = function(control, xpath, instance, translations, model, body, relevance)
     {
         // first set up some defaults we need
@@ -511,7 +579,17 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     'ref': "jr:itext('" + xpath + control.name + ":label')"
                 }
             });
-            addTranslation(control.label, xpath + control.name + ':label', translations);
+            addTranslation(
+                control.label,
+                xpath + control.name + ':label',
+                translations,
+                extras = {
+                    short: control.short,
+                    image: control.image,
+                    video: control.video,
+                    audio: control.audio,
+                    bigimage: control.bigimage
+                });
         }
 
         // hint
@@ -523,7 +601,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     'ref': "jr:itext('" + xpath + control.name + ":hint')"
                 }
             });
-            addTranslation(control.hint, xpath + control.name + ':hint', translations);
+            addTranslation(
+                control.hint,
+                xpath + control.name + ':hint',
+                translations,
+                extras = {
+                    guidance: control.guidance
+            });
         }
 
         // default value
