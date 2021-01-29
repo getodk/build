@@ -28,17 +28,6 @@ jobs:
           paths:
             - /home/circleci/work/vendor/bundle
 
-# webhooks are undocumented and won't work for circleci 2.1
-# https://github.com/circleci/circleci-docs/issues/2411
-notify:
-  webhooks:
-    - url: "http://staging.build.getodk.org:5566/deploy"
-experimental:
-  notify:
-    branches:
-      only:
-        - "staging"
-
 workflows:
   version: 2
   build:
