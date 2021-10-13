@@ -11,7 +11,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt-get update
+            sudo apt-get --allow-releaseinfo-change update
             sudo apt-get install -y zlib1g-dev libbz2-dev default-jre
       - run:
           name: Install and deploy
@@ -27,17 +27,6 @@ jobs:
           key: v1-gems-{{ checksum "Gemfile.lock" }}
           paths:
             - /home/circleci/work/vendor/bundle
-
-# webhooks are undocumented and won't work for circleci 2.1
-# https://github.com/circleci/circleci-docs/issues/2411
-notify:
-  webhooks:
-    - url: "http://staging.build.getodk.org:5566/deploy"
-experimental:
-  notify:
-    branches:
-      only:
-        - "staging"
 
 workflows:
   version: 2

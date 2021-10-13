@@ -4,7 +4,7 @@
 # Author:: Cody Brimhall <mailto:cbrimhall@ucdavis.edu>
 # Created:: 22 Feb 2008
 
-# Modified by Clint Tseng on 2010/12/07 to take strings and pretend they're text/xml files.
+# Modified by Issa Tseng on 2010/12/07 to take strings and pretend they're text/xml files.
 
 
 require 'cgi'
