@@ -372,7 +372,7 @@ $.fn.droppable = function(passedOptions)
             }
 
             // now we may have to scroll things about depending on what browser we're in.
-            // scroll behaviour adapted from: https://github.com/clint-tseng/awesomereorder
+            // scroll behaviour adapted from: https://github.com/issa-tseng/awesomereorder
             // (tbh i think this is a nicer scrollspeed calculation than Chrome's)
             if (($.isFirefox || $.isSafari) && ($scrollParent.length !== 0))
             {
