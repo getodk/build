@@ -27,8 +27,7 @@
     <div class="loadingScreen">
       <div class="loadingMessage">
         <div class="spinner"><div class="spinnerInner"></div></div>
-        <h1>loading <strong>odk build</strong><sup>BETA</sup></h1>
-        <p>version 0.3.5</p>
+        <h1>Loading <strong>ODK Build</strong></h1>
         <p class="status">loading application...</p>
       </div>
     </div>
@@ -195,7 +194,7 @@
         </form>
       </div>
       <div class="offlineNotice">
-        Tired of logging in? Did you know there is a <a href="https://getodk.org/software/#odk-build" rel="external">downloadable version of ODK Build available?</a> Simply save your forms to file from here using the File menu and you can open them there.
+        Tired of logging in? Did you know there is a <a href="https://github.com/getodk/build/releases/latest" rel="external">downloadable version of ODK Build available?</a> Simply save your forms to file from here using the File menu and you can open them there.
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton signinLink" href="#signin">Sign in</a>
@@ -409,22 +408,15 @@
       <h3>About</h3>
       <div class="modalContents">
         <p>
-          ODK Build is part of the <a href="https://getodk.org/" rel="external">ODK</a>
-          suite of tools. It is licensed under the
-          <a href="http://www.apache.org/licenses/LICENSE-2.0" rel="external">Apache License 2.0</a>.
-          You can find the source code on
-          <a href="http://github.com/clint-tseng/odkbuild" rel="external">GitHub</a>.
+          ODK Build is a form builder for <a href="https://getodk.org/" rel="external">ODK</a>. You are using v<a href="https://github.com/getodk/build/releases/tag/0.3.7" rel="external">0.3.7</a>.
         </p>
         <p>
-          Built by <a href="http://dontexplain.com" rel="external">Clint
+          Build was created by <a href="http://dontexplain.com" rel="external">Issa
           Tseng</a> in Seattle, Bangalore, Pittsburgh, and 40,000 feet in the air.
         </p>
         <p>
-          Found a bug? Have a feature request?
-          <a href="http://github.com/clint-tseng/odkbuild/issues" rel="external">Report it</a>.
-        </p>
-        <p>
-          You are running <%= AssetManager.build_rev %>
+          Need help?
+          <a href="http://forum.getodk.org/" rel="external">Ask on the forum</a>.
         </p>
       </div>
       <div class="modalButtonContainer">
@@ -453,8 +445,10 @@
           <div class="typeIcon"></div>
           <a href="#deleteControl" class="icon deleteControl">Delete</a>
           <div class="controlHeadline">
-            <h4 class="controlLabel"></h4>
-            <span class="controlHint"></span>
+            <h4 class="controlShort"></h4>
+            <h5 class="controlLabel"></h5>
+            <h6 class="controlHint"></h6>
+            <h6 class="controlGuidance"></h6>
           </div>
           <h5 class="controlName"></h5>
           <ul class="controlProperties"></ul>

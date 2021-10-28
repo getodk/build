@@ -62,8 +62,7 @@ Otherwise, files of note include:
 * `property-editor.js` renders and manages all of the property controls that appear in the right sidebar, and pushes updates back into the control.
 * `core.validation.js` is the core code that routes data in order to _perform_ validation, as opposed to `impl.validation.js` which _defines_ how the validations behave.
 
-Staging
--------
+### build2xlsform
 
-The [staging.build.getodk.org](http://staging.build.getodk.org) site is set up to track the `staging` branch of this repository. You can see the status of the CI build on the [staging branch page on CircleCI](https://circleci.com/gh/getodk/build/tree/staging); the deploy should kick off on the staging server no more than two minutes after the build, and should complete within a minute of that. You can always see which SHA is live by going to `Help > About` in the application itself.
+Some changes, like adding support for a new field type, might require an addition to `build2xlsform`. Make sure to test that the export to XLSForm yields a valid XLSForm.
 

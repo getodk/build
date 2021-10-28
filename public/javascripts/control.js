@@ -95,7 +95,10 @@
         else
         {
             $headline.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no caption text yet]'));
+            $headline.children('.controlShort').text(properties.short.value[odkmaker.i18n.displayLanguage()]);
             $headline.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
+            $headline.children('.controlGuidance').text(properties.guidance.value[odkmaker.i18n.displayLanguage()]);
+            // Here we could indicate the presence of media labels, although their resource files are external to ODK Build
         }
 
         var $propertyList = $info.children('.controlProperties');
@@ -465,14 +468,14 @@
         label:        { name: 'Label',
                         type: 'uiText',
                         description: 'The title text that is presented to the person filling the form.',
-                        tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/xform/data/path}</code> syntax</a>.' ],
+                        tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${data/path/field}</code> syntax</a>.' ],
                         required: true,
                         value: {},
                         summary: false },
         hint:         { name: 'Hint',
                         type: 'uiText',
-                        description: 'Additional help information for this question for the person filling the form.',
-                        tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/xform/data/path}</code> syntax</a>.' ],
+                        description: 'Additional help information for this question for the person filling the form. Hints are always shown.',
+                        tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/data/path/field}</code> syntax</a>.' ],
                         value: {},
                         summary: false },
         defaultValue: { name: 'Default Value',
@@ -528,6 +531,48 @@
                         description: 'Specify a custom expression to store a calculated value in this field.',
                         tips: [ 'The <a href="https://getodk.github.io/xforms-spec/#xpath-functions" rel="external">ODK XForms Functions Spec</a> may be useful.' ],
                         value: '',
+                        advanced: true,
+                        summary: false },
+        short:        { name: 'Short Label',
+                        type: 'uiText',
+                        description: 'A shorter version of the label, meant for very small screens, or to be shown in a summary of the form data.',
+                        tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/data/path/field}</code> syntax</a>.' ],
+                        value: {},
+                        advanced: true,
+                        summary: false },
+        image:        { name: 'Image Label (filename)',
+                        type: 'uiText',
+                        description: 'Media labels can be used in addition to text labels or instead of text labels.',
+                        tips: [ 'Provide a filename with extension, but without a folder path, e.g. "myimage.png".' ],
+                        value: {},
+                        advanced: true,
+                        summary: false },
+        audio:        { name: 'Audio Label (filename)',
+                        type: 'uiText',
+                        description: 'Media labels can be used in addition to text labels or instead of text labels.',
+                        tips: [ 'Provide a filename with extension, but without a folder path, e.g. "myaudio.mp3".' ],
+                        value: {},
+                        advanced: true,
+                        summary: false },
+        video:        { name: 'Video Label (filename)',
+                        type: 'uiText',
+                        description: 'Media labels can be used in addition to text labels or instead of text labels.',
+                        tips: [ 'Provide a filename with extension, but without a folder path, e.g. "myvideo.mp4".' ],
+                        value: {},
+                        advanced: true,
+                        summary: false },
+        bigimage:    { name: 'Clickable Image Label (filename)',
+                        type: 'uiText',
+                        description: 'Media labels can be used in addition to text labels or instead of text labels.',
+                        tips: [ 'You must provide an "image" label in combination with "big-image". Provide a filename with extension, but without a folder path, e.g. "mybigimage.png".' ],
+                        value: {},
+                        advanced: true,
+                        summary: false },
+        guidance:     { name: 'Guidance',
+                        type: 'uiText',
+                        description: 'Guidance is ideal to include verbose training information or other context. Guidance can be always hidden, always shown, or shown collapsed to be expanded on demand in General Settings > Form management.',
+                        tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/data/path/field}</code> syntax</a>.' ],
+                        value: {},
                         advanced: true,
                         summary: false }
     };
@@ -691,7 +736,7 @@
           appearance: { name: 'Style',
                         type: 'enum',
                         description: 'What interface to present.',
-                        options: [ 'Default', 'Minimal (spinner)', 'Table', 'Horizontal Layout' ],
+                        options: [ 'Default', 'Minimal (spinner)', 'Table', 'Horizontal Layout' , 'Likert'],
                         value: 'Default',
                         summary: true } },
         inputSelectMany: {
@@ -788,7 +833,7 @@
           kind:       { name: 'Kind',
                         type: 'enum',
                         description: 'Type of metadata to add.',
-                        options: [ 'Device ID', 'Start Time', 'End Time', 'Today', 'Username', 'Subscriber ID', 'SIM Serial', 'Phone Number' ],
+                        options: [ 'Device ID', 'Start Time', 'End Time', 'Today', 'Username', 'Subscriber ID', 'SIM Serial', 'Phone Number', 'Start Geopoint' ],
                         value: 'Device ID',
                         summary: true } },
     };
