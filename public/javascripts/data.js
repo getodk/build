@@ -183,8 +183,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
      * @param {String} prefix       An optional prefix for the translated value, e.g. `jr://images/`.
      * return {String}              The translated and prefixed text.
      */
-    var getTranslation = function(obj, translation, prefix = "")
+    var getTranslation = function(obj, translation, prefix)
     {
+        var prefix = (typeof prefix !== 'undefined') ? prefix : "";
         var result = [];
         var itext = obj[translation._languageCode];
 
@@ -214,8 +215,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 if (result.length === 0)
                     result = obj[translation.attrs.lang];
             }
-        console.log("result" + result);
-        return result
+        return result; 
     };
 
     /**
@@ -227,8 +227,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
      * @param {String} pre  An optional prefix for the translated value, e.g. `jr://images/`.
      * @return              None, the arr is mutated in place.
      */
-    var pushChildren = function(arr, ext, frm, txn, pre = "")
+    var pushChildren = function(arr, ext, frm, txn, pre)
     {
+        var pre = (typeof pre !== 'undefined') ? pre : "";
         // Only create a node for non-empty control object values
         if ((ext !== undefined) && !_.isEmpty(ext[txn._languageCode]))
         {
@@ -249,13 +250,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
      * @param {String} itextPath    The XPath for the control element.
      * @param {Object} translations The translations structure, which is mutated.
      * @param {Object} [extras]     An optional object of extra control elements.
-     *                              Supported are keys "short", "image", "audio",
+     *                              Supported are keys "image", "audio",
      *                              "video", "big-image", "guidance".
+     *                              We do not yet support "short" as short label.
      *                              See <https://getodk.github.io/xforms-spec/#supported-media-types>
      *                              and <https://docs.getodk.org/form-styling/#media>
      */
-    var addTranslation = function(obj, itextPath, translations, extras = {})
+    var addTranslation = function(obj, itextPath, translations, extras)
     {
+        var extras = (typeof extras !== 'undefined') ? extras : {};
         _.each(translations.children, function(translation)
         {
 
@@ -269,7 +272,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             // Extras: if present, push translations for each additional control object
             if (extras !== {})
             {
-                pushChildren(schoolyard, extras.short, "short", translation);
+                pushChildren(schoolyard, extras.shortlabel, "shortlabel", translation);
                 pushChildren(schoolyard, extras.image, "image", translation, pre = "jr://images/");
                 pushChildren(schoolyard, extras.video, "video", translation, pre = "jr://video/");
                 pushChildren(schoolyard, extras.audio, "audio", translation, pre = "jr://audio/");
@@ -584,7 +587,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 xpath + control.name + ':label',
                 translations,
                 extras = {
-                    short: control.short,
+                    shortlabel: control.shortlabel,
                     image: control.image,
                     video: control.video,
                     audio: control.audio,
