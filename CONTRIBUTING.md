@@ -62,6 +62,19 @@ Otherwise, files of note include:
 * `property-editor.js` renders and manages all of the property controls that appear in the right sidebar, and pushes updates back into the control.
 * `core.validation.js` is the core code that routes data in order to _perform_ validation, as opposed to `impl.validation.js` which _defines_ how the validations behave.
 
+If JS files are not compiled cleanly by the JS compressor (Yui), the asset compilation tool may not throw any error. We just get a silent failure and blank line in the compiled assets.
+
+To view compilation errors, run the Yui jar file directly:
+
+* Determine the path of the Java JAR `yuicompressor.jar` with `bundle info yui-compressor`. 
+  Be aware that the Ruby Gem `yui-compressor` contains the Java JAR `yuicompressor-x.x.x.jar` with a different version number in a sub-folder inside the installed Gem.
+* Use the path to `yui-compressor.jar` to compile an individual asset with option `-v` to see any resulting errors.
+
+```
+bundle info yui-compressor
+java -jar /srv/odkbuild/releases/0.3.6/vendor/bundle/ruby/2.7.0/gems/yui-compressor-0.9.3/lib/yuicompressor-2.4.2.jar -v --type js public/javascripts/data.js
+```
+
 ### build2xlsform
 
 Some changes, like adding support for a new field type, might require an addition to `build2xlsform`. Make sure to test that the export to XLSForm yields a valid XLSForm.
