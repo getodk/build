@@ -67,8 +67,8 @@ If JS files are not compiled cleanly by the JS compressor (Yui), the asset compi
 To view compilation errors, run the Yui jar file directly:
 
 * Determine the path of the Java JAR `yuicompressor.jar` with `bundle info yui-compressor`. 
-  Be aware that the Ruby Gem `yui-compressor` contains the Java JAR `yuicompressor-x.x.x.jar` with a different version number in a sub-folder inside the installed Gem.
-* Use the path to `yui-compressor.jar` to compile an individual asset with option `-v` to see any resulting errors.
+  Note that the Ruby Gem `yui-compressor` (in the example v0.9.3) contains the Java JAR `yuicompressor-x.x.x.jar` (in the example v2.4.2).
+* Use the path to `yui-compressor.jar` to compile each asset you changed with option `-v` to see any resulting errors.
 
 ```
 bundle info yui-compressor

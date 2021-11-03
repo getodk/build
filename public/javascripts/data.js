@@ -272,7 +272,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             // Extras: if present, push translations for each additional control object
             if (extras !== {})
             {
-                pushChildren(schoolyard, extras.shortlabel, "shortlabel", translation);
+                pushChildren(schoolyard, extras['short'], "short", translation);
                 pushChildren(schoolyard, extras.image, "image", translation, pre = "jr://images/");
                 pushChildren(schoolyard, extras.video, "video", translation, pre = "jr://video/");
                 pushChildren(schoolyard, extras.audio, "audio", translation, pre = "jr://audio/");
@@ -582,12 +582,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     'ref': "jr:itext('" + xpath + control.name + ":label')"
                 }
             });
+
             addTranslation(
                 control.label,
                 xpath + control.name + ':label',
                 translations,
                 extras = {
-                    shortlabel: control.shortlabel,
+                    'short': control['short'],
                     image: control.image,
                     video: control.video,
                     audio: control.audio,

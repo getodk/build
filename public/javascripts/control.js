@@ -95,7 +95,7 @@
         else
         {
             $headline.children('.controlLabel').text($.emptyString(properties.label.value[odkmaker.i18n.displayLanguage()], '[no caption text yet]'));
-            $headline.children('.controlShort').text(properties.shortlabel.value ? properties.shortlabel.value[odkmaker.i18n.displayLanguage()] : '');
+            $headline.children('.controlShort').text(properties['short'].value ? properties['short'].value[odkmaker.i18n.displayLanguage()] : '');
             $headline.children('.controlHint').text(properties.hint.value[odkmaker.i18n.displayLanguage()]);
             $headline.children('.controlGuidance').text(properties.guidance.value ? properties.guidance.value[odkmaker.i18n.displayLanguage()] : '');
             // Here we could indicate the presence of media labels, although their resource files are external to ODK Build
@@ -366,14 +366,8 @@
             {
                 if (name === 'metadata') return;
 
-                
                 property.id = name;
                 property.validations = [];
-                
-                /* Patch shortlabel */
-                // if (name === 'shortlabel'){
-                //     property.id = 'short';    
-                // };
             });
             $this.data('odkControl-properties', properties);
 
@@ -539,7 +533,7 @@
                         value: '',
                         advanced: true,
                         summary: false },
-        shortlabel: { name: 'Short Label',
+        'short':    { name: 'Short Label',
                         type: 'uiText',
                         description: 'A shorter version of the label, meant for very small screens, or to be shown in a summary of the form data.',
                         tips: [ 'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/data/path/field}</code> syntax</a>.' ],
