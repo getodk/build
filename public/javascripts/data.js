@@ -251,8 +251,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
      * @param {Object} translations The translations structure, which is mutated.
      * @param {Object} [extras]     An optional object of extra control elements.
      *                              Supported are keys "image", "audio",
-     *                              "video", "big-image", "guidance".
-     *                              We do not yet support "short" as short label.
+     *                              "video", "big-image", "short", and "guidance".
      *                              See <https://getodk.github.io/xforms-spec/#supported-media-types>
      *                              and <https://docs.getodk.org/form-styling/#media>
      */
