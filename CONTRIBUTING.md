@@ -62,7 +62,7 @@ Otherwise, files of note include:
 * `property-editor.js` renders and manages all of the property controls that appear in the right sidebar, and pushes updates back into the control.
 * `core.validation.js` is the core code that routes data in order to _perform_ validation, as opposed to `impl.validation.js` which _defines_ how the validations behave.
 
-If JS files are not compiled cleanly by the JS compressor (Yui), the asset compilation tool may not throw any error. We just get a silent failure and blank line in the compiled assets. These errors can come e.g. from XForms terms which are reserved keywords, or at least trip over the compiler. One such example is the key "short". Be also aware the the JS code does not support ES6 syntax such as parameter defaults.
+If JS files are not compiled cleanly by the JS compressor (Yui), the asset compilation tool may not throw any error. We just get a silent failure and blank line in the compiled assets. These errors can come e.g. from XForms terms which are reserved keywords, or at least trip over the compiler. One such example is the key "short". Be also aware that the JS code does not support ES6 syntax such as parameter defaults.
 
 To view compilation errors, run the Yui jar file directly:
 
