@@ -20,8 +20,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'yui-compressor', '0.9.3'
-
+  gem 'yui-compressor', '0.12.0'
   gem 'shotgun'
   gem 'thin'
 end

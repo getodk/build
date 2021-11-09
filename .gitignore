@@ -10,3 +10,4 @@ public/javascripts/build.js
 tmp/
 node_modules/
 build/
+.vscode/
