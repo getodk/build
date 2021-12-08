@@ -1,3 +1,6 @@
+# Development
+This section contains helpful information for developers.
+
 ## Troubleshoot install and build
 
 If you run into trouble while resolving dependencies, try updating Bundler: `gem update --system && gem install bundler`.
@@ -15,3 +18,70 @@ Sometimes it might complain that the `libpq` library is not found. This might ha
 * `libpq` library is not installed at all. 
 * On some platforms setting the `ARCHFLAGS` env to `-arch x86_64` and then installing pg would work. 
   So run this command: `sudo ARCHFLAGS="-arch x86_64" gem install pg -v '<some version>'`
+
+# Maintenance
+This section contains package maintenance procedures in preparation for deployment.
+
+* Review, approve, and merge open pull requests into the master branch.
+* Tag the master branch with the new version. Use the flag `-s` to sign a tag, or `-a` to create an unsigned tag.
+  ```
+  git tag -s "0.4.0"
+  git push --tags
+  ```
+* Create a new release from the new tag on GitHub and let GitHub auto-generate release notes. Mark releases used for testing as pre-release. The release bundles the code into an archive, which we'll use for deployment.
+
+# Deployment
+This section contains instructions to deploy Build and the related service build2xlsform to a test or production server.
+
+## Deploy build2xlsform
+The symlink `/srv/xls_service/current` points to the unpacked and built production release.
+
+SSH into the relevant server. The server admin will have added your SSH pubkey into `authorized_keys`.
+
+```
+# Replace 1.6 with your release version
+export B2X="1.6"
+echo $B2X
+
+su - xls_service
+cd /srv/xls_service/releases
+wget https://github.com/getodk/build2xlsform/archive/$B2X.tar.gz
+tar -xf $B2X.tar.gz && mv build2xlsform-$B2X $B2X && rm $B2X.tar.gz
+cd $B2X
+make
+rm /srv/xls_service/current
+ln -s /srv/xls_service/releases/$B2X /srv/xls_service/current
+exit
+service xls-service stop && service xls-service start
+service xls-service status
+```
+
+## Deploy Build
+```
+# Replace 0.4.0 with your release version
+export BV="0.4.0"
+echo $BV
+
+su - build
+cd /srv/odkbuild/releases
+wget https://github.com/getodk/build/archive/$BV.tar.gz
+tar -xf $BV.tar.gz && mv build-$BV $BV && rm $BV.tar.gz
+cp /srv/odkbuild/config/config.yml /srv/odkbuild/releases/$BV/config.yml
+cd $BV
+bundle config set --local deployment 'true'
+bundle install
+bundle exec rake deploy:build
+rm /srv/odkbuild/current
+ln -s /srv/odkbuild/releases/$BV /srv/odkbuild/current
+# verify that current points to latest release:
+ls -l /srv/odkbuild/current
+exit
+service build-server stop && service build-server start
+service build-server status
+```
+### Troubleshooting: update user password
+If you need to update your password in the database, get the value of the pepper column in the users table for your user, then:
+irb
+irb(main):001:0> require 'digest/sha1'
+irb(main):002:0> Digest::SHA1.hexdigest "--[your_new_password]==[pepper]--"
+Put that hash in the password column in the DB.
