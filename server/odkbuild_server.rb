@@ -17,6 +17,11 @@ require './server/model/connection_manager'
 
 class OdkBuild < Sinatra::Application
   disable :run
+
+  # This app was not designed to be compliant with Rack::Protection and we are choosing to not
+  # add compliance at this point.
+  disable :protection
+
   set :views, File.dirname(__FILE__) + '/views' # required for dev env
 
   before do
@@ -311,4 +316,3 @@ private
     return { :error => 'not found' }.to_json
   end
 end
-
