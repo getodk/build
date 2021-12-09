@@ -62,6 +62,26 @@ service xls-service status
 ```
 
 ## Deploy Build
+Upgrade system
+
+As root user, upgrade the system, NodeJS, and Ruby Gems.
+```
+apt update
+apt upgrade
+
+# Follow https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04 > update using a PPA
+cd ~
+curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+sh nodesource_setup.sh
+apt install nodejs
+# Verify version, here 14.x:
+nodejs -v
+
+# Build 0.3.5 to 0.4.0 requires a Ruby upgrade
+root@build:~# gem update --system
+```
+When downgrading, the above steps need to be altered to install the required NodeJS versions (8.x) and Ruby versions (see Gemfile).
+
 ```
 su - build
 
