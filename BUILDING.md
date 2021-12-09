@@ -37,13 +37,16 @@ This section contains instructions to deploy Build and the related service build
 The symlink `/srv/xls_service/current` points to the unpacked and built production release.
 
 SSH into the relevant server. The server admin will have added your SSH pubkey into `authorized_keys`.
+A database will be set up with credentials in a config file at `/srv/odkbuild/config/config.yml`.
 
 ```
+su - xls_service
+
 # Replace 1.6 with your release version
 export B2X="1.6"
+# Verify that the correct release version will be used
 echo $B2X
 
-su - xls_service
 cd /srv/xls_service/releases
 wget https://github.com/getodk/build2xlsform/archive/$B2X.tar.gz
 tar -xf $B2X.tar.gz && mv build2xlsform-$B2X $B2X && rm $B2X.tar.gz
@@ -51,6 +54,8 @@ cd $B2X
 make
 rm /srv/xls_service/current
 ln -s /srv/xls_service/releases/$B2X /srv/xls_service/current
+# verify that current points to latest release:
+ls -l /srv/xls_service/current
 exit
 service xls-service stop && service xls-service start
 service xls-service status
@@ -58,11 +63,13 @@ service xls-service status
 
 ## Deploy Build
 ```
+su - build
+
 # Replace 0.4.0 with your release version
 export BV="0.4.0"
+# Verify that the correct release version will be used
 echo $BV
 
-su - build
 cd /srv/odkbuild/releases
 wget https://github.com/getodk/build/archive/$BV.tar.gz
 tar -xf $BV.tar.gz && mv build-$BV $BV && rm $BV.tar.gz
@@ -79,7 +86,11 @@ exit
 service build-server stop && service build-server start
 service build-server status
 ```
-### Troubleshooting: update user password
+
+### Troubleshooting: Revert to an older version
+Run the above deployment steps with the older version tag.
+
+### Troubleshooting: Update user password
 If you need to update your password in the database, get the value of the pepper column in the users table for your user, then:
 irb
 irb(main):001:0> require 'digest/sha1'
