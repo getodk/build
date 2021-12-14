@@ -613,11 +613,14 @@
                 name: 'Style',
                 type: 'enum',
                 description: 'Style of collection interface to present.',
-                tips: ['A Picker, also known as a Spinner, is a little textbox with plus and minus buttons to change the number.'],
+                tips: [
+                    'A Picker, also known as a Spinner, is a little textbox with plus and minus buttons to change the number. ',
+                    'Bearing captures the devices orientation and allows the user to rotate the device to change the value.'],
                 options: ['Textbox',
                     'Slider',
                     'Vertical Slider',
-                    'Picker'],
+                    'Picker',
+                    'Bearing'],
                 value: 'Textbox',
                 summary: true
             },

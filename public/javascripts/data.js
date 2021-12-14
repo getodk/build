@@ -142,7 +142,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         'Horizontal Layout': 'horizontal',
         'Vertical Slider': 'vertical',
         'Likert': 'likert',
-        'Picker': 'picker'
+        'Picker': 'picker',
+        'Bearing': 'bearing'
     };
     var mediaTypes = {
         'Image': 'image/*',
@@ -547,6 +548,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     binding.attrs.type = 'int';
                 else if (control.kind == 'Decimal')
                     binding.attrs.type = 'decimal';
+            }
+            else if (control.appearance == 'Bearing'){
+                binding.attrs.type = 'decimal';
             }
             else {
                 // overrides extant input tag with a range tag.
