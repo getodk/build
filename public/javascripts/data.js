@@ -7,15 +7,12 @@
 
 var dataNS = odkmaker.namespace.load('odkmaker.data');
 
-;(function($)
-{
+; (function ($) {
     // gets just the pure data for any one control
-    var getDataRepresentation = odkmaker.data.extractOne = function($control)
-    {
+    var getDataRepresentation = odkmaker.data.extractOne = function ($control) {
         var data = {};
         var properties = $control.data('odkControl-properties');
-        _.each(properties, function(property, name)
-        {
+        _.each(properties, function (property, name) {
             data[name] = property.value;
         });
         data.metadata = properties.metadata;
@@ -28,14 +25,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
 
     // gets the pure data tree for any workspace DOM node
-    var extractMany = function($root)
-    {
+    var extractMany = function ($root) {
         var result = [];
-        $root.children('.control').each(function() { result.push(getDataRepresentation($(this))); });
+        $root.children('.control').each(function () { result.push(getDataRepresentation($(this))); });
         return result;
     };
-    odkmaker.data.extract = function()
-    {
+    odkmaker.data.extract = function () {
         var htitle = odkmaker.data.getTitle();
         if ($.isBlank(htitle) || (htitle === $('h1').text())) htitle = null;
 
@@ -53,24 +48,21 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             }
         };
     };
-    odkmaker.data.getTitle = function()
-    {
+    odkmaker.data.getTitle = function () {
         var title = $('#formProperties_title').val();
         if ($.isBlank(title) && (odkmaker.data.currentForm != null)) title = odkmaker.data.currentForm.metadata.title;
         if ($.isBlank(title)) title = $('h1').text();
         return title;
     };
 
-    var loadOne = odkmaker.data.loadOne = function(control, $parent)
-    {
+    var loadOne = odkmaker.data.loadOne = function (control, $parent) {
         var properties = null;
         if ((control.type == 'group') || (control.type == 'branch') || (control.type == 'metadata'))
             properties = $.extend(true, {}, $.fn.odkControl.controlProperties[control.type]);
         else
             properties = $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
-                                        $.fn.odkControl.controlProperties[control.type]);
-        _.each(properties, function(property, key)
-        {
+                $.fn.odkControl.controlProperties[control.type]);
+        _.each(properties, function (property, key) {
             if (key === 'metadata') return;
             property.value = control[key];
         });
@@ -81,8 +73,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             .addClass(control.type)
             .odkControl(control.type, null, properties);
 
-        if ($parent != null)
-        {
+        if ($parent != null) {
             $result.appendTo($parent);
             $result.trigger('odkControl-added');
         }
@@ -93,24 +84,21 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         return $result;
     };
 
-    var loadMany = function($parent, controls)
-    {
-        _.each(controls, function(control) { loadOne(control, $parent); });
+    var loadMany = function ($parent, controls) {
+        _.each(controls, function (control) { loadOne(control, $parent); });
     };
     // forms without a version are assumed to be version 0. any form at a version less than
     // the current will be upgraded. to define an upgrade, add an upgrade object to any module
     // whose keys are the number of the version to be upgraded to and values are the functions
     // that take the form data and update it to conform with that version.
     odkmaker.data.currentVersion = 2;
-    odkmaker.data.load = function(formObj)
-    {
+    odkmaker.data.load = function (formObj) {
         var version = formObj.metadata.version || 0;
-        while (version < odkmaker.data.currentVersion)
-        {
+        while (version < odkmaker.data.currentVersion) {
             formObj.metadata.version = ++version;
             for (var module in odkmaker)
-              if ((odkmaker[module].upgrade != null) && (odkmaker[module].upgrade[version] != null))
-                  odkmaker[module].upgrade[version](formObj);
+                if ((odkmaker[module].upgrade != null) && (odkmaker[module].upgrade[version] != null))
+                    odkmaker[module].upgrade[version](formObj);
         }
 
         $('.control').trigger('odkControl-removing');
@@ -157,23 +145,23 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         'Picker': 'picker'
     };
     var mediaTypes = {
-         'Image': 'image/*',
-         'New Image': 'image/*',
-         'Selfie': 'image/*',
-         'Annotate': 'image/*',
-         'Draw': 'image/*',
-         'Signature': 'image/*',
-         'Audio': 'audio/*',
-         'Video': 'video/*',
-         'Selfie Video': 'video/*'
+        'Image': 'image/*',
+        'New Image': 'image/*',
+        'Selfie': 'image/*',
+        'Annotate': 'image/*',
+        'Draw': 'image/*',
+        'Signature': 'image/*',
+        'Audio': 'audio/*',
+        'Video': 'video/*',
+        'Selfie Video': 'video/*'
     };
     var mediaAppearances = {
-         'New Image': 'new',
-         'Signature': 'signature',
-         'Annotate': 'annotate',
-         'Draw': 'draw',
-         'Selfie': 'new-front',
-         'Selfie Video': 'new-front'
+        'New Image': 'new',
+        'Signature': 'signature',
+        'Annotate': 'annotate',
+        'Draw': 'draw',
+        'Selfie': 'new-front',
+        'Selfie Video': 'new-front'
     };
 
     /**
@@ -183,39 +171,34 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
      * @param {String} prefix       An optional prefix for the translated value, e.g. `jr://images/`.
      * return {String}              The translated and prefixed text.
      */
-    var getTranslation = function(obj, translation, prefix)
-    {
+    var getTranslation = function (obj, translation, prefix) {
         var prefix = (typeof prefix !== 'undefined') ? prefix : "";
         var result = [];
         var itext = obj[translation._languageCode];
 
-            if (itext)
-            {
-                var match;
-                while (match = itext.match(/\$\{[^}]+\}/))
-                {
-                    if (match.index > 0)
-                    {
-                        result.push(itext.slice(0, match.index));
-                        itext = itext.slice(match.index);
-                    }
+        if (itext) {
+            var match;
+            while (match = itext.match(/\$\{[^}]+\}/)) {
+                if (match.index > 0) {
+                    result.push(itext.slice(0, match.index));
+                    itext = itext.slice(match.index);
+                }
 
-                    result.push({
-                        name: 'output',
-                        attrs: {
-                            value: itext.slice(2, match[0].length - 1)
-                        }
-                    });
-                    itext = itext.slice(match[0].length);
-                }
-                if (itext.length > 0)
-                {
-                    result.push(prefix + itext);
-                }
-                if (result.length === 0)
-                    result = obj[translation.attrs.lang];
+                result.push({
+                    name: 'output',
+                    attrs: {
+                        value: itext.slice(2, match[0].length - 1)
+                    }
+                });
+                itext = itext.slice(match[0].length);
             }
-        return result; 
+            if (itext.length > 0) {
+                result.push(prefix + itext);
+            }
+            if (result.length === 0)
+                result = obj[translation.attrs.lang];
+        }
+        return result;
     };
 
     /**
@@ -227,20 +210,18 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
      * @param {String} pre  An optional prefix for the translated value, e.g. `jr://images/`.
      * @return              None, the arr is mutated in place.
      */
-    var pushChildren = function(arr, ext, frm, txn, pre)
-    {
+    var pushChildren = function (arr, ext, frm, txn, pre) {
         var pre = (typeof pre !== 'undefined') ? pre : "";
         // Only create a node for non-empty control object values
-        if ((ext !== undefined) && !_.isEmpty(ext[txn._languageCode]))
-        {
+        if ((ext !== undefined) && !_.isEmpty(ext[txn._languageCode])) {
             arr.push({
-                        name: 'value',
-                        attrs: {
-                            form: frm
-                        },
-                        _noWhitespace: true,
-                        children: getTranslation(ext, txn, prefix = pre)
-                    });
+                name: 'value',
+                attrs: {
+                    form: frm
+                },
+                _noWhitespace: true,
+                children: getTranslation(ext, txn, prefix = pre)
+            });
         };
     };
 
@@ -255,22 +236,19 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
      *                              See <https://getodk.github.io/xforms-spec/#supported-media-types>
      *                              and <https://docs.getodk.org/form-styling/#media>
      */
-    var addTranslation = function(obj, itextPath, translations, extras)
-    {
+    var addTranslation = function (obj, itextPath, translations, extras) {
         var extras = (typeof extras !== 'undefined') ? extras : {};
-        _.each(translations.children, function(translation)
-        {
+        _.each(translations.children, function (translation) {
 
             // The translation for the main control object obj
             var schoolyard = [{
-                    name: 'value',
-                    _noWhitespace: true,
-                    children: getTranslation(obj, translation)
-                }];
+                name: 'value',
+                _noWhitespace: true,
+                children: getTranslation(obj, translation)
+            }];
 
             // Extras: if present, push translations for each additional control object
-            if (extras !== {})
-            {
+            if (extras !== {}) {
                 pushChildren(schoolyard, extras['short'], "short", translation);
                 pushChildren(schoolyard, extras.image, "image", translation, pre = "jr://images/");
                 pushChildren(schoolyard, extras.video, "video", translation, pre = "jr://video/");
@@ -290,8 +268,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         })
     };
 
-    var parseControl = function(control, xpath, instance, translations, model, body, relevance)
-    {
+    var parseControl = function (control, xpath, instance, translations, model, body, relevance) {
         // first set up some defaults we need
         // relevance string
         if (relevance === undefined)
@@ -300,21 +277,20 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var constraint = [];
 
         // deal universally with successor binding.
-        if (instance.context.successorRelevance != null)
-        {
+        if (instance.context.successorRelevance != null) {
             relevance.push(instance.context.successorRelevance);
             delete instance.context.successorRelevance;
         }
-        if ((control.other != null) && (control.other !== false))
-        {
-            instance.context.successorRelevance = _.map(control.other, function(value) {
+        if ((control.other != null) && (control.other !== false)) {
+            instance.context.successorRelevance = _.map(control.other, function (value) {
                 return 'selected(' + xpath + control.name + ", '" + xmlEncode(value) + "')";
             }).join(' or ');
         }
 
+
+
         // groups are special
-        if (control.type == 'group')
-        {
+        if (control.type == 'group') {
             var instanceTag = {
                 name: control.name,
                 attrs: {},
@@ -332,8 +308,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             // deal with properties:
 
             // label
-            if ((control.label !== undefined) && (control.label !== ''))
-            {
+            if ((control.label !== undefined) && (control.label !== '')) {
                 bodyTag.children.push({
                     name: 'label',
                     attrs: {
@@ -344,8 +319,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             }
 
             // loop
-            if (control.loop === true)
-            {
+            if (control.loop === true) {
                 instanceTag.attrs['jr:template'] = '';
                 var loopBodyTag = {
                     name: 'repeat',
@@ -359,12 +333,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             }
 
             // field-list
-            if (control.fieldList === true)
-            {
+            if (control.fieldList === true) {
                 // per #9 from jluis859, a group with both field-list and looped
                 // breaks unless nested.
-                if (control.loop === true)
-                {
+                if (control.loop === true) {
                     var innerBodyTag = { name: 'group', attrs: {}, children: [] };
                     bodyTag.children.push(innerBodyTag);
                     bodyTag = innerBodyTag;
@@ -374,8 +346,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             }
 
             // relevance
-            if ((control.relevance !== undefined) && (control.relevance !== ''))
-            {
+            if ((control.relevance !== undefined) && (control.relevance !== '')) {
                 relevance.push(control.relevance);
 
                 // we need a binding to express the constraint.
@@ -390,21 +361,79 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             }
 
             // deal with children
-            _.each(control.children, function(child)
-            {
+            _.each(control.children, function (child) {
                 parseControl(child, xpath + control.name + '/', instanceTag, translations, model, bodyTag, $.extend([], relevance));
             });
             return;
         }
 
+        // metadata kind "Audit"
+        if (control.type == 'metadata' && control.kind == 'Audit') {
+
+            /* Add the `orx:audit` element to the `orx:meta` element.
+             * 
+             * TODO: explicitly select the element with name 'orx:meta'
+             * 
+             * TODO: why are other supported meta elements not added to `orx:meta`?
+             * https://getodk.github.io/xforms-spec/#metadata
+             * 
+             * The first three attributes are required for location audit.
+             * location_priority == "off" disables location audit and excludes all three location audit fields.
+             */
+
+            if (instance.children[0].name == 'orx:meta') {
+                instance.children[0].children.push({ name: 'orx:audit' });
+            } else {
+                console.log("No 'orx:meta' element found in instance.");
+            }
+
+            /* Add binding node with parameters 
+             * 
+             * Special path: /data/meta/audit
+             * Conditional logic to drop location audit fields if location_priority == "off"
+             */
+            var binding = {
+                name: 'bind',
+                attrs: {
+                    'nodeset': xpath + 'meta/' + control.name,
+                    type: 'binary'
+                }
+            };
+
+            if (control.location_priority != undefined && control.location_priority != 'off') {
+                /* Enable location audit with sane defaults if missing */
+                binding.attrs['odk:location-priority'] = control.location_priority;
+                if (control.location_min_interval != undefined) {
+                    binding.attrs['odk:location-min-interval'] = control.location_min_interval;
+                } else {
+                    binding.attrs['odk:location-min-interval'] = '60';
+                };
+                if (control.location_max_age != undefined) {
+                    binding.attrs['odk:location-max-age'] = control.location_max_age;
+                } else {
+                    binding.attrs['odk:location-max-age'] = '600';
+                };
+            } else {
+                console.log("location audit disabled")
+            };
+
+            if (control.track_changes != undefined) {
+                binding.attrs['odk:track-changes'] = control.track_changes;
+            };
+
+            model.children.push(binding);
+
+            return;
+        }
+
         // metadata is special
-        if (control.type == 'metadata')
-        {
+        if (control.type == 'metadata' && control.kind != 'Audit') {
             // instance
             var instanceTag = {
                 name: control.name
             };
             instance.children.push(instanceTag);
+
 
             // binding
             var binding = {
@@ -425,71 +454,65 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
             // create binding based on kind
             var kind = control.kind.toLowerCase();
-            if (kind == 'device id')
-            {
+            if (kind == 'device id') {
                 binding.attrs.type = 'string';
                 binding.attrs['jr:preload'] = 'property';
                 binding.attrs['jr:preloadParams'] = 'deviceid';
             }
-            else if (kind == 'start time')
-            {
+            else if (kind == 'start time') {
                 binding.attrs.type = 'dateTime';
                 binding.attrs['jr:preload'] = 'timestamp';
                 binding.attrs['jr:preloadParams'] = 'start';
             }
-            else if (kind == 'end time')
-            {
+            else if (kind == 'end time') {
                 binding.attrs.type = 'dateTime';
                 binding.attrs['jr:preload'] = 'timestamp';
                 binding.attrs['jr:preloadParams'] = 'end';
             }
-            else if (kind == 'today')
-            {
+            else if (kind == 'today') {
                 binding.attrs.type = 'date';
                 binding.attrs['jr:preload'] = 'date';
                 binding.attrs['jr:preloadParams'] = 'today';
             }
-            else if (kind == 'username')
-            {
+            else if (kind == 'username') {
                 binding.attrs.type = 'string';
                 binding.attrs['jr:preload'] = 'property';
                 binding.attrs['jr:preloadParams'] = 'username';
             }
-            else if (kind == 'subscriber id')
-            {
+            else if (kind == 'email') {
+                binding.attrs.type = 'string';
+                binding.attrs['jr:preload'] = 'property';
+                binding.attrs['jr:preloadParams'] = 'email';
+            }
+            else if (kind == 'subscriber id') {
                 binding.attrs.type = 'string';
                 binding.attrs['jr:preload'] = 'property';
                 binding.attrs['jr:preloadParams'] = 'subscriberid';
             }
-            else if (kind == 'sim serial')
-            {
+            else if (kind == 'sim serial') {
                 binding.attrs.type = 'string';
                 binding.attrs['jr:preload'] = 'property';
                 binding.attrs['jr:preloadParams'] = 'simserial';
             }
-            else if (kind == 'phone number')
-            {
+            else if (kind == 'phone number') {
                 binding.attrs.type = 'string';
                 binding.attrs['jr:preload'] = 'property';
                 binding.attrs['jr:preloadParams'] = 'phonenumber';
             }
-            else if (kind == 'start geopoint')
-            {
+            else if (kind == 'start geopoint') {
                 binding.attrs.type = 'geopoint';
             }
 
             model.children.push(binding);
 
-            // actions are only added for some kinds of metadata
-            if (kind == 'start geopoint')
-            {
+            // Actions are only added for some metadata kinds
+            if (kind == 'start geopoint') {
                 eventaction.attrs['event'] = 'odk-instance-first-load';
                 model.children.push(eventaction);
             }
 
             return;
         }
-
 
         var instanceTag = {
             name: control.name
@@ -518,21 +541,17 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // deal with input type:
         if (control.type == 'inputText')
             binding.attrs.type = 'string';
-        else if (control.type == 'inputNumeric')
-        {
-            if (control.appearance == 'Textbox')
-            {
+        else if (control.type == 'inputNumeric') {
+            if (control.appearance == 'Textbox') {
                 if (control.kind == 'Integer')
                     binding.attrs.type = 'int';
                 else if (control.kind == 'Decimal')
                     binding.attrs.type = 'decimal';
             }
-            else
-            {
+            else {
                 // overrides extant input tag with a range tag.
                 bodyTag.name = 'range';
-                if (_.isObject(control.selectRange))
-                {
+                if (_.isObject(control.selectRange)) {
                     bodyTag.attrs.start = control.selectRange.min;
                     bodyTag.attrs.end = control.selectRange.max;
                 }
@@ -541,8 +560,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 binding.attrs.type = (Math.floor(step) === step) ? 'int' : 'decimal';
             }
         }
-        else if (control.type == 'inputDate')
-        {
+        else if (control.type == 'inputDate') {
             if (control.kind == 'Full Date and Time')
                 binding.attrs.type = 'dateTime';
             else
@@ -550,8 +568,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
         else if (control.type == 'inputTime')
             binding.attrs.type = 'time';
-        else if (control.type == 'inputLocation')
-        {
+        else if (control.type == 'inputLocation') {
             if ((control.kind == null) || (control.kind == 'Point'))
                 binding.attrs.type = 'geopoint';
             else if (control.kind == 'Path')
@@ -573,8 +590,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         var invalidText;
 
         // label
-        if ((control.label !== undefined) && !_.isEmpty(control.label))
-        {
+        if ((control.label !== undefined) && !_.isEmpty(control.label)) {
             bodyTag.children.push({
                 name: 'label',
                 attrs: {
@@ -596,8 +612,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
 
         // hint
-        if ((control.hint !== undefined) && !_.isEmpty(control.hint))
-        {
+        if ((control.hint !== undefined) && !_.isEmpty(control.hint)) {
             bodyTag.children.push({
                 name: 'hint',
                 attrs: {
@@ -610,12 +625,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 translations,
                 extras = {
                     guidance: control.guidance
-            });
+                });
         }
 
         // default value
         if ((control.defaultValue !== undefined) && (control.defaultValue !== ''))
-            instanceTag.children = [ control.defaultValue ];
+            instanceTag.children = [control.defaultValue];
 
         // read only
         if (control.readOnly === true)
@@ -626,22 +641,19 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             binding.attrs.required = 'true()';
 
         // required message
-        if ((control.required === true) && (control.requiredText !== undefined) && !_.isEmpty(control.requiredText))
-        {
+        if ((control.required === true) && (control.requiredText !== undefined) && !_.isEmpty(control.requiredText)) {
             binding.attrs['jr:requiredMsg'] = "jr:itext('" + xpath + control.name + ":requiredMsg')"
             addTranslation(control.requiredText, xpath + control.name + ':requiredMsg', translations);
         }
 
         // text length
-        if ((control.length !== undefined) && (control.length !== false))
-        {
+        if ((control.length !== undefined) && (control.length !== false)) {
             constraint.push('regex(., "^.{' + control.length.min + ',' + control.length.max + '}$")');
             invalidText = 'Response length must be between ' + control.length.min + ' and ' + control.length.max;
         }
 
         // numeric/date range
-        if ((control.range !== undefined) && (control.range !== false))
-        {
+        if ((control.range !== undefined) && (control.range !== false)) {
             if (!$.isBlank(control.range.min)) {
                 var min = xmlValue(control.range.min);
                 if (control.type === 'inputDate') min = 'date(' + min + ')';
@@ -657,8 +669,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
 
         // select multiple range
-        if ((control.count !== undefined) && (control.count !== false))
-        {
+        if ((control.count !== undefined) && (control.count !== false)) {
             if (!$.isBlank(control.count.min))
                 constraint.push('count-selected(.) &gt;= ' + xmlValue(control.count.min));
             if (!$.isBlank(control.count.max))
@@ -675,8 +686,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         }
 
         // appearance
-        if (control.appearance != null)
-        {
+        if (control.appearance != null) {
             var finalAppearance = appearanceTypes[control.appearance];
             if (finalAppearance != null)
                 bodyTag.attrs.appearance = finalAppearance;
@@ -687,10 +697,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             bodyTag.attrs.appearance = ((bodyTag.attrs.appearance || '') + ' no-ticks').trim();
 
         // options
-        if (control.options !== undefined)
-        {
-            if ((control.cascading === true) || (instance.context.cascade != null))
-            {
+        if (control.options !== undefined) {
+            if ((control.cascading === true) || (instance.context.cascade != null)) {
                 // we are somewhere in a cascading select.
                 if (instance.context.cascade == null)
                     instance.context.cascade = [];
@@ -702,8 +710,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     attrs: { id: instanceId },
                     children: [{
                         name: 'root',
-                        children: _.map(control.options, function(option, i)
-                        {
+                        children: _.map(control.options, function (option, i) {
                             // minor warning: side effects in a map.
                             var itextPath = xpath + control.name + ':option' + i;
                             addTranslation(option.text, itextPath, translations);
@@ -711,11 +718,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                             return {
                                 name: 'item',
                                 children: [
-                                    { name: 'itextId', children: [ itextPath ], _noWhitespace: true },
-                                    { name: 'value', children: [ option.val || '' ], _noWhitespace: true }
-                                ].concat(_.map(instance.context.cascade, function(name, j)
-                                {
-                                    return { name: name, children: [ option.cascade[j] || '' ], _noWhitespace: true };
+                                    { name: 'itextId', children: [itextPath], _noWhitespace: true },
+                                    { name: 'value', children: [option.val || ''], _noWhitespace: true }
+                                ].concat(_.map(instance.context.cascade, function (name, j) {
+                                    return { name: name, children: [option.cascade[j] || ''], _noWhitespace: true };
                                 }))
                             };
                         })
@@ -724,8 +730,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 model.children.push(optionsInstance);
 
                 // calculate our filtering condition.
-                var condition = _.map(instance.context.cascade, function(dataName)
-                {
+                var condition = _.map(instance.context.cascade, function (dataName) {
                     return dataName + '=' + xpath + dataName;
                 }).join(' and ');
                 if (condition.length > 0) condition = '[' + condition + ']';
@@ -747,23 +752,25 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 if (control.cascading === false)
                     delete instance.context.cascade;
             }
-            else
-            {
+            else {
                 // normal options; drop them inline.
-                _.each(control.options, function(option, i)
-                {
+                _.each(control.options, function (option, i) {
                     var itextPath = xpath + control.name + ':option' + i;
                     addTranslation(option.text, itextPath, translations);
 
                     bodyTag.children.push({
                         name: 'item',
                         children: [
-                            {   name: 'label',
+                            {
+                                name: 'label',
                                 attrs: {
                                     'ref': "jr:itext('" + itextPath + "')"
-                                } },
-                            {   name: 'value',
-                                val: option.val }
+                                }
+                            },
+                            {
+                                name: 'value',
+                                val: option.val
+                            }
                         ]
                     });
                 });
@@ -788,40 +795,37 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         // constraint message
         // it's important that this goes last so that it picks up the
         // defaults set above.
-        if ((control.invalidText !== undefined) && !_.isEmpty(control.invalidText))
-        {
+        if ((control.invalidText !== undefined) && !_.isEmpty(control.invalidText)) {
             binding.attrs['jr:constraintMsg'] = "jr:itext('" + xpath + control.name + ":constraintMsg')"
             addTranslation(control.invalidText, xpath + control.name + ':constraintMsg', translations);
         }
-        else if (invalidText != null)
-        {
+        else if (invalidText != null) {
             binding.attrs['jr:constraintMsg'] = invalidText;
         }
     };
-    var internalToXForm = function(internal)
-    {
+    var internalToXForm = function (internal) {
         // basic structure
         // TODO: user-config of instanceHead
 
         // Per OpenRosa spec, instanceID should be in /data/meta
         var meta = {
-            name: 'meta',
-            children: [ { name: 'instanceID' } ]
+            name: 'orx:meta',
+            children: [{ name: 'orx:instanceID' }]
         };
 
         var instanceHead = {
             name: 'data',
             attrs: {
-              'id': $.sanitizeString($('.header h1').text()),
-              'version': '' + Math.round((new Date()).getTime() / 1000)
+                'id': $.sanitizeString($('.header h1').text()),
+                'orx:version': '' + Math.round((new Date()).getTime() / 1000)
             },
-            children: [ meta ],
+            children: [meta],
             context: {}
         };
 
         var instance = {
             name: 'instance',
-            children: [ instanceHead ]
+            children: [instanceHead]
         };
 
         var translations = {
@@ -830,7 +834,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         };
         var model = {
             name: 'model',
-            children: [ instance, translations ]
+            children: [instance, translations]
         };
         var body = {
             name: 'h:body',
@@ -844,21 +848,25 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
                 'xmlns:jr': 'http://openrosa.org/javarosa',
                 'xmlns:ev': 'http://www.w3.org/2001/xml-events',
+                'xmlns:orx': 'http://openrosa.org/xforms',
                 'xmlns:odk': 'http://www.opendatakit.org/xforms'
             },
             children: [
-                {   name: 'h:head',
+                {
+                    name: 'h:head',
                     children: [
-                        {   name: 'h:title',
-                            val: odkmaker.data.getTitle() },
+                        {
+                            name: 'h:title',
+                            val: odkmaker.data.getTitle()
+                        },
                         model
-                    ] },
+                    ]
+                },
                 body
             ]
         };
 
-        _.each(odkmaker.i18n.activeLanguages(), function(language, code)
-        {
+        _.each(odkmaker.i18n.activeLanguages(), function (language, code) {
             translations.children.push({
                 name: 'translation',
                 _languageCode: code,
@@ -874,25 +882,25 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             name: 'bind',
             attrs: {
                 'nodeset': '/data/meta/instanceID',
-                'type' : 'string',
-                'readonly' : 'true()',
-                'jr:preload' : 'uid'
+                'type': 'string',
+                'readonly': 'true()',
+                'jr:preload': 'uid'
             }
         }
         model.children.push(instanceID);
 
-        if (!$.isBlank(internal.metadata.instance_name))
-        {
+        if (!$.isBlank(internal.metadata.instance_name)) {
             meta.children.push({ name: 'instanceName', _noWhitespace: true });
-            model.children.push({ name: 'bind', attrs: {
-              nodeset: '/data/meta/instanceName',
-              type: 'string',
-              calculate: internal.metadata.instance_name
-            } });
+            model.children.push({
+                name: 'bind', attrs: {
+                    nodeset: '/data/meta/instanceName',
+                    type: 'string',
+                    calculate: internal.metadata.instance_name
+                }
+            });
         }
 
-        if (!$.isBlank(internal.metadata.public_key) || !$.isBlank(internal.metadata.submission_url))
-        {
+        if (!$.isBlank(internal.metadata.public_key) || !$.isBlank(internal.metadata.submission_url)) {
             var submission = {
                 name: 'submission',
                 attrs: {
@@ -908,8 +916,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 submission.attrs.action = internal.metadata.submission_url;
         }
 
-        _.each(internal.controls, function(control)
-        {
+        _.each(internal.controls, function (control) {
             parseControl(control, '/data/', instanceHead, translations, model, body);
         });
 
@@ -917,15 +924,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
 
     // XML serializer
-    var generateIndent = function(indentLevel)
-    {
+    var generateIndent = function (indentLevel) {
         var result = '';
         for (var i = 0; i < indentLevel; i++)
             result += '  ';
         return result;
     };
-    var JSONtoXML = function(obj, indentLevel)
-    {
+    var JSONtoXML = function (obj, indentLevel) {
         if (indentLevel === undefined)
             indentLevel = 0;
         var result = generateIndent(indentLevel);
@@ -936,51 +941,42 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         result += '<' + obj.name;
 
         if (obj.attrs !== undefined)
-            _.each(obj.attrs, function(value, key)
-            {
+            _.each(obj.attrs, function (value, key) {
                 result += ' ' + key + '="' + xmlEncode(value) + '"';
             });
 
-        if (obj.val !== undefined)
-        {
+        if (obj.val !== undefined) {
             result += '>' + xmlEncode(obj.val) + '</' + obj.name + '>\n';
         }
-        else if (obj.children !== undefined)
-        {
-            if (obj._noWhitespace !== true)
-            {
+        else if (obj.children !== undefined) {
+            if (obj._noWhitespace !== true) {
                 result += '>\n';
-                _.each(obj.children, function(child)
-                {
+                _.each(obj.children, function (child) {
                     result += JSONtoXML(child, indentLevel + 1);
                 });
                 result += generateIndent(indentLevel);
             }
-            else
-            {
-                result += '>' + _.map(obj.children, function(child) { return JSONtoXML(child, 0).slice(0, -1); }).join('');
+            else {
+                result += '>' + _.map(obj.children, function (child) { return JSONtoXML(child, 0).slice(0, -1); }).join('');
             }
             result += '</' + obj.name + '>\n';
         }
-        else
-        {
+        else {
             result += '/>\n';
         }
 
         return result;
     };
-    var xmlEncode = function(value)
-    {
+    var xmlEncode = function (value) {
         if (value == null)
             return '';
         else
             return value.replace(/"/g, '&quot;')
-                        .replace(/&(?!(?:[a-z0-9]{1,6}|#[a-f0-9]{4});)/ig, '&amp;')
-                        .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;');
+                .replace(/&(?!(?:[a-z0-9]{1,6}|#[a-f0-9]{4});)/ig, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
     };
-    var xmlValue = function(value)
-    {
+    var xmlValue = function (value) {
         if (value == null) // or undef
             return "''";
         else if (_.isString(value))
@@ -990,8 +986,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
 
     // Kick it off
-    odkmaker.data.serialize = function()
-    {
+    odkmaker.data.serialize = function () {
         return JSONtoXML(internalToXForm(odkmaker.data.extract()));
     };
 })(jQuery);
