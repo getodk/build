@@ -516,7 +516,10 @@
             name: 'Short Label',
             type: 'uiText',
             description: 'A shorter version of the label, meant for very small screens, or to be shown in a summary of the form data.',
-            tips: ['You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/data/path/field}</code> syntax</a>.'],
+            tips: [
+                'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/data/path/field}</code> syntax</a>.',
+                'If you have multiple translations, make sure that any field with a short label is filled for every translation.'
+            ],
             value: {},
             advanced: true,
             summary: false
@@ -561,7 +564,10 @@
             name: 'Guidance',
             type: 'uiText',
             description: 'Guidance is ideal to include verbose training information or other context. Guidance can be always hidden, always shown, or shown collapsed to be expanded on demand in General Settings > Form management.',
-            tips: ['You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/data/path/field}</code> syntax</a>.'],
+            tips: [
+                'You can reference previous answers using <a href="https://getodk.github.io/xforms-spec/#xpath-paths" rel="external"><code>${/data/path/field}</code> syntax</a>.',
+                'If you have multiple translations, make sure that any field with a guidance hint is filled for every translation.'
+            ],
             value: {},
             advanced: true,
             summary: false
