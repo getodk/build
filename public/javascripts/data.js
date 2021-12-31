@@ -224,6 +224,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 children: getTranslation(ext, txn, prefix = pre)
             });
         };
+        // #268: else if empty and ext==='short': add translation from default language or dash ('-') like pyxform
     };
 
     /**
@@ -249,6 +250,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             }];
 
             // Extras: if present, push translations for each additional control object
+            // #268: https://github.com/getodk/build/issues/268
+            // #268: https://forum.getodk.org/t/collect-crashes-when-switching-languages/36056/9
+            // #268: If a short label is present in any of the translations, we should add an empty node for other missing translations
             if (extras !== {}) {
                 pushChildren(schoolyard, extras['short'], "short", translation);
                 pushChildren(schoolyard, extras.image, "image", translation, pre = "jr://images/");
@@ -288,9 +292,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             }).join(' or ');
         }
 
-
-
-        // groups are special
+        // control type "group"
         if (control.type == 'group') {
             var instanceTag = {
                 name: control.name,
@@ -306,9 +308,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             };
             body.children.push(bodyTag);
 
-            // deal with properties:
+            // deal with group properties:
 
-            // label
+            // group label
             if ((control.label !== undefined) && (control.label !== '')) {
                 bodyTag.children.push({
                     name: 'label',
@@ -319,7 +321,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 addTranslation(control.label, xpath + control.name + ':label', translations);
             }
 
-            // loop
+            // looped group
             if (control.loop === true) {
                 instanceTag.attrs['jr:template'] = '';
                 var loopBodyTag = {
@@ -346,7 +348,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 bodyTag.attrs.appearance = 'field-list';
             }
 
-            // relevance
+            // group relevance
             if ((control.relevance !== undefined) && (control.relevance !== '')) {
                 relevance.push(control.relevance);
 
@@ -361,14 +363,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 model.children.push(binding);
             }
 
-            // deal with children
+            // deal with group children
             _.each(control.children, function (child) {
                 parseControl(child, xpath + control.name + '/', instanceTag, translations, model, bodyTag, $.extend([], relevance));
             });
             return;
         }
 
-        // metadata kind "Audit"
+        // control type metadata of kind "Audit"
         if (control.type == 'metadata' && control.kind == 'Audit') {
 
             /* Add the `orx:audit` element to the `orx:meta` element.
@@ -385,7 +387,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             if (instance.children[0].name == 'orx:meta') {
                 instance.children[0].children.push({ name: 'orx:audit' });
             } else {
-                console.log("No 'orx:meta' element found in instance.");
+                console.log("No 'orx:meta' element found in instance. Adding audit metadata will likely fail.");
             }
 
             /* Add binding node with parameters 
@@ -427,7 +429,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             return;
         }
 
-        // metadata is special
+        // control type metadata of other kinds
         if (control.type == 'metadata' && control.kind != 'Audit') {
             // instance
             var instanceTag = {
@@ -602,6 +604,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }
             });
 
+            console.log('parse control for control');
+            // console.log(bodyTag);
+            // console.log(control);
+
             addTranslation(
                 control.label,
                 xpath + control.name + ':label',
@@ -613,6 +619,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     audio: control.audio,
                     bigimage: control.bigimage
                 });
+            // console.log(bodyTag);
+            console.log(control);
+            // TODO #268: if control['short'] exists, push empty nodes for missing translations
         }
 
         // hint

@@ -930,10 +930,10 @@
                 description: 'This setting governs how often location is captured for the audit log.',
                 tips: [
                     'The desired minimum time, in seconds, location updates will be fetched. ' +
-                    'Required to enable location in log. To disable location audit, select "off" in the priority.' +
-                    'Default: 60 seconds (1 minute).'
+                    'Required to enable location in audit log. To disable location audit, select "off" in the priority.' +
+                    'Default: 20 seconds.'
                 ],
-                value: '60',
+                value: '20',
                 advanced: true,
                 summary: false
             },
@@ -943,10 +943,10 @@
                 description: 'The maximum time, in seconds, locations will be considered valid.',
                 tips: [
                     'Must be greater than or equal to the minimum interval. ' +
-                    'Required to enable location in log. To disable location audit, select "off" in the priority.' +
-                    'Default: 600 seconds (10 minutes).'
+                    'Required to enable location in audit log. To disable location audit, select "off" in the priority.' +
+                    'Default: 60 seconds (1 minute).'
                 ],
-                value: '600',
+                value: '60',
                 advanced: true,
                 summary: false
             },
