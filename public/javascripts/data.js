@@ -45,6 +45,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 instance_name: $('#formProperties_instanceName').val(),
                 public_key: $('#formProperties_publicKey').val(),
                 submission_url: $('#formProperties_submissionUrl').val()
+                // #126: read from index.erb orx:auto-delete="true/false/null" orx:auto-send="true/false/null"
             }
         };
     };
@@ -203,7 +204,16 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
 
     /**
-     * Push a translated extra node to a given array.
+     * Push translated extra node to a given array.
+     * 
+     * Nodes are only created if the extra has at least one non-empty string.
+     * 
+     * E.g. `ext` for labels with no extras is an empty object `{}` and will not create any nodes.
+     * 
+     * `ext` for labels with additional, missing translations is an object with some empty or even 
+     * missing keys (languageCodes), e.g. `{0: "English label", 1: ""}` or `{0: "English label"}`. 
+     * Here, langugeCode 1 will get an empty node in both cases.
+     * 
      * @param {Object} arr  The array to be added to.
      * @param {Object} ext  The value of an item of the extra object.
      * @param {Object} frm  The value for "form".
@@ -212,9 +222,18 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
      * @return              None, the arr is mutated in place.
      */
     var pushChildren = function (arr, ext, frm, txn, pre) {
-        var pre = (typeof pre !== 'undefined') ? pre : "";
-        // Only create a node for non-empty control object values
-        if ((ext !== undefined) && !_.isEmpty(ext[txn._languageCode])) {
+        var pre = (pre !== undefined) ? pre : "";
+
+        // #268: skip unless ext contains at least one non-empty value
+        var contains_non_empty_value = false;
+        for (var key in ext) {
+            if (ext[key] !== '') {
+                contains_non_empty_value = true;
+                break;
+            }
+        };
+
+        if ((ext !== undefined) && contains_non_empty_value && !_.isEmpty(ext[txn._languageCode])) {
             arr.push({
                 name: 'value',
                 attrs: {
@@ -223,22 +242,37 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 _noWhitespace: true,
                 children: getTranslation(ext, txn, prefix = pre)
             });
+        } else if ((ext !== undefined) && contains_non_empty_value && _.isEmpty(ext[txn._languageCode])) {
+            // #268: if other languages are given but this language is empty or missing, push an empty node
+            arr.push({
+                name: 'value',
+                attrs: {
+                    form: frm
+                },
+                _noWhitespace: true,
+                children: [""]
+            });
         };
-        // #268: else if empty and ext==='short': add translation from default language or dash ('-') like pyxform
     };
 
     /**
      * Generate all translations for a given control element and optional extras.
+     * 
      * @param {Object} obj          A control element, e.g. control.label.
-     * @param {String} itextPath    The XPath for the control element.
-     * @param {Object} translations The translations structure, which is mutated.
+     * @param {String} itextPath    The XPath for the control element, e.g. `/data/field_1:label`.
+     * @param {Object} translations The translations structure, which is mutated. 
+     *                              This structure is the JSON equivalent of the XForm's `itext` node.
      * @param {Object} [extras]     An optional object of extra control elements.
      *                              Supported are keys "image", "audio",
      *                              "video", "big-image", "short", and "guidance".
+     *                              These are added as additional "forms" to the `itext/translation/itextPath` node.
+     *                              E.g., a `label` can get an extra `short`, `image`, `bigimate`, `audio`, or `video` form.
+     *                              Similarly, a `hint` can get an extra `guidance` form.
      *                              See <https://getodk.github.io/xforms-spec/#supported-media-types>
-     *                              and <https://docs.getodk.org/form-styling/#media>
+     *                              and <https://docs.getodk.org/form-styling/#media>.
      */
     var addTranslation = function (obj, itextPath, translations, extras) {
+       
         var extras = (typeof extras !== 'undefined') ? extras : {};
         _.each(translations.children, function (translation) {
 
@@ -249,11 +283,13 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 children: getTranslation(obj, translation)
             }];
 
-            // Extras: if present, push translations for each additional control object
+            // Extras: if extras are present, push translations for each additional control object
             // #268: https://github.com/getodk/build/issues/268
             // #268: https://forum.getodk.org/t/collect-crashes-when-switching-languages/36056/9
-            // #268: If a short label is present in any of the translations, we should add an empty node for other missing translations
+            // #268: If an extra is present in any of the other translations, we should 
+            // add an empty node or duplicate the last translated value for other missing translations
             if (extras !== {}) {
+                //#268 TODO make pushChildren conditional on at least one non-empty string for each key (short, image, etc)
                 pushChildren(schoolyard, extras['short'], "short", translation);
                 pushChildren(schoolyard, extras.image, "image", translation, pre = "jr://images/");
                 pushChildren(schoolyard, extras.video, "video", translation, pre = "jr://video/");
@@ -604,10 +640,6 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }
             });
 
-            console.log('parse control for control');
-            // console.log(bodyTag);
-            // console.log(control);
-
             addTranslation(
                 control.label,
                 xpath + control.name + ':label',
@@ -619,9 +651,6 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                     audio: control.audio,
                     bigimage: control.bigimage
                 });
-            // console.log(bodyTag);
-            console.log(control);
-            // TODO #268: if control['short'] exists, push empty nodes for missing translations
         }
 
         // hint
@@ -927,6 +956,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
             if (!$.isBlank(internal.metadata.submission_url))
                 submission.attrs.action = internal.metadata.submission_url;
+
+            // TODO #126 add orx:auto-send / orx:auto-delete
         }
 
         _.each(internal.controls, function (control) {
