@@ -85,8 +85,8 @@ When downgrading, the above steps need to be altered to install the required Nod
 ```
 su - build
 
-# Replace 0.4.0 with your release version
-export BV="0.4.0"
+# Replace 0.4.1 with your release version
+export BV="0.4.1"
 # Verify that the correct release version will be used
 echo $BV
 
@@ -112,7 +112,11 @@ Run the above deployment steps with the older version tag.
 
 ### Troubleshooting: Update user password
 If you need to update your password in the database, get the value of the pepper column in the users table for your user, then:
+
+```
 irb
 irb(main):001:0> require 'digest/sha1'
 irb(main):002:0> Digest::SHA1.hexdigest "--[your_new_password]==[pepper]--"
+```
+
 Put that hash in the password column in the DB.
