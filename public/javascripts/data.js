@@ -44,8 +44,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 htitle: htitle,
                 instance_name: $('#formProperties_instanceName').val(),
                 public_key: $('#formProperties_publicKey').val(),
-                submission_url: $('#formProperties_submissionUrl').val()
-                // #126: read from index.erb orx:auto-delete="true/false/null" orx:auto-send="true/false/null"
+                submission_url: $('#formProperties_submissionUrl').val(),
+                // #126: orx:auto-delete="true/false" orx:auto-send="true/false"
+                auto_send: $('#formProperties_autosend').find(":selected").val(),
+                auto_delete: $('#formProperties_autodelete').find(":selected").val()
             }
         };
     };
@@ -112,6 +114,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('#formProperties_instanceName').val(formObj.metadata.instance_name);
         $('#formProperties_publicKey').val(formObj.metadata.public_key);
         $('#formProperties_submissionUrl').val(formObj.metadata.submission_url);
+        // #126: orx:auto-delete="true/false" orx:auto-send="true/false"
+        $('#formProperties_autosend').val(formObj.metadata.auto_send);
+        $('#formProperties_autodelete').val(formObj.metadata.auto_delete);
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadMany($('.workspace'), formObj.controls);
@@ -942,7 +947,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             });
         }
 
-        if (!$.isBlank(internal.metadata.public_key) || !$.isBlank(internal.metadata.submission_url)) {
+        if (!$.isBlank(internal.metadata.public_key) ||
+            !$.isBlank(internal.metadata.submission_url) ||
+            internal.metadata.auto_send !== "default" ||
+            internal.metadata.auto_delete !== "default") {
             var submission = {
                 name: 'submission',
                 attrs: {
@@ -957,7 +965,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             if (!$.isBlank(internal.metadata.submission_url))
                 submission.attrs.action = internal.metadata.submission_url;
 
-            // TODO #126 add orx:auto-send / orx:auto-delete
+            // #126 orx:auto-send / orx:auto-delete
+            if (internal.metadata.auto_send !== "default")
+                submission.attrs["orx:auto-send"] = internal.metadata.auto_send;
+            if (internal.metadata.auto_delete !== "default")
+                submission.attrs["orx:auto-delete"] = internal.metadata.auto_delete;
         }
 
         _.each(internal.controls, function (control) {

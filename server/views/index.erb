@@ -317,7 +317,23 @@
           <input type="text" id="formProperties_submissionUrl" name="submissionUrl" />
           <p>Directs your submissions somewhere other than the Aggregate that supplied the form. This is the ODK Aggregate website url with <code>Aggregate.html</code> replaced by <code>submission</code>.</p>
 
-          <!-- #126: add settings for orx:auto-delete="true/false" orx:auto-send="true/false" -->
+          <!-- #126: orx:auto-delete="true/false" orx:auto-send="true/false" -->
+          <label for="formProperties_autosend">Auto-send</label>
+          <select id="formProperties_autosend" name="autosend">
+            <option value="default">Follow ODK Collect settings</option>
+            <option value="true">Always</option>
+            <option value="false">Never</option>
+          </select>
+          <p>Override or follow the ODK Collect form management setting "Auto send".</p>
+
+          <label for="formProperties_autodelete">Auto-delete</label>
+          <select id="formProperties_autodelete" name="autodelete">
+            <option value="default">Follow ODK Collect settings</option>
+            <option value="true">Always</option>
+            <option value="false">Never</option>
+          </select>
+          <p>Override or follow the ODK Collect form management setting "Delete after send".</p>
+
         </form>
       </div>
       <div class="modalButtonContainer">
@@ -418,6 +434,10 @@
         <p>
           Need help?
           <a href="http://forum.getodk.org/" rel="external">Ask on the forum</a>.
+        </p>
+        <p>
+          Want to help?
+          <a href="https://github.com/getodk/build/blob/master/CONTRIBUTING.md" rel="external">Become a contributor</a>!
         </p>
       </div>
       <div class="modalButtonContainer">
