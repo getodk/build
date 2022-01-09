@@ -177,7 +177,8 @@ form label
     line-height: 25px;
     margin-bottom: -25px;
 }
-form input
+form input,
+form select
 {
     margin-bottom: 0.5em;
     margin-left: 7em;
