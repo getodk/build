@@ -238,7 +238,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 odkmaker.data.load(response);
 
                 $.toast($.h(fileName) + ' has been loaded, but it is unsaved. Please go to ' +
-                                        'File &raquo; Save if you wish to save it.');
+                                        'File &raquo; Save As if you wish to save it.');
                 $('.loadLocallyDialog').jqmHide();
             }
         });
