@@ -102,7 +102,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             // take the binary response, create a blob-reference link out of it, and click on it to trigger dl.
             var a = document.createElement('a');
             a.href = window.URL.createObjectURL(xhttp.response);
-            a.download = $.sanitizeString($('h1').text()) + '-export.xlsx';
+            a.download = $.sanitizeString($('h1').text()) + '.xlsx';
             a.style.display = 'none';
 
             document.body.appendChild(a);
