@@ -112,7 +112,10 @@ Run the above deployment steps with the older version tag.
 
 ### Troubleshooting: Update user password
 If you need to update your password in the database, get the value of the pepper column in the users table for your user, then:
+
+```
 irb
 irb(main):001:0> require 'digest/sha1'
 irb(main):002:0> Digest::SHA1.hexdigest "--[your_new_password]==[pepper]--"
 Put that hash in the password column in the DB.
+```
