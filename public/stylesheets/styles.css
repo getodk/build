@@ -177,7 +177,8 @@ form label
     line-height: 25px;
     margin-bottom: -25px;
 }
-form input
+form input,
+form select
 {
     margin-bottom: 0.5em;
     margin-left: 7em;
@@ -1462,7 +1463,8 @@ body > .control.last .controlFlowArrow,
     width: 40em;
 }
 
-.formPropertiesDialog input
+.formPropertiesDialog input,
+.formPropertiesDialog select
 {
     margin-left: 10em;
     width: calc(100% - 10em);

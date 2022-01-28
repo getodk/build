@@ -49,7 +49,9 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 htitle: htitle,
                 instance_name: $('#formProperties_instanceName').val(),
                 public_key: $('#formProperties_publicKey').val(),
-                submission_url: $('#formProperties_submissionUrl').val()
+                submission_url: $('#formProperties_submissionUrl').val(),
+                auto_send: $('#formProperties_autosend').find(":selected").val(),
+                auto_delete: $('#formProperties_autodelete').find(":selected").val()
             }
         };
     };
@@ -123,6 +125,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('#formProperties_instanceName').val(formObj.metadata.instance_name);
         $('#formProperties_publicKey').val(formObj.metadata.public_key);
         $('#formProperties_submissionUrl').val(formObj.metadata.submission_url);
+        $('#formProperties_autosend').val(formObj.metadata.auto_send);
+        $('#formProperties_autodelete').val(formObj.metadata.auto_delete);
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadMany($('.workspace'), formObj.controls);
@@ -880,6 +884,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
                 'xmlns:jr': 'http://openrosa.org/javarosa',
                 'xmlns:ev': 'http://www.w3.org/2001/xml-events',
+                'xmlns:orx': 'http://openrosa.org/xforms',
                 'xmlns:odk': 'http://www.opendatakit.org/xforms'
             },
             children: [
@@ -927,7 +932,10 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             } });
         }
 
-        if (!$.isBlank(internal.metadata.public_key) || !$.isBlank(internal.metadata.submission_url))
+        if (!$.isBlank(internal.metadata.public_key) ||          
+            !$.isBlank(internal.metadata.submission_url) ||
+            internal.metadata.auto_send !== "default" ||
+            internal.metadata.auto_delete !== "default")
         {
             var submission = {
                 name: 'submission',
@@ -942,6 +950,12 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
             if (!$.isBlank(internal.metadata.submission_url))
                 submission.attrs.action = internal.metadata.submission_url;
+
+            if (internal.metadata.auto_send !== "default")
+                submission.attrs["orx:auto-send"] = internal.metadata.auto_send;
+
+            if (internal.metadata.auto_delete !== "default")
+                submission.attrs["orx:auto-delete"] = internal.metadata.auto_delete;
         }
 
         _.each(internal.controls, function(control)
