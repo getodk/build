@@ -29,11 +29,68 @@ This section contains package maintenance procedures in preparation for deployme
   git push --tags
   ```
 * Create a new release from the new tag on GitHub and let GitHub auto-generate release notes. Mark releases used for testing as pre-release. The release bundles the code into an archive, which we'll use for deployment.
+* Pushing a new tag will generate a new Docker image with the same tag.
 
 # Deployment
 This section contains instructions to deploy Build and the related service build2xlsform to a test or production server.
 
-## Deploy build2xlsform
+## docker-compose
+This section explains how to run ODK Build with docker-compose.
+This is useful for several audiences:
+
+* End users can run this as an offline or self-hosted version of ODK Build. Note, the installation process requires internet connectivity.
+* Developers can verify that the Docker builds still work after code changes.
+* Maintainers can deploy Build with the same toolset (docker-compose) as Central.
+
+### First time start-up
+With Docker and docker-compose installed, run
+
+```
+# via HTTPS
+git clone https://github.com/getodk/build.git 
+
+# or with SSH keys
+git clone git@github.com:getodk/build.git
+
+# or download and extract the latest release from https://github.com/getodk/build/releases
+# Replace 0.4.0 with your release version
+export BV="0.4.0"
+# Verify that the correct release version will be used
+echo $BV
+
+wget https://github.com/getodk/build/archive/$BV.tar.gz
+tar -xf $BV.tar.gz && mv build-$BV build && rm $BV.tar.gz
+
+cd build
+docker-compose up -d --build
+```
+This will run ODK Build on `http://localhost:9393/`, together with its Postgres database 
+and the related service `build2xlsform` providing an export to XLSForm.
+
+### Stop Build
+To stop the images, run 
+
+```
+docker-compose stop
+```
+
+DO NOT run `docker-compose d*wn` as it unlinks the database volume.
+To recover from this, follow the troubleshooting protocol 
+[here](https://docs.getodk.org/central-troubleshooting/#troubleshooting-docker-compose-down).
+
+### Upgrade Build
+Pull the latest changes and rebuild/restart the images.
+
+```
+cd build
+git pull
+docker-compose up -d --build
+```
+
+## Source install
+The following sections document how to install Build and its dependencies from source.
+
+### Deploy build2xlsform
 The symlink `/srv/xls_service/current` points to the unpacked and built production release.
 
 SSH into the relevant server. The server admin will have added your SSH pubkey into `authorized_keys`.
@@ -61,8 +118,7 @@ service xls-service stop && service xls-service start
 service xls-service status
 ```
 
-## Deploy Build
-Upgrade system
+### Deploy Build
 
 As root user, upgrade the system, NodeJS, and Ruby Gems.
 ```
@@ -112,7 +168,10 @@ Run the above deployment steps with the older version tag.
 
 ### Troubleshooting: Update user password
 If you need to update your password in the database, get the value of the pepper column in the users table for your user, then:
+
+```
 irb
 irb(main):001:0> require 'digest/sha1'
 irb(main):002:0> Digest::SHA1.hexdigest "--[your_new_password]==[pepper]--"
 Put that hash in the password column in the DB.
+```

@@ -1,0 +1,30 @@
+version: "3"
+services:
+  postgres:
+    image: "postgres:14.1"
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: odkbuild
+      POSTGRES_PASSWORD: odkbuild
+      POSTGRES_DATABASE: odkbuild
+    restart: always
+  # build2xlsform:
+  #   image: "ghcr.io/getodk/build2xlsform:latest"
+  #   ports:
+  #     - "8686:8686"
+  odkbuild:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+      # - build2xlsform
+    command: [ "./contrib/wait-for-it.sh", "postgres:5432", "--", "./start-odkbuild.sh" ]
+    ports:
+      - "9393:9393"
+    restart: always
+    logging:
+      driver: local
+    # healthcheck:
+    #   test: [ "CMD-SHELL", "nc -z localhost 9393 || exit 1" ]
