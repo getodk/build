@@ -5,6 +5,7 @@ on:
   push:
     tags:
       - v*
+    # DEBUG: once working in upstream, drop the branches.
     branches:
       - main
       - master

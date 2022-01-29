@@ -14,6 +14,9 @@ services:
   #   ports:
   #     - "8686:8686"
   odkbuild:
+    # Option 1: Use pre-built image - change to getodk repo
+    # image: ghcr.io/dbca-wa/odkbuild:272-docker
+    # Option 2: Build image from latest master
     build:
       context: .
       dockerfile: Dockerfile
