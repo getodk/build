@@ -1,7 +1,7 @@
-# This docker-compose file will deploy the latest tagged images from ghcr.io,
-# which are built and pushed whenever a new Git tag is pushed to GitHub.
-# Use this file to deploy ODK Build to a staging or production server.
-# Run: docker-compose up -d
+# This docker-compose file will deploy the latest tagged image for build2xlsform from ghcr.io,
+# and build the current master as ODK Build image.
+# Use this file to test ODK Build during development.
+# Run: docker-compose -f docker-compose.dev.yml up -d --build
 version: "3"
 services:
   postgres:
@@ -19,7 +19,9 @@ services:
     ports:
       - "8686:8686"
   odkbuild:
-    image: ghcr.io/getodk/odkbuild:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - postgres
       - build2xlsform

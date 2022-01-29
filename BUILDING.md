@@ -60,12 +60,29 @@ echo $BV
 
 wget https://github.com/getodk/build/archive/$BV.tar.gz
 tar -xf $BV.tar.gz && mv build-$BV build && rm $BV.tar.gz
-
-cd build
-docker-compose up -d --build
 ```
-This will run ODK Build on `http://localhost:9393/`, together with its Postgres database 
+
+#### Current ODK Build master
+The file `docker-compose.dev.yml` will deploy the latest tagged image for build2xlsform from ghcr.io,
+and build the current master as ODK Build image.
+Developers will use this option to test ODK Build during development.
+
+```
+cd build
+docker-compose -f docker-compose.dev.yml up -d --build
+```
+
+This will run ODK Build on `http://0.0.0.0:9393/`, together with its Postgres database 
 and the related service `build2xlsform` providing an export to XLSForm.
+
+#### Latest official images
+The file `docker-compose.yml` will deploy the latest tagged images from ghcr.io,
+which are built and pushed whenever a new Git tag is pushed to GitHub.
+Maintainers will use this option to deploy ODK Build to a staging or production server.
+
+```
+docker-compose up -d
+```
 
 ### Stop Build
 To stop the images, run 
@@ -75,6 +92,7 @@ docker-compose stop
 ```
 
 DO NOT run `docker-compose d*wn` as it unlinks the database volume.
+The volume still exists, but won't be found in the next run and appear lost.
 To recover from this, follow the troubleshooting protocol 
 [here](https://docs.getodk.org/central-troubleshooting/#troubleshooting-docker-compose-down).
 
