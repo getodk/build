@@ -1,8 +1,8 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/master/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+# Publish `v1.2.3` tags as releases.
 on:
   push:
-    # Publish `v1.2.3` tags as releases.
     tags:
       - v*
 
