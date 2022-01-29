@@ -5,6 +5,10 @@ on:
   push:
     tags:
       - v*
+    branches:
+      - main
+      - master
+      - '272-docker'
 
 name: docker
 
