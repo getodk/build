@@ -578,6 +578,7 @@
     };
 
     // Property fields per control type
+    // Nb data.js / loadOne has custom logic to exclude some properties for metadata kind "audit".
     $.fn.odkControl.controlProperties = {
         inputText: {
           length:     { name: 'Length',
@@ -836,9 +837,56 @@
           kind:       { name: 'Kind',
                         type: 'enum',
                         description: 'Type of metadata to add.',
-                        options: [ 'Device ID', 'Start Time', 'End Time', 'Today', 'Username', 'Subscriber ID', 'SIM Serial', 'Phone Number', 'Start Geopoint' ],
+                        options: [ 'Device ID', 'Start Time', 'End Time', 'Today', 'Username', 'Email', 'Subscriber ID', 'SIM Serial', 'Phone Number', 'Start Geopoint', 'Audit' ],
                         value: 'Device ID',
-                        summary: true } },
+                        summary: true },
+          location_priority: {
+                        name: 'Audit Location Priority',
+                        type: 'enum',
+                        description: 'This setting balances location accuracy with battery life.',
+                        tips: [
+                            'See <a href="https://developers.google.com/android/reference/com/google/android/gms/location/LocationRequest" ' +
+                            'target="_" rel="nofollow">the LocationRequest documentation</a> for an explanation of the options. ' +
+                            'Using "balanced" will capture the location at least at specified intervals while preserving power.' +
+                            'Using "off" will disable location audit altogether.'],
+                        options: ['off', 'no-power', 'low-power', 'balanced', 'high-accuracy'],
+                        value: 'balanced',
+                        advanced: true,
+                        summary: false },
+          location_min_interval: {
+                        name: 'Audit Location Minimum Interval',
+                        type: 'text',
+                        description: 'This setting governs how often location is captured for the audit log.',
+                        tips: [
+                            'The desired minimum time, in seconds, location updates will be fetched. ' +
+                            'Required to enable location in audit log. To disable location audit, select "off" in the priority.' +
+                            'Default: 20 seconds.'
+                        ],
+                        value: '20',
+                        advanced: true,
+                        summary: false },
+          location_max_age: {
+                        name: 'Audit Location Maximum Age',
+                        type: 'text',
+                        description: 'The maximum time, in seconds, locations will be considered valid.',
+                        tips: [
+                            'Must be greater than or equal to the minimum interval. ' +
+                            'Required to enable location in audit log. To disable location audit, select "off" in the priority.' +
+                            'Default: 60 seconds (1 minute).'
+                        ],
+                        value: '60',
+                        advanced: true,
+                        summary: false },
+          track_changes: {
+                        name: 'Audit Track Changes',
+                        type: 'enum',
+                        description: 'Whether to track changes to the form made any time before submission.',
+                        tips: [],
+                        options: ['true', 'false'],
+                        value: 'true',
+                        advanced: true,
+                        summary: false },
+        },
     };
 
     // TODO: combine this and the above hash into one when all these declarations move out into an impl file.
@@ -918,7 +966,8 @@
         },
         metadata: {
             name: 'Metadata',
-            description: 'Metadata questions silently and automatically collect information about the session.',
+            description: 'Metadata questions silently and automatically collect information about the session. ' +
+            'Audit has additional advanced options.',
         }
     };
 
