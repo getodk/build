@@ -578,7 +578,6 @@
     };
 
     // Property fields per control type
-    // Nb data.js / loadOne has custom logic to exclude some properties for metadata kind "audit".
     $.fn.odkControl.controlProperties = {
         inputText: {
           length:     { name: 'Length',

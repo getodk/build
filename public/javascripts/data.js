@@ -64,38 +64,18 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     };
 
     /**
-     * Load a single control's properties into the sidebar.
+     * Load a single control's properties into the sidebar on form load.
      * 
-     * Each time a control is clicked in the main area, this function populates the 
+     * Each time a form is loaded, this function populates the 
      * "properties" sidebar with the control's properties as defined in 
      * `$.fn.odkControl.controlProperties` (`control.js`).
      * 
-     * In general, all properties are loaded into the sidebar as per `control.js`.
-     * Properties which are only relevant to some control types, such as 
-     * Audit's `location_priority`, `location_min_interval`, `location_max_age`, and
-     * `track_changes` are prevented here from entering the sidebar.
-     * 
-     * The exact removal of properties is hard-coded here, since this behaviour is
-     * a one-off for metadata kind "audit". Should more properties
-     * need fine-tuning, additional keys can be added to `$.fn.odkControl.controlProperties`
-     * and `loadOne` can be refactored to a more generic "include if xxx" behaviour.
      */
     var loadOne = odkmaker.data.loadOne = function(control, $parent)
     {
         var properties = null;
         if ((control.type == 'group') || (control.type == 'branch') || (control.type == 'metadata'))
-        {    
-            var controlProps = $.fn.odkControl.controlProperties[control.type];
-            // Custom exclusion of audit properties for other metadata kinds
-            if ((control.type == 'metadata') && (control.kind != 'Audit'))
-            {
-                delete controlProps.location_priority;
-                delete controlProps.location_min_interval;
-                delete controlProps.location_max_age;
-                delete controlProps.track_changes;
-            }
-            properties = $.extend(true, {}, controlProps);
-        }
+            properties = $.extend(true, {}, $.fn.odkControl.controlProperties[control.type]);
         else
             properties = $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
                                         $.fn.odkControl.controlProperties[control.type]);
