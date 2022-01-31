@@ -74,14 +74,14 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
     var loadOne = odkmaker.data.loadOne = function(control, $parent)
     {
         var properties = null;
-        if ((control.type == 'group') || (control.type == 'branch') || (control.type == 'metadata'))
+        if ((control.type == 'group') || (control.type == 'branch') || (control.type == 'metadata') || (control.type == 'audit'))
             properties = $.extend(true, {}, $.fn.odkControl.controlProperties[control.type]);
         else
             properties = $.extend(true, $.extend(true, {}, $.fn.odkControl.defaultProperties),
                                         $.fn.odkControl.controlProperties[control.type]);
         _.each(properties, function(property, key)
         {
-            if (key === 'metadata') return;
+            if (key === 'metadata' || key === 'audit') return;
             property.value = control[key];
         });
         properties.metadata = control.metadata;
@@ -441,8 +441,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             return;
         }
 
-         // control type metadata of kind "Audit"
-         if (control.type == 'metadata' && control.kind == 'Audit') {
+         // control type "Audit"
+         if (control.type == 'audit') {
 
             /* Add the `orx:audit` element to the `orx:meta` element.
              * 
@@ -458,7 +458,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             if (instance.children[0].name == 'orx:meta') {
                 instance.children[0].children.push({ name: 'orx:audit' });
             } else {
-                console.log("No 'orx:meta' element found in instance. Adding audit metadata will likely fail.");
+                console.log("No 'orx:meta' element found in instance. Adding audit will likely fail.");
             }
 
             /* Add binding node with parameters 
@@ -500,8 +500,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             return;
         }
 
-        // control type metadata of other kinds
-        if (control.type == 'metadata' && control.kind != 'Audit')
+        // control type metadata
+        if (control.type == 'metadata')
         {
             // instance
             var instanceTag = {
