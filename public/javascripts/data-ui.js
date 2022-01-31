@@ -24,9 +24,19 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             },
             error: function(request, status, error)
             {
+                console.log(error);
+                
+                if (error == "Not Found") 
+                {
+                    var msg = '<p>Error: No form selected.</p>'
+                }
+                else{
+                    var msg = '<p>Could not open the form. See browser console log for a detailed error message.</p>';
+                    console.log(error);
+                }
                 $('.openDialog .errorMessage')
                     .empty()
-                    .append('<p>Could not open the form. Please try again in a moment.</p>')
+                    .append(msg)
                     .slideDown();
             }
         });
