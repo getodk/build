@@ -860,7 +860,7 @@
                           tips: [
                               'See <a href="https://developers.google.com/android/reference/com/google/android/gms/location/LocationRequest" ' +
                               'target="_" rel="nofollow">the LocationRequest documentation</a> for an explanation of the options. ' +
-                              'Using "balanced" will capture the location at least at specified intervals while preserving power.' +
+                              'Using "balanced" will capture the location at least at specified intervals while preserving power. ' +
                               'Using "off" will disable location audit altogether.'],
                           options: ['off', 'no-power', 'low-power', 'balanced', 'high-accuracy'],
                           value: 'balanced',
@@ -882,7 +882,7 @@
                           description: 'The maximum time, in seconds, locations will be considered valid.',
                           tips: [
                               'Must be greater than or equal to the minimum interval. ' +
-                              'Required to enable location in audit log. To disable location audit, select "off" in the priority.' +
+                              'Required to enable location in audit log. To disable location audit, select "off" in the priority. ' +
                               'Default: 60 seconds (1 minute).'
                           ],
                           value: '60',
