@@ -32,8 +32,8 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }
                 else{
                     var msg = '<p>Could not open the form. See browser console log for a detailed error message.</p>';
-                    console.log(error);
                 }
+                
                 $('.openDialog .errorMessage')
                     .empty()
                     .append(msg)
