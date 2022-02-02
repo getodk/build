@@ -24,16 +24,16 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             },
             error: function(request, status, error)
             {
-                console.log(error);
+                console.log("Could not open the form, error: " + error);
                 
                 if (error == "Not Found") 
                 {
                     var msg = '<p>Error: No form selected.</p>'
-                }
-                else{
+                } else  
+                {
                     var msg = '<p>Could not open the form. See browser console log for a detailed error message.</p>';
                 }
-                
+
                 $('.openDialog .errorMessage')
                     .empty()
                     .append(msg)
