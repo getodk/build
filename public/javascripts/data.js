@@ -444,32 +444,36 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
          // control type "Audit"
          if (control.type == 'audit') {
 
-            /* Add the `orx:audit` element to the `orx:meta` element.
+            /* Add the `audit` element to the `meta` element.
              * 
-             * TODO: explicitly select the element by its name 'orx:meta'
+             * The namespace prefix `orx:` is omitted because it could break existing forms
+             * on ODK Central with a non-prefixed meta node.
              * 
-             * Discuss: why are other supported meta elements not added to `orx:meta`?
+             * Explicitly selecting the element by its name 'meta' would be an improvement.
+             * 
+             * Discuss: why are other supported meta elements not added to `meta`?
              * https://getodk.github.io/xforms-spec/#metadata
              * 
              * The first three attributes are required for location audit.
              * location_priority == "off" disables location audit and excludes all three location audit fields.
              */
 
-            if (instance.children[0].name == 'orx:meta') {
-                instance.children[0].children.push({ name: 'orx:audit' });
+            if (instance.children[0].name == 'meta') {
+                instance.children[0].children.push({ name: 'audit' });
             } else {
-                console.log("No 'orx:meta' element found in instance. Adding audit will likely fail.");
+                console.log("No 'meta' element found in instance. Adding audit will likely fail.");
             }
 
             /* Add binding node with parameters 
              * 
              * Special path: /data/meta/audit
+             * The data name 'audit' must not be changed, therefore it is not configurable.
              * Conditional logic to drop location audit fields if location_priority == "off"
              */
             var binding = {
                 name: 'bind',
                 attrs: {
-                    'nodeset': xpath + 'meta/' + control.name,
+                    'nodeset': xpath + 'meta/audit',
                     type: 'binary'
                 }
             };
@@ -917,7 +921,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
 
         // Per OpenRosa spec, instanceID should be in /data/meta
         var meta = {
-            name: 'orx:meta',
+            name: 'meta',
             children: [ { name: 'orx:instanceID' } ]
         };
 

@@ -848,7 +848,7 @@
             name:       { name: 'Data Name',
                           type: 'text',
                           description: 'The name of the column in the exported data.',
-                          tips: [ 'Must start with a letter, and may only include letters, numbers, hyphens, underscores, and periods.' ],
+                          tips: [ 'Must be "audit".' ],
                           validation: [ 'required', 'xmlLegalChars', 'unique' ],
                           required: true,
                           value: 'audit',
@@ -979,7 +979,7 @@
         },
         audit: {
             name: 'Audit',
-            description: 'Audit metadata can track form changes and/or device location.',
+            description: 'Audit can track form changes and/or device location.',
         }
     };
 
