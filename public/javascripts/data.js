@@ -995,31 +995,36 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 }
             };
 
-            if (internal.metadata.location_priority != undefined && internal.metadata.location_priority != 'off') {
+            if (internal.metadata.track_changes != undefined) 
+            {
+                binding.attrs['odk:track-changes'] = internal.metadata.track_changes;
+                var track_changes_status = (internal.metadata.track_changes == 'true') ? 'enabled' : 'not enabled';
+                console.log('Track changes audit ' + track_changes_status + '.')
+            } else {
+                console.log('Track changes audit not enabled.');
+            };
+
+            if (internal.metadata.location_priority != undefined && internal.metadata.location_priority != 'off') 
+            {
                 /* Enable location audit with sane defaults if missing */
                 binding.attrs['odk:location-priority'] = internal.metadata.location_priority;
-                if (internal.metadata.location_min_interval != undefined) {
+                if (internal.metadata.location_min_interval != undefined && internal.metadata.location_min_interval != '') 
+                {
                     binding.attrs['odk:location-min-interval'] = internal.metadata.location_min_interval;
                 } else {
                     binding.attrs['odk:location-min-interval'] = '20';
-                    console.log("Location min interval not specified, defaulting to 20 seconds.");
+                    console.log('Location min interval not specified, defaulting to 20 seconds.');
                 };
-                if (internal.metadata.location_max_age != undefined) {
+                if (internal.metadata.location_max_age != undefined && internal.metadata.location_max_age != '') 
+                {
                     binding.attrs['odk:location-max-age'] = internal.metadata.location_max_age;
                 } else {
                     binding.attrs['odk:location-max-age'] = '60';
-                    console.log("Location max age not specified, defaulting to 60 seconds.");
+                    console.log('Location max age not specified, defaulting to 60 seconds.');
                 };
-                console.log("Location audit enabled.");
+                console.log('Location audit enabled.');
             } else {
-                console.log("Location audit not enabled.");
-            };
-
-            if (internal.metadata.track_changes != undefined) {
-                binding.attrs['odk:track-changes'] = internal.metadata.track_changes;
-                console.log("Track changes audit enabled.");
-            } else {
-                console.log("Track changes audit not enabled.");
+                console.log('Location audit not enabled.');
             };
 
             model.children.push(binding);
