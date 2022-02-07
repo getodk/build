@@ -296,7 +296,7 @@
       </div>
     </div>
 
-    <div class="modal narrowModal formPropertiesDialog">
+    <div class="modal formPropertiesDialog">
       <h3>Form Properties</h3>
       <div class="modalContents">
         <form>
@@ -332,6 +332,34 @@
             <option value="false">Never</option>
           </select>
           <p>Override or follow the ODK Collect form management setting "Delete after send".</p>
+
+          <label for="formProperties_track_changes">Track form changes</label>
+          <select id="formProperties_track_changes" name="track_changes">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+          <p>Whether to track changes to the form made any time before submission.</p>
+
+          <label for="formProperties_location_priority">Track device location</label>
+          <select id="formProperties_location_priority" name="location_priority">
+            <option value="off">Off</option>
+            <option value="no-power">No power</option>
+            <option value="low-power">Low power</option>
+            <option value="balanced">Balanced</option>
+            <option value="high-accuracy">High accuracy</option>
+          </select>
+          <p>Whether to track the location of the device while filling the form. 
+          Using "balanced" will capture the location at least at specified intervals while preserving power. 
+          Learn <a href="https://developers.google.com/android/reference/com/google/android/gms/location/LocationRequest" 
+          target="_" rel="nofollow">here</a> about available options to balance accuracy with power consumption.</p>        
+
+          <label for="formProperties_location_min_interval">Capture location every</label>
+          <input type="number" id="formProperties_location_min_interval" name="location_min_interval" value="20"/>
+          <p>If device location is tracked, it will be attempted to be captured at least every this many seconds.</p>  
+
+          <label for="formProperties_location_max_age">Location valid for</label>
+          <input type="number" id="formProperties_location_max_age" name="location_max_age" value="60"/>
+          <p>If device location is tracked, a captured location will be considered representative of the device location for this many seconds.</p>
         </form>
       </div>
       <div class="modalButtonContainer">

@@ -51,7 +51,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 public_key: $('#formProperties_publicKey').val(),
                 submission_url: $('#formProperties_submissionUrl').val(),
                 auto_send: $('#formProperties_autosend').find(":selected").val(),
-                auto_delete: $('#formProperties_autodelete').find(":selected").val()
+                auto_delete: $('#formProperties_autodelete').find(":selected").val(),
+                track_changes: $('#formProperties_track_changes').find(":selected").val(),
+                location_priority: $('#formProperties_location_priority').find(":selected").val(),
+                location_min_interval: $('#formProperties_location_min_interval').val(),
+                location_max_age: $('#formProperties_location_max_age').val()
             }
         };
     };
@@ -127,6 +131,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('#formProperties_submissionUrl').val(formObj.metadata.submission_url);
         $('#formProperties_autosend').val(formObj.metadata.auto_send);
         $('#formProperties_autodelete').val(formObj.metadata.auto_delete);
+        $('#formProperties_track_changes').val(formObj.metadata.track_changes);
+        $('#formProperties_location_priority').val(formObj.metadata.location_priority);
+        $('#formProperties_location_min_interval').val(formObj.metadata.location_min_interval);
+        $('#formProperties_location_max_age').val(formObj.metadata.location_max_age);
+
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadMany($('.workspace'), formObj.controls);
@@ -957,6 +966,65 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             if (internal.metadata.auto_delete !== "default")
                 submission.attrs["orx:auto-delete"] = internal.metadata.auto_delete;
         }
+
+        // Audit log: track changes and device location
+        if ((internal.metadata.track_changes != undefined && internal.metadata.track_changes !== "false") ||
+            (internal.metadata.location_priority != undefined && internal.metadata.location_priority !== "off"))
+        {
+            /* Add the `audit` element to the `meta` element.
+             * 
+             * The namespace prefix `orx:` is omitted because it could break submission editing in Enketo.
+             */
+            if (instance.children[0].children[0].name == 'meta') {
+                instance.children[0].children[0].children.push({ name: 'audit' });
+            } else {
+                console.log("No 'meta' element found in instance. Adding audit will likely fail.");
+            }
+
+            /* Add binding node with parameters 
+             * 
+             * Special path: /data/meta/audit
+             * The data name 'audit' must not be changed, therefore it is not configurable.
+             * Conditional logic to drop location audit fields if location_priority == "off"
+             */
+            var binding = {
+                name: 'bind',
+                attrs: {
+                    'nodeset': 'data/meta/audit',
+                    type: 'binary'
+                }
+            };
+
+            if (internal.metadata.location_priority != undefined && internal.metadata.location_priority != 'off') {
+                /* Enable location audit with sane defaults if missing */
+                binding.attrs['odk:location-priority'] = internal.metadata.location_priority;
+                if (internal.metadata.location_min_interval != undefined) {
+                    binding.attrs['odk:location-min-interval'] = internal.metadata.location_min_interval;
+                } else {
+                    binding.attrs['odk:location-min-interval'] = '20';
+                    console.log("Location min interval not specified, defaulting to 20 seconds.");
+                };
+                if (internal.metadata.location_max_age != undefined) {
+                    binding.attrs['odk:location-max-age'] = internal.metadata.location_max_age;
+                } else {
+                    binding.attrs['odk:location-max-age'] = '60';
+                    console.log("Location max age not specified, defaulting to 60 seconds.");
+                };
+                console.log("Location audit enabled.");
+            } else {
+                console.log("Location audit not enabled.");
+            };
+
+            if (internal.metadata.track_changes != undefined) {
+                binding.attrs['odk:track-changes'] = internal.metadata.track_changes;
+                console.log("Track changes audit enabled.");
+            } else {
+                console.log("Track changes audit not enabled.");
+            };
+
+            model.children.push(binding);
+        }
+
 
         _.each(internal.controls, function(control)
         {

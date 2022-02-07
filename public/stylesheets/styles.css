@@ -1466,13 +1466,13 @@ body > .control.last .controlFlowArrow,
 .formPropertiesDialog input,
 .formPropertiesDialog select
 {
-    margin-left: 10em;
-    width: calc(100% - 10em);
+    margin-left: 15em;
+    width: calc(100% - 15em);
 }
 .formPropertiesDialog p
 {
     font-size: 1.1em;
-    padding-left: 10em;
+    padding-left: 15em;
 }
 
 .errorMessage p
