@@ -491,6 +491,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 binding.attrs['jr:preload'] = 'property';
                 binding.attrs['jr:preloadParams'] = 'username';
             }
+            else if (kind == 'email') {
+                binding.attrs.type = 'string';
+                binding.attrs['jr:preload'] = 'property';
+                binding.attrs['jr:preloadParams'] = 'email';
+            }
             else if (kind == 'subscriber id')
             {
                 binding.attrs.type = 'string';
