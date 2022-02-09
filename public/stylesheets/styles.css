@@ -1475,6 +1475,17 @@ body > .control.last .controlFlowArrow,
     padding-left: 15em;
 }
 
+.hidden 
+{
+    display: none;
+}
+
+.pullRight
+{
+    position: absolute;
+    right: 2em;
+}
+
 .errorMessage p
 {
     color: #f00;

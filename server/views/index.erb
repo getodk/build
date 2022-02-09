@@ -27,7 +27,18 @@
   <script>
     function showDiv(divId, element, hide_if_value)
     {
-      document.getElementById(divId).style.display = element.value == hide_if_value ? 'none' : 'block';
+      if (element.value == hide_if_value)
+      {
+        document.getElementById(divId).classList.add("hidden");
+      }
+      else 
+      {
+        document.getElementById(divId).classList.remove("hidden");
+      }
+    }
+    function showAll(className)
+    {
+      [].forEach.call(document.getElementsByClassName(className), function (el) {el.classList.remove("hidden");});
     }
   </script>
   </head>
@@ -350,7 +361,7 @@
           Learn about all available form audit options 
           <a href="https://docs.getodk.org/form-audit-log/" target="_" rel="external">here</a>.</p>
 
-          <div id="form_audit_details" style="display:none;">
+          <div id="form_audit_details" class="optionalProperty hidden">
           <label for="formProperties_identify_user">Identify user</label>
           <select id="formProperties_identify_user" name="identify_user">
             <option value="false" selected="selected">No</option>
@@ -367,7 +378,7 @@
           </select>
           <p>Whether to track changes to the form made any time before submission.</p>
 
-          <div id="form_audit_reason" style="display:none;">
+          <div id="form_audit_reason" class="optionalProperty hidden">
           <label for="formProperties_track_changes_reasons">Track form change reasons</label>
           <select id="formProperties_track_changes_reasons" name="track_changes_reasons">
             <option value="false" selected="selected">No</option>
@@ -383,7 +394,7 @@
           </select>
           <p>Whether to track the location of the device while filling the form. </p>
 
-          <div id="form_audit_loc_details" style="display:none;">
+          <div id="form_audit_loc_details" class="optionalProperty hidden">
           <label for="formProperties_location_priority">Location priority</label>
           <select id="formProperties_location_priority" name="location_priority">
             <option value="no-power">No power</option>
@@ -410,6 +421,7 @@
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton jqmClose" href="#close">Done</a>
+        <a class="modalButton pullRight" onclick="showAll('optionalProperty')">Show all properties</a>
       </div>
     </div>
 
