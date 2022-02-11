@@ -22,6 +22,25 @@
       })();
     </script>
   <% end %>
+
+  <!-- Used to toggle additional form properties, eg. audit attributes -->
+  <script>
+    function showDiv(divId, element, hide_if_value)
+    {
+      if (element.value == hide_if_value)
+      {
+        document.getElementById(divId).classList.add("hidden");
+      }
+      else 
+      {
+        document.getElementById(divId).classList.remove("hidden");
+      }
+    }
+    function showAll(className)
+    {
+      [].forEach.call(document.getElementsByClassName(className), function (el) {el.classList.remove("hidden");});
+    }
+  </script>
   </head>
   <body>
     <div class="loadingScreen">
@@ -296,7 +315,7 @@
       </div>
     </div>
 
-    <div class="modal narrowModal formPropertiesDialog">
+    <div class="modal formPropertiesDialog">
       <h3>Form Properties</h3>
       <div class="modalContents">
         <form>
@@ -319,7 +338,7 @@
           
           <label for="formProperties_autosend">Auto-send</label>
           <select id="formProperties_autosend" name="autosend">
-            <option value="default">Follow ODK Collect settings</option>
+            <option value="default" selected="selected">Follow ODK Collect settings</option>
             <option value="true">Always</option>
             <option value="false">Never</option>
           </select>
@@ -327,15 +346,82 @@
 
           <label for="formProperties_autodelete">Auto-delete</label>
           <select id="formProperties_autodelete" name="autodelete">
-            <option value="default">Follow ODK Collect settings</option>
+            <option value="default" selected="selected">Follow ODK Collect settings</option>
             <option value="true">Always</option>
             <option value="false">Never</option>
           </select>
           <p>Override or follow the ODK Collect form management setting "Delete after send".</p>
+
+          <label for="formProperties_form_audit">Form audit</label>
+          <select id="formProperties_form_audit" name="form_audit" onchange="showDiv('form_audit_details', this, 'false')">
+            <option value="false" selected="selected">No</option>
+            <option value="true">Yes</option>
+          </select>
+          <p>Whether to log the timing of how and when the form is filled.
+          Learn about all available form audit options 
+          <a href="https://docs.getodk.org/form-audit-log/" target="_" rel="external">here</a>.</p>
+
+          <div id="form_audit_details" class="optionalProperty hidden">
+          <label for="formProperties_identify_user">Identify user</label>
+          <select id="formProperties_identify_user" name="identify_user">
+            <option value="false" selected="selected">No</option>
+            <option value="true">Yes</option>
+          </select>
+          <p>Whether to require a non-blank identity before filling out or editing a form instance.
+          Use this option if the device passes hands frequently during a survey.
+          This identity is separate from the metadata username, which is the better option if the device is handled by a single user.</p>
+
+          <label for="formProperties_track_changes">Track form changes</label>
+          <select id="formProperties_track_changes" name="track_changes" onchange="showDiv('form_audit_reason', this, 'false')">
+            <option value="false" selected="selected">No</option>
+            <option value="true">Yes</option>
+          </select>
+          <p>Whether to track changes to the form made any time before submission.</p>
+
+          <div id="form_audit_reason" class="optionalProperty hidden">
+          <label for="formProperties_track_changes_reasons">Track form change reasons</label>
+          <select id="formProperties_track_changes_reasons" name="track_changes_reasons">
+            <option value="false" selected="selected">No</option>
+            <option value="on-form-edit">Yes</option>
+          </select>
+          <p>Whether to require a reason before allowing a change to a form question.</p>
+          </div><!-- #form_audit_reason --> 
+
+          <label for="formProperties_track_location">Track device location</label>
+          <select id="formProperties_track_location" name="track_location" onchange="showDiv('form_audit_loc_details', this, 'false')">
+            <option value="false" selected="selected">No</option>
+            <option value="true">Yes</option>
+          </select>
+          <p>Whether to track the location of the device while filling the form. </p>
+
+          <div id="form_audit_loc_details" class="optionalProperty hidden">
+          <label for="formProperties_location_priority">Location priority</label>
+          <select id="formProperties_location_priority" name="location_priority">
+            <option value="no-power">No power</option>
+            <option value="low-power">Low power</option>
+            <option value="balanced" selected="selected">Balanced</option>
+            <option value="high-accuracy">High accuracy</option>
+          </select>
+          <p>Balance power comsumption through background location tracking with location accuracy.
+          Learn <a href="https://developers.google.com/android/reference/com/google/android/gms/location/LocationRequest" 
+          target="_" rel="external">here</a> about the available options.
+          Using "balanced" will capture the location at least at specified intervals while preserving power.</p>        
+
+          
+          <label for="formProperties_location_min_interval">Capture location every</label>
+          <input type="number" id="formProperties_location_min_interval" name="location_min_interval" value="20"/>
+          <p>If device location is tracked, it will be attempted to be captured at least every this many seconds.</p>  
+
+          <label for="formProperties_location_max_age">Location valid for</label>
+          <input type="number" id="formProperties_location_max_age" name="location_max_age" value="60"/>
+          <p>If device location is tracked, a captured location will be considered representative of the device location for this many seconds.</p>
+          </div><!-- #form_audit_loc_details --> 
+          </div><!-- #form_audit_details -->
         </form>
       </div>
       <div class="modalButtonContainer">
         <a class="modalButton jqmClose" href="#close">Done</a>
+        <a class="modalButton pullRight" onclick="showAll('optionalProperty')">Show all properties</a>
       </div>
     </div>
 

@@ -51,7 +51,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 public_key: $('#formProperties_publicKey').val(),
                 submission_url: $('#formProperties_submissionUrl').val(),
                 auto_send: $('#formProperties_autosend').find(":selected").val(),
-                auto_delete: $('#formProperties_autodelete').find(":selected").val()
+                auto_delete: $('#formProperties_autodelete').find(":selected").val(),
+                form_audit: $('#formProperties_form_audit').find(":selected").val(),
+                identify_user: $('#formProperties_identify_user').find(":selected").val(),
+                track_changes: $('#formProperties_track_changes').find(":selected").val(),
+                track_changes_reasons: $('#formProperties_track_changes_reasons').find(":selected").val(),
+                track_location: $('#formProperties_track_location').find(":selected").val(),
+                location_priority: $('#formProperties_location_priority').find(":selected").val(),
+                location_min_interval: $('#formProperties_location_min_interval').val(),
+                location_max_age: $('#formProperties_location_max_age').val()
             }
         };
     };
@@ -127,6 +135,15 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
         $('#formProperties_submissionUrl').val(formObj.metadata.submission_url);
         $('#formProperties_autosend').val(formObj.metadata.auto_send);
         $('#formProperties_autodelete').val(formObj.metadata.auto_delete);
+        $('#formProperties_form_audit').val(formObj.metadata.form_audit);
+        $('#formProperties_identify_user').val(formObj.metadata.identify_user);
+        $('#formProperties_track_changes').val(formObj.metadata.track_changes);
+        $('#formProperties_track_changes_reasons').val(formObj.metadata.track_changes_reasons);
+        $('#formProperties_track_location').val(formObj.metadata.track_location);
+        $('#formProperties_location_priority').val(formObj.metadata.location_priority);
+        $('#formProperties_location_min_interval').val(formObj.metadata.location_min_interval);
+        $('#formProperties_location_max_age').val(formObj.metadata.location_max_age);
+
         odkmaker.i18n.setActiveLanguages(formObj.metadata.activeLanguages);
         odkmaker.options.presets = formObj.metadata.optionsPresets;
         loadMany($('.workspace'), formObj.controls);
@@ -962,6 +979,74 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             if (internal.metadata.auto_delete !== "default")
                 submission.attrs["orx:auto-delete"] = internal.metadata.auto_delete;
         }
+
+        // Audit log: track changes, reasons, identify user, track device location
+        if (internal.metadata.form_audit != undefined && internal.metadata.form_audit == "true")
+        {
+            /* Add the `audit` element to the `meta` element.
+             * 
+             * The namespace prefix `orx:` is omitted because it could break submission editing in Enketo.
+             */
+            if (instance.children[0].children[0].name == 'meta') {
+                instance.children[0].children[0].children.push({ name: 'audit' });
+            } else {
+                console.log("No 'meta' element found in instance. Adding audit will likely fail.");
+            }
+
+            /* Add binding node with parameters 
+             * 
+             * Special path: /data/meta/audit
+             * Additional audit attributes are set from remaining audit form properties.
+             */
+            var binding = {
+                name: 'bind',
+                attrs: {
+                    'nodeset': '/data/meta/audit',
+                    type: 'binary'
+                }
+            };
+
+            if (internal.metadata.track_location != undefined && internal.metadata.track_location == 'true') 
+            {
+                /* Enable location audit with sane defaults if missing */
+                if (internal.metadata.location_priority != undefined && internal.metadata.location_priority != '')
+                {
+                    binding.attrs['odk:location-priority'] = internal.metadata.location_priority;
+                } else {
+                    binding.attrs['odk:location-priority'] = 'balanced';
+                };
+                if (internal.metadata.location_min_interval != undefined && internal.metadata.location_min_interval != '') 
+                {
+                    binding.attrs['odk:location-min-interval'] = internal.metadata.location_min_interval;
+                } else {
+                    binding.attrs['odk:location-min-interval'] = '20';
+                };
+                if (internal.metadata.location_max_age != undefined && internal.metadata.location_max_age != '') 
+                {
+                    binding.attrs['odk:location-max-age'] = internal.metadata.location_max_age;
+                } else {
+                    binding.attrs['odk:location-max-age'] = '60';
+                };
+            }
+
+            if (internal.metadata.track_changes != undefined && internal.metadata.track_changes != '') 
+            {
+                binding.attrs['odk:track-changes'] = internal.metadata.track_changes;
+            }
+
+            if (internal.metadata.track_changes_reasons != undefined && internal.metadata.track_changes_reasons != 'false') 
+            {
+                binding.attrs['odk:track-changes-reasons'] = internal.metadata.track_changes_reasons;
+            }
+
+            if (internal.metadata.identify_user != undefined && internal.metadata.identify_user != '') 
+            {
+                binding.attrs['odk:identify-user'] = internal.metadata.identify_user;
+            }
+
+            model.children.push(binding);
+        }
+
 
         _.each(internal.controls, function(control)
         {
