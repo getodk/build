@@ -25,11 +25,12 @@ This section contains package maintenance procedures in preparation for deployme
 * Review, approve, and merge open pull requests into the master branch.
 * Tag the master branch with the new version. Use the flag `-s` to sign a tag, or `-a` to create an unsigned tag.
   ```
-  git tag -s "0.4.0"
+  git tag -s "v0.4.0"
   git push --tags
   ```
-* Create a new release from the new tag on GitHub and let GitHub auto-generate release notes. Mark releases used for testing as pre-release. The release bundles the code into an archive, which we'll use for deployment.
-* Pushing a new tag will generate a new Docker image with the same tag.
+* Create a new release from the new tag on GitHub and let GitHub auto-generate release notes. 
+  Mark releases used for testing as pre-release. The release bundles the code into an archive, which we'll use for deployment.
+* Pushing a new tag beginning with a `v` will generate a new Docker image with the same tag, which can be used alternatively for deployment.
 
 # Deployment
 This section contains instructions to deploy Build and the related service build2xlsform to a test or production server.
@@ -77,7 +78,7 @@ and the related service `build2xlsform` providing an export to XLSForm.
 
 #### Latest official images
 The file `docker-compose.yml` will deploy the latest tagged images from ghcr.io,
-which are built and pushed whenever a new Git tag is pushed to GitHub.
+which are built and pushed whenever a new Git tag beginning with `v` is pushed to GitHub.
 Maintainers will use this option to deploy ODK Build to a staging or production server.
 
 ```
@@ -91,10 +92,8 @@ To stop the images, run
 docker-compose stop
 ```
 
-DO NOT run `docker-compose d*wn` as it unlinks the database volume.
-The volume still exists, but won't be found in the next run and appear lost.
-To recover from this, follow the troubleshooting protocol 
-[here](https://docs.getodk.org/central-troubleshooting/#troubleshooting-docker-compose-down).
+The named database volume will survive even a destructive `docker-copmose down`, which removes
+both downloaded and locally built images as well as unnamed volumes.
 
 ### Upgrade Build
 Pull the latest changes and rebuild/restart the images.
