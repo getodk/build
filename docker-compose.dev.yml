@@ -1,5 +1,5 @@
 # This docker-compose file will deploy the latest tagged image for build2xlsform from ghcr.io,
-# and build the current master as ODK Build image.
+# and build the local version of ODK Build from the Dockerfile.
 # Use this file to test ODK Build during development.
 # Run: docker-compose -f docker-compose.dev.yml up -d --build
 version: "3"
@@ -7,7 +7,7 @@ services:
   postgres:
     image: "postgres:14.1"
     volumes:
-      - /var/lib/postgresql/data
+      - odkbuild:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: odkbuild
       POSTGRES_PASSWORD: odkbuild
@@ -33,3 +33,5 @@ services:
       driver: local
     # healthcheck:
     #   test: [ "CMD-SHELL", "nc -z localhost 9393 || exit 1" ]
+volumes:
+  odkbuild:
