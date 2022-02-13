@@ -1,15 +1,12 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/master/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 # Publish `v1.2.3` tags as releases.
+
+# This GitHub Action runs whenever a git tag beginning with "v" is pushed. E.g., "v0.4.0".
 on:
   push:
     tags:
       - v*
-    # DEBUG: once working in upstream, drop the branches.
-    branches:
-      - main
-      - master
-      - '272-docker'
 
 name: docker
 
@@ -32,7 +29,7 @@ jobs:
         run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
       - name: Log in to registry
-        # This is where you will update the PAT to GITHUB_TOKEN
+        # Instead of a PAT, a GITHUB_TOKEN can be used
         run: echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ secrets.GH_ACTOR }} --password-stdin
 
       - name: Push image
