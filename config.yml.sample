@@ -15,5 +15,4 @@ staging:
 
 production:
   cookie_secret: sample
-  google_analytics_id: UA-12345678-9
 
