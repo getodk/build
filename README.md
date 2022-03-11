@@ -1,5 +1,7 @@
 # ODK Build
 
+[![docker](https://github.com/getodk/build/actions/workflows/docker.yml/badge.svg)](https://github.com/getodk/build/actions/workflows/docker.yml)
+
 ODK Build is a web-based, drag-and-drop service for creating forms used with data collection tools such as [ODK Collect](https://docs.getodk.org/collect-intro/). ODK Build is part of ODK, a free and open-source set of tools which help organizations author, field, and manage mobile data collection solutions. Learn more about the ODK project and its history [here](https://getodk.org/) and read about example ODK deployments [here](https://forum.getodk.org/c/showcase).
 
 Unless you mean to do development on ODK Build, just go to [https://build.getodk.org](https://build.getodk.org) to give it a try, or to the [releases page](https://github.com/getodk/build/releases) to download a local copy.
