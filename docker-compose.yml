@@ -1,0 +1,34 @@
+# This docker-compose file will deploy the latest tagged images from ghcr.io,
+# which are built and pushed whenever a new Git tag is pushed to GitHub.
+# Use this file to deploy ODK Build to a staging or production server.
+# Run: docker-compose up -d
+version: "3"
+services:
+  postgres:
+    image: "postgres:14.1"
+    volumes:
+      - odkbuild:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: odkbuild
+      POSTGRES_PASSWORD: odkbuild
+      POSTGRES_DATABASE: odkbuild
+    restart: always
+  build2xlsform:
+    image: "ghcr.io/getodk/odkbuild2xlsform:latest"
+    ports:
+      - "8686:8686"
+  odkbuild:
+    image: ghcr.io/getodk/odkbuild:latest
+    depends_on:
+      - postgres
+      - build2xlsform
+    command: [ "./contrib/wait-for-it.sh", "postgres:5432", "--", "./start-odkbuild.sh" ]
+    ports:
+      - "9393:9393"
+    restart: always
+    logging:
+      driver: local
+    # healthcheck:
+    #   test: [ "CMD-SHELL", "nc -z localhost 9393 || exit 1" ]
+volumes:
+  odkbuild:

@@ -1,0 +1,34 @@
+development:
+  cookie_secret: sample
+  cookie_ssl_only: false
+  database:
+    host: postgres
+    database: odkbuild
+    user: odkbuild
+    password: odkbuild
+
+test:
+  cookie_secret: sample
+  database:
+    host: postgres
+    database: odkbuild
+    user: odkbuild
+    password: odkbuild
+
+staging:
+  cookie_secret: sample
+  database:
+    host: postgres
+    database: odkbuild
+    user: odkbuild
+    password: odkbuild
+
+production:
+  cookie_secret: sample
+  google_analytics_id: UA-12345678-9
+  database:
+    host: postgres
+    database: odkbuild
+    user: odkbuild
+    password: odkbuild
+
