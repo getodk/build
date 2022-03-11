@@ -1,7 +1,7 @@
 FROM ruby:2.7.2
-LABEL author="GetODK Inc."
+LABEL author="ODK"
 LABEL maintainer="ODK Build maintainers"
-LABEL description="ODK Build, a drag-and-drop Xform designer"
+LABEL description="ODK Build, a drag-and-drop ODK Xforms designer"
 
 # Install system dependencies
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - 
