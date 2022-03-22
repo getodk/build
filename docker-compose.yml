@@ -13,15 +13,15 @@ services:
       POSTGRES_PASSWORD: odkbuild
       POSTGRES_DATABASE: odkbuild
     restart: always
-  build2xlsform:
-    image: "ghcr.io/getodk/odkbuild2xlsform:latest"
+  odkbuild2xlsform:
+    image: "ghcr.io/getodk/build2xlsform:latest"
     ports:
       - "8686:8686"
   odkbuild:
-    image: ghcr.io/getodk/odkbuild:latest
+    image: "ghcr.io/getodk/build:latest"
     depends_on:
       - postgres
-      - build2xlsform
+      - odkbuild2xlsform
     command: [ "./contrib/wait-for-it.sh", "postgres:5432", "--", "./start-odkbuild.sh" ]
     ports:
       - "9393:9393"

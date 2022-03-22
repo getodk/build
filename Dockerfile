@@ -14,9 +14,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
 
 # Install Ruby gems and ODK Build
 ENV RACK_ENV production
-# The build2xlsform hostname is "build2xlsform" when run with docker-compose, 
+# The build2xlsform hostname is "odkbuild2xlsform" when run with docker-compose, 
 # not "localhost" (the default) as in a source install.
-ENV B2X_HOST build2xlsform
+ENV B2X_HOST odkbuild2xlsform
 WORKDIR /srv/odkbuild/current
 
 # Files
