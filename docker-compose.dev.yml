@@ -14,7 +14,7 @@ services:
       POSTGRES_DATABASE: odkbuild
     restart: always
   odkbuild2xlsform:
-    image: "ghcr.io/getodk/build2xlsform:latest"
+    image: "ghcr.io/getodk/build2xlsform:master"
     ports:
       - "8686:8686"
   odkbuild:
