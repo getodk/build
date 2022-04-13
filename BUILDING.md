@@ -25,7 +25,7 @@ This section contains package maintenance procedures in preparation for deployme
 * Review, approve, and merge open pull requests into the master branch.
 * Tag the master branch with the new version. Use the flag `-s` to sign a tag, or `-a` to create an unsigned tag.
   ```
-  git tag -s "v0.4.0"
+  git tag -s "0.4.1"
   git push --tags
   ```
 * Create a new release from the new tag on GitHub and let GitHub auto-generate release notes. 
@@ -117,7 +117,7 @@ A database will be set up with credentials in a config file at `/srv/odkbuild/co
 su - xls_service
 
 # Replace 1.6 with your release version
-export B2X="1.6"
+export B2X="1.9"
 # Verify that the correct release version will be used
 echo $B2X
 
@@ -150,7 +150,7 @@ apt install nodejs
 # Verify version, here 14.x:
 nodejs -v
 
-# Build 0.3.5 to 0.4.0 requires a Ruby upgrade
+# Build 0.3.5 to 0.4.1 requires a Ruby upgrade
 root@build:~# gem update --system
 ```
 When downgrading, the above steps need to be altered to install the required NodeJS versions (8.x) and Ruby versions (see Gemfile).
@@ -158,8 +158,8 @@ When downgrading, the above steps need to be altered to install the required Nod
 ```
 su - build
 
-# Replace 0.4.0 with your release version
-export BV="0.4.0"
+# Replace 0.4.1 with your release version
+export BV="0.4.1"
 # Verify that the correct release version will be used
 echo $BV
 
