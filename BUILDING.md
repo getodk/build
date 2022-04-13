@@ -104,6 +104,45 @@ git pull
 docker-compose up -d --build
 ```
 
+### Transfer database snapshots
+Both `docker-compose` files mount a transfer directory. 
+On the host, `docker-compose` is run from the cloned Build repository. 
+A folder `transfer` is created inside the cloned repository, which is mounted inside the `postgres` container as `/var/transfer`.
+
+This bind mount can be used to either transfer a database dump from the host (or another machine) into the Docker container,
+or transfer a database dump from the container to the host (or another machine).
+
+```
+root@build-staging:/srv/odkbuild/current# pg_dump -h localhost -U odkbuild -d odkbuild -W -Fc > transfer/db.dump
+```
+
+To restore the database dump into the container:
+
+```
+# Find the container name: build_odkbuild_1
+> docker-compose ps
+        Name                       Command               State                    Ports                  
+---------------------------------------------------------------------------------------------------------
+build_build2xlsform_1   docker-entrypoint.sh node  ...   Up      0.0.0.0:8686->8686/tcp,:::8686->8686/tcp
+build_odkbuild_1        ./contrib/wait-for-it.sh p ...   Up      0.0.0.0:9393->9393/tcp,:::9393->9393/tcp
+build_postgres_1        docker-entrypoint.sh postgres    Up      5432/tcp                                
+
+# Attach to the running container
+> docker exec -it build_postgres_1 /bin/bash -c "export TERM=xterm; exec bash"
+
+# Option 1: Restore a database dump
+root@308c22617da1:/# pg_restore -U odkbuild -f /var/transfer/db.dump
+
+# Option 2: Save a database dump
+root@308c22617da1:/# pg_dump -U odkbuild -Fc > /var/transfer/db.dump
+```
+
+From the host system, the database dump is now accessible as `transfer/db.dump` in the cloned Build source repository.
+
+```
+root@build-staging:/srv/odkbuild/current# pg_restore -h localhost -U odkbuild -d odkbuild -W < transfer/db.dump
+```
+
 ## Source install
 The following sections document how to install Build and its dependencies from source.
 

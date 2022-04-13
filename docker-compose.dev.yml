@@ -2,12 +2,15 @@
 # and build the local version of ODK Build from the Dockerfile.
 # Use this file to test ODK Build during development.
 # Run: docker-compose -f docker-compose.dev.yml up -d --build
+# The bind mount "transfer" serves to transfer database snapshots in and out of the container.
+# This is useful to migrate deployment from source to docker-compose.
 version: "3"
 services:
   postgres:
     image: "postgres:14.1"
     volumes:
       - odkbuild:/var/lib/postgresql/data
+      - ./transfer:/var/transfer:rw
     environment:
       POSTGRES_USER: odkbuild
       POSTGRES_PASSWORD: odkbuild

@@ -8,6 +8,7 @@ services:
     image: "postgres:14.1"
     volumes:
       - odkbuild:/var/lib/postgresql/data
+      - ./transfer:/var/transfer:rw
     environment:
       POSTGRES_USER: odkbuild
       POSTGRES_PASSWORD: odkbuild
