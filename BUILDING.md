@@ -28,12 +28,86 @@ This section contains package maintenance procedures in preparation for deployme
   git tag -s "0.4.1"
   git push --tags
   ```
-* Create a new release from the new tag on GitHub and let GitHub auto-generate release notes. Mark releases used for testing as pre-release. The release bundles the code into an archive, which we'll use for deployment.
+* Create a new release from the new tag on GitHub and let GitHub auto-generate release notes. 
+  Mark releases used for testing as pre-release. The release bundles the code into an archive, which we'll use for deployment.
+* Pushing a new tag beginning with a `v` will generate a new Docker image with the same tag, which can be used alternatively for deployment.
 
 # Deployment
 This section contains instructions to deploy Build and the related service build2xlsform to a test or production server.
 
-## Deploy build2xlsform
+## docker-compose
+This section explains how to run ODK Build with docker-compose.
+This is useful for several audiences:
+
+* End users can run this as an offline or self-hosted version of ODK Build. Note, the installation process requires internet connectivity.
+* Developers can verify that the Docker builds still work after code changes.
+* Maintainers can deploy Build with the same toolset (docker-compose) as Central.
+
+### First time start-up
+With Docker and docker-compose installed, run
+
+```
+# via HTTPS
+git clone https://github.com/getodk/build.git 
+
+# or with SSH keys
+git clone git@github.com:getodk/build.git
+
+# or download and extract the latest release from https://github.com/getodk/build/releases
+# Replace 0.4.0 with your release version
+export BV="0.4.0"
+# Verify that the correct release version will be used
+echo $BV
+
+wget https://github.com/getodk/build/archive/$BV.tar.gz
+tar -xf $BV.tar.gz && mv build-$BV build && rm $BV.tar.gz
+```
+
+#### Current ODK Build master
+The file `docker-compose.dev.yml` will deploy the latest tagged image for build2xlsform from ghcr.io,
+and build the current master as ODK Build image.
+Developers will use this option to test ODK Build during development.
+
+```
+cd build
+docker-compose -f docker-compose.dev.yml up -d --build
+```
+
+This will run ODK Build on `http://0.0.0.0:9393/`, together with its Postgres database 
+and the related service `build2xlsform` providing an export to XLSForm.
+
+#### Latest official images
+The file `docker-compose.yml` will deploy the latest tagged images from ghcr.io,
+which are built and pushed whenever a new Git tag beginning with `v` is pushed to GitHub.
+Maintainers will use this option to deploy ODK Build to a staging or production server.
+
+```
+docker-compose up -d
+```
+
+### Stop Build
+To stop the images, run 
+
+```
+docker-compose stop
+```
+
+The named database volume will survive even a destructive `docker-copmose down`, which removes
+both downloaded and locally built images as well as unnamed volumes.
+
+### Upgrade Build
+Pull the latest changes and rebuild/restart the images.
+
+```
+cd build
+git pull
+docker-compose up -d --build
+```
+
+## Source install
+The following sections document how to install Build and its dependencies from source.
+
+### Deploy build2xlsform
 The symlink `/srv/xls_service/current` points to the unpacked and built production release.
 
 SSH into the relevant server. The server admin will have added your SSH pubkey into `authorized_keys`.
@@ -43,7 +117,7 @@ A database will be set up with credentials in a config file at `/srv/odkbuild/co
 su - xls_service
 
 # Replace 1.6 with your release version
-export B2X="1.6"
+export B2X="1.9"
 # Verify that the correct release version will be used
 echo $B2X
 
@@ -61,8 +135,7 @@ service xls-service stop && service xls-service start
 service xls-service status
 ```
 
-## Deploy Build
-Upgrade system
+### Deploy Build
 
 As root user, upgrade the system, NodeJS, and Ruby Gems.
 ```
