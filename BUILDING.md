@@ -25,7 +25,7 @@ This section contains package maintenance procedures in preparation for deployme
 * Review, approve, and merge open pull requests into the master branch.
 * Tag the master branch with the new version. Use the flag `-s` to sign a tag, or `-a` to create an unsigned tag.
   ```
-  git tag -s "0.4.1"
+  git tag -s "0.4.2"
   git push --tags
   ```
 * Create a new release from the new tag on GitHub and let GitHub auto-generate release notes. 
@@ -54,8 +54,8 @@ git clone https://github.com/getodk/build.git
 git clone git@github.com:getodk/build.git
 
 # or download and extract the latest release from https://github.com/getodk/build/releases
-# Replace 0.4.0 with your release version
-export BV="0.4.0"
+# Replace 0.4.2 with your release version
+export BV="0.4.2"
 # Verify that the correct release version will be used
 echo $BV
 
@@ -189,7 +189,7 @@ apt install nodejs
 # Verify version, here 14.x:
 nodejs -v
 
-# Build 0.3.5 to 0.4.1 requires a Ruby upgrade
+# Build 0.3.5 to 0.4.2 requires a Ruby upgrade
 root@build:~# gem update --system
 ```
 When downgrading, the above steps need to be altered to install the required NodeJS versions (8.x) and Ruby versions (see Gemfile).
@@ -197,8 +197,8 @@ When downgrading, the above steps need to be altered to install the required Nod
 ```
 su - build
 
-# Replace 0.4.1 with your release version
-export BV="0.4.1"
+# Replace 0.4.2 with your release version
+export BV="0.4.2"
 # Verify that the correct release version will be used
 echo $BV
 
