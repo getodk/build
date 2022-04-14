@@ -1,4 +1,4 @@
-# Contributing to Build
+# Contributing
 We want to make Build the easiest, most foolproof form design tool we can. To do that, we need your help. Even if you don't write code, you are a valuable member of our community, and there are many ways you can help vitally improve the project.
 
 ## Getting Involved

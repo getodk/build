@@ -1,4 +1,4 @@
-# Set up
+# Development
 This chapter provides a detailed guide to install Build locally for development.
 This setup is best if you want to contribute to the codebase.
 

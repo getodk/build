@@ -1,3 +1,4 @@
+# Architecture
 This document provides a high-level overview of how Build works.
 
 Build is a combination between a Ruby Rack-based application built on Sinatra and a large Javascript frontend. 

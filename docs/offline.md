@@ -1,3 +1,4 @@
+# Build Offline
 To prepare build to run offline, follow the `docker-compose` deployment steps in the [deployment guide](deploy.md).
 Note, you need to be online for these steps.
 
