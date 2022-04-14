@@ -13,7 +13,6 @@ The file `config.yml` created from template `config.yml.sample` holds database c
 Ruby Rack, Sinatra
 The export to XLSForm depends on `build2xlsform`. Follow its README to install and run `build2xlsform` locally on its default port 8686.
 
-
 ## Frontend 
 The frontend is written in Vanilla JS, it uses no frameworks and no modern syntax.
 
@@ -21,7 +20,6 @@ The frontend is written in Vanilla JS, it uses no frameworks and no modern synta
 Build uses a Postgres database.
 The `docker-compose` deployment provisions its own Postgres container and stores data in a Docker volume.
 A source install requires an existing Postgres database to be created with correct credentials kept in `config.yml`.
-
 
 ## Dependencies
 <!-- Ruby, Ruby env, system libraries -->
@@ -32,7 +30,6 @@ You can do `--without test` to skip some gems if you're short on bandwidth.
 We depend on one native binding, to connect to a PostgreSQL database. 
 To satisfy the binding, you can install `libpq-dev` on apt, or `postgresql` on homebrew.
 
-
 ## Navigating the code
 ### Ruby
 
@@ -41,7 +38,6 @@ The Ruby code manages user accounts and form storage, in addition to serving as 
 `asset_manager.rb` and `config_manager.rb` are small utilities that read up and manage, respectively, Javascript assets that the web frontend needs, and database configurations that the server needs. `warden_odkbuild.rb` handles parsing and verifying the user's authentication status. Model and database code are found in `/model`, and some miscellenia in `/lib`.
 
 ### Javascript
-
 Most of what the user actually interacts with is purely in Javascript. It's all located within `/public/javascripts`.
 
 The two most likely things you may wish to do are:
@@ -61,7 +57,6 @@ Otherwise, files of note include:
 [build2xlsform](https://github.com/getodk/build2xlsform) is a simple library and webservice that takes ODK Build form data and converts it to XLSForm-compatible XLSX files. It supports all features in ODK Build and is actively maintained to keep it such. In minor instances, this exceeds XLSForm's own expressivity of XForms features, and in such cases we export lossy information and leave a message in a 'Warnings' spreadsheet. It is currently actively deployed on the production Build instance.
 
 Some changes, like adding support for a new field type, might require an addition to `build2xlsform`. Make sure to test that the export to XLSForm yields a valid XLSForm.
-
 
 ## Deployment architecture
 <!-- Docker-compose -->

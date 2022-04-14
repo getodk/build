@@ -6,7 +6,6 @@ This setup is best if you want to contribute to the codebase.
 As root user, upgrade the system, install [NodeJS](https://nodejs.org/) and 
 [Ruby](https://www.ruby-lang.org/en/documentation/installation/).
 
-
 ```
 apt update
 apt upgrade
@@ -86,9 +85,6 @@ bundle exec rake deploy:build
 The export to XLSForm depends on [build2xlsform](https://github.com/getodk/build2xlsform). 
 Follow its README to install `build2xlsform` locally as a separate project and run it on its default port 8686.
 
-
-
-
 ## Run
 To finally run Build, run either `bundle exec rackup config.ru` to start the server, or `bundle exec shotgun config.ru` if you want the application to automatically detect your changes to source code and load them up when you refresh the app in your web browser.
 
@@ -119,7 +115,6 @@ To view compilation errors, run the Yui jar file directly:
 bundle info yui-compressor
 java -jar /srv/odkbuild/releases/0.3.6/vendor/bundle/ruby/2.7.0/gems/yui-compressor-0.9.3/lib/yuicompressor-2.4.2.jar -v --type js public/javascripts/data.js
 ```
-
 
 ## Contribute
 Once a contribution is ready, consult the [contributing guide](contribute.md) on preparing a Pull Request.

@@ -15,6 +15,3 @@ and stop Build through
 cd build
 docker-compose stop
 ```
-
-
-
