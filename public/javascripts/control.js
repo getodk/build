@@ -750,7 +750,7 @@
                             'If you have many options or reuse options frequently, use Bulk Edit.',
                             'The Underlying Value is the value saved to the exported data.' ],
                         validation: [ 'underlyingRequired', 'underlyingLegalChars', 'underlyingLength', 'hasOptions' ],
-                        value: [{ text: {}, val: 'untitled' }],
+                        value: [{ text: {}, cascade: [], val: 'untitled' }],
                         summary: false },
           other:      { name: 'Follow-up Question',
                         type: 'otherEditor',
