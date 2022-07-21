@@ -1,30 +1,11 @@
----
-name: Bug report
-about: ODK Build is doing something wrong
-title: ''
-labels: bug
-assignees: 
-
----
-
-## Problem
-<!-- Please briefly describe your problem and what output you expect. -->
-
-## Reproducible example
-<!-- 
-     If this issue refers to a bug or unexpected behaviour of ODK Build, 
-     please include a minimal reproducible example. 
-     
-     Note: Do not include your credentials or any identifying information.
--->
-- Step 1: ...
-- Step 2: ...
-
-## Forms and screenshots
-<!-- 
-    If the bug is reproducible with a form, attach the form here as .odkbuild save file.
-    If the bug is in the XML output, paste the XML output.
-    You can copy-paste screenshots showing the problem. 
-    
-    Make sure not to show or include any sensitive information.
- -->
+blank_issues_enabled: true
+contact_links: 
+  - name: "Report an issue"
+    about: "For when Build is behaving in an unexpected way"
+    url: "https://forum.getodk.org/c/support/6"
+  - name: "Request a feature"
+    about: "For when Build is missing functionality"
+    url: "https://forum.getodk.org/c/features/9"
+  - name: "Everything else"
+    about: "For everything else"
+    url: "https://forum.getodk.org/c/support/6"
