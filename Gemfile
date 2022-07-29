@@ -5,7 +5,7 @@ gem 'rake'
 gem 'ffi', '1.13.1'
 gem 'sequel', '>= 4.42'
 gem 'pg', '>= 0.18'
-gem 'sinatra', '2.1.0'
+gem 'sinatra', '2.2.0'
 gem "rack", ">= 2.1.4"
 gem 'pony', '1.3'
 gem 'warden', '1.0.6'
