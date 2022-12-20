@@ -17,7 +17,7 @@
       {
         document.getElementById(divId).classList.add("hidden");
       }
-      else 
+      else
       {
         document.getElementById(divId).classList.remove("hidden");
       }
@@ -322,10 +322,10 @@
           <label for="formProperties_submissionUrl">Submission URL</label>
           <input type="text" id="formProperties_submissionUrl" name="submissionUrl" />
           <p>Directs your submissions somewhere other than the Aggregate that supplied the form. This is the ODK Aggregate website url with <code>Aggregate.html</code> replaced by <code>submission</code>.</p>
-          
+
           <label for="formProperties_autosend">Auto-send</label>
           <select id="formProperties_autosend" name="autosend">
-            <option value="default" selected="selected">Follow ODK Collect settings</option>
+            <option value="" selected="selected">Follow ODK Collect settings</option>
             <option value="true">Always</option>
             <option value="false">Never</option>
           </select>
@@ -333,7 +333,7 @@
 
           <label for="formProperties_autodelete">Auto-delete</label>
           <select id="formProperties_autodelete" name="autodelete">
-            <option value="default" selected="selected">Follow ODK Collect settings</option>
+            <option value="" selected="selected">Follow ODK Collect settings</option>
             <option value="true">Always</option>
             <option value="false">Never</option>
           </select>
@@ -345,7 +345,7 @@
             <option value="true">Yes</option>
           </select>
           <p>Whether to log the timing of how and when the form is filled.
-          Learn about all available form audit options 
+          Learn about all available form audit options
           <a href="https://docs.getodk.org/form-audit-log/" target="_" rel="external">here</a>.</p>
 
           <div id="form_audit_details" class="optionalProperty hidden">
@@ -372,7 +372,7 @@
             <option value="on-form-edit">Yes</option>
           </select>
           <p>Whether to require a reason before allowing a change to a form question.</p>
-          </div><!-- #form_audit_reason --> 
+          </div><!-- #form_audit_reason -->
 
           <label for="formProperties_track_location">Track device location</label>
           <select id="formProperties_track_location" name="track_location" onchange="showDiv('form_audit_loc_details', this, 'false')">
@@ -390,19 +390,19 @@
             <option value="high-accuracy">High accuracy</option>
           </select>
           <p>Balance power comsumption through background location tracking with location accuracy.
-          Learn <a href="https://developers.google.com/android/reference/com/google/android/gms/location/LocationRequest" 
+          Learn <a href="https://developers.google.com/android/reference/com/google/android/gms/location/LocationRequest"
           target="_" rel="external">here</a> about the available options.
-          Using "balanced" will capture the location at least at specified intervals while preserving power.</p>        
+          Using "balanced" will capture the location at least at specified intervals while preserving power.</p>
 
-          
+
           <label for="formProperties_location_min_interval">Capture location every</label>
           <input type="number" id="formProperties_location_min_interval" name="location_min_interval" value="20"/>
-          <p>If device location is tracked, it will be attempted to be captured at least every this many seconds.</p>  
+          <p>If device location is tracked, it will be attempted to be captured at least every this many seconds.</p>
 
           <label for="formProperties_location_max_age">Location valid for</label>
           <input type="number" id="formProperties_location_max_age" name="location_max_age" value="60"/>
           <p>If device location is tracked, a captured location will be considered representative of the device location for this many seconds.</p>
-          </div><!-- #form_audit_loc_details --> 
+          </div><!-- #form_audit_loc_details -->
           </div><!-- #form_audit_details -->
         </form>
       </div>
