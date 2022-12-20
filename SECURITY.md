@@ -2,4 +2,4 @@
 
 ## Reporting a Vulnerability
 
-Please report security issues to `support@getodk.org`
+See our [Vulnerability Disclosure Policy](https://getodk.org/legal/vulnerability.html).
