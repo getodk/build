@@ -13,3 +13,4 @@ build/
 .vscode/.git/
 .vscode/
 transfer/
+*.code-workspace
