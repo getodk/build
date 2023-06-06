@@ -231,8 +231,8 @@ class OdkBuild < Sinatra::Application
 
   # bounce a payload through to a local build2xlsform instance for dev env. in prod, this ought
   # to be done at the apache/nginx/etc level via proxypass.
-  # The host and port for the build2xlsform service are parameterised to allow 
-  # both a source install (localhost:8686) and docker-compose install (build2xls:8686).
+  # The host and port for the build2xlsform service are parameterised to allow
+  # both a source install (localhost:8686) and docker compose install (build2xls:8686).
   post '/convert' do
     srv = ENV['B2X_HOST'] || 'localhost'
     prt = ENV['B2X_PORT'] || '8686'
@@ -247,6 +247,7 @@ class OdkBuild < Sinatra::Application
     return res.body
   end
 
+  # #322 remove aggregate
   # bounce a payload through the server to aggregate
   post '/aggregate/post' do
     # make sure we're good to go

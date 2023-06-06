@@ -72,6 +72,7 @@ var modalsNS = odkmaker.namespace.load('odkmaker.modals');
         },
         aggregateDialog: function($dialog)
         {
+            /* #322 remove aggregate */
             $dialog.removeClass('exporting');
         },
         formPropertiesDialog: function($dialog)

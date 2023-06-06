@@ -1438,6 +1438,7 @@ body > .control.last .controlFlowArrow,
     float: right;
 }
 
+/* #322 remove aggregate */
 .aggregateDialog .aggregateInstanceName
 {
     width: calc(100% - 7.6em);
@@ -1475,7 +1476,7 @@ body > .control.last .controlFlowArrow,
     padding-left: 15em;
 }
 
-.hidden 
+.hidden
 {
     display: none;
 }

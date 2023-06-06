@@ -25,11 +25,11 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             error: function(request, status, error)
             {
                 console.log("Could not open the form, error: " + error);
-                
-                if (error == "Not Found") 
+
+                if (error == "Not Found")
                 {
                     var msg = '<p>Error: No form selected.</p>'
-                } else  
+                } else
                 {
                     var msg = '<p>Could not open the form. See browser console log for a detailed error message.</p>';
                 }
@@ -52,7 +52,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
                 odkmaker.application.newForm();
             else
                 odkmaker.application.confirm('Are you sure? You will lose unsaved changes to the current form.', odkmaker.application.newForm);
-                
+
         });
         $('.menu .saveLink').click(function(event)
         {
@@ -270,6 +270,7 @@ var dataNS = odkmaker.namespace.load('odkmaker.data');
             $form.submit();
         });
 
+        /* #322 remove aggregate */
         $('.aggregateDialog .aggregateExportButton').click(function(event)
         {
             event.preventDefault();
