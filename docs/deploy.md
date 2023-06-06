@@ -1,21 +1,21 @@
 # Deployment
 This section contains instructions to deploy Build and the related service build2xlsform to a test or production server.
-The two alternatives are a deployment via `docker-compose` and a source install.
+The two alternatives are a deployment via `docker compose` and a source install.
 
-## docker-compose
-This section explains how to run ODK Build with `docker-compose`.
+## docker compose
+This section explains how to run ODK Build with `docker compose`.
 This is useful for several audiences:
 
 * End users can run this as an offline or self-hosted version of ODK Build. Note, the installation process requires internet connectivity.
 * Developers can verify that the Docker builds still work after code changes.
-* Maintainers can deploy Build with the same toolset (`docker-compose`) as Central.
+* Maintainers can deploy Build with the same toolset (`docker compose`) as Central.
 
 ### First time start-up
-With Docker and docker-compose installed, run
+With Docker and docker compose installed, run
 
 ```
 # via HTTPS
-git clone https://github.com/getodk/build.git 
+git clone https://github.com/getodk/build.git
 
 # or with SSH keys
 git clone git@github.com:getodk/build.git
@@ -25,15 +25,15 @@ git clone git@github.com:getodk/build.git
 The file `docker-compose.dev.yml` will deploy the latest tagged image for build2xlsform from ghcr.io,
 and build the current master as ODK Build image.
 Developers will use this option to test ODK Build during development.
-A copy of this command is also mentioned in `docker-compose.dev.yml`. 
+A copy of this command is also mentioned in `docker-compose.dev.yml`.
 
 ```
 cd build
 git pull
-docker-compose -f docker-compose.dev.yml up -d --build
+docker compose -f docker-compose.dev.yml up -d --build
 ```
 
-This will run ODK Build on `http://0.0.0.0:9393/`, together with its Postgres database 
+This will run ODK Build on `http://0.0.0.0:9393/`, together with its Postgres database
 and the related service `build2xlsform` providing an export to XLSForm.
 
 #### Latest official images
@@ -42,14 +42,14 @@ which are built and pushed whenever a commit is pushed to GitHub.
 Maintainers will use this option to deploy ODK Build to a staging or production server.
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Stop Build
-To stop the images, run 
+To stop the images, run
 
 ```
-docker-compose stop
+docker compose stop
 ```
 
 The named database volume will survive even a destructive `docker-copmose down`, which removes
@@ -61,12 +61,12 @@ Pull the latest changes and rebuild/restart the images.
 ```
 cd build
 git pull
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ### Transfer database snapshots
-Both `docker-compose` files mount a transfer directory. 
-On the host, `docker-compose` is run from the cloned Build repository. 
+Both `docker-compose` files mount a transfer directory.
+On the host, `docker-compose` is run from the cloned Build repository.
 A folder `transfer` is created inside the cloned repository, which is mounted inside the `postgres` container as `/var/transfer`.
 
 This bind mount can be used to either transfer a database dump from the host (or another machine) into the Docker container,
@@ -80,12 +80,12 @@ To restore the database dump into the container:
 
 ```
 # Find the container name: build_odkbuild_1
-> docker-compose ps
-        Name                       Command               State                    Ports                  
+> docker compose ps
+        Name                       Command               State                    Ports
 ---------------------------------------------------------------------------------------------------------
 build_build2xlsform_1   docker-entrypoint.sh node  ...   Up      0.0.0.0:8686->8686/tcp,:::8686->8686/tcp
 build_odkbuild_1        ./contrib/wait-for-it.sh p ...   Up      0.0.0.0:9393->9393/tcp,:::9393->9393/tcp
-build_postgres_1        docker-entrypoint.sh postgres    Up      5432/tcp                                
+build_postgres_1        docker-entrypoint.sh postgres    Up      5432/tcp
 
 # Attach to the running container
 > docker exec -it build_postgres_1 /bin/bash -c "export TERM=xterm; exec bash"
@@ -107,7 +107,7 @@ root@build-staging:/srv/odkbuild/current# pg_restore -h localhost -U odkbuild -d
 
 ## Production deployment from source
 This section documents how to deploy Build to a production server via a source install.
-This deployment method has been superseded by the docker-compose deployment.
+This deployment method has been superseded by the docker compose deployment.
 
 ### Deploy build2xlsform
 The symlink `/srv/xls_service/current` points to the unpacked and built production release.

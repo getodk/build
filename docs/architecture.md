@@ -1,9 +1,9 @@
 # Architecture
 This document provides a high-level overview of how Build works.
 
-Build is a combination between a Ruby Rack-based application built on Sinatra and a large Javascript frontend. 
-Everything it needs is kicked off by the config.ru Rackup file. 
-We use [shotgun](https://github.com/rtomayko/shotgun) for local development and 
+Build is a combination between a Ruby Rack-based application built on Sinatra and a large Javascript frontend.
+Everything it needs is kicked off by the config.ru Rackup file.
+We use [shotgun](https://github.com/rtomayko/shotgun) for local development and
 [docker-compose](https://docs.docker.com/compose/) for staging and production deployment.
 
 ## Secrets
@@ -13,7 +13,7 @@ The file `config.yml` created from template `config.yml.sample` holds database c
 Ruby Rack, Sinatra
 The export to XLSForm depends on `build2xlsform`. Follow its README to install and run `build2xlsform` locally on its default port 8686.
 
-## Frontend 
+## Frontend
 The frontend is written in Vanilla JS, it uses no frameworks and no modern syntax.
 
 ## Database
@@ -23,11 +23,11 @@ A source install requires an existing Postgres database to be created with corre
 
 ## Dependencies
 <!-- Ruby, Ruby env, system libraries -->
-All Rubygem dependencies are managed by Ruby Bundler. There are config files present for `rbenv`/`rvm`. 
-Run bundle install in the application root to resolve and install the appropriate dependencies. 
+All Rubygem dependencies are managed by Ruby Bundler. There are config files present for `rbenv`/`rvm`.
+Run bundle install in the application root to resolve and install the appropriate dependencies.
 You can do `--without test` to skip some gems if you're short on bandwidth.
 
-We depend on one native binding, to connect to a PostgreSQL database. 
+We depend on one native binding, to connect to a PostgreSQL database.
 To satisfy the binding, you can install `libpq-dev` on apt, or `postgresql` on homebrew.
 
 ## Navigating the code
@@ -59,16 +59,16 @@ Otherwise, files of note include:
 Some changes, like adding support for a new field type, might require an addition to `build2xlsform`. Make sure to test that the export to XLSForm yields a valid XLSForm.
 
 ## Deployment architecture
-<!-- Docker-compose -->
-Build is most recently deployed via `docker-compose`, which brings its own database and `build2xlsform` containers.
+<!-- docker compose -->
+Build is most recently deployed via `docker compose`, which brings its own database and `build2xlsform` containers.
 A bind mount provides a pathway for database dumps to be transferred in and out of the container.
 
 <!-- Historical: ansible, source -->
-In the distant past, Build up to version 0.3.5 was deployed via 
+In the distant past, Build up to version 0.3.5 was deployed via
 [ansible](https://github.com/getodk/build/tree/ansible-deployment) as automated source install behind an nginx server.
 After the Great Spring Clean of 2021&trade;, Build 0.3.6 through 0.4.1 was deployed as a manual source install.
 
 ## Offline version
-<!-- Run docker-compose locally. -->
-The offline version consists of the Build code run through `docker-compose` on a local machine.
+<!-- Run docker compose locally. -->
+The offline version consists of the Build code run through `docker compose` on a local machine.
 

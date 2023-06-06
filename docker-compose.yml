@@ -1,7 +1,7 @@
-# This docker-compose file will deploy the latest tagged images from ghcr.io,
+# This docker compose file will deploy the latest tagged images from ghcr.io,
 # which are built and pushed whenever a new Git tag is pushed to GitHub.
 # Use this file to deploy ODK Build to a staging or production server.
-# Run: docker-compose up -d
+# Run: docker compose up -d
 version: "3"
 services:
   postgres:
