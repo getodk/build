@@ -1,3 +1,5 @@
+## ⚠️ ODK Build is no longer being updated. Please use [XLSForm](https://docs.getodk.org/xlsform/) instead. ⚠️
+
 # ODK Build
 
 [![docker](https://github.com/getodk/build/actions/workflows/docker.yml/badge.svg)](https://github.com/getodk/build/actions/workflows/docker.yml)
