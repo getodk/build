@@ -189,7 +189,7 @@ class OdkBuild < Sinatra::Application
     new_password = user.reset_password!
     user.save
 
-    (Pony.mail :to => user.email, :from => 'support@getodk.org',
+    (Pony.mail :to => user.email, :from => 'ODK Build <no-reply@build.getodk.org>',
                :subject => 'Your new ODK Build password.',
                :body => "Your ODK Build password has been reset. The new password is #{new_password}.\n\nThanks,\nThe ODK Build Team")
 
