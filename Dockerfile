@@ -4,7 +4,7 @@ LABEL maintainer="ODK Build maintainers"
 LABEL description="ODK Build, a drag-and-drop ODK Xforms designer"
 
 # Install system dependencies
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - 
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install --yes \
   -o Acquire::Retries=10 --no-install-recommends \
@@ -14,7 +14,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
 
 # Install Ruby gems and ODK Build
 ENV RACK_ENV production
-# The build2xlsform hostname is "odkbuild2xlsform" when run with docker-compose, 
+# The build2xlsform hostname is "odkbuild2xlsform" when run with docker-compose,
 # not "localhost" (the default) as in a source install.
 ENV B2X_HOST odkbuild2xlsform
 WORKDIR /srv/odkbuild/current

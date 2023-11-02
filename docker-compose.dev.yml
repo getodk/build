@@ -1,9 +1,9 @@
-# This docker-compose file will deploy the latest tagged image for build2xlsform from ghcr.io,
+# This docker compose file will deploy the latest tagged image for build2xlsform from ghcr.io,
 # and build the local version of ODK Build from the Dockerfile.
 # Use this file to test ODK Build during development.
-# Run: docker-compose -f docker-compose.dev.yml up -d --build
+# Run: docker compose -f docker-compose.dev.yml up -d --build
 # The bind mount "transfer" serves to transfer database snapshots in and out of the container.
-# This is useful to migrate deployment from source to docker-compose.
+# This is useful to migrate deployment from source to docker compose.
 version: "3"
 services:
   postgres:
